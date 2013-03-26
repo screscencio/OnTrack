@@ -143,10 +143,11 @@ public class ReleasePanelWidget extends Composite {
 						action instanceof ReleaseDeclareEstimatedVelocityAction ||
 						action instanceof KanbanAction) update();
 
-				if (action instanceof ScopeBindReleaseAction || action instanceof ReleaseScopeUpdatePriorityAction) {
+				if (action instanceof ScopeBindReleaseAction || action instanceof ReleaseScopeUpdatePriorityAction
+						|| action instanceof ScopeDeclareEffortAction || action instanceof ScopeDeclareValueAction) {
 					try {
-						final UUID scopeId = action instanceof ScopeBindReleaseAction ? action.getReferenceId() : ((ReleaseScopeUpdatePriorityAction) (action))
-								.getScopeReferenceId();
+						final UUID scopeId = (action instanceof ReleaseScopeUpdatePriorityAction) ? ((ReleaseScopeUpdatePriorityAction) (action))
+								.getScopeReferenceId() : action.getReferenceId();
 						final Release release = ClientServiceProvider.getCurrentProjectContext().findScope(scopeId).getRelease();
 						ClientServiceProvider.getInstance().getEventBus().fireEvent(new ReleaseScopeListUpdateEvent(release));
 					}
