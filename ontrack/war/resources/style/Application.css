@@ -159,8 +159,7 @@ html,body {
 	border-width: 1px !important;
 }
 
-.kanban .dragdrop-selected,.kanban .dragdrop-dragging,.kanban .dragdrop-proxy
-	{
+.kanban .dragdrop-selected,.kanban .dragdrop-dragging,.kanban .dragdrop-proxy {
 	min-width: 207px;
 }
 
@@ -170,9 +169,9 @@ html,body {
 }
 
 .kanbanColumn.dragdrop-dragging {
-	-moz-box-shadow: 2px 4px 10px #999;
-	-webkit-box-shadow: 2px 4px 10px #999;
-	box-shadow: 2px 4px 10px #999;
+	-moz-box-shadow: 0px 2px 6px #000;
+	-webkit-box-shadow: 0px 2px 6px #000;
+	box-shadow: 0px 2px 6px #000;
 	margin-top: -2px;
 	margin-left: -1px;
 }

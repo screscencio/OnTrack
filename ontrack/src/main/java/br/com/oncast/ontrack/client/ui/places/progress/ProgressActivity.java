@@ -164,8 +164,8 @@ public class ProgressActivity extends AbstractActivity {
 		if (scope == null) return;
 
 		final ReleaseScopeWidget releaseScopeWidget = view.getReleaseWidget().getWidgetFor(release).getScopeContainer().getWidgetFor(scope);
-		if (releaseScopeWidget != null) {
-			releaseScopeWidget.setSelected(!isKanbanScopeWidget && selection);
+		if (releaseScopeWidget != null && (!selection || !isKanbanScopeWidget)) {
+			releaseScopeWidget.setSelected(selection);
 
 			for (final Scope childTask : scope.getAllLeafs()) {
 				final KanbanScopeWidget widget = view.getKanbanPanel().getWidgetFor(childTask);
@@ -174,7 +174,7 @@ public class ProgressActivity extends AbstractActivity {
 		}
 
 		final KanbanScopeWidget kanbanScopeWidget = view.getKanbanPanel().getWidgetFor(scope);
-		if (kanbanScopeWidget != null) {
+		if ((!selection || isKanbanScopeWidget) && kanbanScopeWidget != null) {
 			kanbanScopeWidget.setSelected(isKanbanScopeWidget && selection);
 			view.getReleaseWidget().getWidgetFor(release).getScopeContainer().getWidgetFor(getStory(scope)).setAssociationHighlight(selection);
 		}

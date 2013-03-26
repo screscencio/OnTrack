@@ -2,7 +2,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
-	<ui:style type="br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget.ScopeAssociatedMembersWidgetStyle">
+	
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget.ScopeAssociatedMembersWidgetStyle">
 	
 		.associatedUsersContainer {
 			position: relative;
@@ -18,7 +19,7 @@
 		
 		.hiddenUsersIndicatorLabel {
 			background: #bebebe;
-			color: #fafafa;
+			color: COLOR_TEXT_PRIMARY;
 			
 			text-align: center;
 			vertical-align: middle;
@@ -34,12 +35,13 @@
 		}
 		
 		.associatedUsers {
-			background: #fafafa;
+			background: transparent;
 			padding: 2px;
 			padding-top: 1px;
 		}
 		
 		.associatedUsers:HOVER, .associatedUsersOverflow {
+			background: COLOR_BACKGROUND_SECONDARY;
 			border: 1px solid #BEBEBE;
 			border-top: none;
 			padding: 1px;

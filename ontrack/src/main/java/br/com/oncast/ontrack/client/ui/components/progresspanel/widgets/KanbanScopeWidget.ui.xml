@@ -15,16 +15,13 @@
 			min-height: 28px;
 			width: 209px;
 
-			background: KANBAN_SCOPE_BACKGROUND;
-
-            border: 1px solid #999;
-			-moz-box-shadow: 1px 1px 2px #ddd;
-			-webkit-box-shadow: 1px 1px 2px #ddd;
-			box-shadow: 1px 1px 2px #ddd;
+			background: COLOR_BACKGROUND_SECONDARY;
+            color: COLOR_TEXT_SECONDARY;
 		}
 		
 		.panel:hover {
-            background-color: KANBAN_SCOPE_HOVER_BACKGROUND;
+            background: COLOR_HOVER_SECONDARY;
+            color: COLOR_TEXT_SECONDARY;
             cursor: pointer;
 		}
 		
@@ -40,8 +37,6 @@
 			overflow-x: visible;
 			overflow-y: hidden;
 			font-stretch: extra-expanded;
-            color: #555;
-            font-family: FONT_DEFAULT;
             font-size: FONT_SIZE_SMALL;
 		}
 		
@@ -67,25 +62,20 @@
         }
         
         .selected {
-			background-color: white;
-			box-shadow: 0px 0px 5px orange;
+			background: COLOR_SELECTED_HEADER;
+			box-shadow: SHADOW_SELECTED_HEADER;
+			border: 0px;
 			z-index: 1;
-			border: 1px solid #888;
-		}
-
-		.selected:hover {
-			border: 1px solid #777;
-			color: #444;
 		}
 
 		.targetHighlight {
-			background-color: #ffe8b3;
+			background: COLOR_SELECTED_HEADER !important;
 		}
 		
 		.associationHighlight {
+			background: white;
+			box-shadow: SHADOW_INSET_SELECTED_HEADER;
 			z-index: 1;
-			background-color: white;
-			border: 1px solid #888;
 		}
 		
 		.associatedUsers {
