@@ -56,11 +56,10 @@
 			left: 0px;
 			height: 18px;
 
-			text-transform: uppercase;
 			padding: 10px 8px 11px 16px;
 			font-family: FONT_DEFAULT;
 			font-size: 14pt;
-			color: #fff;
+			color: COLOR_TEXT_PRIMARY;
 			background-color: #032340;
 		}		
 		
@@ -123,7 +122,7 @@
 				<g:HTMLPanel styleName="{style.contentContainer}">
 					<table class="{style.scrollContainer}" cellpadding="0" cellspacing="0">
 						<tr>
-							<td width="*">
+							<td width="*" style="vertical-align: top;">
 								<div class="{style.flowContainer}">
 									<div class="{style.contentBlock}">
 										<g:Label styleName="{style.subjectTitle}">

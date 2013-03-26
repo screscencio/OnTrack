@@ -80,7 +80,12 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 
 	@Override
 	public void setFocus(final boolean focused) {
-		newTaskDescription.setFocus(focused);
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				newTaskDescription.setFocus(focused);
+			}
+		});
 	}
 
 	@UiHandler("focusPanel")

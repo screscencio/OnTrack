@@ -65,8 +65,8 @@ html,body {
 /* TabLayout */
 
 .gwt-TabLayoutPanelTabs {
-	background: #515762; /* gray */
 	background: #1A3A5B; /* blue */
+	background: #515762; /* gray */
 }
 
 .gwt-TabLayoutPanelTab {
