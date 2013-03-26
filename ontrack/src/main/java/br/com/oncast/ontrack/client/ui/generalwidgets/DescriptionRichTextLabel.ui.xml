@@ -74,18 +74,16 @@
 		}
 		
 		.editDescriptionBtn {
-			width: 180px;
-			margin-left: auto;
-			
-			font-weight: bold;
+			width: 34px;
 			cursor: pointer;
 			padding: PADDING_MEDIUM;
 			text-align: center;
-			text-transform: uppercase;
 			border: 1px solid transparent;
-			border-radius: BORDER_RADIUS_SMALL;
-			
-			color: COLOR_GRAY;
+			border-radius: BORDER_RADIUS_SMALL;			
+			color: #717375;
+			float: right;
+			margin-right: -29px;
+			margin-top: -16px;
 		}
 
 		.editDescriptionBtn:hover {
@@ -160,8 +158,8 @@
 						</g:FlowPanel>
 						<g:InlineHTML ui:field="label" />
 					</g:DeckPanel>
-					<g:Label ui:field="editButtom" styleName="{style.editDescriptionBtn}">
-						<ui:msg description="edit description buttom">Edit Description</ui:msg>
+					<g:Label ui:field="editButtom" styleName="icon-edit icon-large {style.editDescriptionBtn}" title="Edit Description">
+						<ui:attribute name="title" description="edit description buttom" />
 					</g:Label>
 				</g:FlowPanel>
 			</g:DeckPanel>

@@ -10,16 +10,21 @@
 
 	<ui:style src="../../../style/default.css">
 	
-		.title {
-			width: 100%;
-			text-transform: uppercase;
-			text-align: center;
-			color: COLOR_GRAY_DARK;
+		.rootPanel {
+			background: #C7C8CA;
+		}
+	
+		.subjectTitle {
+			padding: 6px 0px 5px 11px;
+			background: #717375;
+			color: COLOR_TEXT_PRIMARY;
+			font-family: FONT_DEFAULT;
+			font-size: 10pt;
 			cursor: default;
-			border-bottom: 1px solid #606060;
 		}
 		
 		.details {
+			margin: 0px auto;
 			margin-top: 5px;
 			width: 100%;
 		}
@@ -53,8 +58,8 @@
 		
 	</ui:style>
 	
-	<g:HTMLPanel>
-		<g:Label styleName="{style.title}">
+	<g:HTMLPanel styleName="{style.rootPanel}">
+		<g:Label styleName="{style.subjectTitle}">
 			<ui:msg description="details label">Details</ui:msg>
 		</g:Label>
 		
