@@ -39,9 +39,7 @@
 			cursor: default;
 		}
 		
-		.detailValueCell {
-			width: 100%;
-		}
+		.detailValueCell {}
 		
 		.tags {
 			margin-top: 10px;
