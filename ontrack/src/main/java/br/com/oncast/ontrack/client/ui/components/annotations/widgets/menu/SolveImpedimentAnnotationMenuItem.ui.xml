@@ -14,7 +14,7 @@
 		
 		@sprite .icon {
 			gwt-image: 'iconImg';
-			opacity: 0.35;
+			opacity: 0.70;
 			
 			background-size: 12px 12px;
 			width: 12px;
