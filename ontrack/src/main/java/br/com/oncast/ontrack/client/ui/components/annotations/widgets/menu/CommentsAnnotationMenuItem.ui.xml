@@ -5,16 +5,14 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 	
-	<ui:image field="iconImg" src="../comment.png"></ui:image>
 	<ui:style>
 	
 		.icon:HOVER {
 			opacity: 1;
 		}
 		
-		@sprite .icon {
-			gwt-image: 'iconImg';
-			opacity: 0.3;
+		.icon {
+			opacity: 0.7;
 			
 			background-size: 12px 12px;
 			width: 12px;
@@ -38,7 +36,7 @@
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.item}">
-		<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon}" title="Toggle Comments">
+		<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon} icon-comment" title="Toggle Comments">
 			<ui:attribute name="title" description="toggle comments hint text" />
 		</g:FocusPanel>
 		<g:Label ui:field="label" styleName="{style.item} {style.label}"/>

@@ -2,12 +2,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="iconImg" src="../clock.png"></ui:image>
 	<ui:style>
 	
-		@sprite .icon {
-			gwt-image: 'iconImg';
-			opacity: 0.6;
+		.icon {
+			opacity: 0.7;
 			
 			background-size: 12px 12px;
 			width: 12px;
@@ -29,7 +27,7 @@
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.item}">
-		<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon}"/>
+		<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon} icon-time"/>
 		<g:Label ui:field="label" styleName="{style.item} {style.label}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 
