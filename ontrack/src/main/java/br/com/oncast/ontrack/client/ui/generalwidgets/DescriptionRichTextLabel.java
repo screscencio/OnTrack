@@ -164,7 +164,7 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 		String text = "";
 		if (!textArea.getText().isEmpty()) text = textArea.getHTML();
 		label.setHTML(text);
-		editableLabelEditionHandler.onEditionRequest(text);
+		if (!text.isEmpty()) editableLabelEditionHandler.onEditionRequest(text);
 		hideRichTextArea();
 	}
 
