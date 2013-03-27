@@ -6,14 +6,11 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
-import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.feedback.ProjectCreationQuotaRequisitionCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
-import br.com.oncast.ontrack.client.ui.places.organization.OrganizationPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -21,14 +18,12 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -197,59 +192,10 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	private List<CommandMenuItem> buildUpdateProjectCommandMenuItemList(final Set<ProjectRepresentation> projectRepresentations) {
 		final List<CommandMenuItem> projects = new ArrayList<CommandMenuItem>();
 
-		projects.add(createOrganizationPlaceMenuItem());
-
 		for (final ProjectRepresentation representation : projectRepresentations)
 			projects.add(createProjectMenuItem(representation));
 
 		return projects;
-	}
-
-	private CommandMenuItem createOrganizationPlaceMenuItem() {
-		final Command cmd = new Command() {
-			@Override
-			public void execute() {
-				final ProjectRepresentationProvider provider = ClientServiceProvider.getInstance().getProjectRepresentationProvider();
-				final UUID project = provider.hasAvailableProjectRepresentation() ? provider.getCurrent().getId() : null;
-				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new OrganizationPlace(project));
-			}
-		};
-
-		final SafeHtmlBuilder builder = new SafeHtmlBuilder();
-		builder
-				.appendHtmlConstant("<div style=\"color: #cc9900;\">")
-				.appendEscaped(messages.allProjectsSummary())
-				.appendHtmlConstant("</div>");
-		final MenuItem menuItem = new MenuItem(builder.toSafeHtml(), cmd);
-
-		return new CommandMenuItem() {
-
-			@Override
-			public String getValue() {
-				return "";
-			}
-
-			@Override
-			public String getText() {
-				return "";
-			}
-
-			@Override
-			public MenuItem getMenuItem() {
-				return menuItem;
-			}
-
-			@Override
-			public boolean executeCommand() {
-				cmd.execute();
-				return true;
-			}
-
-			@Override
-			public int compareTo(final CommandMenuItem obj) {
-				return Integer.MIN_VALUE;
-			}
-		};
 	}
 
 	private SimpleCommandMenuItem createProjectMenuItem(final ProjectRepresentation projectRepresentation) {

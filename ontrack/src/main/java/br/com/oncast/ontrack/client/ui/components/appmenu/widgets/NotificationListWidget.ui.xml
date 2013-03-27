@@ -16,7 +16,7 @@
 		}
 		
 		.rootPanel {
-			width: 350px;
+			width: 353px;
 			min-width: 250px;			
 		}
 		
@@ -91,7 +91,7 @@
 				<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
 					<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
 				</g:SimplePanel>
-				<g:TabLayoutPanel ui:field="container" barHeight="36">
+				<g:TabLayoutPanel ui:field="container" barHeight="35">
 					<g:tab>
 						<g:header>
 							<span class="{style.stackHeaderLabel}">

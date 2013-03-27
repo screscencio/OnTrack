@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -41,8 +42,6 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 		String rootSelected();
 
 		String headerSelected();
-
-		String headerDone();
 
 		String headerUnplanned();
 
@@ -118,17 +117,24 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 	@Override
 	public boolean update() {
 		title.setText(release.getDescription());
-		header.setStyleName(style.headerDone(), release.getId().isValid() && release.isDone());
 		header.setStyleName(style.headerUnplanned(), !release.getId().isValid());
 
 		final float accomplished = release.getAccomplishedEffortSum();
 		final float total = release.getEffortSum();
 		final float progressPercentage = accomplished == 0 ? 0 : accomplished / total;
 
-		progressBar.getElement().getStyle().setRight((1.0 - progressPercentage) * 100, Unit.PCT);
+		updateProgressBar(progressPercentage);
+
 		updateChildReleases();
 
 		return false;
+	}
+
+	private void updateProgressBar(final float progressPercentage) {
+		final Style s = progressBar.getElement().getStyle();
+		s.setRight((1.0 - progressPercentage) * 100, Unit.PCT);
+		if (progressPercentage == 0.0) s.setMarginRight(7, Unit.PX);
+		if (progressPercentage == 1.0) s.setMarginRight(-7, Unit.PX);
 	}
 
 	private void updateChildReleases() {

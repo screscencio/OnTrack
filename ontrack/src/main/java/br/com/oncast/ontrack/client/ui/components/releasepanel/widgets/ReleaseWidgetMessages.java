@@ -28,4 +28,8 @@ public interface ReleaseWidgetMessages extends BaseMessages {
 	@DefaultMessage("Kanban")
 	String kanban();
 
+	@Description("go to planning menu text")
+	@DefaultMessage("Planning")
+	String planning();
+
 }

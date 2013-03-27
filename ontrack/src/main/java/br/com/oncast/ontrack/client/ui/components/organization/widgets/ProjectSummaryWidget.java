@@ -39,6 +39,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -66,6 +67,9 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 	@UiField(provided = true)
 	ModelWidgetContainer<Release, ReleaseSummaryWidget> releases;
+
+	@UiField
+	HTMLPanel body;
 
 	@UiField
 	DeckPanel scopesDeck;
@@ -229,7 +233,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	}
 
 	public void setContainerState(final boolean b) {
-		loadingDeck.setVisible(b);
+		body.setVisible(b);
 		containerStateToggleButton.setStyleName("icon-caret-down", b);
 		containerStateToggleButton.setStyleName("icon-caret-right", !b);
 
@@ -275,7 +279,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	}
 
 	private boolean getContainerState() {
-		return loadingDeck.isVisible();
+		return body.isVisible();
 	}
 
 	private Release getCurrentRelease() {

@@ -15,7 +15,7 @@
 			top: 5px;
 			left: 5px;
 			height: 44px;
-			width: 480px;
+			width: 400px;
 			overflow: hidden;
 		}
 		
@@ -24,7 +24,7 @@
 			top: 54px;
 			left: 0px;
 			bottom: 0px;
-			width: 480px;
+			width: 400px;
 			overflow: auto;
 			overflow-x: hidden;
 			padding: 0px 5px 10px 5px;
@@ -33,7 +33,7 @@
 		.kanbanContainer {
 			position: absolute;
 			top: 5px;
-			left: 495px;
+			left: 410px;
 			bottom: 5px;
 			right: 5px;
 		}
@@ -43,8 +43,8 @@
 			top: 0px;
 			right: 0px;
 			
-			width: 350px;
-			height: 198px;
+			width: 355px;
+			height: 200px;
 		}
 		
 		.detailPanel {
@@ -52,7 +52,7 @@
 			top: 0px;
 			left: 0px;
 			right: 360px;
-			height: 197px;
+			height: 200px;
 		}
 
 		.kanbanPanel {
