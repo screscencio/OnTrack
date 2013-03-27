@@ -20,6 +20,8 @@
 			background: #EDEDED;
 			color: COLOR_GRAY_DARK;
 			box-shadow: none;
+			overflow: hidden;
+			border: BORDER_MENUBAR;
 		}
 		
 		.headerContainer {
@@ -27,15 +29,22 @@
 			height: 100%;
 		}
 		
+		@def progressSkew skewX(-25deg);
 		.progressBar {
 			overflow: hidden;
 			width: auto;
 			height: auto;
 			position: absolute;
-			top: 0;
-			left: 0;
-			bottom: 0;
-			background: COLOR_BORDER_MENUBAR;
+			top: 0px;
+			left: -7px;
+			bottom: 0px;
+			background: COLOR_BACKGROUND_HEADER;
+			
+			transform: progressSkew;
+			-webkit-transform: progressSkew;
+			-moz-transform: progressSkew;
+			-o-transform: progressSkew;
+			-ms-transform: progressSkew;
 		}
 		
 		.headerSelected {
@@ -44,10 +53,6 @@
 		
 		.headerSelected .progressBar {
 			opacity: 0.6;
-		}
-		
-		.headerDone {
-			opacity: 0.8;
 		}
 		
 		.headerUnplanned {
@@ -86,13 +91,15 @@
 			padding: 5px 3px;
 			padding-top: 6px;
 			background-color: rgba(255, 255, 255, 0.5);
+			border: BORDER_MENUBAR;
+			border-top: none;
 		}
 		
 	</ui:style>
 	
 	<g:HTMLPanel ui:field="root" styleName="{style.rootPanel} {style.noSelection}">
 		<g:FocusPanel ui:field="header" styleName="{style.header}">
-			<g:HTMLPanel styleName="{style.headerContainer}">
+			<g:HTMLPanel styleName="{style.headerContainer} {style.noSelection}">
 				<g:SimplePanel ui:field="progressBar" styleName="{style.progressBar}"/>
 				<g:FocusPanel ui:field="containerStateToggleButton" styleName="{style.containerStateToggleButton}"/>
 				<g:Label ui:field="title" styleName="{style.titleLabel}"/>

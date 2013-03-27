@@ -141,11 +141,11 @@
 			
 			.progressLabelComplete {
 				color: COLOR_TEXT_PRIMARY;
-				background-color: rgb(116, 116, 116);
+				background-color: COLOR_TEXT_SECONDARY;
 			}
 			
 			.progressLabelUncomplete {
-				color: #000;
+				color: COLOR_BACKGROUND_TERTIARY;
 				background-color: COLOR_TEXT_PRIMARY;
 			}
 			
@@ -160,6 +160,11 @@
 				left: 0px;
 				bottom: 0px;
 			}
+			
+			.progressLabel {
+				left: -1px;
+			}
+			
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">

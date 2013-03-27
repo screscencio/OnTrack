@@ -290,13 +290,11 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	@UiHandler("focusPanel")
 	protected void onAttach(final AttachEvent event) {
 		if (!event.isAttached()) return;
-		// adjustHeight();
 	}
 
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
-		// if (visible) adjustHeight();
 	}
 
 	public FiltrableCommandMenu setLargePadding() {

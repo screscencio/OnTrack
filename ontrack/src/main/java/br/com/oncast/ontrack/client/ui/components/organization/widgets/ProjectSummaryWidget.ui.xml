@@ -20,6 +20,8 @@
 		
 		.header {
 			padding: PADDING_SMALL;
+			background: COLOR_BACKGROUND_RELEASE_HEADER;
+			color: COLOR_TEXT_RELEASE_HEADER;
 		}
 		
 		.containerStateToggleButton {
@@ -31,6 +33,7 @@
 		
 		.name {
 			font-size: FONT_SIZE_LARGE;
+			cursor: default;
 		}
 		
 		.planningLink {
@@ -40,7 +43,7 @@
 		
 		.body {
 			padding: 5px;
-			background: #999;
+			background: COLOR_BORDER_MENUBAR;
 		}
 		
 		.content {
@@ -154,12 +157,14 @@
 		<g:HorizontalPanel styleName="{style.header}" verticalAlignment="middle">
 			<g:FocusPanel ui:field="containerStateToggleButton" styleName="{style.containerStateToggleButton}"/>
 			<g:cell width="100%">
-				<g:Label ui:field="name" styleName="{style.name}"/>
+				<g:Label ui:field="name" styleName="{style.name} {style.noSelection}"/>
 			</g:cell>
-			<g:FocusPanel ui:field="planningLink" styleName="{style.planningLink} icon-external-link"/>
+			<g:FocusPanel ui:field="planningLink" styleName="{style.planningLink} icon-external-link" title="Planning">
+				<ui:attribute name="title" description="Planning"/>
+			</g:FocusPanel>
 		</g:HorizontalPanel>
 		
-		<g:HTMLPanel styleName="{style.body}">
+		<g:HTMLPanel ui:field="body" styleName="{style.body}">
 			<g:DeckPanel ui:field="loadingDeck" styleName="{style.content}">
 				<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
 					<g:SimplePanel styleName="{style.loadingIndicator}" />

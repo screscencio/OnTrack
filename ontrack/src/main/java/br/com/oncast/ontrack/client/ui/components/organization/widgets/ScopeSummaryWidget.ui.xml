@@ -7,10 +7,10 @@
 		.header {
 			position: relative;
 			padding: PADDING_SMALL;
-			border: 1px solid COLOR_GRAY;
 			background: COLOR_SEMI_WHITE;
 			margin: 2px 0px;
 			box-shadow: none;
+			overflow: hidden;
 		}
 		
 		.header:first-child {
@@ -22,17 +22,22 @@
 			height: 100%;
 		}
 		
+		@def progressSkew skewX(-25deg);
 		.progressBar {
 			overflow: hidden;
 			width: auto;
 			height: auto;
 			position: absolute;
 			top: 0px;
-			left: 0px;
+			left: -7px;
 			bottom: 0px;
-			background: #88a1b9;
+			background: COLOR_BACKGROUND_HEADER;
 			
-			opacity: 0.6;
+			transform: progressSkew;
+			-webkit-transform: progressSkew;
+			-moz-transform: progressSkew;
+			-o-transform: progressSkew;
+			-ms-transform: progressSkew;
 		}
 		
 		.headerSelected {

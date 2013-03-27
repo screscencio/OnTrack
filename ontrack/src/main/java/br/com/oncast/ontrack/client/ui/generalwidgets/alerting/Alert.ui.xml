@@ -20,9 +20,9 @@
             min-height: 35px;
 
             background-color: COLOR_BACKGROUND_TERTIARY;
-            -webkit-box-shadow: ALERT_SHADOW;
-            -moz-box-shadow: ALERT_SHADOW;
-            box-shadow: ALERT_SHADOW;
+            -webkit-box-shadow: SHADOW_ALERT;
+            -moz-box-shadow: SHADOW_ALERT;
+            box-shadow: SHADOW_ALERT;
 
 			background-repeat: no-repeat;
 			background-position: 0px 0px;

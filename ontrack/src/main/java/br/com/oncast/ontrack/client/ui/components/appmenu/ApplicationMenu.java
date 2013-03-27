@@ -86,7 +86,10 @@ public class ApplicationMenu extends Composite {
 	public ApplicationMenu(final boolean enableProjectDependantMenus) {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		if (getPlaceController().getCurrentPlace() instanceof OrganizationPlace) logo.setStyleName(style.logoDisabled());
+		if (getPlaceController().getCurrentPlace() instanceof OrganizationPlace) {
+			logo.setStyleName(style.logoDisabled());
+			logo.setTitle("");
+		}
 
 		hideBackButton();
 

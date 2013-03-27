@@ -22,6 +22,7 @@
 			
 			overflow: hidden;
 			padding-left: 45px;
+			text-shadow: none;
 		}
 	
 		.iconContainer {

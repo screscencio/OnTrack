@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.ui.places.report.ReportPlace;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
@@ -63,10 +64,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Resources resources;
 
 	interface Resources extends ClientBundle {
-
 		@Source("bg-later.png")
 		ImageResource laterImage();
-
 	}
 
 	@UiField
@@ -240,7 +239,17 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		if (mouseCommandsMenu != null) return mouseCommandsMenu;
 
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		if (!kanbanSpecific) {
+		if (kanbanSpecific) {
+			itens.add(new TextAndImageCommandMenuItem("icon-sitemap", messages.planning(), new Command() {
+				@Override
+				public void execute() {
+					final ClientServiceProvider provider = ClientServiceProvider.getInstance();
+					final UUID projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
+					provider.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
+				}
+			}));
+		}
+		if (!kanbanSpecific && release.isLeaf()) {
 			itens.add(new TextAndImageCommandMenuItem("icon-columns", messages.kanban(), new Command() {
 				@Override
 				public void execute() {
@@ -257,12 +266,14 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				ClientServiceProvider.getInstance().getApplicationPlaceController().open(new ReportPlace(project, release.getId()));
 			}
 		}));
-		if (release.hasDirectScopes()) itens.add(new TextAndImageCommandMenuItem("icon-time", messages.timesheet(), new Command() {
-			@Override
-			public void execute() {
-				ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(release.getId());
-			}
-		}));
+		if (release.hasDirectScopes()) {
+			itens.add(new TextAndImageCommandMenuItem("icon-time", messages.timesheet(), new Command() {
+				@Override
+				public void execute() {
+					ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(release.getId());
+				}
+			}));
+		}
 		if (!kanbanSpecific) {
 			itens.add(new TextAndImageCommandMenuItem("icon-arrow-up", messages.increasePriority(), new Command() {
 
@@ -295,7 +306,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private boolean updateChildReleaseWidgets() {
-		menuIcon.setVisible(release.hasDirectScopes() && !kanbanSpecific);
 		releaseContainer.setVisible(isContainerStateOpen && release.hasChildren());
 		return releaseContainer.update(release.getChildren());
 	}
