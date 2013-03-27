@@ -41,7 +41,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -52,7 +52,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	private static TimesheetPanelUiBinder uiBinder = GWT.create(TimesheetPanelUiBinder.class);
 
 	@UiField
-	HorizontalPanel timesheetContainer;
+	FlowPanel timesheetContainer;
 
 	@UiField
 	SimplePanel contentContainer;
@@ -79,8 +79,6 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	private Release nextRelease;
 
 	private final TimesheetAnimation animation;
-
-	private ProjectContext projectContext;
 
 	interface TimesheetPanelUiBinder extends UiBinder<Widget, TimesheetPanel> {}
 
@@ -183,7 +181,6 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		else animation.setDuration(0);
 
 		this.release = release;
-		this.projectContext = projectContext;
 
 		setupReleaseNavigationButtons();
 

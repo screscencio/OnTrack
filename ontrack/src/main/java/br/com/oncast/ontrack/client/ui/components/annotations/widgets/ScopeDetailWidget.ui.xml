@@ -10,17 +10,15 @@
 
 	<ui:style src="../../../style/default.css">
 	
-		.rootPanel {
-			background: #C7C8CA;
-		}
+		.rootPanel {}
 	
 		.subjectTitle {
-			padding: 6px 0px 5px 11px;
-			background: #717375;
-			color: COLOR_TEXT_PRIMARY;
-			font-family: FONT_DEFAULT;
-			font-size: 10pt;
-			cursor: default;
+			color: COLOR_TEXT_SECONDARY;
+			font-size: 12pt;
+			font-weight: bold;
+			border-bottom: 1px solid #ccc;
+			line-height: 30px;
+			margin: 0px 10px;
 		}
 		
 		.details {

@@ -12,10 +12,10 @@
 
 		.rootPanel {
 			position: absolute;
-			top: 130px;
+			top: 40px;
 			right: 40px;
 			left: 40px;
-			bottom: 130px;
+			bottom: 40px;
 			opacity: 0;
 		}
 
@@ -28,7 +28,7 @@
 			min-width: 720px;
 			
 			color: COLOR_TEXT_SECONDARY;
-			background-color: COLOR_BACKGROUND_SECONDARY;
+			background-color: #EAEAEA;
 			
 			border: BORDER_SECONDARY;
 		}
@@ -42,11 +42,14 @@
 			z-index: 10;
 		}
 		
-		.subjectTitle {
-			padding: 6px 0px 5px 11px;
-			background: COLOR_TEXT_SECONDARY;
-			color: COLOR_TEXT_MENUBAR;
-			font-size: 10pt;
+		.blockTitle {
+			color: COLOR_TEXT_SECONDARY;
+			font-size: 12pt;
+			font-weight: bold;
+			border-bottom: 1px solid #ccc;
+			line-height: 30px;
+			margin-left: 10px;
+			margin-right: 10px;
 		}
 
 		.headerBar {
@@ -55,10 +58,10 @@
 			right: 0px;
 			left: 0px;
 
-			padding: 0px 16px;
+			padding: 0px 10px;
 			font-size: 14pt;
 			color: COLOR_TEXT_PRIMARY;
-			background-color: #032340;
+			background-color: COLOR_BACKGROUND_RELEASE_HEADER;
 			line-height: 36px;
 		}		
 		
@@ -85,13 +88,9 @@
 		}
 				
 		.rightPanel {
-			width: 400px;
-			vertical-align: top;
-		}
-		
-		.rightPanel > div {
 			margin-left: 0px;
 			height: 100%;
+			background: COLOR_BACKGROUND_SECONDARY;
 		}
 		
 		.description {
@@ -105,11 +104,6 @@
 			padding: 10px;
 		}		
 		
-		.contentBlock {
-			background: COLOR_BACKGROUND_HEADER;
-			margin: 5px;
-		}
-		
 	</ui:style>
         
 
@@ -120,31 +114,31 @@
 				<g:HTMLPanel styleName="{style.contentContainer}">
 					<table class="{style.scrollContainer}" cellpadding="0" cellspacing="0">
 						<tr>
-							<td width="*" style="vertical-align: top;">
+							<td width="70%" style="vertical-align: top;">
 								<div class="{style.flowContainer}">
-									<div class="{style.contentBlock}">
-										<g:Label styleName="{style.subjectTitle}">
+									<div>
+										<g:Label styleName="{style.blockTitle}">
 											<ui:msg description="Description">Description</ui:msg>
 										</g:Label>
 										<misc:DescriptionRichTextLabel ui:field="descriptionLabel" styleName="{style.description}" />
 									</div>
-									<div class="{style.contentBlock}">
-										<g:Label styleName="{style.subjectTitle}">
+									<div>
+										<g:Label styleName="{style.blockTitle}">
 											<ui:msg description="Checklists">Checklists</ui:msg>
 										</g:Label>
 										<aw:ChecklistsContainerWidget ui:field="checklist" styleName="{style.checklist}"/>
 									</div>
-									<div class="{style.contentBlock}">
-										<g:Label styleName="{style.subjectTitle}">
+									<div>
+										<g:Label styleName="{style.blockTitle}">
 											<ui:msg description="Annotations">Annotations</ui:msg>
 										</g:Label>
 										<aw:AnnotationsWidget ui:field="annotations" styleName="{style.annotationsPanel}" />
 									</div>
 								</div>
 							</td>
-							<td class="{style.rightPanel}">
-								<div class="{style.contentBlock}">
-										<aw:SubjectDetailWidget ui:field="subjectDetails" />
+							<td width="30%" style="vertical-align: top;">
+								<div class="{style.rightPanel}" >
+									<aw:SubjectDetailWidget ui:field="subjectDetails" />
 								</div>
 							</td>
 						</tr>
