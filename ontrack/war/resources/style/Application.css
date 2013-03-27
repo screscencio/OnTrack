@@ -539,15 +539,10 @@ button[disabled],button[disabled]:hover,input[disabled],input[disabled]:hover
 }
 
 .hasRichTextToolbar {
-	border: 1px solid #CCCCCC;
-	-webkit-box-shadow: inset 0px 0px 4px #D8D8D8;
-	-moz-box-shadow: inset 0px 0px 4px #D8D8D8;
-	box-shadow: inset 0px 0px 4px #D8D8D8;
 }
 
 .gwt-RichTextToolbar {
-	background: #FAFAFA;
-	padding: 5px;
+	background: #D1D1D1;
 	margin: 0px;
 }
 
