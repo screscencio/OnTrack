@@ -6,7 +6,7 @@
 	<ui:style src="../style/default.css">
 	
 		.root {
-			padding: 5px;
+			padding-top: 5px;
 		}
 		
 	</ui:style>

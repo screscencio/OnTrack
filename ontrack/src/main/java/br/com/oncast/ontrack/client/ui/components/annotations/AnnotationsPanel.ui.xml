@@ -27,26 +27,26 @@
 			left: 0px;
 			min-width: 720px;
 			
-			color: #717375;
-			background-color: #E0E1E2;
+			color: COLOR_TEXT_SECONDARY;
+			background-color: COLOR_BACKGROUND_SECONDARY;
+			
+			border: BORDER_SECONDARY;
 		}
 		
 		.closeIcon {
 			color: COLOR_TEXT_PRIMARY;
 			position: absolute;
-			top: 11.5px;
-			right: 12.5px;
+			top: 9px;
+			right: 9px;
 			cursor: pointer;
 			z-index: 10;
 		}
 		
 		.subjectTitle {
 			padding: 6px 0px 5px 11px;
-			background: #717375;
-			color: COLOR_TEXT_PRIMARY;
-			font-family: FONT_DEFAULT;
+			background: COLOR_TEXT_SECONDARY;
+			color: COLOR_TEXT_MENUBAR;
 			font-size: 10pt;
-			margin-bottom: 5px;
 		}
 
 		.headerBar {
@@ -54,13 +54,12 @@
 			top: 0px;
 			right: 0px;
 			left: 0px;
-			height: 18px;
 
-			padding: 10px 8px 11px 16px;
-			font-family: FONT_DEFAULT;
+			padding: 0px 16px;
 			font-size: 14pt;
 			color: COLOR_TEXT_PRIMARY;
 			background-color: #032340;
+			line-height: 36px;
 		}		
 		
 		.clickable:hover {
@@ -74,7 +73,7 @@
 		
 		.contentContainer {
 			position: absolute;
-			top: 40px;
+			top: 36px;
 			right: 0px;
 			left: 0px;
 			bottom: 0px;
@@ -96,7 +95,6 @@
 		}
 		
 		.description {
-			padding: POPUP_PADDING;
 		}
 		
 		.annotationsPanel {
@@ -108,7 +106,7 @@
 		}		
 		
 		.contentBlock {
-			background: #C7C8CA;
+			background: COLOR_BACKGROUND_HEADER;
 			margin: 5px;
 		}
 		
@@ -117,7 +115,7 @@
 
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
 		<g:HTMLPanel ui:field="container" styleName="{style.popupContainer} {style.rootContainer}">
-			<g:FocusPanel ui:field="closeIcon" styleName="{style.closeIcon} icon-remove-circle icon-large"/>
+			<g:FocusPanel ui:field="closeIcon" styleName="{style.closeIcon} icon-remove"/>
 				<misc:EditableLabel ui:field="subjectTitle" styleName="{style.headerBar} {style.clickable}" />
 				<g:HTMLPanel styleName="{style.contentContainer}">
 					<table class="{style.scrollContainer}" cellpadding="0" cellspacing="0">

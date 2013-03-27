@@ -25,10 +25,9 @@
 		.container {
 			position: relative;
 			width: 100%;
+			border: 1px solid COLOR_BACKGROUND_HEADER;
 			
 			background-color: white;
-			padding: 1px 1px 0px 0px;
-			border: 1px solid COLOR_GRAY_LIGHTEST;
 		}
 		
 		.helpText {
@@ -46,57 +45,47 @@
 		}
 		
 		.noDescriptionContainer {
-			position: relative;
-			padding: 0px;
-			padding-top: PADDING_LARGE;
-			padding-bottom: 30px;
-			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
-			width: 100%;
 		}
 	   	
 	   	.noDescriptionLabel  {
-			color: COLOR_GRAY;
 			text-align: center;
 			width: 100%;
-			margin-bottom: PADDING_LARGE;
-			font-size: FONT_SIZE_MEDIUM;
-			font-family: FONT_DEFAULT;
+			font-size: 14pt;
+			line-height: 54px;
 		}
 		
 		.helpLabel {
-			position: absolute;
-			bottom: 15px;
-			left: 0px;
-			right: 0px;
-			
-			color: COLOR_GRAY_LIGHT;
 			text-align: center;
+			width: 100%;
+			font-size: 11pt;
+			line-height: 18px;
+			color: COLOR_BORDER_MENUBAR;
+			margin-bottom: 18px;
 		}
 		
 		.editDescriptionBtn {
-			width: 34px;
 			cursor: pointer;
-			padding: PADDING_MEDIUM;
+			padding: 5px;
 			text-align: center;
 			border: 1px solid transparent;
-			border-radius: BORDER_RADIUS_SMALL;			
-			color: #717375;
+			border-radius: 3px;			
+			color: COLOR_TEXT_SECONDARY;
 			float: right;
-			margin-right: -29px;
-			margin-top: -16px;
+			margin-right: -10px;
+			margin-top: -25px;
 		}
 
 		.editDescriptionBtn:hover {
-			border-color: #AEAEAE;
-			-webkit-box-shadow: inset -1px -1px 1px #E9E9E9;
-			-moz-box-shadow: inset -1px -1px 1px #E9E9E9;
-			box-shadow: inset -1px -1px 1px #E9E9E9;
+			border-color: COLOR_BORDER_PRIMARY;
+			-webkit-box-shadow: inset -1px -1px 1px COLOR_BORDER_SECONDARY;
+			-moz-box-shadow: inset -1px -1px 1px COLOR_BORDER_SECONDARY;
+			box-shadow: inset -1px -1px 1px COLOR_BORDER_SECONDARY;
 		}
 		
 		@sprite .create {
 			position: absolute;
-			top: 20px;
-			right: 15px;
+			top: 12px;
+			right: 10px;
 
 			gwt-image: 'createIcon';
 			
