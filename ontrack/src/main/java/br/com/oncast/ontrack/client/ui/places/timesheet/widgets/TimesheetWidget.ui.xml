@@ -14,7 +14,7 @@
 		}
 		
 		.currentUserColumn {
-			background: #C7CAE6;
+			background: COLOR_SELECTED_HEADER;
 		}
 
 		.scopeDescriptionCell {
