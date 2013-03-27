@@ -41,6 +41,10 @@
 			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
 		}
 		
+		.tree > div:first-child {
+			display: none;
+		}
+		
 		.instructionLabel {
 			font-family: FONT_DEFAULT_ITALIC;
 			font-style: italic;
@@ -116,7 +120,7 @@
 				</g:cell>
 				<g:Label ui:field="deleteButton" styleName="{style.deleteButton}" />
 			</g:HorizontalPanel>
-			<g:Tree ui:field="tree" />
+			<g:Tree ui:field="tree" addStyleNames="{style.tree}"/>
 			<g:Label ui:field="noScopeLabel" styleName="{style.emptyIndicationLabel}">
 				<ui:msg description="message shown when scope tree is empty">No Scope yet</ui:msg>
 			</g:Label>
