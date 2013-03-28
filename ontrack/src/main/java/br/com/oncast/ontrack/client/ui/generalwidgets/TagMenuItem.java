@@ -9,11 +9,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TagWidget extends Composite {
+public class TagMenuItem extends Composite {
 
-	private static TagWidgetUiBinder uiBinder = GWT.create(TagWidgetUiBinder.class);
+	private static TagMenuItemUiBinder uiBinder = GWT.create(TagMenuItemUiBinder.class);
 
-	interface TagWidgetUiBinder extends UiBinder<Widget, TagWidget> {}
+	interface TagMenuItemUiBinder extends UiBinder<Widget, TagMenuItem> {}
 
 	@UiField
 	Label label;
@@ -23,7 +23,7 @@ public class TagWidget extends Composite {
 
 	private final Tag tag;
 
-	public TagWidget(final Tag tag, final ColorSelectionListener listener) {
+	public TagMenuItem(final Tag tag, final ColorSelectionListener listener) {
 		this.tag = tag;
 		this.color = new EditableColorPackWidget(tag.getColorPack(), listener);
 		initWidget(uiBinder.createAndBindUi(this));

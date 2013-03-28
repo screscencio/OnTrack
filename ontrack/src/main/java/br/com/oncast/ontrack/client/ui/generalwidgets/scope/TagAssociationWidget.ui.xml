@@ -7,7 +7,7 @@
 		.root {
 			position: relative;
 			display: inline-block !important;
-			margin-right: 1px;
+			margin: 0px 2px;
 		}
 	
 		.container {

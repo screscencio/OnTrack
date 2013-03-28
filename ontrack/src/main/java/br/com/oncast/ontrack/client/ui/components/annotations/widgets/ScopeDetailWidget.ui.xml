@@ -40,14 +40,10 @@
 		.detailValueCell {}
 		
 		.tags {
-			margin-top: 10px;
+			margin: 5px;
 			display: inline-block;
 		}
 
-		.tags > div > div > div {
-			margin: 5px;
-		}
-		
 		.ownerImage {
 			width: 40px;
 		}

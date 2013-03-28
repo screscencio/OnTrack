@@ -31,7 +31,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
-import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeTagWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.scope.TagAssociationWidget;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
@@ -164,7 +164,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField(provided = true)
 	@IgnoredByDeepEquality
-	protected ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget> tags;
+	protected ModelWidgetContainer<TagAssociationMetadata, TagAssociationWidget> tags;
 
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
@@ -265,11 +265,11 @@ public class ScopeTreeItemWidget extends Composite {
 		showSelectedMembersLabel();
 	}
 
-	private ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget> createTagsContainer() {
-		return new ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget>(new ModelWidgetFactory<TagAssociationMetadata, ScopeTagWidget>() {
+	private ModelWidgetContainer<TagAssociationMetadata, TagAssociationWidget> createTagsContainer() {
+		return new ModelWidgetContainer<TagAssociationMetadata, TagAssociationWidget>(new ModelWidgetFactory<TagAssociationMetadata, TagAssociationWidget>() {
 			@Override
-			public ScopeTagWidget createWidget(final TagAssociationMetadata modelBean) {
-				return new ScopeTagWidget(modelBean, editionHandler);
+			public TagAssociationWidget createWidget(final TagAssociationMetadata modelBean) {
+				return new TagAssociationWidget(modelBean, editionHandler);
 			}
 		}, new AnimatedContainer(new HorizontalPanel()));
 	}

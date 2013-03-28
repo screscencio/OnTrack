@@ -13,37 +13,33 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
+import br.com.oncast.ontrack.shared.model.color.ColorPack;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociationMetadata>, ActionExecutionListener {
+public class TagAssociationWidget extends Composite implements ModelWidget<TagAssociationMetadata>, ActionExecutionListener {
 
-	private static final int DURATION = 500;
+	private static final int DOUBLE_CLICK_DELAY = 250;
 
-	private static ScopeTagWidgetUiBinder uiBinder = GWT.create(ScopeTagWidgetUiBinder.class);
+	private static TagAssociationWidgetUiBinder uiBinder = GWT.create(TagAssociationWidgetUiBinder.class);
 
-	interface ScopeTagWidgetUiBinder extends UiBinder<Widget, ScopeTagWidget> {}
+	interface TagAssociationWidgetUiBinder extends UiBinder<Widget, TagAssociationWidget> {}
 
-	public ScopeTagWidget() {
+	public TagAssociationWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -51,62 +47,57 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 	Label description;
 
 	@UiField
-	HTMLPanel container;
+	DivElement upperBg;
 
 	@UiField
-	FocusPanel colorEdit;
+	DivElement lowerBg;
 
 	private TagAssociationMetadata association;
 
-	private final ScopeTagWidgetAnimation animation = new ScopeTagWidgetAnimation();
+	private ScopeTreeItemWidgetEditionHandler editionHandler;
 
-	private final Timer hideTimer = new Timer() {
+	private final Timer editTimer = new Timer() {
 		@Override
 		public void run() {
-			animation.hide();
+			PopupConfig.configPopup()
+					.popup(new TagAssociationWidgetEditMenu(association))
+					.alignVertical(VerticalAlignment.TOP, new AlignmentReference(TagAssociationWidget.this, VerticalAlignment.BOTTOM, 2))
+					.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(TagAssociationWidget.this, HorizontalAlignment.LEFT))
+					.pop();
 		}
 	};
 
-	private ScopeTreeItemWidgetEditionHandler editionHandler;
-
-	public ScopeTagWidget(final TagAssociationMetadata tagAssociation) {
+	public TagAssociationWidget(final TagAssociationMetadata tagAssociation) {
 		this(tagAssociation, null);
 	}
 
-	public ScopeTagWidget(final TagAssociationMetadata tagAssociation, final ScopeTreeItemWidgetEditionHandler editionHandler) {
+	public TagAssociationWidget(final TagAssociationMetadata tagAssociation, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 		this.association = tagAssociation;
 		this.editionHandler = editionHandler;
 		initWidget(uiBinder.createAndBindUi(this));
 		update();
-		animation.hide();
 	}
 
 	@UiHandler("root")
 	void onRootDoubleClick(final DoubleClickEvent e) {
+		doFilter(e);
+	}
+
+	@UiHandler("description")
+	void onDescriptionDoubleClick(final DoubleClickEvent e) {
+		doFilter(e);
+	}
+
+	private void doFilter(final DoubleClickEvent e) {
+		editTimer.cancel();
 		e.stopPropagation();
 		e.preventDefault();
 		if (editionHandler != null) editionHandler.onFilterByTagRequested(association.getTag().getId());
 	}
 
-	@UiHandler("root")
-	void onRootMouseOver(final MouseMoveEvent e) {
-		hideTimer.cancel();
-		animation.show();
-	}
-
-	@UiHandler("root")
-	void onRootMouseOut(final MouseOutEvent e) {
-		hideTimer.cancel();
-		hideTimer.schedule(DURATION);
-	}
-
-	@UiHandler("colorEdit")
-	void onClick(final ClickEvent e) {
-		PopupConfig.configPopup()
-				.popup(new ScopeTagWidgetEditMenu(association))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(this, VerticalAlignment.BOTTOM))
-				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(colorEdit, HorizontalAlignment.LEFT))
-				.pop();
+	@UiHandler("description")
+	void onDescriptionClick(final ClickEvent e) {
+		editTimer.schedule(DOUBLE_CLICK_DELAY);
 	}
 
 	@Override
@@ -127,57 +118,20 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 	}
 
 	private void updateColor() {
-		final Tag tag = association.getTag();
-		final Style style = container.getElement().getStyle();
+		final ColorPack colorPack = association.getTag().getColorPack();
+		final Style upperStyle = upperBg.getStyle();
+		final Style lowerStyle = lowerBg.getStyle();
 
-		style.setBackgroundColor(tag.getColorPack().getBackground().toCssRepresentation());
-		style.setColor(tag.getColorPack().getForeground().toCssRepresentation());
+		final String bgColor = colorPack.getBackground().toCssRepresentation();
+		upperStyle.setBackgroundColor(bgColor);
+		lowerStyle.setBackgroundColor(bgColor);
+
+		description.getElement().getStyle().setColor(colorPack.getForeground().toCssRepresentation());
 	}
 
 	@Override
 	public TagAssociationMetadata getModelObject() {
 		return association;
-	}
-
-	private class ScopeTagWidgetAnimation extends Animation {
-
-		private static final double HIDDEN = 1.0;
-
-		private double endOpacity = -1;
-		private double startOpacity = -1;
-
-		@Override
-		protected void onUpdate(final double progress) {
-			colorEdit.getElement().getStyle().setOpacity(startOpacity + (progress * (endOpacity - startOpacity)));
-		}
-
-		@Override
-		protected void onStart() {
-			colorEdit.getElement().getStyle().setOpacity(startOpacity);
-			colorEdit.setVisible(true);
-		}
-
-		@Override
-		protected void onComplete() {
-			colorEdit.setVisible(endOpacity != 0);
-		}
-
-		public void show() {
-			if (startOpacity == 0) return;
-
-			startOpacity = 0;
-			endOpacity = HIDDEN;
-			run(DURATION);
-		}
-
-		public void hide() {
-			if (endOpacity == 0) return;
-
-			startOpacity = HIDDEN;
-			endOpacity = 0;
-			run(DURATION);
-		}
-
 	}
 
 	@Override
