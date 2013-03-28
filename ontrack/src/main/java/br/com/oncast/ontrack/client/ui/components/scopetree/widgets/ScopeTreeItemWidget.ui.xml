@@ -103,7 +103,7 @@
                 text-align: right;
 			}
 			
-			.tag {
+			.releaseTag {
 				position: absolute;
 				top: 2px;
 				right: 0px;
@@ -169,9 +169,9 @@
 			}
 			
 			.tags {
-				margin-top: -2px;
 				width: 100%;
 				min-height: 10px;
+				border-spacing: 0px !important;
 			}
 			
 		</ui:style>
@@ -208,7 +208,7 @@
 					</g:cell>
 					<g:cell width="1">
 						<g:HTMLPanel ui:field="releasePanel" styleName="{style.releasePanel}" >
-						    <t:ReleaseTag ui:field="releaseTag" styleName="{style.tag}" />
+						    <t:ReleaseTag ui:field="releaseTag" styleName="{style.releaseTag}" />
 						</g:HTMLPanel>
 					</g:cell>
 				</g:HorizontalPanel>

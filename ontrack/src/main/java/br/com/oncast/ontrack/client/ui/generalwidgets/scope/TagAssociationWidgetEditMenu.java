@@ -29,13 +29,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 ;
 
-public class ScopeTagWidgetEditMenu extends Composite implements PopupAware, HasCloseHandlers<ScopeTagWidgetEditMenu> {
+public class TagAssociationWidgetEditMenu extends Composite implements PopupAware, HasCloseHandlers<TagAssociationWidgetEditMenu> {
 
-	private static ScopeTagWidgetEditMenuUiBinder uiBinder = GWT.create(ScopeTagWidgetEditMenuUiBinder.class);
+	private static TagAssociationWidgetEditMenuUiBinder uiBinder = GWT.create(TagAssociationWidgetEditMenuUiBinder.class);
 
-	interface ScopeTagWidgetEditMenuUiBinder extends UiBinder<Widget, ScopeTagWidgetEditMenu> {}
+	interface TagAssociationWidgetEditMenuUiBinder extends UiBinder<Widget, TagAssociationWidgetEditMenu> {}
 
-	public ScopeTagWidgetEditMenu() {
+	public TagAssociationWidgetEditMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -47,7 +47,7 @@ public class ScopeTagWidgetEditMenu extends Composite implements PopupAware, Has
 
 	private TagAssociationMetadata association;
 
-	public ScopeTagWidgetEditMenu(final TagAssociationMetadata association) {
+	public TagAssociationWidgetEditMenu(final TagAssociationMetadata association) {
 		this.association = association;
 		final Tag tag = association.getTag();
 		final ColorPack colorPack = tag.getColorPack();
@@ -108,7 +108,7 @@ public class ScopeTagWidgetEditMenu extends Composite implements PopupAware, Has
 	}
 
 	@Override
-	public HandlerRegistration addCloseHandler(final CloseHandler<ScopeTagWidgetEditMenu> handler) {
+	public HandlerRegistration addCloseHandler(final CloseHandler<TagAssociationWidgetEditMenu> handler) {
 		return this.addHandler(handler, CloseEvent.getType());
 	}
 
