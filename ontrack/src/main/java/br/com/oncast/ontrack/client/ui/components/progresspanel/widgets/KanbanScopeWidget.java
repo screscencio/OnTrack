@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -44,6 +45,9 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	}
 
 	@UiField
+	KanbanScopeWidgetStyle style;
+
+	@UiField
 	FocusPanel panel;
 
 	@UiField
@@ -53,8 +57,11 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	@UiField
 	FocusPanel draggableAnchor;
 
-	@UiField
-	KanbanScopeWidgetStyle style;
+	@UiField(provided = true)
+	ScopeAssociatedTagsWidget tags;
+
+	@UiField(provided = true)
+	ScopeAssociatedMembersWidget associatedUsers;
 
 	private final Scope scope;
 
@@ -65,13 +72,12 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	private boolean targetHighlight = false;
 	private boolean associationHighlight = false;
 
-	@UiField(provided = true)
-	ScopeAssociatedMembersWidget associatedUsers;
-
 	// IMPORTANT Used to refresh DOM only when needed.
 	public KanbanScopeWidget(final Scope scope, final ProgressPanelWidgetInteractionHandler progressPanelInteractionHandler,
 			final DragAndDropManager userDragAndDropMananger) {
 		associatedUsers = new ScopeAssociatedMembersWidget(scope, userDragAndDropMananger);
+		tags = new ScopeAssociatedTagsWidget(scope);
+
 		initWidget(uiBinder.createAndBindUi(this));
 
 		final Scope story = findStory(scope);
@@ -116,6 +122,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	public boolean update() {
 		associatedUsers.setShouldShowDone(!scope.getProgress().isDone());
 		associatedUsers.update();
+		tags.update();
 
 		final boolean isShowingAssociatedUsers = !scope.getProgress().isDone() && associatedUsers.getWidgetCount() > 0;
 		descriptionLabel.setStyleName(style.descriptionLabelWithAssociatedUsers(), isShowingAssociatedUsers);

@@ -36,7 +36,7 @@
 			height: auto;
 			position: absolute;
 			top: 0px;
-			left: -7px;
+			left: -16px;
 			bottom: 0px;
 			background: COLOR_BACKGROUND_HEADER;
 			
@@ -80,6 +80,10 @@
 			width: 100%;
 			text-align: center;
 			cursor: pointer;
+		}
+		
+		.headerUnplanned, .titleLabel {
+			cursor: default;
 		}
 		
 		.attributes {

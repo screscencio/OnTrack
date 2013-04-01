@@ -7,7 +7,7 @@
 		.root {
 			position: relative;
 			display: inline-block !important;
-			margin-right: 1px;
+			margin-right: 2px;
 		}
 	
 		.container {
@@ -16,40 +16,27 @@
 
 			padding: 0px 5px;
 
-			height: 18px;
-			line-height: 18px;
+			height: 5px;
+			min-width: 24px;
 			cursor: default;
 		}
 		
-		.upperBg, .lowerBg {
+		.upperBg {
 			position: absolute;
+			top: 0px;
 			left: 0px;
 			right: 0px;
-			top: 50%;
-			bottom: 50%;
-		}
-		
-		.upperBg {
+			bottom: 0px;
+
 			transform: skewX(-25deg);
 			-webkit-transform: skewX(-25deg);
 			-moz-transform: skewX(-25deg);
 			-o-transform: skewX(-25deg);
 			-ms-transform: skewX(-25deg);
-			top: 0px;
 		}
 		
-		.lowerBg {
-			transform: skewX(25deg);
-			-webkit-transform: skewX(25deg);
-			-moz-transform: skewX(25deg);
-			-o-transform: skewX(25deg);
-			-ms-transform: skewX(25deg);
-			bottom: 0px;
-		}
-		
-		.description {
-			position: relative;
-			cursor: pointer;
+		.description:hover {
+			text-decoration: underline;
 		}
 		
 	</ui:style>
@@ -57,8 +44,6 @@
 	<g:FocusPanel ui:field="root" styleName="{style.root}">
 		<g:HTMLPanel ui:field="container" styleName="{style.container}">
 			<div ui:field="upperBg" class="{style.upperBg}"/>
-			<div ui:field="lowerBg" class="{style.lowerBg}"/>
-			<g:Label ui:field="description" styleName="{style.description}"/>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 	

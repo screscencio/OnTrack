@@ -65,6 +65,7 @@
 		}
 		
 		.descriptionContainer {
+			position: relative;
 			padding: 10px 5px;
 		}
 		
@@ -120,6 +121,12 @@
 			gwt-image: 'notStarted';
 		}
 		
+		.tags {
+			position: absolute;
+			right: 7px;
+			bottom: -4px;
+		}
+		
 		.statusBar {
 			background-color: transparent;
 			width: 4px;
@@ -148,6 +155,7 @@
 	  			<g:HTMLPanel styleName="{style.descriptionContainer}">
 	  				<span ui:field="humanIdLabel" class="{style.humanId}"/>
 					<span ui:field="descriptionLabel"/>
+					<s:ScopeAssociatedTagsWidget ui:field="tags" styleName="{style.tags}"/>
 	  			</g:HTMLPanel>
 	  		</g:cell>
   			<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
