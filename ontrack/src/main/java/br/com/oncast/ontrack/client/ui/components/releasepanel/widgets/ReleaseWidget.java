@@ -275,6 +275,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			}));
 		}
 		if (!kanbanSpecific) {
+			itens.add(new SpacerCommandMenuItem());
 			itens.add(new TextAndImageCommandMenuItem("icon-arrow-up", messages.increasePriority(), new Command() {
 
 				@Override

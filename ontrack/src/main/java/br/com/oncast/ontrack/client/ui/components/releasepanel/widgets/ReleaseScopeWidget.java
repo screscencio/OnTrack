@@ -22,6 +22,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.BgColorAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.color.Color;
@@ -113,6 +114,9 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	@UiField(provided = true)
 	ScopeAssociatedMembersWidget associatedUsers;
 
+	@UiField(provided = true)
+	ScopeAssociatedTagsWidget tags;
+
 	private final Scope scope;
 
 	// IMPORTANT Used to refresh DOM only when needed.
@@ -133,6 +137,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	public ReleaseScopeWidget(final Scope scope, final boolean releaseSpecific, final DragAndDropManager userDragAndDropMananger) {
 		associatedUsers = createAssociatedUsersListWidget(scope, userDragAndDropMananger);
+		tags = new ScopeAssociatedTagsWidget(scope);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
@@ -145,12 +150,17 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	@Override
 	public boolean update() {
 		updateAssociatedUsers();
+		updateTags();
 		return updateHumanId() | updateDescription() | updateProgress() | updateTitle() | updateValues();
 	}
 
 	private void updateAssociatedUsers() {
 		associatedUsers.setShouldShowDone(!scope.getProgress().isDone());
 		associatedUsers.update();
+	}
+
+	private void updateTags() {
+		tags.update();
 	}
 
 	private boolean updateTitle() {

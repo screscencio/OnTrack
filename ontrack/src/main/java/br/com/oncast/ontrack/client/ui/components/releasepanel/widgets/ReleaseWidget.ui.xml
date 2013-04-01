@@ -23,7 +23,7 @@
 				
 				font-size: FONT_SIZE_LARGE;	
 				line-height: 36px;
-				padding: 0px 8px;
+				padding: 0px 5px;
 				
 				background: COLOR_BACKGROUND_RELEASE_HEADER;
 				color: COLOR_TEXT_RELEASE_HEADER;
@@ -52,6 +52,7 @@
 			
 			.menuIcon {
 				font-size: 10px;
+				line-height: 10px;
 				border: 1px solid transparent;
 				padding: 1px 2px;
 				border-radius: 2px;
@@ -195,8 +196,9 @@
 							</g:SimplePanel>
 						</g:FlowPanel>
 					</g:FocusPanel>
-					<g:FocusPanel ui:field="menuIcon" styleName="{style.headerItem} {style.menuIcon} icon-reorder" title="More">
+					<g:FocusPanel ui:field="menuIcon" styleName="{style.headerItem} {style.menuIcon}" title="More">
 						<ui:attribute name="title" description="menu icon release widget" />
+						<g:SimplePanel styleName="icon-reorder"/>
 					</g:FocusPanel>
 				</g:HorizontalPanel>
 			</g:HTMLPanel>

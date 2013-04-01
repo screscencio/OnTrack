@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
@@ -23,6 +24,7 @@ import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.HumanIdMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.Metadata;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
+import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.exceptions.MetadataNotFoundException;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -336,5 +338,14 @@ public class ProjectContext implements HasUUID {
 
 	public Float getDeclaredTimeSpent(final UUID scopeId, final UUID userId) {
 		return project.getDeclaredTimeSpent(scopeId, userId);
+	}
+
+	public ArrayList<Tag> getTagsFor(final Scope scope) {
+		final ArrayList<Tag> tags = new ArrayList<Tag>();
+		for (final TagAssociationMetadata metadata : ClientServiceProvider.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope,
+				TagAssociationMetadata.getType())) {
+			tags.add(metadata.getTag());
+		}
+		return tags;
 	}
 }

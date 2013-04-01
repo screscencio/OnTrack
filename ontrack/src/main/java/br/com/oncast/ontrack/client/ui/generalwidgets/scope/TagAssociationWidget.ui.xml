@@ -17,41 +17,39 @@
 			padding: 0px 5px;
 
 			height: 18px;
+			line-height: 18px;
+
 			cursor: default;
 		}
 		
-		.colorEdit {
-			position: absolute;
-			top: 2px;
-			right: 2px;
-			height: 13px;
-			width: 13px;
-			
-			border-radius: 2px;
-			cursor: pointer;
-		}
-		
 		.upperBg, .lowerBg {
-			background: red;
 			position: absolute;
 			left: 0px;
 			right: 0px;
-			height: 9px;
+			top: 50%;
+			bottom: 50%;
 		}
 		
 		.upperBg {
+			transform: skewX(-25deg);
 			-webkit-transform: skewX(-25deg);
+			-moz-transform: skewX(-25deg);
+			-o-transform: skewX(-25deg);
+			-ms-transform: skewX(-25deg);
 			top: 0px;
 		}
 		
 		.lowerBg {
+			transform: skewX(25deg);
 			-webkit-transform: skewX(25deg);
+			-moz-transform: skewX(25deg);
+			-o-transform: skewX(25deg);
+			-ms-transform: skewX(25deg);
 			bottom: 0px;
 		}
 		
 		.description {
 			position: relative;
-			line-height: 18px;
 			cursor: pointer;
 		}
 		

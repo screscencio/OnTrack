@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:gs="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope">
+	xmlns:s="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope">
 
     <ui:data field="draggableImage" src="../../move_scope.png"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidget.KanbanScopeWidgetStyle">
@@ -78,8 +78,15 @@
 			z-index: 1;
 		}
 		
-		.associatedUsers {
+		.associatedMembers {
 			float: right;
+			margin-bottom: 5px;
+		}
+		
+		.associatedTags {
+			position: absolute;
+			bottom: -4px;
+			right: 4px;
 		}
 		
 		.draggingMousePointer {
@@ -97,7 +104,8 @@
             <g:cell width="100%">
 	            <g:FlowPanel>
 	                <g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
-	                <gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" styleName="{style.associatedUsers}"/>
+	                <s:ScopeAssociatedMembersWidget ui:field="associatedUsers" styleName="{style.associatedMembers}"/>
+	                <s:ScopeAssociatedTagsWidget ui:field="tags" styleName="{style.associatedTags}"/>
 	            </g:FlowPanel>
             </g:cell>
         </g:HorizontalPanel>

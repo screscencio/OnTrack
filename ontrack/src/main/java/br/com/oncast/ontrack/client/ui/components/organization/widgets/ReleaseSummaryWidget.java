@@ -133,8 +133,8 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 	private void updateProgressBar(final float progressPercentage) {
 		final Style s = progressBar.getElement().getStyle();
 		s.setRight((1.0 - progressPercentage) * 100, Unit.PCT);
-		if (progressPercentage == 0.0) s.setMarginRight(7, Unit.PX);
-		if (progressPercentage == 1.0) s.setMarginRight(-7, Unit.PX);
+		if (progressPercentage == 0.0) s.setMarginRight(16, Unit.PX);
+		if (progressPercentage == 1.0) s.setMarginRight(-16, Unit.PX);
 	}
 
 	private void updateChildReleases() {
