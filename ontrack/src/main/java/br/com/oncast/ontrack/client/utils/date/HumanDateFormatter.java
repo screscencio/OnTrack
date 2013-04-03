@@ -35,7 +35,7 @@ public enum HumanDateFormatter {
 
 		@Override
 		protected String formatRelativeTime(final Date date) {
-			return format("h:mm a", date);
+			return format("HH:mm", date);
 		}
 	},
 	HOURS(1 * DAY, "yyyyMMdd") {
@@ -46,7 +46,7 @@ public enum HumanDateFormatter {
 
 		@Override
 		protected String formatRelativeTime(final Date date) {
-			return format("h:mm a", date);
+			return format("HH:mm", date);
 		}
 	},
 	DAYS(1 * WEEK, "yyyyMM") {

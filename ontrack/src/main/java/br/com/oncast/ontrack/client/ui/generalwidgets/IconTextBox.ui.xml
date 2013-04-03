@@ -1,0 +1,96 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style src="../style/default.css">
+	
+	@def inputHeight 30px;
+	@def containerTransform skewX(-25deg);
+	@def reverseTransform skewX(25deg);
+
+	.container {
+		position: relative;
+		height: inputHeight;
+
+		background: COLOR_BACKGROUND_TERTIARY;
+		color: COLOR_TEXT_TERTIARY;
+		text-shadow: none;
+		
+		overflow: hidden;
+		padding-left: 45px;
+	}
+
+	.iconContainer {
+		position: absolute;
+		top: 0px;
+		left: -10px;
+		bottom: 0px;
+		width: 45px;
+		
+		transform: containerTransform;
+		-webkit-transform: containerTransform;
+		-ms-transform: containerTransform;
+		-moz-transform: containerTransform;
+		-o-transform: containerTransform;
+		
+		background: COLOR_BACKGROUND_HEADER;
+		color: COLOR_BACKGROUND_TERTIARY;
+	}
+	
+	.icon {
+		position: absolute;
+		left: 20px;
+		line-height: inputHeight;
+		
+		transform: reverseTransform;
+		-webkit-transform: reverseTransform;
+		-ms-transform: reverseTransform;
+		-moz-transform: reverseTransform;
+		-o-transform: reverseTransform;
+
+		cursor: pointer;
+	}
+
+	.textBox {
+		width: 100%;
+		line-height: inputHeight;
+
+		font-size: FONT_SIZE_SMALL;
+		color: COLOR_TEXT_TERTIARY;
+		
+		background: transparent;
+		outline: none;
+		border: none;
+		padding: 0px;
+		margin: 0px;
+	}
+
+	.helpLabel {
+		position: absolute;
+		cursor: default;
+		
+		bottom: 0px;
+		right: 2px;
+		font-size: 8pt;
+		color: COLOR_BORDER_MENUBAR;
+	    
+	    display: inline-block;
+	    white-space: nowrap;
+	    line-height: 18px;
+	}
+		
+	</ui:style>
+	
+		<g:HTMLPanel>
+			<div class="{style.container}">
+				<div class="{style.iconContainer}">
+					<div class="{style.icon}">
+						<span ui:field="icon"/>
+					</div>
+				</div>
+				<g:TextBox ui:field="textBox" styleName="{style.textBox}"/>
+				<div ui:field="helpLabel" class="{style.helpLabel}"/>
+			</div>
+		</g:HTMLPanel>
+	
+</ui:UiBinder> 

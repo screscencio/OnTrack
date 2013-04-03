@@ -71,4 +71,11 @@ public class Checklist implements Serializable, HasUUID {
 		this.title = newTitle;
 	}
 
+	public boolean isComplete() {
+		for (final ChecklistItem item : items) {
+			if (!item.isChecked()) return false;
+		}
+		return true;
+	}
+
 }

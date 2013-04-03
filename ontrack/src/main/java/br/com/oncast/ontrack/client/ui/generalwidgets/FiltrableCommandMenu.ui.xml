@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
-	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
@@ -14,60 +14,21 @@
 		}
 		
 		@def inputHeight 30px;
-		.container {
-			position: relative;
+		.filterArea {
 			background: COLOR_BACKGROUND_TERTIARY;
 			color: COLOR_TEXT_TERTIARY;
-			height: inputHeight;
-			
-			overflow: hidden;
-			padding-left: 45px;
 			text-shadow: none;
-		}
-	
-		.iconContainer {
-			position: absolute;
-			top: 0px;
-			left: -10px;
+
 			height: inputHeight;
-			width: 45px;
-			
-			transform: matrix(1,0,-0.5,1,0,0);
-			-webkit-transform: matrix(1,0,-0.5,1,0,0);
-			-ms-transform: matrix(1,0,-0.5,1,0,0);
-			-moz-transform: matrix(1,0,-0.5,1,0,0);
-			-o-transform: matrix(1,0,-0.5,1,0,0);
-			
-			background: COLOR_BACKGROUND_HEADER;
-			color: COLOR_BACKGROUND_TERTIARY;
+			line-height: inputHeight;
 		}
 		
 		.searchIcon {
-			position: absolute;
-			left: 20px;
-			
-			line-height: inputHeight;
-		
-			transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
-			-webkit-transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
-			-ms-transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
-			-moz-transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
-			-o-transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
-	
-			cursor: pointer;
-		}
-
-		.filterArea {
-			width: 100%;
-
-			font-size: FONT_SIZE_SMALL;
-			color: COLOR_TEXT_TERTIARY;
-			
-			background: transparent;
-			outline: none;
-			border: none;
-			padding: 0;
-			margin: 7px 0px;
+			transform: scaleX(-1);
+			-webkit-transform: scaleX(-1);
+			-ms-transform: scaleX(-1);
+			-moz-transform: scaleX(-1);
+			-o-transform: scaleX(-1);
 		}
 		
 		.menu {
@@ -75,35 +36,16 @@
 			text-shadow: none;
 		}
 		
-		.helpLabel {
-			position: absolute;
-			cursor: default;
-			
-			bottom: 0px;
-			right: 2px;
-			font-size: 8pt;
-			color: COLOR_BORDER_MENUBAR;
-		    
-		    display: inline-block;
-		    white-space: nowrap;
-		}
-		
 	</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel">
 		<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" paddingEnabled="false">
-			<g:HTMLPanel ui:field="container" styleName="{style.container}" >
-				<div class="{style.iconContainer}">
-					<i class="icon-search {style.searchIcon}"/>
-				</div>
-				<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
-				<g:Label ui:field="helpLabel" styleName="{style.helpLabel}">
-					<ui:msg description="filtrable command menu help text">TAB to complete</ui:msg>
-				</g:Label>
-			</g:HTMLPanel>
+			<w:IconTextBox ui:field="filterArea" styleName="{style.filterArea}" iconStyle="icon-search {style.searchIcon}" helpText="TAB to complete">
+				<ui:attribute description="filtrable command menu help text" name="helpText"/>
+			</w:IconTextBox>
 			
 			<g:ScrollPanel ui:field="scrollPanel">
-				<misc:CommandMenu ui:field="menu" styleName="{style.menu}" />
+				<w:CommandMenu ui:field="menu" styleName="{style.menu}" />
 			</g:ScrollPanel>
 		</layout:ApplicationPopupBoxContainer>
 	</g:FocusPanel>

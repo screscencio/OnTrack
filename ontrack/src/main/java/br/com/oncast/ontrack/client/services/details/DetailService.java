@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.services.details;
 
 import java.util.List;
 
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.SubjectDetailUpdateEvent;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -28,5 +29,7 @@ public interface DetailService {
 	void markAsSolveImpediment(UUID subjectId, UUID annotationId);
 
 	boolean hasOpenImpediment(UUID subjectId);
+
+	SubjectDetailUpdateEvent getDetailUpdateEvent(UUID subjectId);
 
 }

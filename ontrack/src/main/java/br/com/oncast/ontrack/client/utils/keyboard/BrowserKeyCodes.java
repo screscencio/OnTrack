@@ -44,6 +44,11 @@ public class BrowserKeyCodes {
 	public static final int KEY_DOWN = 40;
 
 	/**
+	 * This key with Shift Modifier pressed is the KEY_EXCLAMATION_MARK
+	 */
+	public static final int KEY_1 = 49;
+
+	/**
 	 * This key with Shift Modifier pressed is the KEY_AT
 	 */
 	public static final int KEY_2 = 50;

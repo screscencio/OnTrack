@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.shared.model.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
@@ -38,6 +39,9 @@ public class AnnotationCreateAction implements AnnotationAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
+	@Attribute(required = false)
+	private String annotationType;
+
 	protected AnnotationCreateAction() {}
 
 	public AnnotationCreateAction(final UUID subjectId, final String message, final UUID attachmentId) {
@@ -45,6 +49,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 		this.attachmentId = attachmentId;
 		this.annotationId = new UUID();
 		this.subjectId = subjectId;
+		this.annotationType = AnnotationType.SIMPLE.name();
 		this.subActionList = new ArrayList<ModelAction>();
 	}
 
@@ -52,6 +57,15 @@ public class AnnotationCreateAction implements AnnotationAction {
 		this(subjectId, annotation.getMessage(), annotation.getAttachmentFile() == null ? null : annotation.getAttachmentFile().getId());
 		this.subActionList = subActionList;
 		this.annotationId = annotation.getId();
+	}
+
+	public AnnotationCreateAction(final UUID subjectId, final AnnotationType type, final String message) {
+		this.message = message;
+		this.attachmentId = null;
+		this.annotationId = new UUID();
+		this.subjectId = subjectId;
+		this.annotationType = type == null ? null: type.name();
+		this.subActionList = new ArrayList<ModelAction>();
 	}
 
 	@Override
@@ -68,7 +82,8 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	private Annotation getAnnotation(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final UserRepresentation author = ActionHelper.findUser(actionContext.getUserId(), context);
-		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message, AnnotationType.SIMPLE);
+		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message,
+				annotationType == null ? AnnotationType.SIMPLE : AnnotationType.valueOf(annotationType));
 		if (attachmentId != null) {
 			final FileRepresentation file = ActionHelper.findFileRepresentation(attachmentId, context);
 			annotation.setAttachmentFile(file);

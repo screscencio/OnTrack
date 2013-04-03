@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_1;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_2;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_3;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_4;
@@ -15,6 +16,7 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.AddTagInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareImpedimentInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareProgressInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareValueInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertChildInternalAction;
@@ -234,6 +236,19 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareValueInternalAction(scope, interactionHandler.getProjectContext()));
+		}
+
+		@Override
+		public String getDescription() {
+			return messages.declareValue();
+		}
+
+	},
+
+	DECLARE_IMPEDIMENT(new Shortcut(KEY_1).with(ShiftModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new DeclareImpedimentInternalAction(scope));
 		}
 
 		@Override

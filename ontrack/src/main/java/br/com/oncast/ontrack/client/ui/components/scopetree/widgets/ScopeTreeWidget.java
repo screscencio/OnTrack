@@ -345,8 +345,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				final Scope scope = event.getTargetScope();
 
 				final ScopeTreeItem item = findScopeTreeItem(scope);
-				item.showDetailsIcon(event.hasDetails());
-				item.showOpenImpedimentIcon(event.hasOpenImpediments());
+				item.updateDetails(event);
 			}
 		}));
 

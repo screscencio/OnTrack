@@ -94,17 +94,9 @@ html,body {
 	font-family: 'Muli', sans-serif;
 }
 
-.gwt-Tree table {
-	border-spacing: 2px;
-}
-
 .gwt-Tree .gwt-TreeItem {
-	height: 21px;
+	height: 20px;
 	margin: 1px;
-}
-
-.gwt-Tree .gwt-TreeItem>div {
-	padding-left: 3px;
 }
 
 .gwt-Tree .gwt-TreeItem:hover {

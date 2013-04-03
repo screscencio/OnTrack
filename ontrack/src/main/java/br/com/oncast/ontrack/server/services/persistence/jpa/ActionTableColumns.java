@@ -15,6 +15,7 @@ public interface ActionTableColumns {
 	public final static String STRING_1 = "referenceId";
 	public static final String STRING_2 = "secondaryReferenceId";
 	public static final String STRING_3 = "secundaryReferenceId";
+	public static final String STRING_4 = "string_4";
 
 	public static final String BOOLEAN_1 = "boleano";
 

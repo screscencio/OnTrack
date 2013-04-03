@@ -4,17 +4,16 @@
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:s="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope">
 
-	<ui:image field="details" src="details.png" />
-	<ui:image field="openImpediment" src="open_impediment.png" />
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget.Style">
 
 			.editableLabel {
 				position: relative;
-				height: 15px;
-				min-height: 15px;
+				height: 20px;
+				min-height: 20px;
 				outline: none;
 				font-size: FONT_SIZE_SMALL;
 				color: COLOR_GRAY_DARK;
+				line-height: 20px;
 			}
 			
 			.done {
@@ -26,64 +25,54 @@
 				min-height: 20px;
 			}
 			
+			.body {
+				border-spacing: 0px;
+			}
+			
 			.descriptionLabel {
 				position: absolute;
 				top: 0px;
-				left: 0px;
-				right: 0px;
+				left: 2px;
+				right: 2px;
 				bottom: 0px;
 				
 				cursor: pointer;
 				
-				color: #333333;
+				color: #444;
 			}
 			
-			.effort {
-				width: 80px;
+			.amount {
+				width: 63px;
 				height: 20px;
 				overflow: hidden;
-				margin-right: 5px;
+				margin-right: 9px;
 				cursor: default;
-				-moz-user-select: none;
-				-khtml-user-select: none;
-				user-select: none;
-			}
-            
-            .effortLabel {
-                display: inline;
-            }
-            			
-			.value {
-				width: 80px;
-				height: 20px;
-				overflow: hidden;
-				margin-right: 5px;
-				cursor: default;
-				-moz-user-select: none;
-				-khtml-user-select: none;
-				user-select: none;
+				text-align: right;
 			}
 			
-			.valueLabel {
+			.amountAsterisk {
+				visibility: hidden;
+				color: COLOR_ERROR_PRIMARY;
+			}
+			
+			.amountLabel {
 				display: inline;
 			}
 			
-			.labelInfered {
+			.amountConflicted .amountAsterisk {
+				visibility: visible;
+			}
+			
+			.amountConflicted .amountLabel {
+				text-decoration: underline;
+			}
+			
+			.amountInfered .amountLabel {
 				color: #9199cf;
 			}
 			
-			.done .labelInfered {
+			.done .amountInfered .amountLabel {
 				color: #8088DF;
-			}
-			
-			.labelStriped {
-				text-decoration: line-through;
-				color: #b7b7b7;
-				text-shadow: none;
-			}
-			
-			.done .labelStriped {
-				color: #A6A6A6;
 			}
 			
 			.scope {
@@ -105,7 +94,7 @@
 			
 			.releaseTag {
 				position: absolute;
-				top: 2px;
+				top: 4px;
 				right: 0px;
 				left: 0px;
 			}
@@ -115,10 +104,12 @@
 				height: 20px;
 				font-size: small;
 				font-stretch: expanded;
+				display: block;
+				text-align: center;
 			}
 			.editionBox {
+				padding: 0px 3px;
 				margin: -1px;
-				padding: 2px 0px 4px 4px;
 				font-family: inherit;
 				font-size: inherit;
 				margin-left: -4px;
@@ -129,22 +120,32 @@
 				color: #333333;
 			}
 			
-			@sprite .detailsIcon {
-				gwt-image: 'details';
-				
-				margin-left: -3px;
-				margin-right: 3px;
-				
+			.detailsIcon {
+				padding: 0 6px;
 				cursor: pointer;
+				font-size: 14px;
+				position: relative;
+				line-height: 20px;
+				border-right: 1px solid;
+				letter-spacing: -1px;
 			}
 			
-			@sprite .openImpedimentIcon {
-				gwt-image: 'openImpediment';
-				
-				margin-left: -3px;
-				margin-right: 3px;
+			.visualizationPanel td:first-child > .detailsIcon {
+				padding-left: 0px;
 			}
-
+			
+			.visualizationPanel td:nth-child\(4\) > .detailsIcon {
+				border-right: none;
+			}
+			
+			.checklistComplete {
+				color: COLOR_SUCCESS_PRIMARY;
+			}
+			
+			.annotationIcon {
+				top: -1px;
+			}
+			
 			.descriptionContainer {
 				width: 100%;
 				height: 20px;
@@ -159,12 +160,13 @@
 				
 				padding: 0px 3px;
 			}
+			
 			.borderPanel {
 				position: absolute;
 				top: -3px;
 				right: -3px;
 				left: -3px;
-				bottom: -9px;
+				bottom: -3px;
 				border: 1px solid transparent;
 			}
 			
@@ -178,43 +180,57 @@
 
 	<g:FocusPanel ui:field="focusPanel" styleName="{style.editableLabel}">
 		<g:HTMLPanel>
-		<g:Label ui:field="selectedMembers" styleName="{style.selectedMembers}"/>
-		<g:FocusPanel ui:field="borderPanel" styleName="{style.borderPanel}"/>
-		<g:DeckPanel ui:field="deckPanel" styleName="{style.editableLabel}">
-			<g:FlowPanel styleName="{style.visualizationPanel}">
-				<g:HorizontalPanel width="100%" height="20px">
-					<g:FocusPanel ui:field="openImpedimentIcon" styleName="{style.openImpedimentIcon}" />
-					<g:FocusPanel ui:field="detailsIcon" styleName="{style.detailsIcon}" />
-					<t:ModelWidgetContainer ui:field="tags" styleName="{style.tags}" />
-					<g:cell width="100%">
-						<g:SimplePanel styleName="{style.descriptionContainer}">
-							<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip"/>
-						</g:SimplePanel>
-					</g:cell>
-					<g:cell width="1">
-						<g:HTMLPanel ui:field="valuePanel" styleName="{style.value}">
-							<t:FastLabel ui:field="inferedValueLabel" styleName="{style.valueLabel} {style.labelInfered}" />
-							<t:FastLabel ui:field="declaredValueLabel" styleName="{style.valueLabel}" />
-						</g:HTMLPanel>
-					</g:cell>
-					<g:cell width="1">
-						<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
-							<t:FastLabel ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.labelInfered}" />
-							<t:FastLabel ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
-						</g:HTMLPanel>
-					</g:cell>
-					<g:cell width="1">
-						<t:FastLabel ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
-					</g:cell>
-					<g:cell width="1">
-						<g:HTMLPanel ui:field="releasePanel" styleName="{style.releasePanel}" >
-						    <t:ReleaseTag ui:field="releaseTag" styleName="{style.releaseTag}" />
-						</g:HTMLPanel>
-					</g:cell>
-				</g:HorizontalPanel>
-			</g:FlowPanel>
-			<g:TextBox ui:field="editionBox" styleName="{style.textBoxDecoration} {style.editionBox}" />
-		</g:DeckPanel>
+			<g:Label ui:field="selectedMembers" styleName="{style.selectedMembers}"/>
+			<g:FocusPanel ui:field="borderPanel" styleName="{style.borderPanel}"/>
+			<g:DeckPanel ui:field="deckPanel" styleName="{style.editableLabel}">
+				<g:HTMLPanel styleName="{style.visualizationPanel}">
+					<table border="0" cellspacing="0" cellpadding="0">
+						<tbody>
+							<tr>
+								<td>
+									<span ui:field="openImpedimentIcon" class="icon-flag {style.detailsIcon}" />
+								</td>
+								<td>
+									<span ui:field="annotationIcon" class="icon-comment {style.detailsIcon} {style.annotationIcon}" />
+								</td>
+								<td>
+									<span ui:field="checklistIcon" class="icon-list-ul {style.detailsIcon}" />
+								</td>
+								<td>
+									<span ui:field="descriptionIcon" class="icon-file-alt {style.detailsIcon}" />
+								</td>
+								<td>
+									<t:ModelWidgetContainer ui:field="tags" styleName="{style.tags}" />
+								</td>
+								<td width="100%">
+									<div class="{style.descriptionContainer}">
+										<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip"/>
+									</div>
+								</td>
+								<td width="1">
+									<g:HTMLPanel ui:field="valuePanel" styleName="{style.amount}">
+										<span class="{style.amountAsterisk}">*</span><span ui:field="valueLabel" class="{style.amountLabel}"/>
+									</g:HTMLPanel>
+								</td>
+								<td width="1">
+									<g:HTMLPanel ui:field="effortPanel" styleName="{style.amount}">
+										<span class="{style.amountAsterisk}">*</span><span ui:field="effortLabel" class="{style.amountLabel}"/>
+									</g:HTMLPanel>
+								</td>
+								<td width="1">
+									<t:FastLabel ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
+								</td>
+								<td width="1">
+									<g:HTMLPanel ui:field="releasePanel" styleName="{style.releasePanel}">
+									    <t:ReleaseTag ui:field="releaseTag" styleName="{style.releaseTag}" />
+									</g:HTMLPanel>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</g:HTMLPanel>
+				<g:TextBox ui:field="editionBox" styleName="{style.textBoxDecoration} {style.editionBox}" />
+			</g:DeckPanel>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder>

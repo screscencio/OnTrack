@@ -9,72 +9,72 @@
 
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidget.NotificationWidgetStyle">
 
-			.rootPanel {
-				position: relative;
-				width: 100%;
-				color : COLOR_GRAY_DARK;
+		.rootPanel {
+			position: relative;
+			width: 100%;
+			color : COLOR_GRAY_DARK;
 
-				margin-bottom: 10px;
-			}
+			margin-bottom: 10px;
+		}
+		
+		.image{
+			margin-right: 10px;
+			margin-left: 5px;
+		}
+		
+		.container {
+			margin-bottom: 1px;
+		}
+		
+		.userName {
+			margin-left: 5px;
+		}
+		
+		.timestamp {
+			text-align: right;
+			margin: 5px 5px -5px 0px;
 			
-			.image{
-				margin-right: 10px;
-				margin-left: 5px;
-			}
-			
-			.container {
-				margin-bottom: 1px;
-			}
-			
-			.userName {
-				margin-left: 5px;
-			}
-			
-			.timestamp {
-				text-align: right;
-				margin: 5px 5px -5px 0px;
-				
-				font-size: small;
-				font-style: italic;
-			}
-			
-			.inline {
-				display: inline;
-			}
-			
-			.cell {
-				position: absolute;
-				width: 210px;
-				vertical-alignment: middle;
-			}
-			
-			.normal, .impediment, .impedimentSolved {
-				position: absolute;
-				width: 4px;
-				top: 0px;
-				left: -5px;
-				bottom: 10px;
-			}
-			
-			.impediment {
-				background: OPEN_IMPEDIMENT_COLOR;
-			}
+			font-size: small;
+			font-style: italic;
+		}
+		
+		.inline {
+			display: inline;
+		}
+		
+		.cell {
+			position: absolute;
+			width: 210px;
+			vertical-alignment: middle;
+		}
+		
+		.normal, .impediment, .impedimentSolved {
+			position: absolute;
+			width: 4px;
+			top: 0px;
+			left: -5px;
+			bottom: 10px;
+		}
+		
+		.impediment {
+			background: OPEN_IMPEDIMENT_COLOR;
+		}
 
-			.impedimentSolved {
-				background: SOLVED_IMPEDIMENT_COLOR;
-			}
-			
-			.read {
-				opacity: 0.5;
-				color: COLOR_GRAY;
-			}
-			
-			.separator {
-				margin: 10px 0px;
-				margin-left: -10px;
-			}
+		.impedimentSolved {
+			background: SOLVED_IMPEDIMENT_COLOR;
+		}
+		
+		.read {
+			opacity: 0.5;
+			color: COLOR_GRAY;
+		}
+		
+		.separator {
+			margin: 10px 0px;
+			margin-left: -10px;
+		}
 
-		</ui:style>
+	</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
 		<g:HorizontalPanel ui:field="container" styleName="{style.container}">
