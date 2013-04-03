@@ -52,12 +52,10 @@
 			color: COLOR_TEXT_HEADER;
 		}
 
-		.valueColumn {
-		 	 width: 85px;
-	 	}
-
-	 	.effortColumn {
-		 	 width: 85px;
+		.valueColumn, .effortColumn {
+		 	 width: 63px;
+			text-align: right;
+			padding-right: 9px;
 	 	}
 
 	 	.progressColumn {

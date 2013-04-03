@@ -37,6 +37,7 @@
 			background-color: COLOR_BACKGROUND_RELEASE_TAG;
 			color: COLOR_TEXT_TERTIARY;
 			text-align: justify;
+			line-height: 13px;
         }
         
         @sprite .leftBg {

@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.SubjectDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.shared.model.color.Color;
@@ -173,12 +174,8 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		return scopeItemWidget;
 	}
 
-	public void showDetailsIcon(final boolean b) {
-		scopeItemWidget.showDetailsIcon(b);
-	}
-
-	public void showOpenImpedimentIcon(final boolean hasOpenImpediments) {
-		scopeItemWidget.showOpenImpedimentIcon(hasOpenImpediments);
+	public void updateDetails(final SubjectDetailUpdateEvent event) {
+		scopeItemWidget.updateDetails(event);
 	}
 
 	public void addSelectedMember(final UserRepresentation member, final Color selectionColor) {
@@ -204,4 +201,5 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		}
 		return hiddenItens;
 	}
+
 }

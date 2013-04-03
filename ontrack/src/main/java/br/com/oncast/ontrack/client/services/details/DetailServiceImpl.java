@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.SubjectDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
@@ -25,6 +26,7 @@ import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
+import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
@@ -32,6 +34,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class DetailServiceImpl implements DetailService {
@@ -115,27 +118,18 @@ public class DetailServiceImpl implements DetailService {
 					final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 
-				if (action instanceof AnnotationAction || action instanceof ImpedimentAction || action instanceof ChecklistAction
-						|| action instanceof DescriptionAction) {
-					fireScopeDetailUpdateEvent(action, context);
-				}
+				if (action instanceof AnnotationAction
+						|| action instanceof ImpedimentAction
+						|| action instanceof ChecklistAction
+						|| action instanceof DescriptionAction
+				) fireScopeDetailUpdateEvent(action, context);
 			}
 
 			private void fireScopeDetailUpdateEvent(final ModelAction action, final ProjectContext context) {
-				try {
-					final Scope scope = context.findScope(action.getReferenceId());
-					eventBus.fireEvent(new ScopeDetailUpdateEvent(scope, hasDetails(scope.getId()), hasOpenImpediment(scope.getId())));
-				}
-				catch (final ScopeNotFoundException e) {
-					try {
-						final Release release = context.findRelease(action.getReferenceId());
-						eventBus.fireEvent(new ReleaseDetailUpdateEvent(release, hasDetails(release.getId()), hasOpenImpediment(release.getId())));
-					}
-					catch (final ReleaseNotFoundException ex) {
-						// It's not scope nor release so don't need to update the view
-					}
-				}
+				final SubjectDetailUpdateEvent event = getDetailUpdateEvent(action.getReferenceId());
+				if (event != null) eventBus.fireEvent((Event<?>) event);
 			}
+
 		};
 		return actionExecutionListener;
 	}
@@ -163,6 +157,39 @@ public class DetailServiceImpl implements DetailService {
 			if (isDeprecated == annotation.isDeprecated() && type.equals(annotation.getType())) return true;
 		}
 		return false;
+	}
+
+	@Override
+	public SubjectDetailUpdateEvent getDetailUpdateEvent(final UUID subjectId) {
+		final ProjectContext context = contextProviderService.getCurrent();
+		SubjectDetailUpdateEvent event = null;
+		try {
+			final Scope scope = context.findScope(subjectId);
+			event = addDetails(new ScopeDetailUpdateEvent(scope), context);
+		}
+		catch (final ScopeNotFoundException e) {
+			try {
+				final Release release = context.findRelease(subjectId);
+				event = addDetails(new ReleaseDetailUpdateEvent(release), context);
+			}
+			catch (final ReleaseNotFoundException ex) {
+				// It's not scope nor release so don't need to update the view
+			}
+		}
+		return event;
+	}
+
+	private SubjectDetailUpdateEvent addDetails(final SubjectDetailUpdateEvent event, final ProjectContext context) {
+		final UUID subjectId = event.getSubjectId();
+
+		event.setChecklists(context.findChecklistsFor(subjectId));
+		event.setAnnotations(context.findAnnotationsFor(subjectId));
+
+		try {
+			event.setDescription(context.findDescriptionFor(subjectId));
+		}
+		catch (final DescriptionNotFoundException e) {}
+		return event;
 	}
 
 }

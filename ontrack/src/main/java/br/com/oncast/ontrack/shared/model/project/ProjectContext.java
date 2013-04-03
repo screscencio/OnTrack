@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.project;
 
+import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_IMPEDIMENT;
+import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.SOLVED_IMPEDIMENT;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +12,7 @@ import javax.annotation.Nullable;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
@@ -180,6 +184,15 @@ public class ProjectContext implements HasUUID {
 
 	public List<Annotation> findAnnotationsFor(final UUID subjectId) {
 		return project.getAnnotationsFor(subjectId);
+	}
+
+	public List<Annotation> findImpedimentsFor(final UUID subjectId) {
+		final List<Annotation> impediments = new ArrayList<Annotation>();
+		for (final Annotation annotation : findAnnotationsFor(subjectId)) {
+			final AnnotationType type = annotation.getType();
+			if (type == OPEN_IMPEDIMENT || type == SOLVED_IMPEDIMENT) impediments.add(annotation);
+		}
+		return impediments;
 	}
 
 	public boolean hasAnnotationsFor(final UUID subjectId) {

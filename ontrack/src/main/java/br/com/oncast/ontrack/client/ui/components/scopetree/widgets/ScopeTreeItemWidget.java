@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
 import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.CENTER;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.LEFT;
 import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
 import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment.BOTTOM;
 import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment.TOP;
@@ -12,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.services.user.Selection;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.SubjectDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
@@ -31,6 +32,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.TagAssociationWidget;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
@@ -53,6 +55,9 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -85,9 +90,13 @@ public class ScopeTreeItemWidget extends Composite {
 	private static ScopeTreeItemWidgetUiBinder uiBinder = GWT.create(ScopeTreeItemWidgetUiBinder.class);
 
 	interface Style extends CssResource {
-		String labelStriped();
-
 		String done();
+
+		String amountInfered();
+
+		String amountConflicted();
+
+		String checklistComplete();
 	}
 
 	@UiField
@@ -100,11 +109,19 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected FocusPanel detailsIcon;
+	protected SpanElement openImpedimentIcon;
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected FocusPanel openImpedimentIcon;
+	protected SpanElement annotationIcon;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected SpanElement checklistIcon;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected SpanElement descriptionIcon;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -116,11 +133,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected FastLabel inferedValueLabel;
-
-	@UiField
-	@IgnoredByDeepEquality
-	protected FastLabel declaredValueLabel;
+	protected SpanElement valueLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -128,11 +141,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected FastLabel inferedEffortLabel;
-
-	@UiField
-	@IgnoredByDeepEquality
-	protected FastLabel declaredEffortLabel;
+	protected SpanElement effortLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -256,8 +265,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		registerColumnVisibilityChangeListeners();
 
-		showDetailsIcon(getAnnotationService().hasDetails(scope.getId()));
-		showOpenImpedimentIcon(getAnnotationService().hasOpenImpediment(scope.getId()));
+		updateDetails(ClientServiceProvider.getInstance().getAnnotationService().getDetailUpdateEvent(scope.getId()));
 
 		deckPanel.showWidget(0);
 
@@ -296,12 +304,6 @@ public class ScopeTreeItemWidget extends Composite {
 	protected void onKeyUp(final KeyUpEvent event) {
 		if (!isEditing()) return;
 		event.stopPropagation();
-	}
-
-	@UiHandler("detailsIcon")
-	protected void onDetailsClick(final ClickEvent e) {
-		e.stopPropagation();
-		getAnnotationService().showAnnotationsFor(scope.getId());
 	}
 
 	@UiHandler("releaseTag")
@@ -383,12 +385,34 @@ public class ScopeTreeItemWidget extends Composite {
 		tags.update(ClientServiceProvider.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
 	}
 
-	public void showDetailsIcon(final boolean b) {
-		this.detailsIcon.setVisible(b);
+	public void updateDetails(final SubjectDetailUpdateEvent event) {
+		if (event == null) return;
+		setSpanElementVisible(this.annotationIcon, event.hasAnnotations());
+		setSpanElementVisible(this.descriptionIcon, event.hasDescription());
+
+		updateChecklistIndicator(event);
+
+		setSpanElementVisible(this.openImpedimentIcon, event.hasOpenImpediments());
+		final int count = event.getOpenImpedimentsCount();
+		this.openImpedimentIcon.setInnerText(count > 1 ? (" " + count) : "");
 	}
 
-	public void showOpenImpedimentIcon(final boolean hasOpenImpediment) {
-		openImpedimentIcon.setVisible(hasOpenImpediment);
+	private void updateChecklistIndicator(final SubjectDetailUpdateEvent event) {
+		setSpanElementVisible(this.checklistIcon, event.hasChecklists());
+
+		final boolean isComplete = event.isChecklistComplete();
+		setElementStyle(this.checklistIcon, style.checklistComplete(), isComplete);
+		this.checklistIcon.setInnerText(isComplete ? "" : (" " + event.getChecklistCompletitionText()));
+	}
+
+	private void setElementStyle(final Element element, final String styleName, final boolean add) {
+		if (add) element.addClassName(styleName);
+		else element.removeClassName(styleName);
+	}
+
+	private void setSpanElementVisible(final Element label, final boolean visible) {
+		if (visible) label.getStyle().clearDisplay();
+		else label.getStyle().setDisplay(Display.NONE);
 	}
 
 	private void updateValueDisplay() {
@@ -401,11 +425,11 @@ public class ScopeTreeItemWidget extends Composite {
 		final boolean declaredLabelDefined = value.hasDeclared();
 		final boolean hasDifference = inferedDefined && declaredLabelDefined;
 
-		if (hasDifference) declaredValueLabel.addStyleName(style.labelStriped());
-		else declaredValueLabel.removeStyleName(style.labelStriped());
+		valuePanel.setStyleName(style.amountConflicted(), hasDifference);
+		valuePanel.setStyleName(style.amountInfered(), declaredLabelDefined);
 
-		declaredValueLabel.setText(declaredLabelDefined ? ClientDecimalFormat.roundFloat(declared, 1) + "vp" : "");
-		inferedValueLabel.setText(inferedDefined ? ClientDecimalFormat.roundFloat(infered, 1) + "vp" : "");
+		valueLabel.setTitle(hasDifference ? ClientDecimalFormat.roundFloat(declared, 1) + "vp" : "");
+		valueLabel.setInnerText(ClientDecimalFormat.roundFloat(infered, 1) + "vp");
 	}
 
 	private void updateEffortDisplay() {
@@ -418,11 +442,11 @@ public class ScopeTreeItemWidget extends Composite {
 		final boolean declaredEffortLabelDefined = effort.hasDeclared();
 		final boolean hasEffortDifference = inferedEffortDefined && declaredEffortLabelDefined;
 
-		if (hasEffortDifference) declaredEffortLabel.addStyleName(style.labelStriped());
-		else declaredEffortLabel.removeStyleName(style.labelStriped());
+		effortPanel.setStyleName(style.amountConflicted(), hasEffortDifference);
+		effortPanel.setStyleName(style.amountInfered(), declaredEffortLabelDefined);
 
-		declaredEffortLabel.setText(declaredEffortLabelDefined ? ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep" : "");
-		inferedEffortLabel.setText(inferedEffortDefined ? ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep" : "");
+		effortLabel.setTitle(hasEffortDifference ? ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep" : "");
+		effortLabel.setInnerText(ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep");
 	}
 
 	public void updateReleaseDisplay() {
@@ -474,7 +498,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		commandsMenu.addCloseHandler(createCloseHandler());
 
-		align(configPopup(), releasePanel)
+		align(configPopup(), releaseTag)
 				.popup(commandsMenu)
 				.pop();
 
@@ -589,6 +613,14 @@ public class ScopeTreeItemWidget extends Composite {
 				.pop();
 	}
 
+	public void showImpedimentMenu() {
+		configPopup()
+				.popup(new ImpedimentListWidget(scope))
+				.alignHorizontal(LEFT, new AlignmentReference(this, LEFT, -1))
+				.alignVertical(TOP, new AlignmentReference(this, BOTTOM, 11))
+				.pop();
+	}
+
 	private PopupConfig align(final PopupConfig config, final Widget widget) {
 		config.alignVertical(TOP, new AlignmentReference(this, BOTTOM, 5));
 
@@ -618,10 +650,6 @@ public class ScopeTreeItemWidget extends Composite {
 		});
 		menu.setOrderedItems(itens);
 		return menu;
-	}
-
-	private DetailService getAnnotationService() {
-		return ClientServiceProvider.getInstance().getAnnotationService();
 	}
 
 	private void registerColumnVisibilityChangeListeners() {

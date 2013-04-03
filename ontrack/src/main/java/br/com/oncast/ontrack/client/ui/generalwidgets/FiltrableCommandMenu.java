@@ -32,9 +32,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO++++ refactor this class and SearchScopeFiltableCommandMenu to extract duplicated code
@@ -58,10 +56,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	protected CommandMenu menu;
 
 	@UiField
-	protected TextBox filterArea;
-
-	@UiField
-	protected Label helpLabel;
+	protected IconTextBox filterArea;
 
 	private List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
 
@@ -152,7 +147,6 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 			filterMenuItems();
 		}
 
-		helpLabel.setVisible(filterArea.getText().isEmpty());
 		eatEvent(event);
 	}
 
@@ -303,7 +297,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	}
 
 	public FiltrableCommandMenu setHelpText(final String text) {
-		helpLabel.setText(text);
+		filterArea.setHelpText(text);
 		return this;
 	}
 

@@ -176,7 +176,7 @@ public class ReleasePanelWidget extends Composite {
 						final ReleaseWidget widget = releaseContainer.getWidgetFor(event.getTargetRelease());
 						if (widget == null) return;
 
-						widget.setHasDetails(event.hasDetails());
+						widget.setHasDetails(event.hasAnnotations());
 					}
 				}));
 	}
