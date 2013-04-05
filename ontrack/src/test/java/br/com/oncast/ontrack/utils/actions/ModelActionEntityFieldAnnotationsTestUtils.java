@@ -63,7 +63,8 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 						"The field " + field.getName() + " shoud have one of ActionTableColumns.STRING_[X] as name attribute of annotation @Column",
 						ActionTableColumns.STRING_1,
 						ActionTableColumns.STRING_2,
-						ActionTableColumns.STRING_3);
+						ActionTableColumns.STRING_3,
+						ActionTableColumns.STRING_4);
 			}
 
 			@Override

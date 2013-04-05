@@ -92,4 +92,9 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 	public String getNoItemText() {
 		return null;
 	}
+
+	@Override
+	public boolean shouldPrioritizeCustomItem() {
+		return false;
+	}
 }

@@ -38,8 +38,8 @@ import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.color.Color;
-import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.PrioritizationCriteria;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -47,7 +47,6 @@ import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepres
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
-import br.com.oncast.ontrack.shared.model.value.Value;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.common.base.Joiner;
@@ -86,6 +85,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class ScopeTreeItemWidget extends Composite {
 
 	interface ScopeTreeItemWidgetUiBinder extends UiBinder<Widget, ScopeTreeItemWidget> {}
+
+	private static ScopeTreeItemWidgetMessages messages = GWT.create(ScopeTreeItemWidgetMessages.class);
 
 	private static ScopeTreeItemWidgetUiBinder uiBinder = GWT.create(ScopeTreeItemWidgetUiBinder.class);
 
@@ -238,7 +239,6 @@ public class ScopeTreeItemWidget extends Composite {
 		setScope(scope);
 
 		focusPanel.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				if (isEditing()) editionHandler.onDeselectTreeItemRequest();
@@ -416,37 +416,30 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	private void updateValueDisplay() {
-		final Value value = scope.getValue();
-
-		final float declared = value.getDeclared();
-		final float infered = value.getInfered();
-
-		final boolean inferedDefined = declared != infered;
-		final boolean declaredLabelDefined = value.hasDeclared();
-		final boolean hasDifference = inferedDefined && declaredLabelDefined;
-
-		valuePanel.setStyleName(style.amountConflicted(), hasDifference);
-		valuePanel.setStyleName(style.amountInfered(), declaredLabelDefined);
-
-		valueLabel.setTitle(hasDifference ? ClientDecimalFormat.roundFloat(declared, 1) + "vp" : "");
-		valueLabel.setInnerText(ClientDecimalFormat.roundFloat(infered, 1) + "vp");
+		updatePrioritizationCriteriaDisplay(scope.getValue(), valuePanel, valueLabel, "vp");
 	}
 
 	private void updateEffortDisplay() {
-		final Effort effort = scope.getEffort();
+		updatePrioritizationCriteriaDisplay(scope.getEffort(), effortPanel, effortLabel, "ep");
+	}
 
-		final float declaredEffort = effort.getDeclared();
-		final float inferedEffort = effort.getInfered();
+	private void updatePrioritizationCriteriaDisplay(final PrioritizationCriteria criteria, final HTMLPanel panel, final SpanElement label, final String unit) {
+		final float declared = criteria.getDeclared();
+		final float infered = criteria.getInfered();
 
-		final boolean inferedEffortDefined = declaredEffort != inferedEffort;
-		final boolean declaredEffortLabelDefined = effort.hasDeclared();
-		final boolean hasEffortDifference = inferedEffortDefined && declaredEffortLabelDefined;
+		final boolean inferedDefined = declared != infered;
+		final boolean hasDeclared = criteria.hasDeclared();
+		final boolean hasDifference = inferedDefined && hasDeclared;
 
-		effortPanel.setStyleName(style.amountConflicted(), hasEffortDifference);
-		effortPanel.setStyleName(style.amountInfered(), declaredEffortLabelDefined);
+		panel.setStyleName(style.amountConflicted(), hasDifference);
+		panel.setStyleName(style.amountInfered(), inferedDefined);
 
-		effortLabel.setTitle(hasEffortDifference ? ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep" : "");
-		effortLabel.setInnerText(ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep");
+		label.setTitle(hasDifference ? messages.conflicted(format(declared, unit)) : "");
+		label.setInnerText(hasDeclared || infered > 0 ? format(infered, unit) : "");
+	}
+
+	private String format(final float number, final String unit) {
+		return ClientDecimalFormat.roundFloat(number, 1) + unit;
 	}
 
 	public void updateReleaseDisplay() {
@@ -455,7 +448,8 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final boolean isReleasePresent = (release != null);
 		releaseTag.setVisible(isReleasePresent);
-		releaseTag.setText(isReleasePresent ? release.getFullDescription() : "");
+		releaseTag.setText(isReleasePresent ? release.getDescription() : "");
+		releaseTag.setTitle(isReleasePresent ? release.getFullDescription().replaceAll("/", " > ") : "");
 	}
 
 	private void updateProgressDisplay() {
@@ -537,7 +531,6 @@ public class ScopeTreeItemWidget extends Composite {
 
 	private CloseHandler<FiltrableCommandMenu> createCloseHandler() {
 		return new CloseHandler<FiltrableCommandMenu>() {
-
 			@Override
 			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
 				focusPanel.setFocus(true);

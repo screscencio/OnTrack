@@ -19,7 +19,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeIte
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
-import br.com.oncast.ontrack.shared.model.effort.Effort;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;

@@ -14,10 +14,11 @@
 			position: relative;
 			display: inline-block !important;
 
-			padding: 0px 5px;
-
-			height: 18px;
-			line-height: 18px;
+			padding: 0px 4px;
+			
+			height: 16px;
+			line-height: 16px;
+			font-size: 11px;
 
 			cursor: default;
 		}

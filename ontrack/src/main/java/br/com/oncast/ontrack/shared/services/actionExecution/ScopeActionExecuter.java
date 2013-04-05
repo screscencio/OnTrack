@@ -15,14 +15,14 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAct
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
-import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.ValueInferenceEngine;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.model.value.ValueInferenceEngine;
 
 public class ScopeActionExecuter implements ModelActionExecuter {
 

@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Value;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.model.value.Value;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 

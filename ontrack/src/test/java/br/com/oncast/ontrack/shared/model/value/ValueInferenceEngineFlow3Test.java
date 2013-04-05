@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.ValueInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 

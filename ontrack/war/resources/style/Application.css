@@ -96,23 +96,18 @@ html,body {
 
 .gwt-Tree .gwt-TreeItem {
 	height: 20px;
-	margin: 1px;
+	border: 1px solid transparent;
 }
 
 .gwt-Tree .gwt-TreeItem:hover {
 	background-color: #F5F5F5;
 	border: 1px solid #F5F5F5;
-	margin: 0px;
 }
 
 .gwt-Tree .gwt-TreeItem.gwt-TreeItem-selected {
 	background-color: #B2C9CC;
-	border: 1px solid #7792A4;
+	border: 1px solid #005b89;
 	
-	background-color: rgba(111, 156, 162, 0.5);
-	border: 1px solid rgba(60, 93, 124, 0.5);
-	
-	margin: 0px;
 }
 
 .ScopeTreeItem {

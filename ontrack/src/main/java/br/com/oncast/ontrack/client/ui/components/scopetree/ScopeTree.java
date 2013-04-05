@@ -10,7 +10,6 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.effort.ScopeTreeEffortUpdateEngine;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeInternalActionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInstructionGuide;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInteractionHandler;
@@ -65,7 +64,8 @@ public class ScopeTree implements Component {
 					for (final UUID id : inferenceInfluencedScopeSet)
 						inferenceInfluencedScopes.add(context.findScope(id));
 
-					ScopeTreeEffortUpdateEngine.process(tree, inferenceInfluencedScopes);
+					for (final Scope scope : inferenceInfluencedScopes)
+						tree.findScopeTreeItem(scope).getScopeTreeItemWidget().updateDisplay();
 
 					if (isUserAction) instructionGuide.onActionExecution(action);
 				}

@@ -198,7 +198,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 		setMenuItems(filteredItems);
 		menu.selectFirstItem();
-		if (shouldAddCustomItems) menu.selectItemDown();
+		if (shouldAddCustomItems && !customItemFactory.shouldPrioritizeCustomItem()) menu.selectItemDown();
 	}
 
 	private void setMenuVisibility(final boolean b) {

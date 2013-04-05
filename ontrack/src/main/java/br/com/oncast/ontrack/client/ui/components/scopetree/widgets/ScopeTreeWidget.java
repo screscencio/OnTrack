@@ -226,6 +226,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 	private void activateEventHandlers() {
 		deactivateEventHandlers();
+
 		final EventBus eventBus = ClientServiceProvider.getInstance().getEventBus();
 
 		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {

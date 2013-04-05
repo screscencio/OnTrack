@@ -3,6 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.components.scopetree.widgets"
+	
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
@@ -11,9 +12,6 @@
 	<ui:data src="../../progresspanel/widgets/delete_column_hover.png" field="deleteColumnHoverImg" />
 
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget.ScopeTreeWidgetStyle">
-
-	   @url deleteImgUrl deleteColumnImg;
-	   @url deleteHoverImgUrl deleteColumnHoverImg;
 
 		.rootPanel {
 			height: 100%;
@@ -41,8 +39,11 @@
 			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
 		}
 		
+		 /* IMPORTANT Don't touch this dark magic */
+		 /* removing this makes GWT tree to have horizontal scroll bar */
+		 /* with display: none; GWT tree behaves like the robocop under the rain */
 		.tree > div:first-child {
-			display: none;
+			width: auto !important;
 		}
 		
 		.instructionLabel {
@@ -58,14 +59,12 @@
 
 		.filteredPanel {
 			position: relative;
-			right: 3px;
-			padding: 3px 3px 3px 5px;
-			margin: 1px 0px 2px 0px;
+			padding: 3px 5px;
+			margin: 0px;
 			display: block;
-
-			border: 1px solid #2D4171;
-			background-color: #667aa8;
-			color: #eeeeee;
+			background-color: COLOR_BACKGROUND_TERTIARY;
+			color: COLOR_TEXT_PRIMARY;
+			border-radius: 3px;
 		}
 
 		.filteredLabel {
@@ -80,23 +79,17 @@
 		
 		.deleteButton {
 			position: absolute;
-			top: 5px;
+			top: 4px;
 			right: 8px;
 			width: 9px;
 			height: 9px;
 
 			cursor: pointer;
-			border: 1px solid transparent;
-			
-			background-image: deleteImgUrl;
-			background-repeat: no-repeat;
-			background-position: center;
+			opacity: 0.6;
 		}
 		
 		.deleteButton:hover {
-			background-image: deleteHoverImgUrl;
-			background-color: #efefef;
-            border: 1px solid #ededed;
+			opacity: 1;
 		}
 		
 		.loadingPanel {
@@ -113,12 +106,12 @@
 		<g:HTMLPanel>
 			<g:HorizontalPanel ui:field="filteredPanel" styleName="{style.filteredPanel}">
 				<g:Label styleName="{style.filteredLabel}">
-					<ui:msg description="message shown when scope tree is filtered">The scope is being filtered by: </ui:msg>
+					<ui:msg description="message shown when scope tree is filtered">Filtered by:</ui:msg>
 				</g:Label>
 				<g:cell width="*">
 					<misc:ModelWidgetContainer ui:field="tags" styleName="{style.tags}" />
 				</g:cell>
-				<g:Label ui:field="deleteButton" styleName="{style.deleteButton}" />
+				<g:Label ui:field="deleteButton" styleName="icon-remove {style.deleteButton}" />
 			</g:HorizontalPanel>
 			<g:Tree ui:field="tree" addStyleNames="{style.tree}"/>
 			<g:Label ui:field="noScopeLabel" styleName="{style.emptyIndicationLabel}">

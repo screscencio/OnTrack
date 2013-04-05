@@ -30,9 +30,6 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 
 		parentTreeItem.insertItem(scope.getChildIndex(newScope), newItem);
 
-		// TODO Is this necessary? The tree already receives a set of the modified scopes by the inference engines (effort, progress, ...).
-		parentTreeItem.getScopeTreeItemWidget().updateDisplay();
-
 		if (isUserInteraction) {
 			parentTreeItem.setState(true);
 			tree.setSelectedItem(newItem, true);

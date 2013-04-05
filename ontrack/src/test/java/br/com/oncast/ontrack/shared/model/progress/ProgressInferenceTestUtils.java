@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindImporter;
-import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 

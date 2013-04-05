@@ -8,10 +8,10 @@ import java.text.DecimalFormatSymbols;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.FreeMindMap;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
-import br.com.oncast.ontrack.shared.model.effort.Effort;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Value;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.value.Value;
 
 // TODO Review by Lobo - This code has been created by Rodrigo Machado and Jaime and has not yet been reviewed.
 public class FreeMindExporter {
