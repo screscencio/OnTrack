@@ -39,6 +39,11 @@ public class ScopeTreeItemWidgetProgressCommandMenuItemFactory implements ScopeT
 	}
 
 	@Override
+	public boolean shouldPrioritizeCustomItem() {
+		return false;
+	}
+
+	@Override
 	public String getNoItemText() {
 		return null;
 	}

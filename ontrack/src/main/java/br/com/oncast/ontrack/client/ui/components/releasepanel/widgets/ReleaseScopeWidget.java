@@ -337,6 +337,11 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 					}
 				});
 			}
+
+			@Override
+			public boolean shouldPrioritizeCustomItem() {
+				return false;
+			}
 		};
 	}
 

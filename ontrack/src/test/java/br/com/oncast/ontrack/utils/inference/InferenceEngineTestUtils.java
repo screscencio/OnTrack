@@ -11,12 +11,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.ValueInferenceEngine;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.model.value.ValueInferenceEngine;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;

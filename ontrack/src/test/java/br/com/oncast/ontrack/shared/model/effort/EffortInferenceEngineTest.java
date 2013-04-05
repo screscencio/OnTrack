@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;

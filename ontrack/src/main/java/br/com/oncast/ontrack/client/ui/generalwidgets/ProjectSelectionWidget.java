@@ -142,6 +142,11 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 				return messages.noProjects();
 			}
 
+			@Override
+			public boolean shouldPrioritizeCustomItem() {
+				return false;
+			}
+
 		};
 	}
 

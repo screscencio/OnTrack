@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.utils.deepEquality.custom.mocks;
 
-import br.com.oncast.ontrack.shared.model.effort.Effort;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityException;
 import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
 

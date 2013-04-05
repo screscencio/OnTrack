@@ -241,7 +241,7 @@ public class ProgressInferenceEngineTest {
 
 		assertTrue(scope.getProgress().isDone());
 
-		assertEquals(2, influencedScopes.size());
+		assertEquals(3, influencedScopes.size());
 		assertTrue(influencedScopes.contains(scope.getId()));
 		assertTrue(influencedScopes.contains(child.getId()));
 	}

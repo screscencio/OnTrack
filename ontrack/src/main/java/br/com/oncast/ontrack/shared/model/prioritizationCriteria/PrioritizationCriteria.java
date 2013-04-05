@@ -1,10 +1,10 @@
-package br.com.oncast.ontrack.shared.model.value;
+package br.com.oncast.ontrack.shared.model.prioritizationCriteria;
 
 import java.io.Serializable;
 
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
-public class Value implements Serializable {
+public abstract class PrioritizationCriteria implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -12,7 +12,7 @@ public class Value implements Serializable {
 	private float topDownValue;
 	private float bottomUpValue;
 	private boolean hasDeclared;
-	private float accomplished;
+	private float accomplishedEffort;
 
 	@IgnoredByDeepEquality
 	private boolean hasStronglyDefinedChildren;
@@ -73,18 +73,18 @@ public class Value implements Serializable {
 	}
 
 	public float getAccomplished() {
-		return accomplished;
+		return accomplishedEffort;
 	}
 
-	public void setAccomplished(final float accomplishedValue) {
-		this.accomplished = accomplishedValue;
+	public void setAccomplished(final float accomplishedEffort) {
+		this.accomplishedEffort = accomplishedEffort;
 	}
 
 	public float getAccomplishedPercentual() {
-		final float inferedValue = getInfered();
-		if (inferedValue == 0) return 0;
+		final float inferedEffort = getInfered();
+		if (inferedEffort == 0) return 0;
 
-		return 100 * getAccomplished() / inferedValue;
+		return 100 * getAccomplished() / inferedEffort;
 	}
 
 	@Override

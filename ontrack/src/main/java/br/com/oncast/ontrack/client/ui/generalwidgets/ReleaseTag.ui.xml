@@ -3,60 +3,69 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-	<ui:image field="leftBgImage" src="tag-release.png"></ui:image>
 	<ui:style src="../style/default.css">
 	
+		@def tagHeight 20px;
 		.tag {
+			position: relative;
 			width: 100%;
-			height: 13px;
+			height: tagHeight;
+			line-height: tagHeight;
+			
+			overflow: hidden;
 			
 			border-collapse: collapse;
-			vertical-align: top;
-			
 			font-size: 11px;
 		}
 		
-		.tag:hover {
-			cursor: pointer;
-		}
+		@def transform skewX(-25deg);
+		@def reverseTransform skewX(25deg);
 		
 		.container {
-			width: 100%;
-			height: 13px;
-			position: relative;
+			position: absolute;
+			top: 0px;
+			left: 4px;
+			right: -4px;
+			bottom: 0px;
+			
+			background-color: COLOR_BACKGROUND_RELEASE_TAG;
+			color: COLOR_TEXT_TERTIARY;
+
+			transform: transform;
+			-webkit-transform: transform;
+			-moz-transform: transform;
+			-o-transform: transform;
+			-ms-transform: transform;
+		}
+		
+		.container:hover {
+			cursor: pointer;
 		}
 
         .tagLabel {
 			position: absolute;
 			top: 0px;
-			right: 0px;
+			right: 4px;
 			bottom: 0px;
 			left: 0px;
 	
-            padding-left: 3px;
-			background-color: #005B89;
-			text-align: justify;
-			color: COLOR_TEXT_TERTIARY;
+            padding: 0px 3px;
+			text-align: right;
+			
+			transform: reverseTransform;
+			-webkit-transform: reverseTransform;
+			-moz-transform: reverseTransform;
+			-o-transform: reverseTransform;
+			-ms-transform: reverseTransform;
         }
         
-        @sprite .leftBg {
-			gwt-image: 'leftBgImage';
-			background-size: 6px 14px;
-			height: 13px;
-        }
-
 	</ui:style>
 	
 	<g:FocusPanel ui:field="container">
-		<g:HorizontalPanel styleName="{style.tag}">
-			<g:cell width="1">
-				<g:SimplePanel styleName="{style.leftBg}"/>
-			</g:cell>
-			<g:cell width="100%">
-				<g:SimplePanel styleName="{style.container}">
-					<t:FastLabel styleName="{style.tagLabel} v-ellip" ui:field="tagLabel" />
-				</g:SimplePanel>
-			</g:cell>
-		</g:HorizontalPanel>
+		<g:HTMLPanel styleName="{style.tag}">
+			<div class="{style.container}">
+				<t:FastLabel styleName="{style.tagLabel} v-ellip" ui:field="tagLabel" />
+			</div>
+		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

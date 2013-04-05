@@ -23,7 +23,7 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.Rel
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
-import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.release.Release;

@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.effort;
+package br.com.oncast.ontrack.shared.model.prioritizationCriteria;
 
 import java.util.ArrayList;
 import java.util.List;

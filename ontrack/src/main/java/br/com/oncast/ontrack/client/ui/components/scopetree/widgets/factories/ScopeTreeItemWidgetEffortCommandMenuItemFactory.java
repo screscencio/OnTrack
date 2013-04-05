@@ -42,4 +42,9 @@ public class ScopeTreeItemWidgetEffortCommandMenuItemFactory implements ScopeTre
 	public String getNoItemText() {
 		return null;
 	}
+
+	@Override
+	public boolean shouldPrioritizeCustomItem() {
+		return true;
+	}
 }

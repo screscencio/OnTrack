@@ -7,15 +7,14 @@
 	ui:generateLocales="default">
 
 	<ui:style src="../../../../style/default.css">
-		
+	
 		.root {
 			width: 100%;
 			height: 100%;
 		}
 		
 		.searchBar {
-			font-size: FONT_SIZE_LARGE;				
-			
+			font-size: FONT_SIZE_LARGE;
 			border: none;
 			box-shadow: none;
 		}
@@ -31,7 +30,7 @@
 			height: 38px;
 		}
 		
-		.activeColumnIndicatorLabel, .inactiveColumnIndicatorLabel {
+		.activeColumnIndicatorLabel,.inactiveColumnIndicatorLabel {
 			cursor: pointer;
 			margin-right: 2px;
 			overflow: hidden;
@@ -40,7 +39,7 @@
 			line-height: 36px;
 		}
 		
-		.activeColumnIndicatorLabel:hover, .inactiveColumnIndicatorLabel:hover {
+		.activeColumnIndicatorLabel:hover,.inactiveColumnIndicatorLabel:hover {
 			color: COLOR_ERROR_PRIMARY;
 		}
 		
@@ -51,20 +50,22 @@
 		.activeColumnIndicatorLabel {
 			color: COLOR_TEXT_HEADER;
 		}
-
-		.valueColumn, .effortColumn {
-		 	 width: 63px;
+		
+		.valueColumn,.effortColumn {
+			width: 63px;
 			text-align: right;
 			padding-right: 9px;
-	 	}
-
-	 	.progressColumn {
-		 	 width: 100px;
-	 	}
-
-	 	.releaseColumn {
-		 	 width: 120px;
-	 	}
+		}
+		
+		.progressColumn {
+			width: 90px;
+			text-align: center;
+		}
+		
+		.releaseColumn {
+			width: 108px;
+			text-align: center;
+		}
 		
 	</ui:style>
 	

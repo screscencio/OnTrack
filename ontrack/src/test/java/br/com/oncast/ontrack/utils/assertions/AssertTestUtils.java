@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 
-import br.com.oncast.ontrack.shared.model.effort.Effort;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class AssertTestUtils {

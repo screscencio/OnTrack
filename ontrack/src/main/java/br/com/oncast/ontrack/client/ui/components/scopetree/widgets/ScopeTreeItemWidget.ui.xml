@@ -63,10 +63,6 @@
 				visibility: visible;
 			}
 			
-			.amountConflicted .amountLabel {
-				text-decoration: underline;
-			}
-			
 			.amountInfered .amountLabel {
 				color: #9199cf;
 			}
@@ -87,32 +83,40 @@
 			.releasePanel {
                 position: relative;
                 height: 20px;
-                width: 120px;
+                width: 108px;
 				overflow: hidden;
                 text-align: right;
 			}
 			
 			.releaseTag {
 				position: absolute;
-				top: 4px;
+				top: 0px;
 				right: 0px;
 				left: 0px;
+				bottom: 0px;
+				
+				padding-left: 0px;
 			}
 
 			.progressLabel {
-				width: 100px;
+				width: 90px;
 				height: 20px;
 				font-size: small;
 				font-stretch: expanded;
 				display: block;
 				text-align: center;
 			}
+			
 			.editionBox {
+				width: auto !important;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+
 				padding: 0px 3px;
 				margin: -1px;
-				font-family: inherit;
-				font-size: inherit;
-				margin-left: -4px;
 			
 				font-family: inherit;
 				font-size: inherit;
@@ -121,25 +125,20 @@
 			}
 			
 			.detailsIcon {
-				padding: 0 6px;
+				padding: 0 5px;
 				cursor: pointer;
 				font-size: 14px;
 				position: relative;
 				line-height: 20px;
-				border-right: 1px solid;
 				letter-spacing: -1px;
 			}
 			
-			.visualizationPanel td:first-child > .detailsIcon {
-				padding-left: 0px;
-			}
-			
-			.visualizationPanel td:nth-child\(4\) > .detailsIcon {
-				border-right: none;
+			.impedimentIcon {
+				color: COLOR_ERROR_PRIMARY;
 			}
 			
 			.checklistComplete {
-				color: COLOR_SUCCESS_PRIMARY;
+				color: COLOR_SUCCESS_TERTIARY;
 			}
 			
 			.annotationIcon {
@@ -154,11 +153,11 @@
 			
 			.selectedMembers {
 				position: absolute;
-				top: -15px;
+				top: -16px;
 				right: -3px;
 				font-size: 11px;
-				
-				padding: 0px 3px;
+				padding: 0 3px;
+				line-height: 13px;
 			}
 			
 			.borderPanel {
@@ -183,15 +182,15 @@
 			<g:Label ui:field="selectedMembers" styleName="{style.selectedMembers}"/>
 			<g:FocusPanel ui:field="borderPanel" styleName="{style.borderPanel}"/>
 			<g:DeckPanel ui:field="deckPanel" styleName="{style.editableLabel}">
-				<g:HTMLPanel styleName="{style.visualizationPanel}">
+				<g:HTMLPanel styleName="{style.visualizationPanel} {style.noSelection}">
 					<table border="0" cellspacing="0" cellpadding="0">
 						<tbody>
 							<tr>
 								<td>
-									<span ui:field="openImpedimentIcon" class="icon-flag {style.detailsIcon}" />
+									<span ui:field="openImpedimentIcon" class="icon-flag {style.detailsIcon} {style.impedimentIcon}" />
 								</td>
 								<td>
-									<span ui:field="annotationIcon" class="icon-comment {style.detailsIcon} {style.annotationIcon}" />
+									<span ui:field="annotationIcon" class="icon-comment-alt {style.detailsIcon} {style.annotationIcon}" />
 								</td>
 								<td>
 									<span ui:field="checklistIcon" class="icon-list-ul {style.detailsIcon}" />
@@ -207,20 +206,20 @@
 										<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip"/>
 									</div>
 								</td>
-								<td width="1">
+								<td>
 									<g:HTMLPanel ui:field="valuePanel" styleName="{style.amount}">
 										<span class="{style.amountAsterisk}">*</span><span ui:field="valueLabel" class="{style.amountLabel}"/>
 									</g:HTMLPanel>
 								</td>
-								<td width="1">
+								<td>
 									<g:HTMLPanel ui:field="effortPanel" styleName="{style.amount}">
 										<span class="{style.amountAsterisk}">*</span><span ui:field="effortLabel" class="{style.amountLabel}"/>
 									</g:HTMLPanel>
 								</td>
-								<td width="1">
+								<td>
 									<t:FastLabel ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
 								</td>
-								<td width="1">
+								<td>
 									<g:HTMLPanel ui:field="releasePanel" styleName="{style.releasePanel}">
 									    <t:ReleaseTag ui:field="releaseTag" styleName="{style.releaseTag}" />
 									</g:HTMLPanel>

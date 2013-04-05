@@ -17,9 +17,9 @@ import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindExpor
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.FreeMindMap;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
-import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.ValueInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.value.ValueInferenceEngine;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
