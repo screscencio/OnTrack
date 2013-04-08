@@ -502,9 +502,6 @@ button[disabled],button[disabled]:hover,input[disabled],input[disabled]:hover
 	outline: none;
 	border: 1px solid #a5a5a5;
 	border-radius: 1px;
-	-moz-border-radius: 1px;
-	-webkit-border-radius: 1px;
-	-khtml-border-radius: 1px;
 }
 
 .gwt-TextBox[disabled],.gwt-PasswordTextBox[disabled] {
@@ -527,79 +524,39 @@ button[disabled],button[disabled]:hover,input[disabled],input[disabled]:hover
 	border: none;
 	
 	min-height: 30px;
+	background-color: white;
 }
 
 .hasRichTextToolbar {
 }
 
 .gwt-RichTextToolbar {
-	background: #D1D1D1;
-	margin: 0px;
+	margin: 2px 0px;
 }
 
-.gwt-RichTextToolbar .gwt-PushButton-up {
-	padding: 2px;
-	margin: 1px;
-}
-
-.gwt-RichTextToolbar .gwt-PushButton-up-hovering {
-	padding: 2px;
-	margin: 0px;
-	
-	border-radius: 3px;
-	border: 1px solid #AEAEAE;
-	box-shadow: inset 1px 1px 1px white;
-}
-
-.gwt-RichTextToolbar .gwt-PushButton-down {
-	padding: 2px;
-	margin: 1px;
-	
-	border-radius: 3px;
-	background-color: #E0E0E0;
-}
-
-.gwt-RichTextToolbar .gwt-PushButton-down-hovering {
-	padding: 2px;
-	margin: 0px;
-	
-	border-radius: 3px;
-	border: 1px solid #AEAEAE;
-	box-shadow: inset 1px 1px 1px white;
-	
-	background-color: #E0E0E0;
-}
-
-.gwt-RichTextToolbar .gwt-ToggleButton-up {
-	padding: 2px;
-	margin: 1px;
-}
-
-.gwt-RichTextToolbar .gwt-ToggleButton-up-hovering {
-	padding: 2px;
-	margin: 0px;
-	
-	border-radius: 3px;
-	border: 1px solid #AEAEAE;
-	box-shadow: inset 1px 1px 1px white;
-}
-
+.gwt-RichTextToolbar .gwt-PushButton-up,
+.gwt-RichTextToolbar .gwt-PushButton-down,
+.gwt-RichTextToolbar .gwt-ToggleButton-up,
 .gwt-RichTextToolbar .gwt-ToggleButton-down {
-	padding: 2px;
-	margin: 1px;
-	
+	height: 20px;
+	padding: 1px;
+	border: 1px solid transparent;
 	border-radius: 3px;
-	background-color: #E0E0E0;
 }
 
+.gwt-RichTextToolbar .gwt-PushButton-up-hovering,
+.gwt-RichTextToolbar .gwt-PushButton-down-hovering,
+.gwt-RichTextToolbar .gwt-ToggleButton-up-hovering,
 .gwt-RichTextToolbar .gwt-ToggleButton-down-hovering {
-	padding: 2px;
-	margin: 0px;
-	
-	border-radius: 3px;
+	height: 20px;
+	padding: 1px;
 	border: 1px solid #AEAEAE;
+	border-radius: 3px;
 	box-shadow: inset 1px 1px 1px white;
-	
+}
+
+.gwt-RichTextToolbar .gwt-PushButton-down,
+.gwt-RichTextToolbar .gwt-ToggleButton-down {
 	background-color: #E0E0E0;
 }
 
