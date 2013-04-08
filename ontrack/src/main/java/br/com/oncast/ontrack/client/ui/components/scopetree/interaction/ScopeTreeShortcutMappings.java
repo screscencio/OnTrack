@@ -193,6 +193,19 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
+	DECLARE_IMPEDIMENT(new Shortcut(KEY_1).with(ShiftModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new DeclareImpedimentInternalAction(scope));
+		}
+
+		@Override
+		public String getDescription() {
+			return messages.declareImpediment();
+		}
+
+	},
+
 	BIND_RELEASE(new Shortcut(KEY_2).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
@@ -236,19 +249,6 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareValueInternalAction(scope, interactionHandler.getProjectContext()));
-		}
-
-		@Override
-		public String getDescription() {
-			return messages.declareValue();
-		}
-
-	},
-
-	DECLARE_IMPEDIMENT(new Shortcut(KEY_1).with(ShiftModifier.PRESSED)) {
-		@Override
-		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			interactionHandler.onInternalAction(new DeclareImpedimentInternalAction(scope));
 		}
 
 		@Override

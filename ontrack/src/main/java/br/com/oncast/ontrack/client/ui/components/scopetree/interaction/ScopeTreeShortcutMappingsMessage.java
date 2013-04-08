@@ -44,6 +44,10 @@ public interface ScopeTreeShortcutMappingsMessage extends BaseMessages {
 	@Description("Description for scope remove shortcut")
 	String deleteScope();
 
+	@DefaultMessage("View and add impediments for the selected scope")
+	@Description("open impediments of the selected scope shortcut")
+	String declareImpediment();
+
 	@DefaultMessage("Associates the selected scope with a release of your choice")
 	@Description("Description for bind release shortcut")
 	String bindRelease();

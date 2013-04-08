@@ -76,7 +76,7 @@ public class UserDataServiceImpl implements UserDataService {
 
 	@Override
 	public void hasAvatarInGravatar(final User user, final UserHasGravatarCallback callback) {
-		final String urlAddress = GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=1";
+		final String urlAddress = GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=1&d=404";
 
 		try {
 			new RequestBuilder(RequestBuilder.GET, urlAddress).sendRequest(null, new RequestCallback() {

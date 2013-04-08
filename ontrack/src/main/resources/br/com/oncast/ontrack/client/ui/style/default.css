@@ -107,8 +107,6 @@
 	background: COLOR_BACKGROUND_HEADER;
 	color: COLOR_TEXT_HEADER;
 	
-	-webkit-box-shadow: SHADOW_SECONDARY;
-	-moz-box-shadow: SHADOW_SECONDARY;
 	box-shadow: SHADOW_SECONDARY;
 }
 
@@ -117,10 +115,18 @@
 	box-shadow: none;
 }
 
+.headerBar {
+	padding: 0px 10px;
+	font-size: 14pt;
+	color: COLOR_TEXT_PRIMARY;
+	background-color: COLOR_BACKGROUND_RELEASE_HEADER;
+	line-height: 36px;
+}
+
 .popupContainer {
 	color: COLOR_TEXT_SECONDARY;
 	background-color: COLOR_BACKGROUND_SECONDARY;
-	border: BORDER_PRIMARY;
+	
 	box-shadow: SHADOW_SECONDARY;
 }
 
