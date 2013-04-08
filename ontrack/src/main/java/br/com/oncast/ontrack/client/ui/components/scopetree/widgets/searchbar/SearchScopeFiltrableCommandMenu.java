@@ -123,7 +123,6 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	}
 
 	public void focus() {
-<<<<<<< HEAD
 		container.getElement().getStyle().setProperty("width", "auto");
 		filterArea.setFocus(true);
 	}
@@ -135,13 +134,6 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	}
 
 	@UiHandler("searchIcon")
-=======
-		setVisible(true);
-		filterArea.setFocus(true);
-	}
-
-	@UiHandler({ "searchIcon" })
->>>>>>> planning v3
 	void onSearchIconClick(final ClickEvent event) {
 		focus();
 	}
