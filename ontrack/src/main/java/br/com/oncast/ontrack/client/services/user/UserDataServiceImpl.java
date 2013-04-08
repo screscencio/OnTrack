@@ -76,7 +76,7 @@ public class UserDataServiceImpl implements UserDataService {
 
 	@Override
 	public void hasAvatarInGravatar(final User user, final UserHasGravatarCallback callback) {
-		final String urlAddress = GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=40&d=ontrack";
+		final String urlAddress = GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=1";
 
 		try {
 			new RequestBuilder(RequestBuilder.GET, urlAddress).sendRequest(null, new RequestCallback() {
@@ -101,7 +101,7 @@ public class UserDataServiceImpl implements UserDataService {
 		return new SafeUri() {
 			@Override
 			public String asString() {
-				return new String(GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=40&d=mm");
+				return new String(GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=40");
 			}
 
 		};
@@ -112,7 +112,7 @@ public class UserDataServiceImpl implements UserDataService {
 		return new SafeUri() {
 			@Override
 			public String asString() {
-				return new String(GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=" + imageSize + "&d=mm");
+				return new String(GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=" + imageSize);
 			}
 
 		};
