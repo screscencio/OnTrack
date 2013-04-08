@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -251,6 +252,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	@Override
 	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 			final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
-		if (action instanceof ScopeUpdateAction || action instanceof ScopeInsertAction || action instanceof ScopeRemoveAction) shouldUpdate = true;
+		if (action instanceof ScopeUpdateAction || action instanceof ScopeInsertAction || action instanceof ScopeRemoveAction
+				|| action instanceof ScopeMoveAction) shouldUpdate = true;
 	}
 }
