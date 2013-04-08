@@ -12,10 +12,6 @@
 			width: 100%;
 		}
 		
-		.header {
-			border: 0px;
-		}
-		
 		.footer {
 			padding: 8px;
 			

@@ -23,31 +23,21 @@
 			overflow-x: hidden;
 		}
 	
-		.header {
-			text-transform: uppercase;
-			font-size: FONT_SIZE_LARGE;
-			padding: POPUP_PADDING;
-			padding-bottom: 0px;
-		}
-		
 		.shortcutsContainer {
 			padding: POPUP_PADDING;
-			padding-top: 0px;
 		}
 		
 		.shortcutLabel {
-			color: COLOR_BLUE_LIGHT;
-			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
+			color: COLOR_ERROR_PRIMARY;
 		}
 		
 	</ui:style>
 	
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
 		<g:HTMLPanel ui:field="container" styleName="{style.rootContainer} {style.popupContainer}">
-			<g:Label styleName="{style.header}">
+			<g:Label styleName="{style.headerBar}">
 				<ui:msg description="shortcuts help panel title">Keyboard Shortcuts</ui:msg>
 				</g:Label>
-			<gw:Separator/>
 			<g:FlexTable ui:field="shortcutsContainer" styleName="{style.shortcutsContainer}" />
 		</g:HTMLPanel>
 	</g:FocusPanel>

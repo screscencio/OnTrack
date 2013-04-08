@@ -130,6 +130,7 @@ public class BrowserKeyCodes {
 			keysRepresentations.put(KEY_DOWN, "DOWN");
 
 			// The string representation without SHIFT key pressed
+			keysRepresentations.put(KEY_1, "1");
 			keysRepresentations.put(KEY_2, "2");
 			keysRepresentations.put(KEY_3, "3");
 			keysRepresentations.put(KEY_4, "4");
@@ -147,6 +148,7 @@ public class BrowserKeyCodes {
 			keysRepresentations.put(KEY_Z, "z");
 
 			// The string representation with SHIFT key pressed
+			shiftedKeysRepresentations.put(KEY_1, "!");
 			shiftedKeysRepresentations.put(KEY_2, "@");
 			shiftedKeysRepresentations.put(KEY_3, "#");
 			shiftedKeysRepresentations.put(KEY_4, "$");

@@ -57,12 +57,6 @@
 			top: 0px;
 			right: 0px;
 			left: 0px;
-
-			padding: 0px 10px;
-			font-size: 14pt;
-			color: COLOR_TEXT_PRIMARY;
-			background-color: COLOR_BACKGROUND_RELEASE_HEADER;
-			line-height: 36px;
 		}		
 		
 		.clickable:hover {
