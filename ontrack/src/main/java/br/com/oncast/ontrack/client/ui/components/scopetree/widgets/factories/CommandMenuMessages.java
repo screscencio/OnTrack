@@ -16,4 +16,20 @@ public interface CommandMenuMessages extends BaseMessages {
 	@DefaultMessage("Create ''{0}''")
 	String create(String inputText);
 
+	@Description("Done state tooltip")
+	@DefaultMessage("Finished in {0}")
+	String finishedIn(String date);
+
+	@Description("Not started but some accomplished state tooltip")
+	@DefaultMessage("Not in progress but {0}% done")
+	String accomplished(String accomplished);
+
+	@Description("Has open impediments state tooltip")
+	@DefaultMessage("This item has open impediments, click to see them")
+	String hasOpenImpediments();
+
+	@Description("Show impediments menu item")
+	@DefaultMessage("Show impediments")
+	String impediments();
+
 }

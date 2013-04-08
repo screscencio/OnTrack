@@ -4,12 +4,10 @@
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:s="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope">
 	
-	<ui:data field="draggableImage" src="../../move_scope.png"/>
 	<ui:image field="notStarted" src="not_started.png"/>
-	<ui:image field="notStartedHover" src="not_started_hover.png"/>
 	<ui:image field="underwork" src="underwork.png"/>
 	<ui:image field="done" src="done.png"/>
-
+	<ui:data field="draggableImage" src="../../move_scope.png"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget.ReleaseScopeWidgetStyle">
 	
 	    @url draggableImageUrl draggableImage;
@@ -103,22 +101,30 @@
             background-repeat: repeat-y;
 		}
 		
-		.progressIcon {
-			margin-right: 6px;
-			margin-top: 4px;
-			cursor: pointer;
-		}
-		
 		@sprite .progressIconDone {
-			gwt-image: 'done';
+        	gwt-image: 'done';
 		}
 		
 		@sprite .progressIconUnderwork {
-			gwt-image: 'underwork';
+	        gwt-image: 'underwork';
 		}
 		
 		@sprite .progressIconNotStarted {
-			gwt-image: 'notStarted';
+	        gwt-image: 'notStarted';
+		}
+		
+		.progressUnderWork {
+			right: 7px;
+		}
+		
+		.hasOpenImpediments {
+			color: COLOR_ERROR_PRIMARY;
+		}
+		
+		.progressIcon {
+			position: relative;
+			right: 6px;
+			cursor: pointer;
 		}
 		
 		.tags {
@@ -127,16 +133,6 @@
 			bottom: -4px;
 		}
 		
-		.statusBar {
-			background-color: transparent;
-			width: 4px;
-			height: 80%;
-		}
-		
-		.statusBarOpenImpediment {
-			background-color: #f0542d;
-		}
-				
 		.draggingMousePointer {
 			cursor: move;
 		}
@@ -144,12 +140,12 @@
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel}">
 		<g:HorizontalPanel ui:field="internalPanel" styleName="{style.internalPanel}" verticalAlignment="middle">
-			<t:PercentualBar ui:field="percentualBar" styleName="{style.percentualBar}" />
 			<g:cell height="100%">
 				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
 					<g:SimplePanel styleName="{style.draggableImage}"/>
 				</g:FocusPanel>
 			</g:cell>
+			<t:PercentualBar ui:field="percentualBar" styleName="{style.percentualBar}" />
 			<s:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
 	  		<g:cell width="100%">
 	  			<g:HTMLPanel styleName="{style.descriptionContainer}">
@@ -159,8 +155,7 @@
 	  			</g:HTMLPanel>
 	  		</g:cell>
   			<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
- 			<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIconNotStarted} {style.progressIcon}"/>
-  			<g:FocusPanel ui:field="statusBar" styleName="{style.statusBar}"/>
+ 			<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIcon}"/>
 		</g:HorizontalPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

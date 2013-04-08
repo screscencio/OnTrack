@@ -19,10 +19,13 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PercentualBar;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.BgColorAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.color.Color;
@@ -63,21 +66,21 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	interface ReleaseScopeWidgetUiBinder extends UiBinder<Widget, ReleaseScopeWidget> {}
 
 	interface ReleaseScopeWidgetStyle extends CssResource {
-		String progressIconDone();
-
-		String progressIconNotStarted();
-
-		String progressIconUnderwork();
-
 		String selected();
 
 		String targetHighlight();
 
 		String associationHighlight();
 
-		String statusBarOpenImpediment();
-
 		String draggingMousePointer();
+
+		String progressIconDone();
+
+		String progressIconUnderwork();
+
+		String progressIconNotStarted();
+
+		String hasOpenImpediments();
 	}
 
 	@UiField
@@ -97,9 +100,6 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	@UiField
 	FocusPanel progressIcon;
-
-	@UiField
-	FocusPanel statusBar;
 
 	@UiField
 	HorizontalPanel internalPanel;
@@ -130,6 +130,8 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private boolean selected = false;
 	private boolean targetHighlight = false;
 	private boolean associationHighlight = false;
+	private boolean skipScopeSelectionEventOnPopupClose = false;
+	private boolean currentScopeHasOpenImpediments = false;
 
 	public ReleaseScopeWidget(final Scope scope) {
 		this(scope, false, null);
@@ -143,8 +145,8 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		this.scope = scope;
 		this.releaseSpecific = releaseSpecific;
 		effortLabel.setVisible(releaseSpecific);
+
 		update();
-		setHasOpenImpediments(SERVICE_PROVIDER.getAnnotationService().hasOpenImpediment(scope.getId()));
 	}
 
 	@Override
@@ -227,35 +229,68 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		return true;
 	}
 
-	// TODO +++ add another icon representation when there are Done and NotStarted children only (perhaps percentage).
-	/**
-	 * @return if the progress was updated.
-	 */
 	private boolean updateProgress() {
 		final Progress progress = scope.getProgress();
 		final String description = progress.getDescription();
-		if (!description.isEmpty() && description.equals(currentScopeProgress)) return false;
-		currentScopeProgress = description;
+		final boolean hasOpenImpediments = SERVICE_PROVIDER.getAnnotationService().hasOpenImpediment(scope.getId());
 
-		progressIcon.setStyleName(style.progressIconDone(), progress.isDone());
-		progressIcon.setStyleName(style.progressIconUnderwork(), progress.isUnderWork());
-		progressIcon.setStyleName(style.progressIconNotStarted(), progress.getState() == ProgressState.NOT_STARTED);
+		if (this.currentScopeHasOpenImpediments == hasOpenImpediments && !description.isEmpty() && description.equals(currentScopeProgress)) return false;
+		this.currentScopeProgress = description;
+		this.currentScopeHasOpenImpediments = hasOpenImpediments;
 
-		if (!description.isEmpty() && progress.getState() != ProgressState.NOT_STARTED) {
-			final Color color = (progress.getState() == ProgressState.DONE) ? Color.GREEN : Color.GRAY;
-			new BgColorAnimation(internalPanel, color).animate();
-		}
+		updateDoneProgress(progress);
+		updateUnderWorkProgress(progress);
+		updateNotStartedProgress(progress);
+		updateHasOpenImpedimentsProgress();
 
+		final boolean notStarted = progress.getState() == ProgressState.NOT_STARTED;
+		if (!description.isEmpty() && !notStarted) animateProgress(progress);
+		updateStoryColor(notStarted);
+
+		return true;
+	}
+
+	private void updateDoneProgress(final Progress progress) {
+		final boolean isDone = !currentScopeHasOpenImpediments && progress.isDone();
+		progressIcon.setStyleName(style.progressIconDone(), isDone);
+		if (isDone) progressIcon.setTitle(messages.finishedIn(HumanDateFormatter.getRelativeDate(progress.getEndDay().getJavaDate())));
+	}
+
+	private void updateUnderWorkProgress(final Progress progress) {
+		final boolean isUnderwork = !currentScopeHasOpenImpediments && progress.isUnderWork();
+		progressIcon.setStyleName(style.progressIconUnderwork(), isUnderwork);
+		if (isUnderwork) progressIcon.setTitle(progress.getDescription());
+	}
+
+	private void updateNotStartedProgress(final Progress progress) {
+		final boolean notStarted = !currentScopeHasOpenImpediments && progress.getState() == ProgressState.NOT_STARTED;
+		progressIcon.setStyleName(style.progressIconNotStarted(), notStarted);
+
+		final float accomplishedPercentual = scope.getEffort().getAccomplishedPercentual();
+		final boolean hasSomeProgress = accomplishedPercentual != 0;
+		if (notStarted && hasSomeProgress) progressIcon.setTitle(messages.accomplished(ClientDecimalFormat.roundFloat(accomplishedPercentual, 0)));
+		if (notStarted && !hasSomeProgress) progressIcon.setTitle("");
+	}
+
+	private void updateHasOpenImpedimentsProgress() {
+		progressIcon.setStyleName("icon-flag " + style.hasOpenImpediments(), currentScopeHasOpenImpediments);
+		if (currentScopeHasOpenImpediments) progressIcon.setTitle(messages.hasOpenImpediments());
+	}
+
+	private void animateProgress(final Progress progress) {
+		final Color color = (progress.getState() == ProgressState.DONE) ? Color.GREEN : Color.GRAY;
+		new BgColorAnimation(internalPanel, color).animate();
+	}
+
+	private void updateStoryColor(final boolean notStarted) {
 		if (releaseSpecific) {
 			final Style s = draggableAnchor.getElement().getStyle();
 
-			if (progress.getState() != ProgressState.NOT_STARTED) {
+			if (!notStarted) {
 				s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope).toCssRepresentation());
 			}
 			else s.clearBackgroundColor();
 		}
-
-		return true;
 	}
 
 	public Scope getScope() {
@@ -272,20 +307,42 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	@UiHandler("progressIcon")
-	public void onProgressIconClick(final ClickEvent e) {
+	public void onProgressIconMouseDown(final MouseDownEvent e) {
 		fireScopeSelectionEvent(); // Showing the item that will be changed.
+	}
+
+	@UiHandler("progressIcon")
+	public void onProgressIconClick(final ClickEvent e) {
 		e.stopPropagation();
-		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
-		final ProjectContext context = ClientServiceProvider.getCurrentProjectContext();
+		Widget popupWidget = null;
+		if (currentScopeHasOpenImpediments) popupWidget = new ImpedimentListWidget(scope);
+		else {
+			final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
+			final ProjectContext context = ClientServiceProvider.getCurrentProjectContext();
 
-		final String notStartedDescription = ProgressState.NOT_STARTED.getDescription();
-		items.add(createItem("Not Started", notStartedDescription));
-		for (final String progressDefinition : context.getProgressDefinitions(scope))
-			if (!notStartedDescription.equals(progressDefinition)) items.add(createItem(progressDefinition,
-					progressDefinition));
+			final String notStartedDescription = ProgressState.NOT_STARTED.getDescription();
+			items.add(createItem("Not Started", notStartedDescription));
+			for (final String progressDefinition : context.getProgressDefinitions(scope))
+				if (!notStartedDescription.equals(progressDefinition)) items.add(createItem(progressDefinition,
+						progressDefinition));
+			items.add(new SpacerCommandMenuItem());
+			items.add(new TextAndImageCommandMenuItem("icon-flag", messages.impediments(), new Command() {
 
-		final FiltrableCommandMenu commandsMenu = new FiltrableCommandMenu(getProgressCommandMenuItemFactory(), 200, 264);
-		commandsMenu.setOrderedItems(items);
+				@Override
+				public void execute() {
+					skipScopeSelectionEventOnPopupClose = true;
+					showPopup(new ImpedimentListWidget(scope));
+				}
+			}));
+
+			final FiltrableCommandMenu commandsMenu = new FiltrableCommandMenu(getProgressCommandMenuItemFactory(), 200, 264);
+			commandsMenu.setOrderedItems(items);
+			popupWidget = commandsMenu;
+		}
+		showPopup(popupWidget);
+	}
+
+	private void showPopup(final Widget finalPopupWidget) {
 		// Scheduled because of selection event steels focus if not
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
@@ -293,11 +350,12 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 				PopupConfig.configPopup()
 						.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.RIGHT))
 						.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.BOTTOM))
-						.popup(commandsMenu)
+						.popup(finalPopupWidget)
 						.onClose(new PopupCloseListener() {
 							@Override
 							public void onHasClosed() {
-								fireScopeSelectionEvent(); // Return focus to scopeTree;
+								if (!skipScopeSelectionEventOnPopupClose) fireScopeSelectionEvent(); // Return focus to scopeTree;
+								else skipScopeSelectionEventOnPopupClose = false;
 							}
 						})
 						.pop();
@@ -395,10 +453,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	public void setHasOpenImpediments(final boolean hasOpenImpediments) {
-		statusBar.setStyleName(style.statusBarOpenImpediment(), hasOpenImpediments);
-
-		final Color color = hasOpenImpediments ? Color.RED : Color.GRAY;
-		new BgColorAnimation(internalPanel, color).animate();
+		update();
 	}
 
 	@Override

@@ -108,12 +108,16 @@ public class ProjectContext implements HasUUID {
 	}
 
 	private List<String> getProgressDefinitionsFromRelease(final Release release) {
+		final List<String> progressDefinitions = new ArrayList<String>();
+		for (final ProgressState state : ProgressState.values())
+			progressDefinitions.add(state.getDescription());
+
 		final Kanban kanban = getKanban(release);
 
-		final List<String> progressDefinitions = new ArrayList<String>();
 		for (final KanbanColumn column : kanban.getColumns()) {
 			final String description = column.getDescription();
-			progressDefinitions.add(description.equals(Progress.DEFAULT_NOT_STARTED_NAME) ? ProgressState.NOT_STARTED.getDescription() : description);
+			final String d = description.equals(Progress.DEFAULT_NOT_STARTED_NAME) ? ProgressState.NOT_STARTED.getDescription() : description;
+			if (!progressDefinitions.contains(d)) progressDefinitions.add(d);
 		}
 		return progressDefinitions;
 	}
