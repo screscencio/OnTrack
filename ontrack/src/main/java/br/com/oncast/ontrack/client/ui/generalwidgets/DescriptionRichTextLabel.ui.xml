@@ -9,6 +9,7 @@
 	
 	<ui:image field="createIcon" src="black_check.png" />
 	<ui:style src="../style/default.css" >
+	
 		.root {
 			height: auto;
 		}
@@ -25,9 +26,7 @@
 		.container {
 			position: relative;
 			width: 100%;
-			border: 1px solid COLOR_BACKGROUND_HEADER;
-			
-			background-color: white;
+			border: 1px solid transparent;
 		}
 		
 		.helpText {
@@ -64,52 +63,53 @@
 		}
 		
 		.editDescriptionBtn {
-			cursor: pointer;
-			padding: 5px;
-			text-align: center;
-			border: 1px solid transparent;
-			border-radius: 3px;			
 			color: COLOR_TEXT_SECONDARY;
+			
 			float: right;
-			margin-right: -10px;
-			margin-top: -25px;
+			margin-right: -5px;
+			margin-top: -20px;
+
+			padding: 2px;
+			border: 1px solid transparent;
+			border-radius: 3px;
+
+			width: 20px;
+			line-height: 18px;
+			text-align: center;
+			cursor: pointer;	
 		}
 
 		.editDescriptionBtn:hover {
-			border-color: COLOR_BORDER_PRIMARY;
-			-webkit-box-shadow: inset -1px -1px 1px COLOR_BORDER_SECONDARY;
-			-moz-box-shadow: inset -1px -1px 1px COLOR_BORDER_SECONDARY;
-			box-shadow: inset -1px -1px 1px COLOR_BORDER_SECONDARY;
+			border: 1px solid #AEAEAE;
+			box-shadow: inset 1px 1px 1px white;
 		}
 		
-		@sprite .create {
+		.create, .cancel {
 			position: absolute;
-			top: 12px;
-			right: 10px;
+			right: 3px;
 
-			gwt-image: 'createIcon';
-			
-			background-size: 30px 30px;
-			background-position: center;
-			
-			width: 24px;
-			height: 24px;
-			
-			margin: 1px;
-			margin-left: 11px;
-			
+			border: 1px solid transparent;
 			border-radius: 3px;
-			padding: 2px;
-			
-			opacity: 0.8;
+
+			width: 21px;
+			line-height: 20px;
+			text-align: center;
 			cursor: pointer;
 		}
 		
-		.create:HOVER {
-			margin: 0px;
-			margin-left: 10px;
+		.create:HOVER, .cancel:HOVER {
 			border: 1px solid #AEAEAE;
 			box-shadow: inset 1px 1px 1px white;
+		}
+		
+		.create {
+			top: 2px;
+			color: COLOR_SUCCESS_TERTIARY;
+		}
+		
+		.cancel {
+			top: 26px;
+			color: COLOR_ERROR_PRIMARY;
 		}
 		
 		.relative {
@@ -132,7 +132,8 @@
 							<r:RichTextToolbar ui:field="toolbar"/>
 							<g:RichTextArea ui:field="textArea"/>
 						</g:VerticalPanel>
-						<g:FocusPanel ui:field="createDescriptionButton" styleName="{style.create}"/>
+						<g:FocusPanel ui:field="createButton" styleName="icon-ok icon-large {style.create}"/>
+						<g:FocusPanel ui:field="cancelButton" styleName="icon-remove icon-large {style.cancel}"/>
 					</g:HTMLPanel>
 				</g:FocusPanel>
 				<g:FlowPanel styleName="{style.displayPanel}">

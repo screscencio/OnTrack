@@ -67,6 +67,8 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 
 	private final EditableLabelEditionHandler editableLabelEditionHandler;
 
+	private String currentText = "";
+
 	public DescriptionRichTextLabel(final EditableLabelEditionHandler editableLabelEditionHandler) {
 		this.editableLabelEditionHandler = editableLabelEditionHandler;
 		textArea = new RichTextArea();
@@ -143,9 +145,15 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 		GlobalNativeEventService.getInstance().removeMouseUpListener(clickListener);
 	}
 
-	@UiHandler("createDescriptionButton")
+	@UiHandler("createButton")
 	public void onCreateButtonClicked(final ClickEvent event) {
 		submitContent();
+	}
+
+	@UiHandler("cancelButton")
+	public void onCancelButtonClicked(final ClickEvent event) {
+		setText(currentText);
+		hideRichTextArea();
 	}
 
 	@UiHandler("textArea")
@@ -170,6 +178,7 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 
 	@Override
 	public void setText(final String text) {
+		currentText = text;
 		textArea.setHTML(text);
 		label.setHTML(text);
 		descriptionDeckPanel.showWidget((label == null || label.getText().isEmpty()) ? 0 : 1);
