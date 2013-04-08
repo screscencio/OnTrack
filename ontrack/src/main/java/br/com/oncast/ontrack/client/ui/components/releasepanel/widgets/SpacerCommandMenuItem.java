@@ -27,6 +27,7 @@ public class SpacerCommandMenuItem implements CommandMenuItem {
 			@Override
 			public void execute() {}
 		});
+		menuItem.setEnabled(false);
 		menuItem.addStyleName("gwt-MenuItem-noGrow gwt-MenuItem-Spacer");
 		return menuItem;
 	}
