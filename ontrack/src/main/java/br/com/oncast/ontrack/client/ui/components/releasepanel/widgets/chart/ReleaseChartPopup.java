@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart;
 
 import java.util.Date;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart.ReleaseChartUpdateListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
@@ -147,7 +147,7 @@ public class ReleaseChartPopup extends Composite implements HasCloseHandlers<Rel
 	}
 
 	private void showWarning() {
-		ClientServiceProvider.get().userGuide()
+		ClientServices.get().userGuide()
 				.addWarningTip(velocity, messages.lowEstimatedVelocityWarningTitle(), messages.lowEstimatedVelocityTips());
 	}
 

@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.annotations;
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget;
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationsPanel extends Composite implements HasCloseHandlers<AnnotationsPanel>, PopupAware {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static final AnnotationsPanelMessages messages = GWT.create(AnnotationsPanelMessages.class);
 
@@ -84,7 +84,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 			@Override
 			public boolean onEditionRequest(final String text) {
-				final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
+				final ProjectContext projectContext = ClientServices.getCurrentProjectContext();
 				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.actionExecution();
 				try {
 					projectContext.findScope(subjectId);
@@ -135,7 +135,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		this.subjectTitle.setValue(subjectDescription);
 
 		try {
-			final Description description = ClientServiceProvider.getCurrentProjectContext().findDescriptionFor(subjectId);
+			final Description description = ClientServices.getCurrentProjectContext().findDescriptionFor(subjectId);
 			updateDescription(description.getDescription());
 		}
 		catch (final DescriptionNotFoundException e) {}

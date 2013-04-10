@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.utils;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeBindReleaseActionHelperMessages;
 import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
@@ -19,7 +19,7 @@ public class ScopeBindReleaseActionHelper {
 
 	public static boolean validadeHierarchicalCondition(final UUID scopeId, final String releaseDescription) {
 		try {
-			final Scope scope = ClientServiceProvider.getCurrentProjectContext().findScope(scopeId);
+			final Scope scope = ClientServices.getCurrentProjectContext().findScope(scopeId);
 			if (new ReleaseDescriptionParser(releaseDescription).getHeadRelease().isEmpty()) return true;
 
 			return checkAncestorsForRelease(scope) && checkDescendantsForRelease(scope);
@@ -36,7 +36,7 @@ public class ScopeBindReleaseActionHelper {
 		while (!scopes.isEmpty()) {
 			final Scope s = scopes.poll();
 			if (s.getRelease() != null) {
-				ClientServiceProvider.get().alerting()
+				ClientServices.get().alerting()
 						.showWarning(message.cantBindReleaseBecauseOfADescendant(s.getDescription()), ClientAlertingService.DURATION_LONG);
 				return false;
 			}
@@ -50,7 +50,7 @@ public class ScopeBindReleaseActionHelper {
 		while (!s.isRoot()) {
 			s = s.getParent();
 			if (s.getRelease() != null) {
-				ClientServiceProvider.get().alerting()
+				ClientServices.get().alerting()
 						.showWarning(message.cantBindReleaseBecauseOfAnAncestor(s.getDescription()), ClientAlertingService.DURATION_LONG);
 				return false;
 			}

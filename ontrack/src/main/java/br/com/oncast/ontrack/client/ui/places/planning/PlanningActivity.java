@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
@@ -33,7 +33,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class PlanningActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private PlanningView view;
 	private List<HandlerRegistration> registrations;
@@ -58,12 +58,12 @@ public class PlanningActivity extends AbstractActivity {
 		view.setVisible(false);
 
 		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.actionExecution();
-		projectContext = ClientServiceProvider.getCurrentProjectContext();
+		projectContext = ClientServices.getCurrentProjectContext();
 
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
 
-		view.getApplicationMenu().setProjectName(ClientServiceProvider.get().projectRepresentationProvider().getCurrent().getName());
+		view.getApplicationMenu().setProjectName(ClientServices.get().projectRepresentationProvider().getCurrent().getName());
 		view.getApplicationMenu().setBackButtonVisibility(false);
 		view.getApplicationMenu().clearCustomMenuItems();
 
@@ -139,7 +139,7 @@ public class PlanningActivity extends AbstractActivity {
 	}
 
 	private HandlerRegistration registerScopeSelectionEventHandler() {
-		return ClientServiceProvider.get().eventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+		return ClientServices.get().eventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 			private ReleaseScopeWidget selectedScope;
 
 			@Override

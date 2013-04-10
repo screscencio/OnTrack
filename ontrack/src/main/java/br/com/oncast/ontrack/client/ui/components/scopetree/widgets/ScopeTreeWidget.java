@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scopetree.FakeScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
@@ -227,7 +227,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 	private void activateEventHandlers() {
 		deactivateEventHandlers();
 
-		final EventBus eventBus = ClientServiceProvider.get().eventBus();
+		final EventBus eventBus = ClientServices.get().eventBus();
 
 		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {
 			@Override
@@ -360,9 +360,9 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 				if (!selectedItem.isRoot()) addBorderToSelectedItem();
 
-				ClientServiceProvider.get().eventBus()
+				ClientServices.get().eventBus()
 						.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
-				ClientServiceProvider.get().eventBus()
+				ClientServices.get().eventBus()
 						.fireEventFromSource(new ScopeTreeItemSelectionEvent(selectedItem.getScopeTreeItemWidget()), ScopeTreeWidget.this);
 			}
 		}));

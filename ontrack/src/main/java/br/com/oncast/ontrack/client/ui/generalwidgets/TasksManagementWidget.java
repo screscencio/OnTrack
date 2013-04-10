@@ -9,7 +9,7 @@ import java.util.List;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.generalwidgets.details.TaskWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.details.TaskWidget.TaskWidgetClickListener;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
@@ -211,11 +211,11 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 	}
 
 	private void showWarning(final String message) {
-		ClientServiceProvider.get().alerting().showWarning(message);
+		ClientServices.get().alerting().showWarning(message);
 	}
 
 	private void launchAction(final ModelAction action) {
-		ClientServiceProvider.get().actionExecution().onUserActionExecutionRequest(action);
+		ClientServices.get().actionExecution().onUserActionExecutionRequest(action);
 	}
 
 	private ModelWidgetContainer<Scope, TaskWidget> createTasksList() {

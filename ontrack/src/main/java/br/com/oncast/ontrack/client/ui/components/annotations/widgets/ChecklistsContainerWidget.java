@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
@@ -127,7 +127,7 @@ public class ChecklistsContainerWidget extends Composite {
 	private void createChecklist() {
 		final String checklistTitle = this.newChecklistTitle.getText();
 		if (checklistTitle.trim().isEmpty()) {
-			ClientServiceProvider.get().alerting().showWarning(messages.emptyChecklistTitleError());
+			ClientServices.get().alerting().showWarning(messages.emptyChecklistTitleError());
 			newChecklistTitle.setFocus(true);
 			return;
 		}
@@ -143,11 +143,11 @@ public class ChecklistsContainerWidget extends Composite {
 
 	public void setSubjectId(final UUID subjectId) {
 		this.subjectId = subjectId;
-		checklists.update(ClientServiceProvider.getCurrentProjectContext().findChecklistsFor(subjectId));
+		checklists.update(ClientServices.getCurrentProjectContext().findChecklistsFor(subjectId));
 	}
 
-	private ClientServiceProvider getProvider() {
-		return ClientServiceProvider.get();
+	private ClientServices getProvider() {
+		return ClientServices.get();
 	}
 
 }

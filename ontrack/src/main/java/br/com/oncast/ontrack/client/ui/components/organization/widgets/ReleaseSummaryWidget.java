@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.organization.widgets;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.events.ReleaseSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
@@ -101,7 +101,7 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 		event.stopPropagation();
 
 		if (!release.getId().isValid()) return;
-		ClientServiceProvider.get().eventBus().fireEvent(new ReleaseSelectionEvent(release, projectId));
+		ClientServices.get().eventBus().fireEvent(new ReleaseSelectionEvent(release, projectId));
 	}
 
 	public void setSelected(final boolean b) {

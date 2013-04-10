@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.details;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.components.annotations.AnnotationsPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
@@ -30,7 +30,7 @@ public class DetailActivity extends AbstractActivity {
 
 	public void start() {
 		if (!setDetailPanel(place)) return;
-		if (!place.hasLoadedPlace()) register = ShortcutService.register(detailPanel, ClientServiceProvider.get().actionExecution(),
+		if (!place.hasLoadedPlace()) register = ShortcutService.register(detailPanel, ClientServices.get().actionExecution(),
 				UndoRedoShortCutMapping.values());
 
 		PopupConfig.configPopup().popup(this.detailPanel).onClose(new PopupCloseListener() {
@@ -59,7 +59,7 @@ public class DetailActivity extends AbstractActivity {
 	}
 
 	private boolean setDetailPanel(final DetailPlace place) {
-		final ClientServiceProvider provider = ClientServiceProvider.get();
+		final ClientServices provider = ClientServices.get();
 		final ProjectContext context = provider.contextProvider().getProjectContext(place.getRequestedProjectId());
 
 		detailPanel = null;
@@ -71,7 +71,7 @@ public class DetailActivity extends AbstractActivity {
 				detailPanel = AnnotationsPanel.forRelease(context.findRelease(place.getSubjectId()));
 			}
 			catch (final ReleaseNotFoundException e1) {
-				provider.alerting().showError(ClientServiceProvider.get().errorMessages().errorShowingDetails());
+				provider.alerting().showError(ClientServices.get().errorMessages().errorShowingDetails());
 				getApplicationPlaceController().goTo(new PlanningPlace(place.getRequestedProjectId()));
 				return false;
 			}
@@ -80,7 +80,7 @@ public class DetailActivity extends AbstractActivity {
 	}
 
 	private ApplicationPlaceController getApplicationPlaceController() {
-		return ClientServiceProvider.get().placeController();
+		return ClientServices.get().placeController();
 	}
 
 }

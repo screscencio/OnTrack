@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectAuthorizationCallback;
 import br.com.oncast.ontrack.client.services.validation.EmailValidator;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
@@ -30,7 +30,7 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 
 	private static MembersWidgetUiBinder uiBinder = GWT.create(MembersWidgetUiBinder.class);
 
-	private static ClientServiceProvider PROVIDER = ClientServiceProvider.get();
+	private static ClientServices PROVIDER = ClientServices.get();
 
 	interface MembersWidgetUiBinder extends UiBinder<Widget, MembersWidget> {}
 
@@ -67,7 +67,7 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 	}
 
 	private void validateCountdown() {
-		final int invitationQuota = ClientServiceProvider.get().authentication().getProjectInvitationQuota();
+		final int invitationQuota = ClientServices.get().authentication().getProjectInvitationQuota();
 
 		countdownLabel.setText(messages.inivitationQuota(invitationQuota));
 	}
@@ -97,20 +97,20 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
 
 				widget.hide();
-				ClientServiceProvider.get().alerting().showInfo(messages.processingYourInvitation());
+				ClientServices.get().alerting().showInfo(messages.processingYourInvitation());
 				PROVIDER.projectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {
-						ClientServiceProvider.get().alerting()
+						ClientServices.get().alerting()
 								.showSuccess(messages.userInvited(mail));
 					}
 
 					@Override
 					public void onFailure(final Throwable caught) {
-						if (caught instanceof UnableToAuthorizeUserException) ClientServiceProvider.get().alerting()
+						if (caught instanceof UnableToAuthorizeUserException) ClientServices.get().alerting()
 								.showWarning(messages.userAlreadyInvited(mail));
 						else {
-							ClientServiceProvider.get().alerting().showWarning(caught.getMessage());
+							ClientServices.get().alerting().showWarning(caught.getMessage());
 						}
 					}
 				});

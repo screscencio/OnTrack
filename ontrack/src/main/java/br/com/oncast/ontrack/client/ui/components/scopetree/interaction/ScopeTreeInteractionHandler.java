@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
@@ -73,10 +73,10 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 				internalAction.execute(tree);
 			}
 			catch (final OperationNotAllowedException e) {
-				ClientServiceProvider.get().alerting().showWarning(e.getLocalizedMessage());
+				ClientServices.get().alerting().showWarning(e.getLocalizedMessage());
 			}
 			catch (final UnableToCompleteActionException e) {
-				ClientServiceProvider.get().alerting().showError(e.getLocalizedMessage());
+				ClientServices.get().alerting().showError(e.getLocalizedMessage());
 			}
 		}
 	}

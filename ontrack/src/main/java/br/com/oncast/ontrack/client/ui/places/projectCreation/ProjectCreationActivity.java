@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.projectCreation;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.context.ProjectCreationListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ProjectCreationActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private final ProjectCreationMessages messages = GWT.create(ProjectCreationMessages.class);
 
@@ -33,7 +33,7 @@ public class ProjectCreationActivity extends AbstractActivity {
 
 		final String projectName = projectCreationPlace.getProjectName();
 		view.setMainMessage(messages.creatingProject(projectName));
-		ClientServiceProvider.get().projectRepresentationProvider()
+		ClientServices.get().projectRepresentationProvider()
 				.createNewProject(projectName, new ProjectCreationListener() {
 
 					@Override

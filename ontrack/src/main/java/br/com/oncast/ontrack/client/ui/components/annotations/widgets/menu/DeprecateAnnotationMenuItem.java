@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -48,8 +48,8 @@ public class DeprecateAnnotationMenuItem extends Composite implements Annotation
 	void onClick(final ClickEvent e) {
 		if (readOnly) return;
 
-		if (annotation.isDeprecated()) ClientServiceProvider.get().details().removeDeprecation(subjectId, annotation.getId());
-		else ClientServiceProvider.get().details().deprecateAnnotation(subjectId, annotation.getId());
+		if (annotation.isDeprecated()) ClientServices.get().details().removeDeprecation(subjectId, annotation.getId());
+		else ClientServices.get().details().deprecateAnnotation(subjectId, annotation.getId());
 	}
 
 	@Override

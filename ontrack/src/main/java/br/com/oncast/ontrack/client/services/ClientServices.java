@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * The {@link ClientServiceProvider} is programmed in such a way that only business services are publicly available.
+ * The {@link ClientServices} is programmed in such a way that only business services are publicly available.
  * Both infrastructure and "glue" services should be private.
  * 
  * "DEPENDENCY INJECTION vs LOCALIZATION" POLICY
@@ -71,7 +71,7 @@ import com.google.web.bindery.event.shared.EventBus;
  * - Services should be located through the singleton usage when needed at the UI, if only used carefully, so that DI cascading is evicted.
  * DI cascading produces a lot of "dirty code" with "delegators" and also has implies in the need of lots of custom factories in UIBinder objects.
  */
-public class ClientServiceProvider {
+public class ClientServices {
 
 	private ActionExecutionService actionExecutionService;
 	private ContextProviderService contextProviderService;
@@ -106,14 +106,14 @@ public class ClientServiceProvider {
 	private TimesheetService timesheetService;
 	private ReleaseEstimatorProvider releaseEstimatorProvider;
 
-	private static ClientServiceProvider instance;
+	private static ClientServices instance;
 
-	public static ClientServiceProvider get() {
+	public static ClientServices get() {
 		if (instance != null) return instance;
-		return instance = new ClientServiceProvider();
+		return instance = new ClientServices();
 	}
 
-	private ClientServiceProvider() {}
+	private ClientServices() {}
 
 	/**
 	 * Configures the necessary services for application full usage.

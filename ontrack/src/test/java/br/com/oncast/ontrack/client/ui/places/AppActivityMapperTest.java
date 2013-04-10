@@ -15,7 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -40,7 +40,7 @@ public class AppActivityMapperTest extends GwtTest {
 	@Mock
 	private ContextProviderService contextProvider;
 	@Mock
-	private ClientServiceProvider clientServiceProvider;
+	private ClientServices clientServiceProvider;
 	@Mock
 	private AuthenticationService authenticationService;
 	@Mock

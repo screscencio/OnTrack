@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
@@ -38,7 +38,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class ProgressActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private KanbanActionSyncController kanbanActionSyncController;
 	private ProgressView view;
@@ -81,7 +81,7 @@ public class ProgressActivity extends AbstractActivity {
 				public void updateReleaseInfo() {
 					updateCustomApplicationMenus();
 				}
-			}, ClientServiceProvider.get().errorMessages());
+			}, ClientServices.get().errorMessages());
 		}
 		catch (final ReleaseNotFoundException e) {
 			exitToPlanningPlace();
@@ -92,7 +92,7 @@ public class ProgressActivity extends AbstractActivity {
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		if (view == null) throw new RuntimeException("The view wasnt initialized correctly.");
 
-		view.getApplicationMenu().setProjectName(ClientServiceProvider.get().projectRepresentationProvider().getCurrent().getName());
+		view.getApplicationMenu().setProjectName(ClientServices.get().projectRepresentationProvider().getCurrent().getName());
 		view.getApplicationMenu().setBackButtonVisibility(true);
 
 		updateViewData();
@@ -122,7 +122,7 @@ public class ProgressActivity extends AbstractActivity {
 			}
 		}));
 
-		registrations.add(ClientServiceProvider.get().eventBus()
+		registrations.add(ClientServices.get().eventBus()
 				.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 					@Override
 					public void onScopeSelectionRequest(final ScopeSelectionEvent event) {

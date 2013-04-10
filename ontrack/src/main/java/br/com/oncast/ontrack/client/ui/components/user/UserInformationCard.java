@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.user;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.user.UserHasGravatarCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class UserInformationCard extends Composite implements HasCloseHandlers<UserInformationCard>, PopupAware {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static UserInformationCardUiBinder uiBinder = GWT.create(UserInformationCardUiBinder.class);
 
@@ -69,7 +69,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 			@Override
 			public boolean onEditionRequest(final String text) {
 				if (text.isEmpty() || text.equals(user.getName())) return false;
-				if (!user.equals(ClientServiceProvider.getCurrentUser())) return false;
+				if (!user.equals(ClientServices.getCurrentUser())) return false;
 				user.setName(text);
 
 				SERVICE_PROVIDER.userData().onUserDataUpdate(user, new AsyncCallback<User>() {
@@ -115,7 +115,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 
 	public void updateUser(final User user) {
 		this.user = user;
-		userName.setReadOnly(!user.equals(ClientServiceProvider.getCurrentUser()));
+		userName.setReadOnly(!user.equals(ClientServices.getCurrentUser()));
 		updateView();
 	}
 

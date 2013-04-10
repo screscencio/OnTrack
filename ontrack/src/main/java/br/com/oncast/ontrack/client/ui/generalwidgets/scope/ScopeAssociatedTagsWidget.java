@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
@@ -46,7 +46,7 @@ public class ScopeAssociatedTagsWidget extends Composite implements ActionExecut
 	}
 
 	public void update() {
-		tags.update(ClientServiceProvider.getCurrentProjectContext().getTagsFor(scope));
+		tags.update(ClientServices.getCurrentProjectContext().getTagsFor(scope));
 	}
 
 	private ModelWidgetContainer<Tag, ScopeTagWidget> createContainer() {
@@ -70,12 +70,12 @@ public class ScopeAssociatedTagsWidget extends Composite implements ActionExecut
 
 	@Override
 	protected void onLoad() {
-		ClientServiceProvider.get().actionExecution().addActionExecutionListener(this);
+		ClientServices.get().actionExecution().addActionExecutionListener(this);
 	}
 
 	@Override
 	protected void onUnload() {
-		ClientServiceProvider.get().actionExecution().removeActionExecutionListener(this);
+		ClientServices.get().actionExecution().removeActionExecutionListener(this);
 	}
 
 }

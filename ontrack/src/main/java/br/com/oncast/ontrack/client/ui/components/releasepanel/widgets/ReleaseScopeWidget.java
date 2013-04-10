@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.CommandMenuMessages;
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelWidget<Scope> {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
 
@@ -205,7 +205,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	 * @return if the humanId was updated.
 	 */
 	private boolean updateHumanId() {
-		final String humanId = ClientServiceProvider.getCurrentProjectContext().getHumanId(scope);
+		final String humanId = ClientServices.getCurrentProjectContext().getHumanId(scope);
 		humanIdLabel.setInnerHTML(humanId);
 		ElementUtils.setVisible(humanIdLabel, !humanId.isEmpty());
 		return true;
@@ -276,7 +276,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	private Widget createProgressMenu() {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
-		final ProjectContext context = ClientServiceProvider.getCurrentProjectContext();
+		final ProjectContext context = ClientServices.getCurrentProjectContext();
 
 		for (final String progressDefinition : context.getProgressDefinitions(scope))
 			items.add(createItem(ProgressState.getLabelForDescription(progressDefinition), progressDefinition));

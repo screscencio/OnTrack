@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.report;
 
-import static br.com.oncast.ontrack.client.services.ClientServiceProvider.getCurrentProjectContext;
+import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentProjectContext;
 
 import java.util.ArrayList;
 import java.util.Collections;

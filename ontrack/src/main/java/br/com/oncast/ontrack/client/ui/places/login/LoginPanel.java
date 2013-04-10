@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.validation.EmailValidator;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ValidationInputContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ValidationInputContainer.ValidationHandler;
@@ -87,7 +87,7 @@ public class LoginPanel extends Composite implements LoginView {
 
 	private void doResetPassword() {
 		if (!isEmailValid) {
-			final ClientServiceProvider serviceProvider = ClientServiceProvider.get();
+			final ClientServices serviceProvider = ClientServices.get();
 			serviceProvider.alerting().showError(serviceProvider.errorMessages().passwordRequestNeedsUsernameInput());
 			emailArea.setFocus(true);
 			return;

@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.loading;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.authentication.UserInformationLoadCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class UserInformationLoadingActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static UserInformationLoadingMessages messages = GWT.create(UserInformationLoadingMessages.class);
 

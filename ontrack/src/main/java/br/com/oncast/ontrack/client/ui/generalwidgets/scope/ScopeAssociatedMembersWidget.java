@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
@@ -104,7 +104,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 			return;
 		}
 
-		final List<UserRepresentation> associatedUsersList = ClientServiceProvider.get().userAssociation().getAssociatedUsers(scope);
+		final List<UserRepresentation> associatedUsersList = ClientServices.get().userAssociation().getAssociatedUsers(scope);
 		associatedUsers.update(associatedUsersList);
 		final int userCount = associatedUsersList.size();
 		this.setVisible(userCount > 0);

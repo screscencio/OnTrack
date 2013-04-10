@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
@@ -215,7 +215,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	}
 
 	private void updateItems() {
-		final List<Scope> allScopes = ClientServiceProvider.getCurrentProjectContext().getProjectScope()
+		final List<Scope> allScopes = ClientServices.getCurrentProjectContext().getProjectScope()
 				.getAllDescendantScopes();
 		search.setItems(asCommandMenuItens(allScopes));
 	}

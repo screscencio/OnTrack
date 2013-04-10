@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
@@ -44,7 +44,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 			}
 		}
 		catch (final UnableToCompleteActionException e) {
-			throw new UserNotFoundException(ClientServiceProvider.get().errorMessages()
+			throw new UserNotFoundException(ClientServices.get().errorMessages()
 					.userNotFound(actionContext.getUserId().toString()));
 		}
 	}

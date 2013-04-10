@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.DeprecateAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.LikeAnnotationMenuItem;
@@ -137,7 +137,7 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 	}
 
 	private String getDeprecationText() {
-		final User user = ClientServiceProvider.get().userData()
+		final User user = ClientServices.get().userData()
 				.retrieveRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
 		final String formattedDate = HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 

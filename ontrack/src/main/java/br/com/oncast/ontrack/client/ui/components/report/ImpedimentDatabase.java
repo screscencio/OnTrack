@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
@@ -20,7 +20,7 @@ import com.google.gwt.view.client.ProvidesKey;
 public class ImpedimentDatabase {
 
 	private static final String ID_SYMBOL = "#";
-	private static final DetailService DETAIL_SERVICE = ClientServiceProvider.get().details();
+	private static final DetailService DETAIL_SERVICE = ClientServices.get().details();
 	private static final ReportMessages MESSAGES = GWT.create(ReportMessages.class);
 
 	public static class ImpedimentItem implements Comparable<ImpedimentItem> {

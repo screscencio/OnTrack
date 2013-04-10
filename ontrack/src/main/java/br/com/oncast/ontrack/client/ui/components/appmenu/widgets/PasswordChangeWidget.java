@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
 import br.com.oncast.ontrack.client.ui.components.appmenu.PasswordChangeWidgetMessages;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedPasswordTextBox;
@@ -142,12 +142,12 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	private void submitUserPasswordChange() {
 		hideErrorMessage();
 		disable();
-		ClientServiceProvider.get().authentication()
+		ClientServices.get().authentication()
 				.changePassword(oldPasswordArea.getText(), newPasswordArea.getText(), new UserPasswordChangeCallback() {
 
 					@Override
 					public void onUserPasswordChangedSuccessfully() {
-						ClientServiceProvider.get().alerting().showSuccess(messages.successfulChange());
+						ClientServices.get().alerting().showSuccess(messages.successfulChange());
 						enable();
 						hide();
 					}
@@ -156,7 +156,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 					public void onUnexpectedFailure(final Throwable caught) {
 						// TODO Improve feedback message.
 						enable();
-						ClientServiceProvider.get().alerting().showError(messages.unexpectedError());
+						ClientServices.get().alerting().showError(messages.unexpectedError());
 
 					}
 
@@ -164,7 +164,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 					public void onIncorrectUserPasswordFailure() {
 						// TODO Improve feedback message.
 						enable();
-						ClientServiceProvider.get().alerting().showError(messages.incorrectOldPassword());
+						ClientServices.get().alerting().showError(messages.incorrectOldPassword());
 					}
 				});
 

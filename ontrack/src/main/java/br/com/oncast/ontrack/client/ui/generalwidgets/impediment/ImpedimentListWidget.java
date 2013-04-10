@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.impediment;
 
-import static br.com.oncast.ontrack.client.services.ClientServiceProvider.getCurrentProjectContext;
+import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentProjectContext;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.IconTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
@@ -74,7 +74,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 		final String description = newImpedimentDescription.getText().trim();
 		if (event.getNativeKeyCode() != BrowserKeyCodes.KEY_ENTER || description.isEmpty()) return;
 
-		ClientServiceProvider.get().actionExecution()
+		ClientServices.get().actionExecution()
 				.onUserActionExecutionRequest(new AnnotationCreateAction(subject.getId(), AnnotationType.OPEN_IMPEDIMENT, description));
 		hide();
 	}
@@ -129,12 +129,12 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 
 	@Override
 	protected void onLoad() {
-		ClientServiceProvider.get().actionExecution().addActionExecutionListener(this);
+		ClientServices.get().actionExecution().addActionExecutionListener(this);
 	}
 
 	@Override
 	protected void onUnload() {
-		ClientServiceProvider.get().actionExecution().removeActionExecutionListener(this);
+		ClientServices.get().actionExecution().removeActionExecutionListener(this);
 	}
 
 	@Override

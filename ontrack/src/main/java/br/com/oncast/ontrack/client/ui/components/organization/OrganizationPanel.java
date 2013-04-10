@@ -8,7 +8,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.organization.widgets.ProjectSummaryWidget;
@@ -70,7 +70,7 @@ public class OrganizationPanel extends Composite {
 	private void registerProjectListChangeListener() {
 		if (!handlerRegistrations.isEmpty()) return;
 
-		handlerRegistrations.add(ClientServiceProvider.get().projectRepresentationProvider()
+		handlerRegistrations.add(ClientServices.get().projectRepresentationProvider()
 				.registerProjectListChangeListener(new ProjectListChangeListener() {
 					private boolean shouldSelectAProject = true;
 

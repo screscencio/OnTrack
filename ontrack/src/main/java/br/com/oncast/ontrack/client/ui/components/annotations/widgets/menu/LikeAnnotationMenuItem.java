@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -60,15 +60,15 @@ public class LikeAnnotationMenuItem extends Composite implements AnnotationMenuI
 	}
 
 	private boolean hasVoted() {
-		return annotation.hasVoted(ClientServiceProvider.getCurrentUser());
+		return annotation.hasVoted(ClientServices.getCurrentUser());
 	}
 
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
 		if (readOnly || annotation.isDeprecated()) return;
 
-		if (hasVoted()) ClientServiceProvider.get().details().removeVote(subjectId, annotation.getId());
-		else ClientServiceProvider.get().details().addVote(subjectId, annotation.getId());
+		if (hasVoted()) ClientServices.get().details().removeVote(subjectId, annotation.getId());
+		else ClientServices.get().details().addVote(subjectId, annotation.getId());
 	}
 
 	@Override

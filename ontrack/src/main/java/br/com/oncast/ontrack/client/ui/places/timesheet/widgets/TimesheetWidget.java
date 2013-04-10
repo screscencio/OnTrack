@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet.widgets;
 
-import static br.com.oncast.ontrack.client.services.ClientServiceProvider.getCurrentUser;
+import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.selection.SelectionControllerDefault;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
@@ -243,7 +243,7 @@ public class TimesheetWidget extends Composite {
 	}
 
 	private ProjectContext getContext() {
-		return ClientServiceProvider.getCurrentProjectContext();
+		return ClientServices.getCurrentProjectContext();
 	}
 
 	private String round(final float number) {

@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.planning.dnd;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.user.UserAssociationService;
 import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DraggableMembersListWidget;
@@ -97,7 +97,7 @@ public class UserAssociationDragHandler extends ModelWidgetContainerDragHandler<
 	}
 
 	private UserAssociationService getUserAssociationService() {
-		return ClientServiceProvider.get().userAssociation();
+		return ClientServices.get().userAssociation();
 	};
 
 }

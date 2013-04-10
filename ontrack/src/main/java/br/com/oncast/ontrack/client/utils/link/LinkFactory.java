@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.utils.link;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -59,7 +59,7 @@ public class LinkFactory {
 
 	private static boolean shouldAppendNewTabLink(final UUID projectId) {
 		try {
-			final ProjectRepresentation currentProject = ClientServiceProvider.get().projectRepresentationProvider().getCurrent();
+			final ProjectRepresentation currentProject = ClientServices.get().projectRepresentationProvider().getCurrent();
 			return !currentProject.getId().equals(projectId);
 		}
 		catch (final RuntimeException e) {

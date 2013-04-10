@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.details.DetailService;
@@ -124,8 +124,8 @@ public class CommentsWidget extends Composite {
 		return getProvider().actionExecution();
 	}
 
-	private ClientServiceProvider getProvider() {
-		return ClientServiceProvider.get();
+	private ClientServices getProvider() {
+		return ClientServices.get();
 	}
 
 	public void setReadOnly(final boolean b) {

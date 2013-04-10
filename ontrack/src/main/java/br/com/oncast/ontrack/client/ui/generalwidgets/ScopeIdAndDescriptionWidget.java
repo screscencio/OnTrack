@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -39,7 +39,7 @@ public class ScopeIdAndDescriptionWidget extends Composite {
 	 * @return if the humanId was updated.
 	 */
 	private boolean updateHumanId() {
-		final String humanId = ClientServiceProvider.getCurrentProjectContext().getHumanId(scope);
+		final String humanId = ClientServices.getCurrentProjectContext().getHumanId(scope);
 		humanIdLabel.setInnerHTML(humanId);
 		if (humanId.isEmpty()) humanIdLabel.getStyle().setDisplay(Display.NONE);
 		else humanIdLabel.getStyle().clearDisplay();

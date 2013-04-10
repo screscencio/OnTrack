@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseSelectionWidget extends Composite implements HasCloseHandlers<ReleaseSelectionWidget>, PopupAware {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static ReleaseSelectionWidgetUiBinder uiBinder = GWT.create(ReleaseSelectionWidgetUiBinder.class);
 

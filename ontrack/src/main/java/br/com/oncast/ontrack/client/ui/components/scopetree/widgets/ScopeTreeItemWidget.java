@@ -12,7 +12,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.user.Selection;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.SubjectDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
@@ -213,7 +213,7 @@ public class ScopeTreeItemWidget extends Composite {
 		tags = createTagsContainer();
 		initWidget(uiBinder.createAndBindUi(this));
 
-		selectionsList = ClientServiceProvider.get().colorProvider().getMembersSelectionsFor(scope);
+		selectionsList = ClientServices.get().colorProvider().getMembersSelectionsFor(scope);
 
 		fadeAnimation = new Animation() {
 			@Override
@@ -266,7 +266,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		registerColumnVisibilityChangeListeners();
 
-		updateDetails(ClientServiceProvider.get().details().getDetailUpdateEvent(scope.getId()));
+		updateDetails(ClientServices.get().details().getDetailUpdateEvent(scope.getId()));
 
 		deckPanel.showWidget(0);
 
@@ -310,7 +310,7 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiHandler("releaseTag")
 	protected void onTagClick(final ClickEvent e) {
 		e.stopPropagation();
-		ClientServiceProvider.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), releaseTag);
+		ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), releaseTag);
 	}
 
 	public void setValue(final String value) {
@@ -383,7 +383,7 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	public void updateTagsDisplay() {
-		tags.update(ClientServiceProvider.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
+		tags.update(ClientServices.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
 	}
 
 	public void updateDetails(final SubjectDetailUpdateEvent event) {
@@ -509,7 +509,7 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	private Release getProjectRelease() {
-		return ClientServiceProvider.getCurrentProjectContext().getProjectRelease();
+		return ClientServices.getCurrentProjectContext().getProjectRelease();
 	}
 
 	private Release getCurrentRelease() {
@@ -712,7 +712,7 @@ public class ScopeTreeItemWidget extends Composite {
 			selectionColor = selectionsList.get(0).getColor();
 			final ArrayList<String> selectionNames = new ArrayList<String>();
 			for (final Selection s : selectionsList) {
-				final User user = ClientServiceProvider.get().userData().retrieveRealUser(s.getUser());
+				final User user = ClientServices.get().userData().retrieveRealUser(s.getUser());
 				final String name = user.getName();
 				if (!selectionNames.contains(name)) selectionNames.add(name);
 			}

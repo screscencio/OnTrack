@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectAuthorizationCallback;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DraggableMembersListWidget;
@@ -112,10 +112,10 @@ public class RemoveMembersWidget extends Composite implements HasCloseHandlers<R
 		}
 
 		private void removeUser(final UserRepresentation user) {
-			ClientServiceProvider.get().projectRepresentationProvider().unauthorizeUser(user, new ProjectAuthorizationCallback() {
+			ClientServices.get().projectRepresentationProvider().unauthorizeUser(user, new ProjectAuthorizationCallback() {
 				@Override
 				public void onSuccess() {
-					ClientServiceProvider.get().alerting()
+					ClientServices.get().alerting()
 							.showSuccess(messages.userRemoved());
 				}
 
@@ -124,7 +124,7 @@ public class RemoveMembersWidget extends Composite implements HasCloseHandlers<R
 					final boolean knownError = caught instanceof UnableToRemoveAuthorizationException;
 					if (!knownError) caught.printStackTrace();
 
-					ClientServiceProvider.get().alerting()
+					ClientServices.get().alerting()
 							.showError(knownError ? messages.cantRemoveAdmin() : messages.userRemoveFailed());
 				}
 			});
