@@ -33,7 +33,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class PlanningActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private PlanningView view;
 	private List<HandlerRegistration> registrations;
@@ -57,17 +57,17 @@ public class PlanningActivity extends AbstractActivity {
 		view = new PlanningPanel();
 		view.setVisible(false);
 
-		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
+		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.actionExecution();
 		projectContext = ClientServiceProvider.getCurrentProjectContext();
 
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
 
-		view.getApplicationMenu().setProjectName(ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent().getName());
+		view.getApplicationMenu().setProjectName(ClientServiceProvider.get().projectRepresentationProvider().getCurrent().getName());
 		view.getApplicationMenu().setBackButtonVisibility(false);
 		view.getApplicationMenu().clearCustomMenuItems();
 
-		SERVICE_PROVIDER.getProjectRepresentationProvider().registerProjectListChangeListener(getProjectRepresentationListener());
+		SERVICE_PROVIDER.projectRepresentationProvider().registerProjectListChangeListener(getProjectRepresentationListener());
 
 		view.getScopeTree().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setActionExecutionRequestHandler(actionExecutionService);
@@ -77,8 +77,8 @@ public class PlanningActivity extends AbstractActivity {
 		view.getReleasePanel().setRelease(projectContext.getProjectRelease());
 
 		panel.setWidget(view);
-		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingMenu());
-		registrations.add(ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingMenu());
+		registrations.add(ShortcutService.register(view, SERVICE_PROVIDER.actionExecution(), UndoRedoShortCutMapping.values()));
 		registrations.add(ShortcutService.register(view, view.getApplicationMenu(), ApplicationMenuShortcutMapping.values()));
 		registrations.add(ShortcutService.register(view, this, PlanningShortcutMappings.values()));
 		registrations.add(ShortcutService.configureShortcutHelpPanel(view.getAlertingMenu()));
@@ -92,8 +92,8 @@ public class PlanningActivity extends AbstractActivity {
 
 		if (filteredTagId != null) view.getScopeTree().filterByTag(filteredTagId);
 
-		SERVICE_PROVIDER.getClientApplicationStateService().restore(selectedScopeId);
-		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
+		SERVICE_PROVIDER.applicationState().restore(selectedScopeId);
+		SERVICE_PROVIDER.applicationState().startRecording();
 
 		mouseHelper.register(eventBus, actionExecutionService, view.getScopeTree().getScopeTreeInternalActionHandler(), projectContext, view.getScopeTree()
 				.getSelected());
@@ -128,9 +128,9 @@ public class PlanningActivity extends AbstractActivity {
 	@Override
 	public void onStop() {
 		mouseHelper.unregister();
-		SERVICE_PROVIDER.getClientApplicationStateService().stopRecording();
-		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
-		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
+		SERVICE_PROVIDER.applicationState().stopRecording();
+		SERVICE_PROVIDER.actionExecution().removeActionExecutionListener(activityActionExecutionListener);
+		SERVICE_PROVIDER.alerting().clearAlertingParentWidget();
 		projectContext = null;
 
 		for (final HandlerRegistration registration : registrations) {
@@ -139,7 +139,7 @@ public class PlanningActivity extends AbstractActivity {
 	}
 
 	private HandlerRegistration registerScopeSelectionEventHandler() {
-		return ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+		return ClientServiceProvider.get().eventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 			private ReleaseScopeWidget selectedScope;
 
 			@Override

@@ -116,7 +116,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	private void setupSelectionEventHandlers() {
 		if (!selectionEventHandlers.isEmpty()) return;
 
-		final EventBus eventBus = ClientServiceProvider.getInstance().getEventBus();
+		final EventBus eventBus = ClientServiceProvider.get().eventBus();
 		selectionEventHandlers.add(eventBus.addHandler(ReleaseSelectionEvent.getType(), new ReleaseSelectionEventHandler() {
 			@Override
 			public void onReleaseSelection(final ReleaseSelectionEvent event) {
@@ -176,7 +176,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 	@UiHandler("planningLink")
 	void onPlanningLinkClicked(final ClickEvent e) {
-		ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new PlanningPlace(projectRepresentation));
+		ClientServiceProvider.get().placeController().goTo(new PlanningPlace(projectRepresentation));
 	}
 
 	@Override
@@ -193,8 +193,8 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 		scopesList.update(scopeList);
 		scopesDeck.showWidget(scopeList.isEmpty() ? 0 : 1);
 		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, new ReleaseEstimator(getProjectRelease()), ClientServiceProvider
-				.getInstance()
-				.getActionExecutionService());
+				.get()
+				.actionExecution());
 
 		chart = new ReleaseChart(false);
 		chartPanel.setWidget(chart);
@@ -248,15 +248,15 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 		if (hasStartedUp) return;
 
 		loadingDeck.showWidget(0);
-		ClientServiceProvider.getInstance().getContextProviderService().loadProjectContext(projectRepresentation.getId(), new ProjectContextLoadCallback() {
+		ClientServiceProvider.get().contextProvider().loadProjectContext(projectRepresentation.getId(), new ProjectContextLoadCallback() {
 			@Override
 			public void onUnexpectedFailure(final Throwable cause) {
-				ClientServiceProvider.getInstance().getClientAlertingService().showError(cause.getLocalizedMessage());
+				ClientServiceProvider.get().alerting().showError(cause.getLocalizedMessage());
 			}
 
 			@Override
 			public void onProjectNotFound() {
-				ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.projectNotFound());
+				ClientServiceProvider.get().alerting().showError(messages.projectNotFound());
 			}
 
 			@Override

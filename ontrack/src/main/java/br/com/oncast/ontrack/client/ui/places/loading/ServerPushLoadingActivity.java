@@ -13,7 +13,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ServerPushLoadingActivity extends AbstractActivity {
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private final ServerPushLoadingMessages messages = GWT.create(ServerPushLoadingMessages.class);
 
@@ -33,7 +33,7 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 		panel.setWidget(view);
 		view.setMainMessage(messages.establishingConnection());
 
-		SERVICE_PROVIDER.getServerPushClientService().onConnected(new ServerPushConnectionCallback() {
+		SERVICE_PROVIDER.serverPush().onConnected(new ServerPushConnectionCallback() {
 			@Override
 			public void connected() {
 				validateConnection();
@@ -45,23 +45,23 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 				treatUnexpectedFailure(cause, messages.couldNotConnectToServer());
 			}
 		});
-		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
+		SERVICE_PROVIDER.alerting().clearAlertingParentWidget();
 	}
 
 	private void validateConnection() {
-		if (!SERVICE_PROVIDER.getServerPushClientService().isConnected()) return;
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(destinationPlace);
+		if (!SERVICE_PROVIDER.serverPush().isConnected()) return;
+		SERVICE_PROVIDER.placeController().goTo(destinationPlace);
 	}
 
 	private void treatUnexpectedFailure(final Throwable cause, final String message) {
 		// TODO +++Treat communication failure.
 		cause.printStackTrace();
-		SERVICE_PROVIDER.getClientAlertingService().showErrorWithConfirmation(message, new AlertConfirmationListener() {
+		SERVICE_PROVIDER.alerting().showErrorWithConfirmation(message, new AlertConfirmationListener() {
 			@Override
 			public void onConfirmation() {
 				Window.Location.reload();

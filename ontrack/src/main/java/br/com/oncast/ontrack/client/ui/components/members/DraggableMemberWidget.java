@@ -85,7 +85,7 @@ public class DraggableMemberWidget extends Composite implements ModelWidget<User
 
 	@UiHandler("removeBtn")
 	protected void onRemoveClick(final ClickEvent event) {
-		ClientServiceProvider.getInstance().getActionExecutionService()
+		ClientServiceProvider.get().actionExecution()
 				.onUserActionExecutionRequest(new ScopeRemoveAssociatedUserAction(association.getId(), user.getId()));
 	}
 

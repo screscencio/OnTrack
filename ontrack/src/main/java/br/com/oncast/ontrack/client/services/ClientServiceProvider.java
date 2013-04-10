@@ -108,7 +108,7 @@ public class ClientServiceProvider {
 
 	private static ClientServiceProvider instance;
 
-	public static ClientServiceProvider getInstance() {
+	public static ClientServiceProvider get() {
 		if (instance != null) return instance;
 		return instance = new ClientServiceProvider();
 	}
@@ -126,164 +126,163 @@ public class ClientServiceProvider {
 	 * @param defaultAppPlace the default place used by the {@link ApplicationPlaceController} "navigation".
 	 */
 	public void configure(final AcceptsOneWidget panel, final Place defaultAppPlace) {
-		getAuthenticationService().registerAuthenticationExceptionGlobalHandler();
-		getAuthorizationService().registerAuthorizationExceptionGlobalHandler();
-		getActionSyncService();
-		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
-				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), getClientStorageService());
-		getColorProviderService();
+		authentication().registerAuthenticationExceptionGlobalHandler();
+		authorization().registerAuthorizationExceptionGlobalHandler();
+		actionSync();
+		placeController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
+				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), storage());
+		colorProvider();
 	}
 
-	private AuthorizationService getAuthorizationService() {
+	private AuthorizationService authorization() {
 		if (authorizationService != null) return authorizationService;
-		return authorizationService = new AuthorizationServiceImpl(getRequestDispatchService(), getApplicationPlaceController(), getContextProviderService());
+		return authorizationService = new AuthorizationServiceImpl(request(), placeController(), contextProvider());
 	}
 
-	public AuthenticationService getAuthenticationService() {
+	public AuthenticationService authentication() {
 		if (authenticationService != null) return authenticationService;
-		return authenticationService = new AuthenticationServiceImpl(getRequestDispatchService(), getApplicationPlaceController(),
-				getServerPushClientService());
+		return authenticationService = new AuthenticationServiceImpl(request(), placeController(),
+				serverPush());
 	}
 
-	public ApplicationPlaceController getApplicationPlaceController() {
+	public ApplicationPlaceController placeController() {
 		if (placeController != null) return placeController;
-		return placeController = new ApplicationPlaceController(getEventBus());
+		return placeController = new ApplicationPlaceController(eventBus());
 	}
 
-	public ProjectRepresentationProvider getProjectRepresentationProvider() {
+	public ProjectRepresentationProvider projectRepresentationProvider() {
 		if (projectRepresentationProvider != null) return projectRepresentationProvider;
-		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(getRequestDispatchService(), getServerPushClientService(),
-				getAuthenticationService(), getClientAlertingService(), getClientErrorMessages());
+		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(request(), serverPush(),
+				authentication(), alerting(), errorMessages());
 	}
 
-	public ClientAlertingService getClientAlertingService() {
+	public ClientAlertingService alerting() {
 		if (alertService != null) return alertService;
 		return alertService = new ClientAlertingService();
 	}
 
-	public ActionExecutionService getActionExecutionService() {
+	public ActionExecutionService actionExecution() {
 		if (actionExecutionService != null) return actionExecutionService;
-		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService(), getClientAlertingService(),
-				getProjectRepresentationProvider(), getApplicationPlaceController(), getAuthenticationService());
+		return actionExecutionService = new ActionExecutionServiceImpl(contextProvider(), alerting(),
+				projectRepresentationProvider(), placeController(), authentication());
 	}
 
-	public ContextProviderService getContextProviderService() {
+	public ContextProviderService contextProvider() {
 		if (contextProviderService != null) return contextProviderService;
-		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) getProjectRepresentationProvider(),
-				getRequestDispatchService(), getAuthenticationService());
+		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) projectRepresentationProvider(),
+				request(), authentication());
 	}
 
-	public FeedbackService getFeedbackService() {
+	public FeedbackService feedback() {
 		if (feedbackService != null) return feedbackService;
-		return feedbackService = new FeedbackServiceImpl(getRequestDispatchService());
+		return feedbackService = new FeedbackServiceImpl(request());
 	}
 
-	private DispatchService getRequestDispatchService() {
+	private DispatchService request() {
 		if (requestDispatchService != null) return requestDispatchService;
 		return requestDispatchService = new DispatchServiceDefault(new RequestBuilderConfigurator() {
-
 			@Override
 			public void configureRequestBuilder(final RequestBuilder requestBuilder) {
 				requestBuilder
-						.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME, getServerPushClientService().getConnectionID());
+						.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME, serverPush().getConnectionID());
 			}
 		});
 	}
 
-	private ActionSyncService getActionSyncService() {
+	private ActionSyncService actionSync() {
 		if (actionSyncService != null) return actionSyncService;
-		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
-				getProjectRepresentationProvider(), getClientAlertingService(), getClientErrorMessages());
+		return actionSyncService = new ActionSyncService(request(), serverPush(), actionExecution(),
+				projectRepresentationProvider(), alerting(), errorMessages());
 	}
 
-	public ServerPushClientService getServerPushClientService() {
+	public ServerPushClientService serverPush() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientServiceImpl(getClientAlertingService(), getClientErrorMessages());
+		return serverPushClientService = new ServerPushClientServiceImpl(alerting(), errorMessages());
 	}
 
-	public EventBus getEventBus() {
+	public EventBus eventBus() {
 		if (eventBus != null) return eventBus;
 		return eventBus = new SimpleEventBus();
 	}
 
-	public ClientApplicationStateService getClientApplicationStateService() {
-		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(getEventBus(),
-				getContextProviderService(), getClientStorageService(), getClientAlertingService(), getClientErrorMessages()) : clientApplicationStateService;
+	public ClientApplicationStateService applicationState() {
+		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(eventBus(),
+				contextProvider(), storage(), alerting(), errorMessages()) : clientApplicationStateService;
 	}
 
-	public ClientStorageService getClientStorageService() {
-		if (clientStorageService == null) clientStorageService = new Html5StorageClientStorageService(getAuthenticationService(),
-				getProjectRepresentationProvider());
+	public ClientStorageService storage() {
+		if (clientStorageService == null) clientStorageService = new Html5StorageClientStorageService(authentication(),
+				projectRepresentationProvider());
 		return clientStorageService;
 	}
 
-	public DetailService getDetailsService() {
+	public DetailService details() {
 		if (annotationService != null) return annotationService;
-		return annotationService = new DetailServiceImpl(getActionExecutionService(), getContextProviderService(),
-				getApplicationPlaceController(), getEventBus());
+		return annotationService = new DetailServiceImpl(actionExecution(), contextProvider(),
+				placeController(), eventBus());
 	}
 
-	public UserDataService getUserDataService() {
-		if (userDataService == null) userDataService = new UserDataServiceImpl(getRequestDispatchService(), getContextProviderService(),
-				getServerPushClientService());
+	public UserDataService userData() {
+		if (userDataService == null) userDataService = new UserDataServiceImpl(request(), contextProvider(),
+				serverPush());
 		return userDataService;
 	}
 
-	public ChecklistService getChecklistService() {
-		if (checklistService == null) checklistService = new ChecklistServiceImpl(getActionExecutionService());
+	public ChecklistService checklists() {
+		if (checklistService == null) checklistService = new ChecklistServiceImpl(actionExecution());
 		return checklistService;
 	}
 
-	public NotificationService getNotificationService() {
-		if (notificationService == null) notificationService = new NotificationService(getRequestDispatchService(), getServerPushClientService(),
-				getProjectRepresentationProvider(), getClientAlertingService());
+	public NotificationService notifications() {
+		if (notificationService == null) notificationService = new NotificationService(request(), serverPush(),
+				projectRepresentationProvider(), alerting());
 		return notificationService;
 	}
 
-	public UsersStatusService getUsersStatusService() {
-		if (usersStatusService == null) usersStatusService = new UsersStatusServiceImpl(getRequestDispatchService(), getContextProviderService(),
-				getServerPushClientService(), getEventBus());
+	public UsersStatusService usersStatus() {
+		if (usersStatusService == null) usersStatusService = new UsersStatusServiceImpl(request(), contextProvider(),
+				serverPush(), eventBus());
 		return usersStatusService;
 	}
 
-	public ColorProviderService getColorProviderService() {
-		if (colorProviderService == null) colorProviderService = new ColorProviderServiceImpl(getRequestDispatchService(),
-				getContextProviderService(), getServerPushClientService(), getEventBus(), getUsersStatusService(), new ColorPicker(), new ColorPackPicker());
+	public ColorProviderService colorProvider() {
+		if (colorProviderService == null) colorProviderService = new ColorProviderServiceImpl(request(),
+				contextProvider(), serverPush(), eventBus(), usersStatus(), new ColorPicker(), new ColorPackPicker());
 		return colorProviderService;
 	}
 
-	public ClientErrorMessages getClientErrorMessages() {
+	public ClientErrorMessages errorMessages() {
 		return clientErrorMessages == null ? clientErrorMessages = GWT.create(ClientErrorMessages.class) : clientErrorMessages;
 	}
 
-	public UserGuidService getUserGuideService() {
+	public UserGuidService userGuide() {
 		return userGuidService == null ? userGuidService = new UserGuideServiceImpl() : userGuidService;
 	}
 
-	public UserAssociationService getUserAssociationService() {
-		return userAssociationService == null ? userAssociationService = new UserAssociationServiceImpl(getActionExecutionService(),
-				getContextProviderService()) : userAssociationService;
+	public UserAssociationService userAssociation() {
+		return userAssociationService == null ? userAssociationService = new UserAssociationServiceImpl(actionExecution(),
+				contextProvider()) : userAssociationService;
 	}
 
-	public ReleaseEstimatorProvider getReleaseEstimatorProvider() {
-		return releaseEstimatorProvider == null ? releaseEstimatorProvider = new ReleaseEstimatorProvider(getContextProviderService())
+	public ReleaseEstimatorProvider releaseEstimator() {
+		return releaseEstimatorProvider == null ? releaseEstimatorProvider = new ReleaseEstimatorProvider(contextProvider())
 				: releaseEstimatorProvider;
 	}
 
 	public static ProjectContext getCurrentProjectContext() {
-		return getInstance().getContextProviderService().getCurrent();
+		return get().contextProvider().getCurrent();
 	}
 
 	public static UUID getCurrentUser() {
-		return getInstance().getAuthenticationService().getCurrentUserId();
+		return get().authentication().getCurrentUserId();
 	}
 
 	public ClientMetricsService getClientMetricsService() {
-		return clientMetricsService == null ? clientMetricsService = new ClientMetricsServiceImpl(getRequestDispatchService()) : clientMetricsService;
+		return clientMetricsService == null ? clientMetricsService = new ClientMetricsServiceImpl(request()) : clientMetricsService;
 	}
 
 	public TimesheetService getTimesheetService() {
-		if (timesheetService == null) timesheetService = new TimesheetServiceImpl(getApplicationPlaceController(), getContextProviderService());
+		if (timesheetService == null) timesheetService = new TimesheetServiceImpl(placeController(), contextProvider());
 		return timesheetService;
 	}
 }

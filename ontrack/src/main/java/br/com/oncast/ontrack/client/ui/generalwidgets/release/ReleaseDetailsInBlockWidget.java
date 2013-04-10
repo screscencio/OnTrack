@@ -120,7 +120,7 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 	}
 
 	private ReleaseEstimator getEstimator() {
-		return ClientServiceProvider.getInstance().getReleaseEstimatorProvider().get();
+		return ClientServiceProvider.get().releaseEstimator().get();
 	}
 
 	private String round(final float number) {

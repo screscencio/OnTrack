@@ -122,7 +122,7 @@ public class UploadWidget extends Composite {
 			return;
 		}
 
-		ClientServiceProvider.getInstance().getClientAlertingService().showInfo(messages.uploading());
+		ClientServiceProvider.get().alerting().showInfo(messages.uploading());
 		final FormPanel form = getForm();
 		getProjectId().setValue(getCurrentProject().getId().toString());
 		getFileName().setValue(filename);
@@ -200,7 +200,7 @@ public class UploadWidget extends Composite {
 					final UploadResponse response = AutoBeanCodex.decode(factory, UploadResponse.class, ResponseParser.getPlainTextResult(event)).as();
 					if (response.getStatus().equals("error")) {
 						getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
-						ClientServiceProvider.getInstance().getClientAlertingService()
+						ClientServiceProvider.get().alerting()
 								.showError(response.getMessage().selectMessage(messages, response.getMaxSize()));
 					} // success handled with actionExecutionListener
 				}
@@ -210,7 +210,7 @@ public class UploadWidget extends Composite {
 	}
 
 	private ProjectRepresentation getCurrentProject() {
-		return ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent();
+		return ClientServiceProvider.get().projectRepresentationProvider().getCurrent();
 	}
 
 	private ActionExecutionListener getActionExecutionListener(final UUID uuid, final UploadWidgetListener listener) {
@@ -220,7 +220,7 @@ public class UploadWidget extends Composite {
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof FileUploadAction && action.getReferenceId().equals(uuid)) {
 					getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
-					ClientServiceProvider.getInstance().getClientAlertingService().showSuccess(messages.uploadCompleted());
+					ClientServiceProvider.get().alerting().showSuccess(messages.uploadCompleted());
 					listener.onUploadCompleted(action.getReferenceId());
 				}
 			}
@@ -229,7 +229,7 @@ public class UploadWidget extends Composite {
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.getInstance().getActionExecutionService();
+		return ClientServiceProvider.get().actionExecution();
 	}
 
 	private static native void clickOnInputFile(Element elem) /*-{

@@ -139,7 +139,7 @@ public class OnTrackMetricsPanel extends Composite {
 		projects = new HashMap<String, ProjectMetricsWidget>();
 		metricsCache = new HashMap<Long, OnTrackServerMetrics>();
 		usersCache = new HashMap<String, User>();
-		metricsList = ClientServiceProvider.getInstance().getClientStorageService().loadOnTrackServerMetricsList();
+		metricsList = ClientServiceProvider.get().storage().loadOnTrackServerMetricsList();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -200,7 +200,7 @@ public class OnTrackMetricsPanel extends Composite {
 		metricsCache.put(statistic.getTimestamp().getTime(), statistic);
 
 		for (final String user : statistic.getOnlineUsers()) {
-			ClientServiceProvider.getInstance().getUserDataService().loadRealUser(new UUID(user), new AsyncCallback<User>() {
+			ClientServiceProvider.get().userData().loadRealUser(new UUID(user), new AsyncCallback<User>() {
 				@Override
 				public void onFailure(final Throwable caught) {}
 
@@ -250,7 +250,7 @@ public class OnTrackMetricsPanel extends Composite {
 
 	private void update() {
 		setOptionsEnabled(false);
-		ClientServiceProvider.getInstance().getClientMetricsService().getMetrics(new AsyncCallback<OnTrackServerMetrics>() {
+		ClientServiceProvider.get().getClientMetricsService().getMetrics(new AsyncCallback<OnTrackServerMetrics>() {
 
 			@Override
 			public void onSuccess(final OnTrackServerMetrics statistic) {
@@ -281,7 +281,7 @@ public class OnTrackMetricsPanel extends Composite {
 			}
 
 			private void showError(final Throwable caught) {
-				ClientServiceProvider.getInstance().getClientAlertingService().showError(caught.getLocalizedMessage());
+				ClientServiceProvider.get().alerting().showError(caught.getLocalizedMessage());
 			}
 		});
 	}
@@ -527,7 +527,7 @@ public class OnTrackMetricsPanel extends Composite {
 	}
 
 	private void storeStatistics() {
-		ClientServiceProvider.getInstance().getClientStorageService().appendOnTrackServerMetrics(metricsList);
+		ClientServiceProvider.get().storage().appendOnTrackServerMetrics(metricsList);
 	}
 
 }

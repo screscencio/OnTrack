@@ -74,7 +74,7 @@ public class ScopeTree implements Component {
 				}
 				catch (final ModelBeanNotFoundException e) {
 					// TODO ++Resync and Redraw the entire structure to eliminate inconsistencies
-					throw new RuntimeException(ClientServiceProvider.getInstance().getClientErrorMessages().modelInconsistency(), e);
+					throw new RuntimeException(ClientServiceProvider.get().errorMessages().modelInconsistency(), e);
 				}
 			}
 		};

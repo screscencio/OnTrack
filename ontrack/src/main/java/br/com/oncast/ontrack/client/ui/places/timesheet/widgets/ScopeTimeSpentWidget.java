@@ -42,7 +42,7 @@ public class ScopeTimeSpentWidget implements IsWidget, IsSelectable {
 					return true;
 				}
 				catch (final NumberFormatException e) {
-					ClientServiceProvider.getInstance().getClientAlertingService().showWarning(MESSAGES.shoulBeAValidNumber());
+					ClientServiceProvider.get().alerting().showWarning(MESSAGES.shoulBeAValidNumber());
 					return false;
 				}
 			}
@@ -65,7 +65,7 @@ public class ScopeTimeSpentWidget implements IsWidget, IsSelectable {
 	}
 
 	private void launchAction(final UUID scopeId, final Float newAppointment) {
-		ClientServiceProvider.getInstance().getActionExecutionService().onUserActionExecutionRequest(new ScopeDeclareTimeSpentAction(scopeId, newAppointment));
+		ClientServiceProvider.get().actionExecution().onUserActionExecutionRequest(new ScopeDeclareTimeSpentAction(scopeId, newAppointment));
 	}
 
 	@Override

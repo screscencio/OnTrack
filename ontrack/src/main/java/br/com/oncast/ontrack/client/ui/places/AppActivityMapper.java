@@ -29,18 +29,18 @@ public class AppActivityMapper implements ActivityMapper {
 
 	@Override
 	public Activity getActivity(final Place place) {
-		if (!services.getServerPushClientService().isConnected()) return activityFactory.getConnectServerPushLoadingActivity(place);
+		if (!services.serverPush().isConnected()) return activityFactory.getConnectServerPushLoadingActivity(place);
 
 		if (place instanceof LoginPlace) return activityFactory.getLoginActivity((LoginPlace) place);
 
-		if (!services.getAuthenticationService().isUserAvailable()) return activityFactory.getUserInformationLoadingActivity(place);
+		if (!services.authentication().isUserAvailable()) return activityFactory.getUserInformationLoadingActivity(place);
 
 		if (place instanceof ProjectDependentPlace) {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;
 			final UUID requestedProjectId = projectDependentPlace.getRequestedProjectId();
 
 			if (requestedProjectId == null || !requestedProjectId.isValid()) return activityFactory.getProjectSelectionActivity();
-			if (!services.getContextProviderService().isContextAvailable(requestedProjectId)) return activityFactory
+			if (!services.contextProvider().isContextAvailable(requestedProjectId)) return activityFactory
 					.getContextLoadingActivity(projectDependentPlace);
 		}
 

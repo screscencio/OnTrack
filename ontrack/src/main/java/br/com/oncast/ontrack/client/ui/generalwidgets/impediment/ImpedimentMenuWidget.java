@@ -69,7 +69,7 @@ public class ImpedimentMenuWidget extends Composite implements ModelWidget<Annot
 						new ImpedimentSolveAction(subject.getId(), impediment.getId()) :
 						new ImpedimentCreateAction(subject.getId(), impediment.getId());
 
-		ClientServiceProvider.getInstance().getActionExecutionService().onUserActionExecutionRequest(action);
+		ClientServiceProvider.get().actionExecution().onUserActionExecutionRequest(action);
 	}
 
 	@Override

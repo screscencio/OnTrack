@@ -16,8 +16,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DescriptionWidget extends Composite {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
-	private static final ContextProviderService CONTEXT_PROVIDER_SERVICE = SERVICE_PROVIDER.getContextProviderService();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ContextProviderService CONTEXT_PROVIDER_SERVICE = SERVICE_PROVIDER.contextProvider();
 
 	private static DescriptionWidgetUiBinder uiBinder = GWT.create(DescriptionWidgetUiBinder.class);
 
@@ -35,7 +35,7 @@ public class DescriptionWidget extends Composite {
 		descriptionLabel = new DescriptionRichTextLabel(new EditableLabelEditionHandler() {
 			@Override
 			public boolean onEditionRequest(final String text) {
-				SERVICE_PROVIDER.getDetailsService().updateDescription(getCurrentId(), text);
+				SERVICE_PROVIDER.details().updateDescription(getCurrentId(), text);
 				return true;
 			}
 

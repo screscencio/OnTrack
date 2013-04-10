@@ -70,7 +70,7 @@ public class OrganizationPanel extends Composite {
 	private void registerProjectListChangeListener() {
 		if (!handlerRegistrations.isEmpty()) return;
 
-		handlerRegistrations.add(ClientServiceProvider.getInstance().getProjectRepresentationProvider()
+		handlerRegistrations.add(ClientServiceProvider.get().projectRepresentationProvider()
 				.registerProjectListChangeListener(new ProjectListChangeListener() {
 					private boolean shouldSelectAProject = true;
 

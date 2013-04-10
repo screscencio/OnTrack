@@ -19,13 +19,13 @@ import com.google.gwt.user.client.Command;
 
 public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeItemWidgetCommandMenuItemFactory {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private final ScopeTreeItemWidgetEditionHandler controller;
 
 	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
 
-	private ColorPack cachedColors = SERVICE_PROVIDER.getColorProviderService().pickColorPack();
+	private ColorPack cachedColors = SERVICE_PROVIDER.colorProvider().pickColorPack();
 
 	public ScopeTreeItemWidgetTagCommandMenuItemFactory(final ScopeTreeItemWidgetEditionHandler controller) {
 		this.controller = controller;
@@ -46,7 +46,7 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 					public void execute() {
 						launchAction(new TagCreateAction(controller.getScope().getId(), inputText, tag.getColorPack().getForeground(), tag
 								.getColorPack().getBackground()));
-						cachedColors = SERVICE_PROVIDER.getColorProviderService().pickColorPack();
+						cachedColors = SERVICE_PROVIDER.colorProvider().pickColorPack();
 					}
 				}).setGrowAnimation(false);
 	}
@@ -72,7 +72,7 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 
 	private Tag getTagForDescription(final String itemText) {
 		try {
-			return SERVICE_PROVIDER.getContextProviderService().getCurrent().findTag(itemText);
+			return SERVICE_PROVIDER.contextProvider().getCurrent().findTag(itemText);
 		}
 		catch (final TagNotFoundException e) {
 			throw new RuntimeException(e);
@@ -84,7 +84,7 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 	}
 
 	private void launchAction(final TagAction action) {
-		SERVICE_PROVIDER.getActionExecutionService().onUserActionExecutionRequest(action);
+		SERVICE_PROVIDER.actionExecution().onUserActionExecutionRequest(action);
 	}
 
 	// FIXME LOBO REmover esse metodo que nao eh mais usado faz um tempo

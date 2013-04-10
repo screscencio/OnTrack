@@ -40,11 +40,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class UserWidget extends Composite {
 
-	private static final UserDataService USER_DATA_SERVICE = ClientServiceProvider.getInstance().getUserDataService();
+	private static final UserDataService USER_DATA_SERVICE = ClientServiceProvider.get().userData();
 
-	private static final UsersStatusService USERS_STATUS_SERVICE = ClientServiceProvider.getInstance().getUsersStatusService();
+	private static final UsersStatusService USERS_STATUS_SERVICE = ClientServiceProvider.get().usersStatus();
 
-	protected static final ColorProviderService COLOR_PROVIDER = ClientServiceProvider.getInstance().getColorProviderService();
+	protected static final ColorProviderService COLOR_PROVIDER = ClientServiceProvider.get().colorProvider();
 
 	private static UserWidgetUiBinder uiBinder = GWT.create(UserWidgetUiBinder.class);
 
@@ -150,7 +150,7 @@ public class UserWidget extends Composite {
 
 		}));
 
-		registrationListener.add(ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(new ActionExecutionListener() {
+		registrationListener.add(ClientServiceProvider.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet,
@@ -185,10 +185,10 @@ public class UserWidget extends Composite {
 	}
 
 	private void updateInfo(final User user) {
-		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
+		final ClientServiceProvider provider = ClientServiceProvider.get();
 		userWithoutImage.setText(user.getName().substring(0, 1));
 
-		provider.getUserDataService().hasAvatarInGravatar(user, new UserHasGravatarCallback() {
+		provider.userData().hasAvatarInGravatar(user, new UserHasGravatarCallback() {
 
 			@Override
 			public void onResponseReceived(final boolean hasGravatarAvatar) {
@@ -196,7 +196,7 @@ public class UserWidget extends Composite {
 				else showLabel();
 			}
 		});
-		userImage.setUrl(provider.getUserDataService().getAvatarUrl(user));
+		userImage.setUrl(provider.userData().getAvatarUrl(user));
 		userImageContainer.setTitle(user.getName());
 		activeIndicator.setStyleName(style.showActiveColor(), showActiveColor);
 

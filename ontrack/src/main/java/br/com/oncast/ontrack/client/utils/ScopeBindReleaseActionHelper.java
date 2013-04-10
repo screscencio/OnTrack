@@ -36,7 +36,7 @@ public class ScopeBindReleaseActionHelper {
 		while (!scopes.isEmpty()) {
 			final Scope s = scopes.poll();
 			if (s.getRelease() != null) {
-				ClientServiceProvider.getInstance().getClientAlertingService()
+				ClientServiceProvider.get().alerting()
 						.showWarning(message.cantBindReleaseBecauseOfADescendant(s.getDescription()), ClientAlertingService.DURATION_LONG);
 				return false;
 			}
@@ -50,7 +50,7 @@ public class ScopeBindReleaseActionHelper {
 		while (!s.isRoot()) {
 			s = s.getParent();
 			if (s.getRelease() != null) {
-				ClientServiceProvider.getInstance().getClientAlertingService()
+				ClientServiceProvider.get().alerting()
 						.showWarning(message.cantBindReleaseBecauseOfAnAncestor(s.getDescription()), ClientAlertingService.DURATION_LONG);
 				return false;
 			}

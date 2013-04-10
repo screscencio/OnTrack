@@ -80,12 +80,12 @@ public class ChecklistsContainerWidget extends Composite {
 	@Override
 	protected void onLoad() {
 		hideNewChecklistTitle();
-		getProvider().getActionExecutionService().addActionExecutionListener(getActionExecutionListener());
+		getProvider().actionExecution().addActionExecutionListener(getActionExecutionListener());
 	}
 
 	@Override
 	protected void onUnload() {
-		getProvider().getActionExecutionService().removeActionExecutionListener(getActionExecutionListener());
+		getProvider().actionExecution().removeActionExecutionListener(getActionExecutionListener());
 	}
 
 	@UiHandler("newChecklistTitle")
@@ -127,12 +127,12 @@ public class ChecklistsContainerWidget extends Composite {
 	private void createChecklist() {
 		final String checklistTitle = this.newChecklistTitle.getText();
 		if (checklistTitle.trim().isEmpty()) {
-			ClientServiceProvider.getInstance().getClientAlertingService().showWarning(messages.emptyChecklistTitleError());
+			ClientServiceProvider.get().alerting().showWarning(messages.emptyChecklistTitleError());
 			newChecklistTitle.setFocus(true);
 			return;
 		}
 
-		getProvider().getChecklistService().addChecklist(subjectId, checklistTitle);
+		getProvider().checklists().addChecklist(subjectId, checklistTitle);
 		hideNewChecklistTitle();
 		newChecklistTitle.setText("");
 	}
@@ -147,7 +147,7 @@ public class ChecklistsContainerWidget extends Composite {
 	}
 
 	private ClientServiceProvider getProvider() {
-		return ClientServiceProvider.getInstance();
+		return ClientServiceProvider.get();
 	}
 
 }

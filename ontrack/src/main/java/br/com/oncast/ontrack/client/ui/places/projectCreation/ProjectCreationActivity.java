@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ProjectCreationActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private final ProjectCreationMessages messages = GWT.create(ProjectCreationMessages.class);
 
@@ -33,7 +33,7 @@ public class ProjectCreationActivity extends AbstractActivity {
 
 		final String projectName = projectCreationPlace.getProjectName();
 		view.setMainMessage(messages.creatingProject(projectName));
-		ClientServiceProvider.getInstance().getProjectRepresentationProvider()
+		ClientServiceProvider.get().projectRepresentationProvider()
 				.createNewProject(projectName, new ProjectCreationListener() {
 
 					@Override
@@ -44,7 +44,7 @@ public class ProjectCreationActivity extends AbstractActivity {
 					@Override
 					public void onProjectCreationFailure() {
 						// TODO +++Treat failure properly
-						SERVICE_PROVIDER.getClientAlertingService().showErrorWithConfirmation(
+						SERVICE_PROVIDER.alerting().showErrorWithConfirmation(
 								messages.projectCreationFailed(),
 								new AlertConfirmationListener() {
 									@Override
@@ -57,7 +57,7 @@ public class ProjectCreationActivity extends AbstractActivity {
 					@Override
 					public void onUnexpectedFailure() {
 						// TODO +++Treat failure properly
-						SERVICE_PROVIDER.getClientAlertingService().showErrorWithConfirmation(
+						SERVICE_PROVIDER.alerting().showErrorWithConfirmation(
 								messages.itWasNotPossibleToCreateTheProject(),
 								new AlertConfirmationListener() {
 									@Override
@@ -67,16 +67,16 @@ public class ProjectCreationActivity extends AbstractActivity {
 								});
 					}
 				});
-		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
+		SERVICE_PROVIDER.alerting().clearAlertingParentWidget();
 	}
 
 	protected void openProject(final ProjectRepresentation projectRepresentation) {
 		final PlanningPlace projectPlanningPlace = new PlanningPlace(projectRepresentation);
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectPlanningPlace);
+		SERVICE_PROVIDER.placeController().goTo(projectPlanningPlace);
 	}
 }

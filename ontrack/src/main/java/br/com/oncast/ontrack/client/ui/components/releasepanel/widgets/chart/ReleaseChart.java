@@ -121,8 +121,8 @@ public class ReleaseChart extends Composite {
 	}
 
 	public void setRelease(final Release release) {
-		setRelease(release, new ReleaseChartDataProvider(release, ClientServiceProvider.getInstance().getReleaseEstimatorProvider().get(),
-				ClientServiceProvider.getInstance().getActionExecutionService()));
+		setRelease(release, new ReleaseChartDataProvider(release, ClientServiceProvider.get().releaseEstimator().get(),
+				ClientServiceProvider.get().actionExecution()));
 	}
 
 	public void setRelease(final Release release, final ReleaseChartDataProvider dataProvider) {
@@ -456,7 +456,7 @@ public class ReleaseChart extends Composite {
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.getInstance().getActionExecutionService();
+		return ClientServiceProvider.get().actionExecution();
 	}
 
 	public ReleaseChart setUpdateListener(final ReleaseChartUpdateListener listener) {

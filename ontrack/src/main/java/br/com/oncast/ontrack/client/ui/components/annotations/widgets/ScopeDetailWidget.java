@@ -114,7 +114,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.getInstance().getActionExecutionService();
+		return ClientServiceProvider.get().actionExecution();
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {

@@ -19,7 +19,7 @@ public class NotificationClientUtils {
 	public static List<Notification> getUnreadNotificationsForCurrentUser(final List<Notification> notifications) {
 		final List<Notification> unread = new ArrayList<Notification>();
 		for (final Notification notification : notifications) {
-			if (!ClientServiceProvider.getInstance().getNotificationService().isImportant(notification)) continue;
+			if (!ClientServiceProvider.get().notifications().isImportant(notification)) continue;
 
 			final NotificationRecipient recipient = getRecipientForCurrentUser(notification);
 

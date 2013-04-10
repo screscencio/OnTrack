@@ -48,8 +48,8 @@ public class DeprecateAnnotationMenuItem extends Composite implements Annotation
 	void onClick(final ClickEvent e) {
 		if (readOnly) return;
 
-		if (annotation.isDeprecated()) ClientServiceProvider.getInstance().getDetailsService().removeDeprecation(subjectId, annotation.getId());
-		else ClientServiceProvider.getInstance().getDetailsService().deprecateAnnotation(subjectId, annotation.getId());
+		if (annotation.isDeprecated()) ClientServiceProvider.get().details().removeDeprecation(subjectId, annotation.getId());
+		else ClientServiceProvider.get().details().deprecateAnnotation(subjectId, annotation.getId());
 	}
 
 	@Override

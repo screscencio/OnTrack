@@ -38,7 +38,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class ProgressActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private KanbanActionSyncController kanbanActionSyncController;
 	private ProgressView view;
@@ -59,13 +59,13 @@ public class ProgressActivity extends AbstractActivity {
 		registrations = new ArrayList<HandlerRegistration>();
 
 		try {
-			projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(requestedProjectId);
+			projectContext = SERVICE_PROVIDER.contextProvider().getProjectContext(requestedProjectId);
 			release = projectContext.findRelease(requestedReleaseId);
 			final Kanban kanban = projectContext.getKanban(release);
 			view = new ProgressPanel(release, kanban);
-			view.getKanbanPanel().setActionExecutionService(SERVICE_PROVIDER.getActionExecutionService());
+			view.getKanbanPanel().setActionExecutionService(SERVICE_PROVIDER.actionExecution());
 
-			kanbanActionSyncController = new KanbanActionSyncController(SERVICE_PROVIDER.getActionExecutionService(), release, new Display() {
+			kanbanActionSyncController = new KanbanActionSyncController(SERVICE_PROVIDER.actionExecution(), release, new Display() {
 
 				@Override
 				public void update() {
@@ -81,7 +81,7 @@ public class ProgressActivity extends AbstractActivity {
 				public void updateReleaseInfo() {
 					updateCustomApplicationMenus();
 				}
-			}, ClientServiceProvider.getInstance().getClientErrorMessages());
+			}, ClientServiceProvider.get().errorMessages());
 		}
 		catch (final ReleaseNotFoundException e) {
 			exitToPlanningPlace();
@@ -92,7 +92,7 @@ public class ProgressActivity extends AbstractActivity {
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		if (view == null) throw new RuntimeException("The view wasnt initialized correctly.");
 
-		view.getApplicationMenu().setProjectName(ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent().getName());
+		view.getApplicationMenu().setProjectName(ClientServiceProvider.get().projectRepresentationProvider().getCurrent().getName());
 		view.getApplicationMenu().setBackButtonVisibility(true);
 
 		updateViewData();
@@ -101,16 +101,16 @@ public class ProgressActivity extends AbstractActivity {
 		panel.setWidget(view);
 
 		kanbanActionSyncController.registerActionExecutionListener();
-		view.registerActionExecutionHandler(SERVICE_PROVIDER.getActionExecutionService());
+		view.registerActionExecutionHandler(SERVICE_PROVIDER.actionExecution());
 
-		SERVICE_PROVIDER.getProjectRepresentationProvider().registerProjectListChangeListener(getProjectRepresentationListener());
+		SERVICE_PROVIDER.projectRepresentationProvider().registerProjectListChangeListener(getProjectRepresentationListener());
 
 		registrations.add(ShortcutService.register(RootPanel.get(), view.getApplicationMenu(), ApplicationMenuShortcutMapping.values()));
-		registrations.add(ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
-		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingPanel());
+		registrations.add(ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.actionExecution(), UndoRedoShortCutMapping.values()));
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingPanel());
 		registrations.add(ShortcutService.configureShortcutHelpPanel(view.getAlertingPanel()));
 
-		registrations.add(SERVICE_PROVIDER.getActionExecutionService().addActionExecutionListener(new ActionExecutionListener() {
+		registrations.add(SERVICE_PROVIDER.actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet,
@@ -122,7 +122,7 @@ public class ProgressActivity extends AbstractActivity {
 			}
 		}));
 
-		registrations.add(ClientServiceProvider.getInstance().getEventBus()
+		registrations.add(ClientServiceProvider.get().eventBus()
 				.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 					@Override
 					public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
@@ -189,12 +189,12 @@ public class ProgressActivity extends AbstractActivity {
 
 	@Override
 	public void onStop() {
-		view.unregisterActionExecutionHandler(SERVICE_PROVIDER.getActionExecutionService());
+		view.unregisterActionExecutionHandler(SERVICE_PROVIDER.actionExecution());
 		kanbanActionSyncController.unregisterActionExecutionListener();
 		for (final HandlerRegistration registration : registrations) {
 			registration.removeHandler();
 		}
-		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
+		SERVICE_PROVIDER.alerting().clearAlertingParentWidget();
 	}
 
 	protected void updateViewData() {
@@ -203,8 +203,8 @@ public class ProgressActivity extends AbstractActivity {
 	}
 
 	private void exitToPlanningPlace() {
-		final UUID projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
+		final UUID projectId = SERVICE_PROVIDER.projectRepresentationProvider().getCurrent().getId();
+		SERVICE_PROVIDER.placeController().goTo(new PlanningPlace(projectId));
 	}
 
 	private void updateCustomApplicationMenus() {

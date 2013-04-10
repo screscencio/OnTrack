@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationsPanel extends Composite implements HasCloseHandlers<AnnotationsPanel>, PopupAware {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private static final AnnotationsPanelMessages messages = GWT.create(AnnotationsPanelMessages.class);
 
@@ -85,7 +85,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 			@Override
 			public boolean onEditionRequest(final String text) {
 				final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
-				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
+				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.actionExecution();
 				try {
 					projectContext.findScope(subjectId);
 					actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(subjectId, text));
@@ -113,7 +113,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		descriptionLabel = new DescriptionRichTextLabel(new EditableLabelEditionHandler() {
 			@Override
 			public boolean onEditionRequest(final String text) {
-				SERVICE_PROVIDER.getDetailsService().updateDescription(subjectId, text);
+				SERVICE_PROVIDER.details().updateDescription(subjectId, text);
 				return true;
 			}
 
@@ -196,7 +196,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 	public void registerActionExecutionListener() {
 		unregisterActionExecutionListener();
-		handlerRegistration = SERVICE_PROVIDER.getActionExecutionService().addActionExecutionListener(new ActionExecutionListener() {
+		handlerRegistration = SERVICE_PROVIDER.actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,

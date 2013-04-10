@@ -104,7 +104,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 			return;
 		}
 
-		final List<UserRepresentation> associatedUsersList = ClientServiceProvider.getInstance().getUserAssociationService().getAssociatedUsers(scope);
+		final List<UserRepresentation> associatedUsersList = ClientServiceProvider.get().userAssociation().getAssociatedUsers(scope);
 		associatedUsers.update(associatedUsersList);
 		final int userCount = associatedUsersList.size();
 		this.setVisible(userCount > 0);

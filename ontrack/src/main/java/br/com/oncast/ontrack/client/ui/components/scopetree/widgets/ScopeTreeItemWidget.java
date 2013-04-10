@@ -213,7 +213,7 @@ public class ScopeTreeItemWidget extends Composite {
 		tags = createTagsContainer();
 		initWidget(uiBinder.createAndBindUi(this));
 
-		selectionsList = ClientServiceProvider.getInstance().getColorProviderService().getMembersSelectionsFor(scope);
+		selectionsList = ClientServiceProvider.get().colorProvider().getMembersSelectionsFor(scope);
 
 		fadeAnimation = new Animation() {
 			@Override
@@ -266,7 +266,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		registerColumnVisibilityChangeListeners();
 
-		updateDetails(ClientServiceProvider.getInstance().getDetailsService().getDetailUpdateEvent(scope.getId()));
+		updateDetails(ClientServiceProvider.get().details().getDetailUpdateEvent(scope.getId()));
 
 		deckPanel.showWidget(0);
 
@@ -310,7 +310,7 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiHandler("releaseTag")
 	protected void onTagClick(final ClickEvent e) {
 		e.stopPropagation();
-		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), releaseTag);
+		ClientServiceProvider.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), releaseTag);
 	}
 
 	public void setValue(final String value) {
@@ -712,7 +712,7 @@ public class ScopeTreeItemWidget extends Composite {
 			selectionColor = selectionsList.get(0).getColor();
 			final ArrayList<String> selectionNames = new ArrayList<String>();
 			for (final Selection s : selectionsList) {
-				final User user = ClientServiceProvider.getInstance().getUserDataService().retrieveRealUser(s.getUser());
+				final User user = ClientServiceProvider.get().userData().retrieveRealUser(s.getUser());
 				final String name = user.getName();
 				if (!selectionNames.contains(name)) selectionNames.add(name);
 			}

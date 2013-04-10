@@ -211,11 +211,11 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 	}
 
 	private void showWarning(final String message) {
-		ClientServiceProvider.getInstance().getClientAlertingService().showWarning(message);
+		ClientServiceProvider.get().alerting().showWarning(message);
 	}
 
 	private void launchAction(final ModelAction action) {
-		ClientServiceProvider.getInstance().getActionExecutionService().onUserActionExecutionRequest(action);
+		ClientServiceProvider.get().actionExecution().onUserActionExecutionRequest(action);
 	}
 
 	private ModelWidgetContainer<Scope, TaskWidget> createTasksList() {

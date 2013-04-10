@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class UserInformationCard extends Composite implements HasCloseHandlers<UserInformationCard>, PopupAware {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private static UserInformationCardUiBinder uiBinder = GWT.create(UserInformationCardUiBinder.class);
 
@@ -72,16 +72,16 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 				if (!user.equals(ClientServiceProvider.getCurrentUser())) return false;
 				user.setName(text);
 
-				SERVICE_PROVIDER.getUserDataService().onUserDataUpdate(user, new AsyncCallback<User>() {
+				SERVICE_PROVIDER.userData().onUserDataUpdate(user, new AsyncCallback<User>() {
 
 					@Override
 					public void onSuccess(final User result) {
-						SERVICE_PROVIDER.getClientAlertingService().showSuccess(messages.userNameChangeSuccess());
+						SERVICE_PROVIDER.alerting().showSuccess(messages.userNameChangeSuccess());
 					}
 
 					@Override
 					public void onFailure(final Throwable caught) {
-						SERVICE_PROVIDER.getClientAlertingService().showError(messages.userNameChangeFailure());
+						SERVICE_PROVIDER.alerting().showError(messages.userNameChangeFailure());
 					}
 				});
 				return true;
@@ -135,9 +135,9 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 		userEmail.setText(user.getEmail());
 		userName.setValue(user.getName());
 		userWithoutImage.setText(user.getName().substring(0, 1));
-		author.setUrl(SERVICE_PROVIDER.getUserDataService().getAvatarUrl(user));
+		author.setUrl(SERVICE_PROVIDER.userData().getAvatarUrl(user));
 
-		SERVICE_PROVIDER.getUserDataService().hasAvatarInGravatar(user, new UserHasGravatarCallback() {
+		SERVICE_PROVIDER.userData().hasAvatarInGravatar(user, new UserHasGravatarCallback() {
 
 			@Override
 			public void onResponseReceived(final boolean hasGravatarAvatar) {

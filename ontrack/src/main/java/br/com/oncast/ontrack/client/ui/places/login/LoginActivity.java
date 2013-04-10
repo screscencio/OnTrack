@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class LoginActivity extends AbstractActivity implements LoginView.Presenter {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 	private final UserAuthenticationCallback authenticationCallback;
 	private final LoginView view;
 
@@ -24,21 +24,21 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 			@Override
 			public void onUserAuthenticatedSuccessfully(final String username, final UUID userId) {
 				view.enable();
-				SERVICE_PROVIDER.getClientStorageService().storeLastUserEmail(username);
-				SERVICE_PROVIDER.getApplicationPlaceController().goTo(destinationPlace);
+				SERVICE_PROVIDER.storage().storeLastUserEmail(username);
+				SERVICE_PROVIDER.placeController().goTo(destinationPlace);
 			}
 
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
 				view.enable();
-				SERVICE_PROVIDER.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().unexpectedError());
+				SERVICE_PROVIDER.alerting().showError(ClientServiceProvider.get().errorMessages().unexpectedError());
 			}
 
 			@Override
 			public void onIncorrectCredentialsFailure() {
 				view.enable();
 				view.onIncorrectCredentials();
-				SERVICE_PROVIDER.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().incorrectUserOrPassword());
+				SERVICE_PROVIDER.alerting().showError(ClientServiceProvider.get().errorMessages().incorrectUserOrPassword());
 			}
 
 		};
@@ -47,45 +47,45 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		panel.setWidget(view.asWidget());
-		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
-		view.setUsername(SERVICE_PROVIDER.getClientStorageService().loadLastUserEmail(""));
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
+		view.setUsername(SERVICE_PROVIDER.storage().loadLastUserEmail(""));
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
+		SERVICE_PROVIDER.alerting().clearAlertingParentWidget();
 	}
 
 	@Override
 	public void onAuthenticationRequest(final String username, final String password) {
 		view.disable();
-		SERVICE_PROVIDER.getAuthenticationService().authenticate(username, password, authenticationCallback);
+		SERVICE_PROVIDER.authentication().authenticate(username, password, authenticationCallback);
 	}
 
 	@Override
 	public void onResetPasswordRequest(final String username) {
 		view.disable();
-		final ClientErrorMessages messages = ClientServiceProvider.getInstance().getClientErrorMessages();
-		SERVICE_PROVIDER.getClientAlertingService().showInfo(messages.requestingNewPassword(username));
-		SERVICE_PROVIDER.getAuthenticationService().resetPasswordFor(username, new ResetPasswordCallback() {
+		final ClientErrorMessages messages = ClientServiceProvider.get().errorMessages();
+		SERVICE_PROVIDER.alerting().showInfo(messages.requestingNewPassword(username));
+		SERVICE_PROVIDER.authentication().resetPasswordFor(username, new ResetPasswordCallback() {
 			@Override
 			public void onUserPasswordResetSuccessfully() {
 				view.enable();
-				SERVICE_PROVIDER.getClientStorageService().storeLastUserEmail(username);
-				SERVICE_PROVIDER.getClientAlertingService().showSuccess(messages.passwordRequestSucessful());
+				SERVICE_PROVIDER.storage().storeLastUserEmail(username);
+				SERVICE_PROVIDER.alerting().showSuccess(messages.passwordRequestSucessful());
 			}
 
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
 				view.enable();
-				SERVICE_PROVIDER.getClientAlertingService().showError(messages.unexpectedError());
+				SERVICE_PROVIDER.alerting().showError(messages.unexpectedError());
 			}
 
 			@Override
 			public void onIncorrectCredentialsFailure() {
 				view.enable();
 				view.onIncorrectUsername();
-				SERVICE_PROVIDER.getClientAlertingService().showError(messages.passwordRequestFailedDueToBadUsername());
+				SERVICE_PROVIDER.alerting().showError(messages.passwordRequestFailedDueToBadUsername());
 			}
 		});
 	}

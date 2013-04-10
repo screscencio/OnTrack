@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class TimesheetPanel extends Composite implements ModelWidget<Release>, PopupAware, HasCloseHandlers<TimesheetPanel> {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private static TimesheetPanelUiBinder uiBinder = GWT.create(TimesheetPanelUiBinder.class);
 
@@ -250,11 +250,11 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	}
 
 	public void unregisterActionExecutionListener() {
-		ClientServiceProvider.getInstance().getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
+		ClientServiceProvider.get().actionExecution().removeActionExecutionListener(actionExecutionListener);
 	}
 
 	public void registerActionExecutionListener() {
-		ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(getActionExecutionListener());
+		ClientServiceProvider.get().actionExecution().addActionExecutionListener(getActionExecutionListener());
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {
@@ -303,7 +303,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			@Override
 			public boolean onEditionRequest(final String text) {
 				final ProjectContext projectContext = getContext();
-				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
+				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.actionExecution();
 
 				try {
 					projectContext.findRelease(release.getId());

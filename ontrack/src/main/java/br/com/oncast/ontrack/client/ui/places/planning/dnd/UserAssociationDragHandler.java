@@ -97,7 +97,7 @@ public class UserAssociationDragHandler extends ModelWidgetContainerDragHandler<
 	}
 
 	private UserAssociationService getUserAssociationService() {
-		return ClientServiceProvider.getInstance().getUserAssociationService();
+		return ClientServiceProvider.get().userAssociation();
 	};
 
 }

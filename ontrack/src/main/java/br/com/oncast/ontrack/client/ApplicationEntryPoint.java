@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class ApplicationEntryPoint implements EntryPoint {
 
 	public static final Place DEFAULT_APP_PLACE = new ProjectSelectionPlace();
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	@Override
 	public void onModuleLoad() {
@@ -43,7 +43,7 @@ public class ApplicationEntryPoint implements EntryPoint {
 	 * Cleans the screen from pop ups every time application place changes.
 	 */
 	private void setUpPlaceAwarePopupCleaner() {
-		SERVICE_PROVIDER.getApplicationPlaceController().addPlaceChangeListener(new PlaceChangeListener() {
+		SERVICE_PROVIDER.placeController().addPlaceChangeListener(new PlaceChangeListener() {
 
 			@Override
 			public void onPlaceChange(final Place newPlace) {

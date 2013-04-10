@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelWidget<Scope> {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
 
@@ -227,7 +227,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private boolean updateProgress() {
 		final Progress progress = scope.getProgress();
 		final String description = progress.getDescription();
-		final boolean hasOpenImpediments = SERVICE_PROVIDER.getDetailsService().hasOpenImpediment(scope.getId());
+		final boolean hasOpenImpediments = SERVICE_PROVIDER.details().hasOpenImpediment(scope.getId());
 
 		if (this.currentScopeHasOpenImpediments == hasOpenImpediments && !description.isEmpty() && description.equals(currentScopeProgress)) return false;
 		this.currentScopeProgress = description;
@@ -246,7 +246,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private void updateStoryColor(final Progress progress) {
 		final Style s = ElementUtils.getStyle(draggableAnchor);
 
-		if (!progress.isNotStarted()) s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope).toCssRepresentation());
+		if (!progress.isNotStarted()) s.setBackgroundColor(SERVICE_PROVIDER.colorProvider().getColorFor(scope).toCssRepresentation());
 		else s.clearBackgroundColor();
 	}
 
@@ -326,7 +326,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	private void declareProgress(final String progressDescription) {
-		SERVICE_PROVIDER.getActionExecutionService()
+		SERVICE_PROVIDER.actionExecution()
 				.onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), progressDescription));
 	}
 
@@ -362,7 +362,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	@UiHandler("panel")
 	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
-		SERVICE_PROVIDER.getDetailsService().showAnnotationsFor(scope.getId());
+		SERVICE_PROVIDER.details().showAnnotationsFor(scope.getId());
 	}
 
 	@UiHandler("panel")
@@ -376,7 +376,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	private void fireScopeSelectionEvent() {
-		SERVICE_PROVIDER.getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
+		SERVICE_PROVIDER.eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
 	}
 
 	@Override

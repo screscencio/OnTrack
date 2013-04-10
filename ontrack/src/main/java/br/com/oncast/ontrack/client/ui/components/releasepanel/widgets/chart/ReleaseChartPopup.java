@@ -147,7 +147,7 @@ public class ReleaseChartPopup extends Composite implements HasCloseHandlers<Rel
 	}
 
 	private void showWarning() {
-		ClientServiceProvider.getInstance().getUserGuideService()
+		ClientServiceProvider.get().userGuide()
 				.addWarningTip(velocity, messages.lowEstimatedVelocityWarningTitle(), messages.lowEstimatedVelocityTips());
 	}
 

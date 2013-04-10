@@ -157,7 +157,7 @@ public class ReleaseInfoWidget extends Composite {
 
 	public ReleaseInfoWidget(final Release release) {
 		this.release = release;
-		releaseEstimator = ClientServiceProvider.getInstance().getReleaseEstimatorProvider().get();
+		releaseEstimator = ClientServiceProvider.get().releaseEstimator().get();
 		speedLabel = new EditableLabel(new EditableLabelEditionHandler() {
 
 			@Override
@@ -167,7 +167,7 @@ public class ReleaseInfoWidget extends Composite {
 			public boolean onEditionRequest(final String text) {
 				try {
 					final Float speed = text == null || text.trim().isEmpty() ? null : Float.valueOf(text);
-					ClientServiceProvider.getInstance().getActionExecutionService()
+					ClientServiceProvider.get().actionExecution()
 							.onUserActionExecutionRequest(new ReleaseDeclareEstimatedVelocityAction(release.getId(), speed));
 				}
 				catch (final NumberFormatException e) {}

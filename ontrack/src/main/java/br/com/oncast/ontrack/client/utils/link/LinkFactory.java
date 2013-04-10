@@ -59,7 +59,7 @@ public class LinkFactory {
 
 	private static boolean shouldAppendNewTabLink(final UUID projectId) {
 		try {
-			final ProjectRepresentation currentProject = ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent();
+			final ProjectRepresentation currentProject = ClientServiceProvider.get().projectRepresentationProvider().getCurrent();
 			return !currentProject.getId().equals(projectId);
 		}
 		catch (final RuntimeException e) {

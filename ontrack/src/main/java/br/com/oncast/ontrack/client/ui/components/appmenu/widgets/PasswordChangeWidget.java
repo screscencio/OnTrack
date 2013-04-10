@@ -142,12 +142,12 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	private void submitUserPasswordChange() {
 		hideErrorMessage();
 		disable();
-		ClientServiceProvider.getInstance().getAuthenticationService()
+		ClientServiceProvider.get().authentication()
 				.changePassword(oldPasswordArea.getText(), newPasswordArea.getText(), new UserPasswordChangeCallback() {
 
 					@Override
 					public void onUserPasswordChangedSuccessfully() {
-						ClientServiceProvider.getInstance().getClientAlertingService().showSuccess(messages.successfulChange());
+						ClientServiceProvider.get().alerting().showSuccess(messages.successfulChange());
 						enable();
 						hide();
 					}
@@ -156,7 +156,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 					public void onUnexpectedFailure(final Throwable caught) {
 						// TODO Improve feedback message.
 						enable();
-						ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.unexpectedError());
+						ClientServiceProvider.get().alerting().showError(messages.unexpectedError());
 
 					}
 
@@ -164,7 +164,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 					public void onIncorrectUserPasswordFailure() {
 						// TODO Improve feedback message.
 						enable();
-						ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.incorrectOldPassword());
+						ClientServiceProvider.get().alerting().showError(messages.incorrectOldPassword());
 					}
 				});
 

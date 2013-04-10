@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 // TODO Add logout button to this activity.
 public class ProjectSelectionActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	public ProjectSelectionActivity() {}
 
@@ -18,12 +18,12 @@ public class ProjectSelectionActivity extends AbstractActivity {
 		final ProjectSelectionView view = new ProjectSelectionPanel();
 		panel.setWidget(view.asWidget());
 		view.focus();
-		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
 
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
+		SERVICE_PROVIDER.alerting().clearAlertingParentWidget();
 	}
 }

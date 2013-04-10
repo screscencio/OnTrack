@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class UserInformationLoadingActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private static UserInformationLoadingMessages messages = GWT.create(UserInformationLoadingMessages.class);
 
@@ -34,7 +34,7 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 		panel.setWidget(view);
 		view.setMainMessage(messages.loadingUserData());
 
-		SERVICE_PROVIDER.getAuthenticationService().loadCurrentUserInformation(new UserInformationLoadCallback() {
+		SERVICE_PROVIDER.authentication().loadCurrentUserInformation(new UserInformationLoadCallback() {
 
 			@Override
 			public void onUserInformationLoaded(final UUID userId) {
@@ -47,23 +47,23 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 			}
 
 		});
-		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
+		SERVICE_PROVIDER.alerting().clearAlertingParentWidget();
 	}
 
 	private void validateGatheredData() {
-		if (!SERVICE_PROVIDER.getAuthenticationService().isUserAvailable()) return;
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(destinationPlace);
+		if (!SERVICE_PROVIDER.authentication().isUserAvailable()) return;
+		SERVICE_PROVIDER.placeController().goTo(destinationPlace);
 	}
 
 	private void treatUnexpectedFailure(final Throwable cause, final String message) {
 		// TODO +++Treat communication failure.
 		cause.printStackTrace();
-		SERVICE_PROVIDER.getClientAlertingService().showErrorWithConfirmation(message, new AlertConfirmationListener() {
+		SERVICE_PROVIDER.alerting().showErrorWithConfirmation(message, new AlertConfirmationListener() {
 			@Override
 			public void onConfirmation() {
 				Window.Location.reload();

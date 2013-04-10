@@ -54,7 +54,7 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 
 	public NotificationMenuItem() {
 		initWidget(notificationMenuItemHeader = new NotificationMenuItemHeaderWidget());
-		final NotificationService notificationService = ClientServiceProvider.getInstance().getNotificationService();
+		final NotificationService notificationService = ClientServiceProvider.get().notifications();
 		final NotificationMenuListenerImplementation listener = new NotificationMenuListenerImplementation();
 		notificationService.registerNotificationListChangeListener(listener);
 		notificationService.registerNotificationReadStateChangeListener(listener);

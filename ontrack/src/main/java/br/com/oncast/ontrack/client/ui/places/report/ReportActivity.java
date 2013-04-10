@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class ReportActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private final UUID requestedProjectId;
 	private final UUID requestedReleaseId;
@@ -29,12 +29,12 @@ public class ReportActivity extends AbstractActivity {
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		try {
-			final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(requestedProjectId);
+			final ProjectContext projectContext = SERVICE_PROVIDER.contextProvider().getProjectContext(requestedProjectId);
 			final Release release = projectContext.findRelease(requestedReleaseId);
 
 			final ReportPanel view = new ReportPanel(projectContext, release);
 
-			SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingContainer());
+			SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
 
 			final Element body = RootPanel.getBodyElement();
 			body.getStyle().setOverflow(Overflow.VISIBLE);
@@ -48,7 +48,7 @@ public class ReportActivity extends AbstractActivity {
 	}
 
 	private void exitToPlanningPlace() {
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(requestedProjectId));
+		SERVICE_PROVIDER.placeController().goTo(new PlanningPlace(requestedProjectId));
 	}
 
 	@Override
