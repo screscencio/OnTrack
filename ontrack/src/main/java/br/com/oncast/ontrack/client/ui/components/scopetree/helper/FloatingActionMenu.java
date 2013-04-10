@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.helper;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareProgressInternalAction;
@@ -95,7 +95,7 @@ public class FloatingActionMenu extends Composite {
 	@UiHandler("btnDetail")
 	protected void onDetailClick(final ClickEvent event) {
 		if (scope == null) return;
-		ClientServiceProvider.get().details().showAnnotationsFor(scope.getId());
+		ClientServices.get().details().showAnnotationsFor(scope.getId());
 		this.setVisible(false);
 	}
 

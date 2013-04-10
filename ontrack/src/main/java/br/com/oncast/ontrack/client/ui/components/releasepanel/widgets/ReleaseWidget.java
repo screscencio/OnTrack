@@ -6,7 +6,7 @@ import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configP
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartPopup;
@@ -200,7 +200,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		setContainerState(DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE, false);
 		setVisible(true);
 
-		ClientServiceProvider.get().eventBus().addHandler(ReleaseScopeListUpdateEvent.TYPE, new ReleaseScopeListUpdateEventHandler() {
+		ClientServices.get().eventBus().addHandler(ReleaseScopeListUpdateEvent.TYPE, new ReleaseScopeListUpdateEventHandler() {
 			@Override
 			public void onScopeListInteraction(final Release r) {
 				if (release.equals(r)) infoWidget.show();
@@ -292,15 +292,15 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		itens.add(new TextAndImageCommandMenuItem("icon-file-alt", messages.report(), new Command() {
 			@Override
 			public void execute() {
-				final UUID project = ClientServiceProvider.getCurrentProjectContext().getId();
-				ClientServiceProvider.get().placeController().open(new ReportPlace(project, release.getId()));
+				final UUID project = ClientServices.getCurrentProjectContext().getId();
+				ClientServices.get().placeController().open(new ReportPlace(project, release.getId()));
 			}
 		}));
 		if (release.hasDirectScopes()) {
 			itens.add(new TextAndImageCommandMenuItem("icon-time", messages.timesheet(), new Command() {
 				@Override
 				public void execute() {
-					ClientServiceProvider.get().getTimesheetService().showTimesheetFor(release.getId());
+					ClientServices.get().getTimesheetService().showTimesheetFor(release.getId());
 				}
 			}));
 		}
@@ -413,7 +413,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		isContainerStateOpen = shouldOpen;
 
 		if (!shouldFireEvent) return;
-		ClientServiceProvider.get().eventBus().fireEventFromSource(new ReleaseContainerStateChangeEvent(release, isContainerStateOpen), this);
+		ClientServices.get().eventBus().fireEventFromSource(new ReleaseContainerStateChangeEvent(release, isContainerStateOpen), this);
 	}
 
 	private void popChartPanel() {
@@ -471,15 +471,15 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void goTo(final Place place) {
-		ClientServiceProvider.get().placeController().goTo(place);
+		ClientServices.get().placeController().goTo(place);
 	}
 
 	private UUID getProjectId() {
-		return ClientServiceProvider.get().projectRepresentationProvider().getCurrent().getId();
+		return ClientServices.get().projectRepresentationProvider().getCurrent().getId();
 	}
 
 	private DetailService getDetailsService() {
-		return ClientServiceProvider.get().details();
+		return ClientServices.get().details();
 	}
 
 }

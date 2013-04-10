@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
@@ -102,12 +102,12 @@ public class TagAssociationWidget extends Composite implements ModelWidget<TagAs
 
 	@Override
 	protected void onLoad() {
-		ClientServiceProvider.get().actionExecution().addActionExecutionListener(this);
+		ClientServices.get().actionExecution().addActionExecutionListener(this);
 	}
 
 	@Override
 	protected void onUnload() {
-		ClientServiceProvider.get().actionExecution().removeActionExecutionListener(this);
+		ClientServices.get().actionExecution().removeActionExecutionListener(this);
 	}
 
 	@Override

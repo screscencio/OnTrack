@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationCallback;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class LoginActivity extends AbstractActivity implements LoginView.Presenter {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 	private final UserAuthenticationCallback authenticationCallback;
 	private final LoginView view;
 
@@ -31,14 +31,14 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
 				view.enable();
-				SERVICE_PROVIDER.alerting().showError(ClientServiceProvider.get().errorMessages().unexpectedError());
+				SERVICE_PROVIDER.alerting().showError(ClientServices.get().errorMessages().unexpectedError());
 			}
 
 			@Override
 			public void onIncorrectCredentialsFailure() {
 				view.enable();
 				view.onIncorrectCredentials();
-				SERVICE_PROVIDER.alerting().showError(ClientServiceProvider.get().errorMessages().incorrectUserOrPassword());
+				SERVICE_PROVIDER.alerting().showError(ClientServices.get().errorMessages().incorrectUserOrPassword());
 			}
 
 		};
@@ -65,7 +65,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 	@Override
 	public void onResetPasswordRequest(final String username) {
 		view.disable();
-		final ClientErrorMessages messages = ClientServiceProvider.get().errorMessages();
+		final ClientErrorMessages messages = ClientServices.get().errorMessages();
 		SERVICE_PROVIDER.alerting().showInfo(messages.requestingNewPassword(username));
 		SERVICE_PROVIDER.authentication().resetPasswordFor(username, new ResetPasswordCallback() {
 			@Override

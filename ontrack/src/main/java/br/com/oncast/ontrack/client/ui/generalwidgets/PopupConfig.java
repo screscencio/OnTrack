@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
@@ -281,7 +281,7 @@ public class PopupConfig {
 				hidePopup();
 				if (isModal) {
 					if (previousAlertingParent != null)
-					ClientServiceProvider.get().alerting()
+					ClientServices.get().alerting()
 							.setAlertingParentWidget(previousAlertingParent);
 					if (previousShortcutHelpParent != null)
 					ShortcutService.setShortcutHelpPanelParentWidget(previousShortcutHelpParent);
@@ -291,7 +291,7 @@ public class PopupConfig {
 		}, isModal);
 
 		if (isModal) {
-			previousAlertingParent = ClientServiceProvider.get().alerting().setAlertingParentWidget(RootPanel.get());
+			previousAlertingParent = ClientServices.get().alerting().setAlertingParentWidget(RootPanel.get());
 			previousShortcutHelpParent = ShortcutService.setShortcutHelpPanelParentWidget(RootPanel.get());
 		}
 

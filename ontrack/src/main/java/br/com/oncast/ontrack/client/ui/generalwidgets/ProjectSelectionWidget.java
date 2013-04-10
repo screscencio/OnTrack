@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.services.feedback.ProjectCreationQuotaRequisitionCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
@@ -35,7 +35,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	private static final int FILTRABLE_MENU_MAX_WIDTH = 425;
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static ProjectSelectionWidgetUiBinder uiBinder = GWT.create(ProjectSelectionWidgetUiBinder.class);
 
@@ -260,7 +260,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	protected static void requestProjectCreationQuota() {
 		SERVICE_PROVIDER.alerting().showInfo(messages.processingProjectQuotaRequest());
-		ClientServiceProvider.get().feedback().requestProjectCreationQuota(new ProjectCreationQuotaRequisitionCallback() {
+		ClientServices.get().feedback().requestProjectCreationQuota(new ProjectCreationQuotaRequisitionCallback() {
 			@Override
 			public void onRequestSentSucessfully() {
 				SERVICE_PROVIDER.alerting().showSuccess(messages.projectQuotaRequestSent());

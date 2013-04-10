@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.metrics.OnTrackMetricsPlace;
@@ -19,10 +19,10 @@ import com.google.gwt.place.shared.Place;
 
 public class AppActivityMapper implements ActivityMapper {
 
-	private final ClientServiceProvider services;
+	private final ClientServices services;
 	private final AppActivityFactory activityFactory;
 
-	public AppActivityMapper(final ClientServiceProvider serviceProvider) {
+	public AppActivityMapper(final ClientServices serviceProvider) {
 		this.services = serviceProvider;
 		this.activityFactory = new AppActivityFactory();
 	}

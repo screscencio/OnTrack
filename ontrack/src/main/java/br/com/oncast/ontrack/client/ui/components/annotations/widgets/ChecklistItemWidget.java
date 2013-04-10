@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.checklist.ChecklistService;
@@ -150,11 +150,11 @@ public class ChecklistItemWidget extends Composite implements ModelWidget<Checkl
 	}
 
 	private ChecklistService getChecklistService() {
-		return ClientServiceProvider.get().checklists();
+		return ClientServices.get().checklists();
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.get().actionExecution();
+		return ClientServices.get().actionExecution();
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {

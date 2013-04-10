@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import java.util.Date;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
@@ -157,7 +157,7 @@ public class ReleaseInfoWidget extends Composite {
 
 	public ReleaseInfoWidget(final Release release) {
 		this.release = release;
-		releaseEstimator = ClientServiceProvider.get().releaseEstimator().get();
+		releaseEstimator = ClientServices.get().releaseEstimator().get();
 		speedLabel = new EditableLabel(new EditableLabelEditionHandler() {
 
 			@Override
@@ -167,7 +167,7 @@ public class ReleaseInfoWidget extends Composite {
 			public boolean onEditionRequest(final String text) {
 				try {
 					final Float speed = text == null || text.trim().isEmpty() ? null : Float.valueOf(text);
-					ClientServiceProvider.get().actionExecution()
+					ClientServices.get().actionExecution()
 							.onUserActionExecutionRequest(new ReleaseDeclareEstimatedVelocityAction(release.getId(), speed));
 				}
 				catch (final NumberFormatException e) {}

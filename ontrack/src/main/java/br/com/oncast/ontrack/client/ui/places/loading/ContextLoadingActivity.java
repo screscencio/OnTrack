@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.loading;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
@@ -16,7 +16,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 
 	private static final ContextLoadingMessages messages = GWT.create(ContextLoadingMessages.class);
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 	private final ProjectDependentPlace projectDependentPlace;
 
 	public ContextLoadingActivity(final ProjectDependentPlace destinationPlace) {

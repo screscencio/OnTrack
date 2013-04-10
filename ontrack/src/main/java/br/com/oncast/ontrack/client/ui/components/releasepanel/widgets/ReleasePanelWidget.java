@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEventHandler;
@@ -150,8 +150,8 @@ public class ReleasePanelWidget extends Composite {
 					try {
 						final UUID scopeId = (action instanceof ReleaseScopeUpdatePriorityAction) ? ((ReleaseScopeUpdatePriorityAction) (action))
 								.getScopeReferenceId() : action.getReferenceId();
-						final Release release = ClientServiceProvider.getCurrentProjectContext().findScope(scopeId).getRelease();
-						ClientServiceProvider.get().eventBus().fireEvent(new ReleaseScopeListUpdateEvent(release));
+						final Release release = ClientServices.getCurrentProjectContext().findScope(scopeId).getRelease();
+						ClientServices.get().eventBus().fireEvent(new ReleaseScopeListUpdateEvent(release));
 					}
 					catch (final ScopeNotFoundException e) {}
 				}
@@ -161,7 +161,7 @@ public class ReleasePanelWidget extends Composite {
 
 	@Override
 	protected void onLoad() {
-		handlerRegistration.add(ClientServiceProvider.get().eventBus()
+		handlerRegistration.add(ClientServices.get().eventBus()
 				.addHandler(ReleaseContainerStateChangeEvent.getType(), new ReleaseContainerStateChangeEventHandler() {
 					@Override
 					public void onReleaseContainerStateChange(final ReleaseContainerStateChangeEvent event) {
@@ -171,7 +171,7 @@ public class ReleasePanelWidget extends Composite {
 					}
 				}));
 
-		handlerRegistration.add(ClientServiceProvider.get().eventBus()
+		handlerRegistration.add(ClientServices.get().eventBus()
 				.addHandler(ReleaseDetailUpdateEvent.getType(), new ReleaseDetailUpdateEventHandler() {
 					@Override
 					public void onReleaseDetailUpdate(final ReleaseDetailUpdateEvent event) {
@@ -180,7 +180,7 @@ public class ReleasePanelWidget extends Composite {
 						widget.update();
 					}
 				}));
-		handlerRegistration.add(ClientServiceProvider.get().eventBus()
+		handlerRegistration.add(ClientServices.get().eventBus()
 				.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
 					@Override
 					public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {

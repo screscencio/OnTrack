@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
@@ -82,7 +82,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 
 		final Scope story = findStory(scope);
 		draggableAnchor.getElement().getStyle()
-				.setBackgroundColor(ClientServiceProvider.get().colorProvider().getColorFor(story).toCssRepresentation());
+				.setBackgroundColor(ClientServices.get().colorProvider().getColorFor(story).toCssRepresentation());
 		this.scope = scope;
 		updateDescription();
 	}
@@ -100,12 +100,12 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 
 	@UiHandler("panel")
 	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
-		ClientServiceProvider.get().details().showAnnotationsFor(scope.getId());
+		ClientServices.get().details().showAnnotationsFor(scope.getId());
 	}
 
 	@UiHandler("panel")
 	public void onScopeWidgetClick(final ClickEvent e) {
-		ClientServiceProvider.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
+		ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
 	}
 
 	@UiHandler("panel")

@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.organization;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.organization.OrganizationPanel;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class OrganizationActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices PROVIDER = ClientServices.get();
 	private final OrganizationPlace place;
 
 	public OrganizationActivity(final OrganizationPlace place) {

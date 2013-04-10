@@ -4,7 +4,7 @@ import static br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat.roun
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
@@ -114,7 +114,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.get().actionExecution();
+		return ClientServices.get().actionExecution();
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {
@@ -135,7 +135,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 
 	private void update() {
 		this.parent.setText(scope.isRoot() ? messages.none() : scope.getParent().getDescription());
-		this.humanId.setText(ClientServiceProvider.getCurrentProjectContext().getHumanId(scope));
+		this.humanId.setText(ClientServices.getCurrentProjectContext().getHumanId(scope));
 		this.effort.setText(formatProgressText(scope.getEffort().getAccomplished(), scope.getEffort().getInfered(), " ep"));
 		this.value.setText(formatProgressText(scope.getValue().getAccomplished(), scope.getValue().getInfered(), " vp"));
 		final String progress = scope.getProgress().getDescription();
@@ -143,7 +143,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 		final Release release = scope.getRelease();
 		this.release.setText(release == null ? messages.none() : release.getDescription());
 		associatedUsers.update();
-		tags.update(ClientServiceProvider.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
+		tags.update(ClientServices.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
 	}
 
 	private String formatProgressText(final float accomplished, final float total, final String unit) {

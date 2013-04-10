@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.user;
 import java.util.HashSet;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.user.ColorProviderService;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
@@ -40,11 +40,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class UserWidget extends Composite {
 
-	private static final UserDataService USER_DATA_SERVICE = ClientServiceProvider.get().userData();
+	private static final UserDataService USER_DATA_SERVICE = ClientServices.get().userData();
 
-	private static final UsersStatusService USERS_STATUS_SERVICE = ClientServiceProvider.get().usersStatus();
+	private static final UsersStatusService USERS_STATUS_SERVICE = ClientServices.get().usersStatus();
 
-	protected static final ColorProviderService COLOR_PROVIDER = ClientServiceProvider.get().colorProvider();
+	protected static final ColorProviderService COLOR_PROVIDER = ClientServices.get().colorProvider();
 
 	private static UserWidgetUiBinder uiBinder = GWT.create(UserWidgetUiBinder.class);
 
@@ -150,7 +150,7 @@ public class UserWidget extends Composite {
 
 		}));
 
-		registrationListener.add(ClientServiceProvider.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
+		registrationListener.add(ClientServices.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet,
@@ -185,7 +185,7 @@ public class UserWidget extends Composite {
 	}
 
 	private void updateInfo(final User user) {
-		final ClientServiceProvider provider = ClientServiceProvider.get();
+		final ClientServices provider = ClientServices.get();
 		userWithoutImage.setText(user.getName().substring(0, 1));
 
 		provider.userData().hasAvatarInGravatar(user, new UserHasGravatarCallback() {

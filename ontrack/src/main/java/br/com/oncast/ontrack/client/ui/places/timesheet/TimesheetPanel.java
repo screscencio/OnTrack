@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.timesheet;
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class TimesheetPanel extends Composite implements ModelWidget<Release>, PopupAware, HasCloseHandlers<TimesheetPanel> {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static TimesheetPanelUiBinder uiBinder = GWT.create(TimesheetPanelUiBinder.class);
 
@@ -250,11 +250,11 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	}
 
 	public void unregisterActionExecutionListener() {
-		ClientServiceProvider.get().actionExecution().removeActionExecutionListener(actionExecutionListener);
+		ClientServices.get().actionExecution().removeActionExecutionListener(actionExecutionListener);
 	}
 
 	public void registerActionExecutionListener() {
-		ClientServiceProvider.get().actionExecution().addActionExecutionListener(getActionExecutionListener());
+		ClientServices.get().actionExecution().addActionExecutionListener(getActionExecutionListener());
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {
@@ -325,6 +325,6 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	}
 
 	private ProjectContext getContext() {
-		return ClientServiceProvider.getCurrentProjectContext();
+		return ClientServices.getCurrentProjectContext();
 	}
 }

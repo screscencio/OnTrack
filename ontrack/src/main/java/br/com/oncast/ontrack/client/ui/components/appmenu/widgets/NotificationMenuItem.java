@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.notification.NotificationClientUtils;
 import br.com.oncast.ontrack.client.services.notification.NotificationListChangeListener;
 import br.com.oncast.ontrack.client.services.notification.NotificationReadStateChangeListener;
@@ -54,7 +54,7 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 
 	public NotificationMenuItem() {
 		initWidget(notificationMenuItemHeader = new NotificationMenuItemHeaderWidget());
-		final NotificationService notificationService = ClientServiceProvider.get().notifications();
+		final NotificationService notificationService = ClientServices.get().notifications();
 		final NotificationMenuListenerImplementation listener = new NotificationMenuListenerImplementation();
 		notificationService.registerNotificationListChangeListener(listener);
 		notificationService.registerNotificationReadStateChangeListener(listener);

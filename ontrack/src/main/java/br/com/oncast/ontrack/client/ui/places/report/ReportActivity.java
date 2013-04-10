@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.report;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class ReportActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private final UUID requestedProjectId;
 	private final UUID requestedReleaseId;

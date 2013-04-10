@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ColorSelectionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagCommandMenuItem;
@@ -19,7 +19,7 @@ import com.google.gwt.user.client.Command;
 
 public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeItemWidgetCommandMenuItemFactory {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private final ScopeTreeItemWidgetEditionHandler controller;
 

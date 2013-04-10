@@ -7,7 +7,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
@@ -116,7 +116,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	private void setupSelectionEventHandlers() {
 		if (!selectionEventHandlers.isEmpty()) return;
 
-		final EventBus eventBus = ClientServiceProvider.get().eventBus();
+		final EventBus eventBus = ClientServices.get().eventBus();
 		selectionEventHandlers.add(eventBus.addHandler(ReleaseSelectionEvent.getType(), new ReleaseSelectionEventHandler() {
 			@Override
 			public void onReleaseSelection(final ReleaseSelectionEvent event) {
@@ -176,7 +176,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 	@UiHandler("planningLink")
 	void onPlanningLinkClicked(final ClickEvent e) {
-		ClientServiceProvider.get().placeController().goTo(new PlanningPlace(projectRepresentation));
+		ClientServices.get().placeController().goTo(new PlanningPlace(projectRepresentation));
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 		final List<Scope> scopeList = release.getScopeList();
 		scopesList.update(scopeList);
 		scopesDeck.showWidget(scopeList.isEmpty() ? 0 : 1);
-		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, new ReleaseEstimator(getProjectRelease()), ClientServiceProvider
+		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, new ReleaseEstimator(getProjectRelease()), ClientServices
 				.get()
 				.actionExecution());
 
@@ -248,20 +248,20 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 		if (hasStartedUp) return;
 
 		loadingDeck.showWidget(0);
-		ClientServiceProvider.get().contextProvider().loadProjectContext(projectRepresentation.getId(), new ProjectContextLoadCallback() {
+		ClientServices.get().contextProvider().loadProjectContext(projectRepresentation.getId(), new ProjectContextLoadCallback() {
 			@Override
 			public void onUnexpectedFailure(final Throwable cause) {
-				ClientServiceProvider.get().alerting().showError(cause.getLocalizedMessage());
+				ClientServices.get().alerting().showError(cause.getLocalizedMessage());
 			}
 
 			@Override
 			public void onProjectNotFound() {
-				ClientServiceProvider.get().alerting().showError(messages.projectNotFound());
+				ClientServices.get().alerting().showError(messages.projectNotFound());
 			}
 
 			@Override
 			public void onProjectContextLoaded() {
-				project = ClientServiceProvider.getCurrentProjectContext();
+				project = ClientServices.getCurrentProjectContext();
 				releasesHorizontalPanel.setRelease(getProjectRelease());
 				update();
 				setSelected(getCurrentRelease());

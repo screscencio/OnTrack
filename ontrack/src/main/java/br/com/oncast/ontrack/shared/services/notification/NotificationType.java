@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.shared.services.notification;
 
 import br.com.oncast.ontrack.client.i18n.NotificationMessageCode;
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidgetMessages;
 import br.com.oncast.ontrack.client.utils.link.LinkFactory;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -71,7 +71,7 @@ public enum NotificationType implements NotificationMessageCode {
 
 	private static String getProjectLinkFor(final NotificationWidgetMessages messages, final Notification notification) {
 		try {
-			final ProjectRepresentation project = ClientServiceProvider.get().projectRepresentationProvider()
+			final ProjectRepresentation project = ClientServices.get().projectRepresentationProvider()
 					.getProjectRepresentation(notification.getProjectId());
 			return LinkFactory.getLinkForProject(project).asString();
 		}

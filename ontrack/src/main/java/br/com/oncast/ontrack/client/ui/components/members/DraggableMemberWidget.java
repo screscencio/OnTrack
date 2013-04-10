@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.members;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
@@ -85,7 +85,7 @@ public class DraggableMemberWidget extends Composite implements ModelWidget<User
 
 	@UiHandler("removeBtn")
 	protected void onRemoveClick(final ClickEvent event) {
-		ClientServiceProvider.get().actionExecution()
+		ClientServices.get().actionExecution()
 				.onUserActionExecutionRequest(new ScopeRemoveAssociatedUserAction(association.getId(), user.getId()));
 	}
 

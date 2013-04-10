@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -39,7 +39,7 @@ public class ImpedimentAnnotationMenuItem extends Composite implements Annotatio
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
 		if (readOnly || annotation.isDeprecated()) return;
-		ClientServiceProvider.get().details().markAsImpediment(subjectId, annotation.getId());
+		ClientServices.get().details().markAsImpediment(subjectId, annotation.getId());
 	}
 
 	@Override

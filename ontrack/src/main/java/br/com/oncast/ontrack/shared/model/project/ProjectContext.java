@@ -10,7 +10,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
@@ -360,7 +360,7 @@ public class ProjectContext implements HasUUID {
 
 	public ArrayList<Tag> getTagsFor(final Scope scope) {
 		final ArrayList<Tag> tags = new ArrayList<Tag>();
-		for (final TagAssociationMetadata metadata : ClientServiceProvider.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope,
+		for (final TagAssociationMetadata metadata : ClientServices.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope,
 				TagAssociationMetadata.getType())) {
 			tags.add(metadata.getTag());
 		}

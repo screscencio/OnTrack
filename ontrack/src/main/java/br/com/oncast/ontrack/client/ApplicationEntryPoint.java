@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.services.places.PlaceChangeListener;
 import br.com.oncast.ontrack.client.ui.ApplicationUIPanel;
@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class ApplicationEntryPoint implements EntryPoint {
 
 	public static final Place DEFAULT_APP_PLACE = new ProjectSelectionPlace();
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	@Override
 	public void onModuleLoad() {

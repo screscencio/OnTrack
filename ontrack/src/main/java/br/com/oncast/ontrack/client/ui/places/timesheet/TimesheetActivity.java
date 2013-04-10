@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
@@ -38,17 +38,17 @@ public class TimesheetActivity extends AbstractActivity {
 
 	public void start() {
 		try {
-			final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
+			final ProjectContext projectContext = ClientServices.getCurrentProjectContext();
 			final Release release = projectContext.findRelease(place.getReleaseId());
 			getTimesheetPanel().setRelease(release, projectContext);
 
-			if (!place.hasLoadedPlace()) register = ShortcutService.register(timesheetPanel, ClientServiceProvider.get().actionExecution(),
+			if (!place.hasLoadedPlace()) register = ShortcutService.register(timesheetPanel, ClientServices.get().actionExecution(),
 					UndoRedoShortCutMapping.values());
 
 			getPopupConfig().pop();
 		}
 		catch (final ReleaseNotFoundException e) {
-			ClientServiceProvider.get().alerting().showError(MESSAGES.theRequestingReleaseWasNotFound());
+			ClientServices.get().alerting().showError(MESSAGES.theRequestingReleaseWasNotFound());
 		}
 	}
 
@@ -81,7 +81,7 @@ public class TimesheetActivity extends AbstractActivity {
 	}
 
 	private ApplicationPlaceController getApplicationPlaceController() {
-		return ClientServiceProvider.get().placeController();
+		return ClientServices.get().placeController();
 	}
 
 }

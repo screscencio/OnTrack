@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets.release;
 
 import java.util.Date;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.generalwidgets.InformationBlockWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
@@ -120,7 +120,7 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 	}
 
 	private ReleaseEstimator getEstimator() {
-		return ClientServiceProvider.get().releaseEstimator().get();
+		return ClientServices.get().releaseEstimator().get();
 	}
 
 	private String round(final float number) {

@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.notification.NotificationClientUtils;
 import br.com.oncast.ontrack.client.services.notification.NotificationListChangeListener;
 import br.com.oncast.ontrack.client.services.notification.NotificationReadStateUpdateCallback;
@@ -37,7 +37,7 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 
 	private static NotificationWidgetUiBinder uiBinder = GWT.create(NotificationWidgetUiBinder.class);
 
-	private static final NotificationService NOTIFICATION_SERVICE = ClientServiceProvider.get().notifications();
+	private static final NotificationService NOTIFICATION_SERVICE = ClientServices.get().notifications();
 
 	interface NotificationWidgetUiBinder extends UiBinder<Widget, NotificationListWidget> {}
 

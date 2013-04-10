@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ColorSelectionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableColorPackWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedTextBox;
@@ -85,7 +85,7 @@ public class TagAssociationWidgetEditMenu extends Composite implements PopupAwar
 	}
 
 	private void launchAction(final ModelAction action) {
-		ClientServiceProvider.get().actionExecution().onUserActionExecutionRequest(action);
+		ClientServices.get().actionExecution().onUserActionExecutionRequest(action);
 	}
 
 	@Override

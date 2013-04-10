@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DescriptionWidget extends Composite {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 	private static final ContextProviderService CONTEXT_PROVIDER_SERVICE = SERVICE_PROVIDER.contextProvider();
 
 	private static DescriptionWidgetUiBinder uiBinder = GWT.create(DescriptionWidgetUiBinder.class);

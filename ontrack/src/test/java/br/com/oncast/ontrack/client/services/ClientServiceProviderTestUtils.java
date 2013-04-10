@@ -23,7 +23,7 @@ public class ClientServiceProviderTestUtils {
 	public static ClientServiceProviderTestConfiguration configure() throws Exception {
 		final Field field = getInstanceField();
 
-		final ClientServiceProvider clientServiceProviderMock = mock(ClientServiceProvider.class);
+		final ClientServices clientServiceProviderMock = mock(ClientServices.class);
 
 		field.set(null, clientServiceProviderMock);
 
@@ -35,16 +35,16 @@ public class ClientServiceProviderTestUtils {
 	}
 
 	private static Field getInstanceField() throws NoSuchFieldException {
-		final Field field = ClientServiceProvider.class.getDeclaredField("instance");
+		final Field field = ClientServices.class.getDeclaredField("instance");
 		field.setAccessible(true);
 		return field;
 	}
 
 	public static class ClientServiceProviderTestConfiguration {
 
-		private final ClientServiceProvider mock;
+		private final ClientServices mock;
 
-		public ClientServiceProviderTestConfiguration(final ClientServiceProvider mock) {
+		public ClientServiceProviderTestConfiguration(final ClientServices mock) {
 			this.mock = mock;
 		}
 

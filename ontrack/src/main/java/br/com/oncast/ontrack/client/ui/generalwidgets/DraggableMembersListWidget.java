@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.user.UsersStatusService;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
@@ -134,12 +134,12 @@ public class DraggableMembersListWidget extends Composite {
 	}
 
 	public void update() {
-		final UsersStatusService usersStatusService = ClientServiceProvider.get().usersStatus();
+		final UsersStatusService usersStatusService = ClientServices.get().usersStatus();
 		updateMembersList(usersStatusService.getActiveUsers(), usersStatusService.getOnlineUsers());
 	}
 
 	private void updateMembersList(final SortedSet<UserRepresentation> activeUsers, final SortedSet<UserRepresentation> onlineUsers) {
-		final ProjectContext currentProjectContext = ClientServiceProvider.getCurrentProjectContext();
+		final ProjectContext currentProjectContext = ClientServices.getCurrentProjectContext();
 		final ArrayList<UserRepresentation> userModels = new ArrayList<UserRepresentation>(activeUsers);
 
 		for (final UserRepresentation user : onlineUsers) {
@@ -153,7 +153,7 @@ public class DraggableMembersListWidget extends Composite {
 	}
 
 	private void setupActionExecutionListener() {
-		handlerRegistrations.add(ClientServiceProvider.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
+		handlerRegistrations.add(ClientServices.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet,
@@ -167,7 +167,7 @@ public class DraggableMembersListWidget extends Composite {
 	}
 
 	private void setupUsersStatusChangeListener() {
-		handlerRegistrations.add(ClientServiceProvider.get().usersStatus().register(new UsersStatusChangeListener() {
+		handlerRegistrations.add(ClientServices.get().usersStatus().register(new UsersStatusChangeListener() {
 			@Override
 			public void onUsersStatusListUnavailable(final Throwable caught) {
 				updateMembersList(new TreeSet<UserRepresentation>(), new TreeSet<UserRepresentation>());

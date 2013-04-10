@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet.widgets;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.selection.IsSelectable;
 import br.com.oncast.ontrack.client.ui.components.selection.SelectionController;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
@@ -42,7 +42,7 @@ public class ScopeTimeSpentWidget implements IsWidget, IsSelectable {
 					return true;
 				}
 				catch (final NumberFormatException e) {
-					ClientServiceProvider.get().alerting().showWarning(MESSAGES.shoulBeAValidNumber());
+					ClientServices.get().alerting().showWarning(MESSAGES.shoulBeAValidNumber());
 					return false;
 				}
 			}
@@ -54,7 +54,7 @@ public class ScopeTimeSpentWidget implements IsWidget, IsSelectable {
 		});
 		editableLabel.setWidth("40px");
 		editableLabel.getElement().getStyle().setProperty("textAlign", "center");
-		editableLabel.setReadOnly(!ClientServiceProvider.getCurrentUser().equals(user.getId()));
+		editableLabel.setReadOnly(!ClientServices.getCurrentUser().equals(user.getId()));
 
 		setTimeSpent(timeSpent);
 	}
@@ -65,7 +65,7 @@ public class ScopeTimeSpentWidget implements IsWidget, IsSelectable {
 	}
 
 	private void launchAction(final UUID scopeId, final Float newAppointment) {
-		ClientServiceProvider.get().actionExecution().onUserActionExecutionRequest(new ScopeDeclareTimeSpentAction(scopeId, newAppointment));
+		ClientServices.get().actionExecution().onUserActionExecutionRequest(new ScopeDeclareTimeSpentAction(scopeId, newAppointment));
 	}
 
 	@Override

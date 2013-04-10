@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -51,12 +51,12 @@ public class TagWidget extends Composite implements ModelWidget<Tag>, ActionExec
 
 	@Override
 	protected void onLoad() {
-		ClientServiceProvider.get().actionExecution().addActionExecutionListener(this);
+		ClientServices.get().actionExecution().addActionExecutionListener(this);
 	}
 
 	@Override
 	protected void onUnload() {
-		ClientServiceProvider.get().actionExecution().removeActionExecutionListener(this);
+		ClientServices.get().actionExecution().removeActionExecutionListener(this);
 	}
 
 	@Override

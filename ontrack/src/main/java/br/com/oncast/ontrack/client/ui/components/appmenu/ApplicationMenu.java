@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
@@ -41,7 +41,7 @@ public class ApplicationMenu extends Composite {
 
 	private static final ApplicationMenuMessages messages = GWT.create(ApplicationMenuMessages.class);
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
+	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static ApplicationMenuWidgetUiBinder uiBinder = GWT.create(ApplicationMenuWidgetUiBinder.class);
 
@@ -143,10 +143,10 @@ public class ApplicationMenu extends Composite {
 	private void registerUserDataUpdateListener() {
 		if (registration != null) return;
 
-		registration = ClientServiceProvider
+		registration = ClientServices
 				.get()
 				.userData()
-				.registerListenerForSpecificUser(ClientServiceProvider.get().authentication().getCurrentUserId(),
+				.registerListenerForSpecificUser(ClientServices.get().authentication().getCurrentUserId(),
 						new UserSpecificInformationChangeListener() {
 							@Override
 							public void onInformationChange(final User user) {
@@ -248,7 +248,7 @@ public class ApplicationMenu extends Composite {
 			@Override
 			public void onFailure(final Throwable caught) {
 				// TODO Threat this error properly. Maybe even call the ErrorService.
-				ClientServiceProvider.get().alerting().showError(messages.logoutFailed());
+				ClientServices.get().alerting().showError(messages.logoutFailed());
 			}
 		});
 	}

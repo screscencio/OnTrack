@@ -32,7 +32,7 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.Marker.Symbol;
 import org.moxieapps.gwt.highcharts.client.plotOptions.PlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
@@ -121,8 +121,8 @@ public class ReleaseChart extends Composite {
 	}
 
 	public void setRelease(final Release release) {
-		setRelease(release, new ReleaseChartDataProvider(release, ClientServiceProvider.get().releaseEstimator().get(),
-				ClientServiceProvider.get().actionExecution()));
+		setRelease(release, new ReleaseChartDataProvider(release, ClientServices.get().releaseEstimator().get(),
+				ClientServices.get().actionExecution()));
 	}
 
 	public void setRelease(final Release release, final ReleaseChartDataProvider dataProvider) {
@@ -456,7 +456,7 @@ public class ReleaseChart extends Composite {
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.get().actionExecution();
+		return ClientServices.get().actionExecution();
 	}
 
 	public ReleaseChart setUpdateListener(final ReleaseChartUpdateListener listener) {

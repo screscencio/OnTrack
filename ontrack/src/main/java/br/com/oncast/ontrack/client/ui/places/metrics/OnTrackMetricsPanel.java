@@ -31,7 +31,7 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
 import org.moxieapps.gwt.highcharts.client.plotOptions.PiePlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.places.metrics.widgets.ProjectMetricsWidget;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -139,7 +139,7 @@ public class OnTrackMetricsPanel extends Composite {
 		projects = new HashMap<String, ProjectMetricsWidget>();
 		metricsCache = new HashMap<Long, OnTrackServerMetrics>();
 		usersCache = new HashMap<String, User>();
-		metricsList = ClientServiceProvider.get().storage().loadOnTrackServerMetricsList();
+		metricsList = ClientServices.get().storage().loadOnTrackServerMetricsList();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -200,7 +200,7 @@ public class OnTrackMetricsPanel extends Composite {
 		metricsCache.put(statistic.getTimestamp().getTime(), statistic);
 
 		for (final String user : statistic.getOnlineUsers()) {
-			ClientServiceProvider.get().userData().loadRealUser(new UUID(user), new AsyncCallback<User>() {
+			ClientServices.get().userData().loadRealUser(new UUID(user), new AsyncCallback<User>() {
 				@Override
 				public void onFailure(final Throwable caught) {}
 
@@ -250,7 +250,7 @@ public class OnTrackMetricsPanel extends Composite {
 
 	private void update() {
 		setOptionsEnabled(false);
-		ClientServiceProvider.get().getClientMetricsService().getMetrics(new AsyncCallback<OnTrackServerMetrics>() {
+		ClientServices.get().getClientMetricsService().getMetrics(new AsyncCallback<OnTrackServerMetrics>() {
 
 			@Override
 			public void onSuccess(final OnTrackServerMetrics statistic) {
@@ -281,7 +281,7 @@ public class OnTrackMetricsPanel extends Composite {
 			}
 
 			private void showError(final Throwable caught) {
-				ClientServiceProvider.get().alerting().showError(caught.getLocalizedMessage());
+				ClientServices.get().alerting().showError(caught.getLocalizedMessage());
 			}
 		});
 	}
@@ -527,7 +527,7 @@ public class OnTrackMetricsPanel extends Composite {
 	}
 
 	private void storeStatistics() {
-		ClientServiceProvider.get().storage().appendOnTrackServerMetrics(metricsList);
+		ClientServices.get().storage().appendOnTrackServerMetrics(metricsList);
 	}
 
 }

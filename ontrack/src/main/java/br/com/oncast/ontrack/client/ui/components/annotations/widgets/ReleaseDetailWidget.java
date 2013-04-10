@@ -4,7 +4,7 @@ import static br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat.roun
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
@@ -85,7 +85,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	public ReleaseDetailWidget setSubject(final Release release) {
 		this.release = release;
-		final ClientServiceProvider serviceProvider = ClientServiceProvider.get();
+		final ClientServices serviceProvider = ClientServices.get();
 		this.dataProvider = new ReleaseChartDataProvider(release, serviceProvider.releaseEstimator().get(),
 				serviceProvider.actionExecution());
 		update();
@@ -103,7 +103,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.get().actionExecution();
+		return ClientServices.get().actionExecution();
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {

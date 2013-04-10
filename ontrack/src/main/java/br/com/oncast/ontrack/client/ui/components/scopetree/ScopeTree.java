@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
@@ -74,7 +74,7 @@ public class ScopeTree implements Component {
 				}
 				catch (final ModelBeanNotFoundException e) {
 					// TODO ++Resync and Redraw the entire structure to eliminate inconsistencies
-					throw new RuntimeException(ClientServiceProvider.get().errorMessages().modelInconsistency(), e);
+					throw new RuntimeException(ClientServices.get().errorMessages().modelInconsistency(), e);
 				}
 			}
 		};

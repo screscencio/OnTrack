@@ -4,7 +4,7 @@ import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_
 
 import java.util.Date;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserUpdateListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
@@ -69,7 +69,7 @@ public class ImpedimentMenuWidget extends Composite implements ModelWidget<Annot
 						new ImpedimentSolveAction(subject.getId(), impediment.getId()) :
 						new ImpedimentCreateAction(subject.getId(), impediment.getId());
 
-		ClientServiceProvider.get().actionExecution().onUserActionExecutionRequest(action);
+		ClientServices.get().actionExecution().onUserActionExecutionRequest(action);
 	}
 
 	@Override

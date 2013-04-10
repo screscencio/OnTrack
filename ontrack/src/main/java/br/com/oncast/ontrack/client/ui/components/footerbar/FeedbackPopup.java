@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.footerbar;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.feedback.SendFeedbackCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
@@ -57,18 +57,18 @@ public class FeedbackPopup extends Composite implements HasCloseHandlers<Feedbac
 		}
 
 		hide();
-		ClientServiceProvider.get().feedback().sendFeedback(feedbackMessage.replaceAll(NEW_LINE, "<br/>"), new SendFeedbackCallback() {
+		ClientServices.get().feedback().sendFeedback(feedbackMessage.replaceAll(NEW_LINE, "<br/>"), new SendFeedbackCallback() {
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
-				ClientServiceProvider.get().alerting().showError(messages.feedbackNotSent());
+				ClientServices.get().alerting().showError(messages.feedbackNotSent());
 			}
 
 			@Override
 			public void onFeedbackSentSucessfully() {
-				ClientServiceProvider.get().alerting().showSuccess(messages.feedbackSent());
+				ClientServices.get().alerting().showSuccess(messages.feedbackSent());
 			}
 		});
-		ClientServiceProvider.get().alerting().showInfo(messages.processingYourFeedback());
+		ClientServices.get().alerting().showInfo(messages.processingYourFeedback());
 	}
 
 	@Override
