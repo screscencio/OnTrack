@@ -100,7 +100,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 
 	@UiHandler("panel")
 	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
-		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(scope.getId());
+		ClientServiceProvider.getInstance().getDetailsService().showAnnotationsFor(scope.getId());
 	}
 
 	@UiHandler("panel")

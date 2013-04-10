@@ -261,7 +261,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	OPEN_ANNOTATIONS(new Shortcut(BrowserKeyCodes.KEY_A).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(scope.getId());
+			ClientServiceProvider.getInstance().getDetailsService().showAnnotationsFor(scope.getId());
 		}
 
 		@Override

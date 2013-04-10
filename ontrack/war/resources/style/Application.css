@@ -289,6 +289,10 @@ html,body {
 	-ms-transition: none;
 }
 
+.gwt-MenuItem.gwt-MenuItem-rtl {
+	direction: rtl;
+}
+
 .gwt-MenuBar-vertical .gwt-MenuItem-selected {
 	background: #B2C9CC;
 	font-size: 150%;

@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -18,8 +19,9 @@ import com.google.gwt.view.client.ProvidesKey;
 
 public class ImpedimentDatabase {
 
-	private static final DetailService ANNOTATION_SERVICE = ClientServiceProvider.getInstance().getAnnotationService();
-	private static final ReportMessages MESSAGES = GWT.create(ReportMessages.class);;
+	private static final String ID_SYMBOL = "#";
+	private static final DetailService DETAIL_SERVICE = ClientServiceProvider.getInstance().getDetailsService();
+	private static final ReportMessages MESSAGES = GWT.create(ReportMessages.class);
 
 	public static class ImpedimentItem implements Comparable<ImpedimentItem> {
 
@@ -32,15 +34,12 @@ public class ImpedimentDatabase {
 
 		private final int priority;
 
-		private final Scope scope;
-
-		private final ProjectContext context;
-
 		private final Annotation annotation;
 
-		public ImpedimentItem(final ProjectContext context, final Scope scope, final Annotation annotation, final int priority) {
-			this.context = context;
-			this.scope = scope;
+		private final String relatedTo;
+
+		public ImpedimentItem(final String relatedTo, final Annotation annotation, final int priority) {
+			this.relatedTo = relatedTo;
 			this.annotation = annotation;
 			this.priority = priority;
 		}
@@ -55,8 +54,8 @@ public class ImpedimentDatabase {
 			return priority;
 		}
 
-		public String getHumandReadableId() {
-			return context.getHumanId(scope);
+		public String getRelatedTo() {
+			return relatedTo;
 		}
 
 		public String getState() {
@@ -82,23 +81,38 @@ public class ImpedimentDatabase {
 
 	private final ListDataProvider<ImpedimentItem> dataProvider = new ListDataProvider<ImpedimentItem>();
 
-	public ImpedimentDatabase(final List<Scope> scopeList, final ProjectContext context) {
-		final List<ImpedimentItem> list = getImpedimentList(scopeList, context);
-		dataProvider.getList().addAll(list);
+	public ImpedimentDatabase(final Release release, final ProjectContext context) {
+		dataProvider.getList().addAll(getImpedimentsList(release, context));
 	}
 
-	private List<ImpedimentItem> getImpedimentList(final List<Scope> scopeList, final ProjectContext context) {
+	private List<ImpedimentItem> getImpedimentsList(final Release release, final ProjectContext context) {
 		final List<ImpedimentItem> list = new ArrayList<ImpedimentItem>();
 		int priority = 0;
-		for (final Scope scope : scopeList) {
-			for (final Annotation annotation : ANNOTATION_SERVICE.getAnnotationsFor(scope.getId()))
-				if (annotation.isImpediment()) list.add(new ImpedimentItem(context, scope, annotation, priority++));
+
+		priority = addReleaseImpediments(release, list, priority);
+
+		for (final Scope scope : release.getAllScopesIncludingDescendantReleases()) {
+			final String humanId = ID_SYMBOL + context.getHumanId(scope);
+			priority = addScopeImpediments(humanId, list, priority, scope);
+
 			for (final Scope descendantScope : scope.getAllDescendantScopes()) {
-				for (final Annotation annotation : ANNOTATION_SERVICE.getAnnotationsFor(descendantScope.getId()))
-					if (annotation.isImpediment()) list.add(new ImpedimentItem(context, scope, annotation, priority++));
+				priority = addScopeImpediments(humanId, list, priority, descendantScope);
 			}
 		}
 		return list;
+	}
+
+	private int addReleaseImpediments(final Release release, final List<ImpedimentItem> list, int priority) {
+		for (final Annotation annotation : DETAIL_SERVICE.getImpedimentsFor(release.getId())) {
+			list.add(new ImpedimentItem(MESSAGES.release(), annotation, priority++));
+		}
+		return priority;
+	}
+
+	private int addScopeImpediments(final String humanId, final List<ImpedimentItem> list, int priority, final Scope scope) {
+		for (final Annotation annotation : DETAIL_SERVICE.getImpedimentsFor(scope.getId()))
+			list.add(new ImpedimentItem(humanId, annotation, priority++));
+		return priority;
 	}
 
 	public ListDataProvider<ImpedimentItem> getDataProvider() {

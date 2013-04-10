@@ -6,7 +6,10 @@
 	xmlns:d="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.places.timesheet.widgets"
 	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
 	<ui:style src="../../style/default.css">
 	
@@ -15,7 +18,7 @@
 			font-size: FONT_SIZE_SMALL;
 		}
 		
-		.header {
+		.reportHeader {
 			position: relative;
 
 			height: 108px;
@@ -94,7 +97,7 @@
 	</ui:style>
 	
 	<g:HTMLPanel ui:field="rootPanel" styleName="{style.root} reportPanel-root">
-		<div class="{style.header}">
+		<div class="{style.reportHeader}">
 			<g:Image styleName="{style.logo}" url="resources/image/logo.png"/>
 			<g:InlineHTML ui:field="ancestors" styleName="{style.ancestors} v-ellip"/>
 			<g:Label ui:field="releaseTitle" styleName="{style.title} v-ellip"/>
@@ -105,7 +108,6 @@
 			<g:InlineHTML ui:field="description" />
 		</div>
 		<div class="{style.sectionContainer}">
-			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Overview">Overview</ui:msg></g:Label>
 			<g:SimplePanel ui:field="burnUpPanel" styleName="{style.burnUp} reportPanel-burnUp"/>
 			<d:ReleaseDetailWidget ui:field="details"  styleName="{style.details}"/>
 		</div>

@@ -50,6 +50,10 @@
 				vertical-align: middle;
 			}
 			
+			.headerItem {
+				font-size: 14px;
+			}
+			
 			.menuIcon {
 				font-size: 10px;
 				line-height: 10px;
@@ -67,8 +71,13 @@
 				border: 1px solid COLOR_TEXT_PRIMARY;
 			}
 			
-			.detailIcon {
+			.impedimentsIcon {
 				margin-left: 0px;
+				color: white;
+				text-shadow: -1px  1px 0px #cc454e,
+							 -1px -1px 0px #cc454e,
+							  1px -1px 0px #cc454e,
+							  1px  1px 0px #cc454e;
 			}
 			
 			.descriptionLabel {
@@ -133,7 +142,7 @@
 			}
 			
 			.progressIcon, .progressLabel {
-				width: 100px;
+				width: 60px;
 			}
 			
 			.progressIcon {
@@ -187,9 +196,13 @@
 							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
 						</g:FocusPanel>
 					</g:cell>
-					<g:FocusPanel ui:field="detailLink" styleName="{style.headerItem} {style.detailIcon} icon-info-sign" title="Details">
+					<g:FocusPanel ui:field="impedimentsIcon" styleName="{style.headerItem} {style.impedimentsIcon} icon-flag" title="This item has open impediments, click to see them">
+						<ui:attribute name="title" description="Has open impediments state tooltip" />
+					</g:FocusPanel>
+					<g:FocusPanel ui:field="detailLink" styleName="{style.headerItem} icon-info-sign" title="Details">
 						<ui:attribute name="title" description="detailLink icon release widget" />
 					</g:FocusPanel>
+					<g:FocusPanel ui:field="navigationIcon" styleName="{style.headerItem}"/>
 					<g:FocusPanel ui:field="progressIcon" styleName="{style.headerItem} {style.progressIcon}" title="Progress">
 						<ui:attribute name="title" description="progress icon release widget" />
 						<g:FlowPanel>

@@ -12,7 +12,7 @@
 		.bar {
 			margin: 0px;
 			height: 100%;
-			background-color: #eaeaea;
+			background-color: rgba(209, 209, 209, 0.4);
 		}
 	
 	</ui:style>

@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
@@ -26,6 +27,7 @@ import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -46,6 +48,9 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 
 	@UiField
 	IconTextBox newImpedimentDescription;
+
+	@UiField
+	DivElement noImpedimentsItem;
 
 	@UiField(provided = true)
 	ModelWidgetContainer<Annotation, ImpedimentMenuWidget> impedimentsContainer;
@@ -87,6 +92,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 				return o1.getType().compareTo(o2.getType());
 			}
 		});
+		ElementUtils.setVisible(noImpedimentsItem, impediments.isEmpty());
 		impedimentsContainer.update(impediments);
 	}
 
@@ -112,6 +118,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 	public void hide() {
 		if (!this.isVisible()) return;
 
+		setFocus(false);
 		CloseEvent.fire(this, this);
 	}
 

@@ -14,8 +14,8 @@ import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -91,7 +91,6 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 			@Override
 			public void onNativeEvent(final NativeEvent nativeEvent) {
 				if (isInsideFocusPanel(Element.as(nativeEvent.getEventTarget()))) return;
-
 				submitContent();
 			}
 
@@ -120,7 +119,6 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 
 	private void expand() {
 		deckPanel.showWidget(0);
-		textArea.setHTML(label.getHTML());
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
@@ -157,31 +155,34 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 	}
 
 	@UiHandler("textArea")
-	public void onTextAreaKeyUp(final KeyUpEvent event) {
-		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) {
-			hideRichTextArea();
-			focusPanel.setFocus(true);
-		}
-
-		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER && event.isControlKeyDown()) {
-			submitContent();
-		}
+	public void onTextAreaKeyDown(final KeyDownEvent event) {
+		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hideRichTextArea();
+		else if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER && event.isControlKeyDown()) submitContent();
 	}
 
 	private void submitContent() {
-		String text = "";
-		if (!textArea.getText().isEmpty()) text = textArea.getHTML();
-		label.setHTML(text);
-		if (!text.isEmpty()) editableLabelEditionHandler.onEditionRequest(text);
+		String text = textArea.getText().trim();
+		if (currentText.equals(text)) {
+			hideRichTextArea();
+			return;
+		}
+
+		if (!text.isEmpty()) text = textArea.getHTML();
+		setText(text);
+		editableLabelEditionHandler.onEditionRequest(text);
 		hideRichTextArea();
 	}
 
 	@Override
 	public void setText(final String text) {
-		currentText = text;
-		textArea.setHTML(text);
-		label.setHTML(text);
-		descriptionDeckPanel.showWidget((label == null || label.getText().isEmpty()) ? 0 : 1);
+		currentText = text.trim();
+		textArea.setHTML(currentText);
+		label.setHTML(currentText);
+		updateVisibleWidget();
+	}
+
+	private void updateVisibleWidget() {
+		descriptionDeckPanel.showWidget((currentText == null || currentText.isEmpty()) ? 0 : 1);
 	}
 
 	@Override
@@ -201,12 +202,14 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 	public void hideRichTextArea() {
 		shrink();
 		GlobalNativeEventService.getInstance().removeMouseUpListener(clickListener);
+		focusPanel.setFocus(true);
 	}
 
 	private void shrink() {
 		deckPanel.showWidget(1);
 		if (expansionListener != null) expansionListener.onShrinked();
-		descriptionDeckPanel.showWidget((label == null || label.getText().isEmpty()) ? 0 : 1);
+
+		updateVisibleWidget();
 	}
 
 	public interface ExpansionListener {
@@ -220,9 +223,4 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 		return focusPanel.addBlurHandler(handler);
 	}
 
-	public void update(final String description) {
-		label.setHTML(description);
-		textArea.setHTML(description);
-		descriptionDeckPanel.showWidget((label == null || label.getText().isEmpty()) ? 0 : 1);
-	}
 }

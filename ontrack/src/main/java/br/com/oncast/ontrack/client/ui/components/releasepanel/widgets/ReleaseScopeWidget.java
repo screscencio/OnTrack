@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.Horizon
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PercentualBar;
@@ -27,6 +28,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembe
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
@@ -39,7 +41,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -52,7 +53,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelWidget<Scope> {
@@ -80,7 +80,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 		String progressIconNotStarted();
 
-		String hasOpenImpediments();
+		String progressIconHasOpenImpediments();
 	}
 
 	@UiField
@@ -108,8 +108,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	PercentualBar percentualBar;
 
 	@UiField
-	// TODO use FastLabel
-	Label effortLabel;
+	FastLabel effortLabel;
 
 	@UiField(provided = true)
 	ScopeAssociatedMembersWidget associatedUsers;
@@ -119,10 +118,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	private final Scope scope;
 
-	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeDescription;
-
-	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeProgress;
 
 	private final boolean releaseSpecific;
@@ -194,7 +190,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		if (scope.isRoot()) return "";
 
 		final StringBuilder builder = new StringBuilder();
-		Scope current = scope.getParent();
+		Scope current = scope;
 		while (!current.isRoot()) {
 			builder.insert(0, current.getDescription());
 			builder.insert(0, " > ");
@@ -211,8 +207,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private boolean updateHumanId() {
 		final String humanId = ClientServiceProvider.getCurrentProjectContext().getHumanId(scope);
 		humanIdLabel.setInnerHTML(humanId);
-		if (humanId.isEmpty()) humanIdLabel.getStyle().setDisplay(Display.NONE);
-		else humanIdLabel.getStyle().clearDisplay();
+		ElementUtils.setVisible(humanIdLabel, !humanId.isEmpty());
 		return true;
 	}
 
@@ -232,65 +227,27 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private boolean updateProgress() {
 		final Progress progress = scope.getProgress();
 		final String description = progress.getDescription();
-		final boolean hasOpenImpediments = SERVICE_PROVIDER.getAnnotationService().hasOpenImpediment(scope.getId());
+		final boolean hasOpenImpediments = SERVICE_PROVIDER.getDetailsService().hasOpenImpediment(scope.getId());
 
 		if (this.currentScopeHasOpenImpediments == hasOpenImpediments && !description.isEmpty() && description.equals(currentScopeProgress)) return false;
 		this.currentScopeProgress = description;
 		this.currentScopeHasOpenImpediments = hasOpenImpediments;
 
-		updateDoneProgress(progress);
-		updateUnderWorkProgress(progress);
-		updateNotStartedProgress(progress);
-		updateHasOpenImpedimentsProgress();
+		final ProgressIconUpdater updater = ProgressIconUpdater.getUpdater(scope, currentScopeHasOpenImpediments);
+		progressIcon.setStyleName(updater.getStyle(style));
+		progressIcon.setTitle(updater.getTitle(scope));
+		if (!description.isEmpty()) updater.animate(internalPanel);
 
-		final boolean notStarted = progress.getState() == ProgressState.NOT_STARTED;
-		if (!description.isEmpty() && !notStarted) animateProgress(progress);
-		updateStoryColor(notStarted);
+		if (releaseSpecific) updateStoryColor(progress);
 
 		return true;
 	}
 
-	private void updateDoneProgress(final Progress progress) {
-		final boolean isDone = !currentScopeHasOpenImpediments && progress.isDone();
-		progressIcon.setStyleName(style.progressIconDone(), isDone);
-		if (isDone) progressIcon.setTitle(messages.finishedIn(HumanDateFormatter.getRelativeDate(progress.getEndDay().getJavaDate())));
-	}
+	private void updateStoryColor(final Progress progress) {
+		final Style s = ElementUtils.getStyle(draggableAnchor);
 
-	private void updateUnderWorkProgress(final Progress progress) {
-		final boolean isUnderwork = !currentScopeHasOpenImpediments && progress.isUnderWork();
-		progressIcon.setStyleName(style.progressIconUnderwork(), isUnderwork);
-		if (isUnderwork) progressIcon.setTitle(progress.getDescription());
-	}
-
-	private void updateNotStartedProgress(final Progress progress) {
-		final boolean notStarted = !currentScopeHasOpenImpediments && progress.getState() == ProgressState.NOT_STARTED;
-		progressIcon.setStyleName(style.progressIconNotStarted(), notStarted);
-
-		final float accomplishedPercentual = scope.getEffort().getAccomplishedPercentual();
-		final boolean hasSomeProgress = accomplishedPercentual != 0;
-		if (notStarted && hasSomeProgress) progressIcon.setTitle(messages.accomplished(ClientDecimalFormat.roundFloat(accomplishedPercentual, 0)));
-		if (notStarted && !hasSomeProgress) progressIcon.setTitle("");
-	}
-
-	private void updateHasOpenImpedimentsProgress() {
-		progressIcon.setStyleName("icon-flag " + style.hasOpenImpediments(), currentScopeHasOpenImpediments);
-		if (currentScopeHasOpenImpediments) progressIcon.setTitle(messages.hasOpenImpediments());
-	}
-
-	private void animateProgress(final Progress progress) {
-		final Color color = (progress.getState() == ProgressState.DONE) ? Color.GREEN : Color.GRAY;
-		new BgColorAnimation(internalPanel, color).animate();
-	}
-
-	private void updateStoryColor(final boolean notStarted) {
-		if (releaseSpecific) {
-			final Style s = draggableAnchor.getElement().getStyle();
-
-			if (!notStarted) {
-				s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope).toCssRepresentation());
-			}
-			else s.clearBackgroundColor();
-		}
+		if (!progress.isNotStarted()) s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope).toCssRepresentation());
+		else s.clearBackgroundColor();
 	}
 
 	public Scope getScope() {
@@ -314,32 +271,27 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	@UiHandler("progressIcon")
 	public void onProgressIconClick(final ClickEvent e) {
 		e.stopPropagation();
-		Widget popupWidget = null;
-		if (currentScopeHasOpenImpediments) popupWidget = new ImpedimentListWidget(scope);
-		else {
-			final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
-			final ProjectContext context = ClientServiceProvider.getCurrentProjectContext();
+		showPopup(currentScopeHasOpenImpediments ? new ImpedimentListWidget(scope) : createProgressMenu());
+	}
 
-			final String notStartedDescription = ProgressState.NOT_STARTED.getDescription();
-			items.add(createItem("Not Started", notStartedDescription));
-			for (final String progressDefinition : context.getProgressDefinitions(scope))
-				if (!notStartedDescription.equals(progressDefinition)) items.add(createItem(progressDefinition,
-						progressDefinition));
-			items.add(new SpacerCommandMenuItem());
-			items.add(new TextAndImageCommandMenuItem("icon-flag", messages.impediments(), new Command() {
+	private Widget createProgressMenu() {
+		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
+		final ProjectContext context = ClientServiceProvider.getCurrentProjectContext();
 
-				@Override
-				public void execute() {
-					skipScopeSelectionEventOnPopupClose = true;
-					showPopup(new ImpedimentListWidget(scope));
-				}
-			}));
+		for (final String progressDefinition : context.getProgressDefinitions(scope))
+			items.add(createItem(ProgressState.getLabelForDescription(progressDefinition), progressDefinition));
+		items.add(new SpacerCommandMenuItem());
+		items.add(new TextAndImageCommandMenuItem("icon-flag", messages.impediments(), new Command() {
+			@Override
+			public void execute() {
+				skipScopeSelectionEventOnPopupClose = true;
+				showPopup(new ImpedimentListWidget(scope));
+			}
+		}));
 
-			final FiltrableCommandMenu commandsMenu = new FiltrableCommandMenu(getProgressCommandMenuItemFactory(), 200, 264);
-			commandsMenu.setOrderedItems(items);
-			popupWidget = commandsMenu;
-		}
-		showPopup(popupWidget);
+		final FiltrableCommandMenu commandsMenu = new FiltrableCommandMenu(getProgressCommandMenuItemFactory(), 200, 264);
+		commandsMenu.setOrderedItems(items);
+		return commandsMenu;
 	}
 
 	private void showPopup(final Widget finalPopupWidget) {
@@ -410,7 +362,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	@UiHandler("panel")
 	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
-		SERVICE_PROVIDER.getAnnotationService().showAnnotationsFor(scope.getId());
+		SERVICE_PROVIDER.getDetailsService().showAnnotationsFor(scope.getId());
 	}
 
 	@UiHandler("panel")
@@ -464,6 +416,100 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	private ScopeAssociatedMembersWidget createAssociatedUsersListWidget(final Scope scope, final DragAndDropManager userDragAndDropMananger) {
 		return new ScopeAssociatedMembersWidget(scope, userDragAndDropMananger, 2);
+	}
+
+	private enum ProgressIconUpdater {
+		NOT_STARTED_UPDATER(ProgressState.NOT_STARTED) {
+			@Override
+			String getStyle(final ReleaseScopeWidgetStyle style) {
+				return style.progressIconNotStarted();
+			}
+
+			@Override
+			String getTitle(final Scope scope) {
+				final float accomplishedPercentual = scope.getEffort().getAccomplishedPercentual();
+				return accomplishedPercentual != 0 ? messages.accomplished(ClientDecimalFormat.roundFloat(accomplishedPercentual, 0)) : "";
+			}
+		},
+		UNDER_WORK_UPDATER(ProgressState.UNDER_WORK) {
+			@Override
+			String getStyle(final ReleaseScopeWidgetStyle style) {
+				return style.progressIconUnderwork();
+			}
+
+			@Override
+			String getTitle(final Scope scope) {
+				return scope.getProgress().getDescription();
+			}
+
+			@Override
+			public void animate(final HorizontalPanel panel) {
+				new BgColorAnimation(panel, Color.GRAY).animate();
+			}
+		},
+		DONE_UPDATER(ProgressState.DONE) {
+			@Override
+			String getStyle(final ReleaseScopeWidgetStyle style) {
+				return style.progressIconDone();
+			}
+
+			@Override
+			String getTitle(final Scope scope) {
+				return messages.finishedIn(HumanDateFormatter.getRelativeDate(scope.getProgress().getEndDay().getJavaDate()));
+			}
+
+			@Override
+			public void animate(final HorizontalPanel panel) {
+				new BgColorAnimation(panel, Color.GREEN).animate();
+			}
+		},
+		IMPEDIMENTS_UPDATER(null) {
+			@Override
+			String getStyle(final ReleaseScopeWidgetStyle style) {
+				return "icon-flag " + style.progressIconHasOpenImpediments();
+			}
+
+			@Override
+			String getTitle(final Scope scope) {
+				return messages.hasOpenImpediments();
+			}
+
+			@Override
+			public void animate(final HorizontalPanel panel) {
+				new BgColorAnimation(panel, Color.RED).animate();
+			}
+		},
+		NULL_UPDATER(null) {
+			@Override
+			String getStyle(final ReleaseScopeWidgetStyle style) {
+				return "";
+			}
+
+			@Override
+			String getTitle(final Scope scope) {
+				return "";
+			}
+		};
+
+		final ProgressState state;
+
+		ProgressIconUpdater(final ProgressState state) {
+			this.state = state;
+		}
+
+		public void animate(final HorizontalPanel panel) {}
+
+		public static ProgressIconUpdater getUpdater(final Scope scope, final boolean hasImpediments) {
+			if (hasImpediments) return IMPEDIMENTS_UPDATER;
+
+			for (final ProgressIconUpdater updater : values())
+				if (updater.state == scope.getProgress().getState()) return updater;
+			return NULL_UPDATER;
+		}
+
+		abstract String getStyle(ReleaseScopeWidgetStyle style);
+
+		abstract String getTitle(Scope scope);
 	}
 
 }

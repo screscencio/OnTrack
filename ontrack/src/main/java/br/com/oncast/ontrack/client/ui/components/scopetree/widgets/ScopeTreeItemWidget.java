@@ -30,6 +30,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentListWidget;
@@ -265,7 +266,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		registerColumnVisibilityChangeListeners();
 
-		updateDetails(ClientServiceProvider.getInstance().getAnnotationService().getDetailUpdateEvent(scope.getId()));
+		updateDetails(ClientServiceProvider.getInstance().getDetailsService().getDetailUpdateEvent(scope.getId()));
 
 		deckPanel.showWidget(0);
 
@@ -486,7 +487,7 @@ public class ScopeTreeItemWidget extends Composite {
 		}
 
 		final CommandMenuItem scopeReleaseItemFinal = scopeReleaseItem;
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(releaseCommandMenuItemFactory, 250, 264);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(releaseCommandMenuItemFactory, 350, 264);
 
 		commandsMenu.setOrderedItems(items);
 
@@ -611,6 +612,12 @@ public class ScopeTreeItemWidget extends Composite {
 				.popup(new ImpedimentListWidget(scope))
 				.alignHorizontal(LEFT, new AlignmentReference(this, LEFT, -1))
 				.alignVertical(TOP, new AlignmentReference(this, BOTTOM, 11))
+				.onClose(new PopupCloseListener() {
+					@Override
+					public void onHasClosed() {
+						focusPanel.setFocus(true);
+					}
+				})
 				.pop();
 	}
 

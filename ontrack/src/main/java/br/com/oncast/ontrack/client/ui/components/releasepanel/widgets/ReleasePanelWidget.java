@@ -13,6 +13,8 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDet
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ItemDroppedListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ReleaseScopeItemDragHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
@@ -175,9 +177,23 @@ public class ReleasePanelWidget extends Composite {
 					public void onReleaseDetailUpdate(final ReleaseDetailUpdateEvent event) {
 						final ReleaseWidget widget = releaseContainer.getWidgetFor(event.getTargetRelease());
 						if (widget == null) return;
-
-						widget.setHasDetails(event.hasAnnotations());
+						widget.update();
 					}
+				}));
+		handlerRegistration.add(ClientServiceProvider.getInstance().getEventBus()
+				.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
+					@Override
+					public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
+						final Scope scope = event.getTargetScope();
+						final Release release = scope.getRelease();
+						if (release == null) return;
+
+						final ReleaseWidget releaseWidget = getWidgetFor(release);
+
+						final ReleaseScopeWidget scopeWidget = releaseWidget.getScopeContainer().getWidgetFor(scope);
+						scopeWidget.setHasOpenImpediments(event.hasOpenImpediments());
+					}
+
 				}));
 	}
 

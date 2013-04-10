@@ -24,12 +24,24 @@ public interface ReleaseWidgetMessages extends BaseMessages {
 	@DefaultMessage("Timesheet")
 	String timesheet();
 
-	@Description("go to kanban menu text")
-	@DefaultMessage("Kanban")
-	String kanban();
+	@Description("go to details menu text")
+	@DefaultMessage("Details")
+	String details();
 
-	@Description("go to planning menu text")
-	@DefaultMessage("Planning")
-	String planning();
+	@Description("open burn-up details menu text")
+	@DefaultMessage("Burn-up chart")
+	String burnUp();
+
+	@Description("go to planning icon tooltip")
+	@DefaultMessage("Go to Planning")
+	String goToPlanning();
+
+	@Description("go to kanban icon tooltip")
+	@DefaultMessage("Go to Kanban")
+	String goToKanban();
+
+	@Description("open impediments list popup menu text")
+	@DefaultMessage("Impediments")
+	String impediments();
 
 }

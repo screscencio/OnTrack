@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.util;
+package br.com.oncast.ontrack.client.utils;
 
 import java.util.LinkedList;
 import java.util.Queue;

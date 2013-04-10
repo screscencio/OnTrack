@@ -39,7 +39,7 @@ public class ImpedimentAnnotationMenuItem extends Composite implements Annotatio
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
 		if (readOnly || annotation.isDeprecated()) return;
-		ClientServiceProvider.getInstance().getAnnotationService().markAsImpediment(subjectId, annotation.getId());
+		ClientServiceProvider.getInstance().getDetailsService().markAsImpediment(subjectId, annotation.getId());
 	}
 
 	@Override
