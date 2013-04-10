@@ -37,7 +37,7 @@ public class SolveImpedimentAnnotationMenuItem extends Composite implements Anno
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
 		if (readOnly || annotation.isDeprecated()) return;
-		ClientServiceProvider.getInstance().getAnnotationService().markAsSolveImpediment(subjectId, annotation.getId());
+		ClientServiceProvider.getInstance().getDetailsService().markAsSolveImpediment(subjectId, annotation.getId());
 	}
 
 	@Override

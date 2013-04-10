@@ -27,6 +27,7 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	private Boolean userAction;
 
 	@Element(required = false)
+	// FIXME Remove this and create migration
 	private String description;
 
 	protected DescriptionRemoveAction() {}
@@ -61,6 +62,6 @@ public class DescriptionRemoveAction implements DescriptionAction {
 
 	@Override
 	public String getDescription() {
-		return description;
+		return "";
 	}
 }

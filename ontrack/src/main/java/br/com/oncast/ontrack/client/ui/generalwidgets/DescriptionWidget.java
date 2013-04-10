@@ -1,9 +1,7 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.shared.model.action.DescriptionCreateAction;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -35,13 +33,9 @@ public class DescriptionWidget extends Composite {
 	public DescriptionWidget(final Release release) {
 		this.release = release;
 		descriptionLabel = new DescriptionRichTextLabel(new EditableLabelEditionHandler() {
-
 			@Override
 			public boolean onEditionRequest(final String text) {
-				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
-
-				actionExecutionService.onUserActionExecutionRequest(new DescriptionCreateAction(getCurrentId(), text));
-
+				SERVICE_PROVIDER.getDetailsService().updateDescription(getCurrentId(), text);
 				return true;
 			}
 
@@ -53,10 +47,7 @@ public class DescriptionWidget extends Composite {
 
 		});
 		initWidget(uiBinder.createAndBindUi(this));
-		try {
-			update();
-		}
-		catch (final DescriptionNotFoundException e) {}
+		update();
 	}
 
 	protected String getCurrentTitle() {
@@ -67,22 +58,27 @@ public class DescriptionWidget extends Composite {
 		return (scope == null) ? release.getId() : scope.getId();
 	}
 
-	private void setCurrentId(final Scope scope) throws DescriptionNotFoundException {
+	private void setCurrentId(final Scope scope) {
 		this.scope = scope;
 		update();
 	}
 
 	public void setSelected(final Scope scope) {
-		try {
-			setCurrentId(scope);
-		}
-		catch (final DescriptionNotFoundException e) {}
+		setCurrentId(scope);
 	}
 
-	private void update() throws DescriptionNotFoundException {
-		descriptionLabel.setText("");
-		final Description description = CONTEXT_PROVIDER_SERVICE.getCurrent().findDescriptionFor(getCurrentId());
-		descriptionLabel.setText(description.getDescription());
+	private void update() {
+		try {
+			final Description description = getDescription();
+			descriptionLabel.setText(description.getDescription());
+		}
+		catch (final DescriptionNotFoundException e) {
+			descriptionLabel.setText("");
+		}
+	}
+
+	private Description getDescription() throws DescriptionNotFoundException {
+		return CONTEXT_PROVIDER_SERVICE.getCurrent().findDescriptionFor(getCurrentId());
 	}
 
 }

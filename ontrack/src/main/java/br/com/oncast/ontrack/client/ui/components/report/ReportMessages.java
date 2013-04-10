@@ -56,4 +56,12 @@ public interface ReportMessages extends BaseMessages {
 	@DefaultMessage("Lead Time")
 	String leadTime();
 
+	@Description("message shown in the report table indicating that the impediment belongs to the release")
+	@DefaultMessage("Release")
+	String release();
+
+	@Description("essage shown in the impediments table as header for related to column")
+	@DefaultMessage("Related")
+	String related();
+
 }

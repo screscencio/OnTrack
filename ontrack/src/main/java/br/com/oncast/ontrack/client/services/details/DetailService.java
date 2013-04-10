@@ -32,4 +32,8 @@ public interface DetailService {
 
 	SubjectDetailUpdateEvent getDetailUpdateEvent(UUID subjectId);
 
+	void updateDescription(final UUID subjectId, final String text);
+
+	List<Annotation> getImpedimentsFor(UUID subjectId);
+
 }

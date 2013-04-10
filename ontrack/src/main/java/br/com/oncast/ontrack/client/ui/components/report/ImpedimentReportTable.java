@@ -2,12 +2,11 @@ package br.com.oncast.ontrack.client.ui.components.report;
 
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.report.ImpedimentDatabase.ImpedimentItem;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.release.Release;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -37,10 +36,10 @@ public class ImpedimentReportTable extends Composite {
 
 	private final ReportMessages messages;
 
-	public ImpedimentReportTable(final List<Scope> scopeList, final ProjectContext context, final ReportMessages messages) {
+	public ImpedimentReportTable(final Release release, final ProjectContext context, final ReportMessages messages) {
 		this.messages = messages;
 		cellTable = new CellTable<ImpedimentItem>(ImpedimentDatabase.ImpedimentItem.KEY_PROVIDER);
-		impedimentDatabase = new ImpedimentDatabase(scopeList, context);
+		impedimentDatabase = new ImpedimentDatabase(release, context);
 		final ListHandler<ImpedimentItem> sortHandler = new ListHandler<ImpedimentItem>(impedimentDatabase.getDataProvider().getList());
 		final SelectionModel<ImpedimentItem> selectionModel = new NoSelectionModel<ImpedimentItem>(ImpedimentDatabase.ImpedimentItem.KEY_PROVIDER);
 		cellTable.addColumnSortHandler(sortHandler);
@@ -87,22 +86,22 @@ public class ImpedimentReportTable extends Composite {
 		});
 		cellTable.addColumn(descriptionColumn, new TextHeader(messages.impedimentDescription()));
 
-		final Column<ImpedimentItem, String> idColumn = new Column<ImpedimentItem, String>(new TextCell()) {
+		final Column<ImpedimentItem, String> relatedToColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ImpedimentItem object) {
-				return object.getHumandReadableId();
+				return object.getRelatedTo();
 			}
 		};
-		idColumn.setSortable(true);
-		idColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		sortHandler.setComparator(idColumn, new Comparator<ImpedimentItem>() {
+		relatedToColumn.setSortable(true);
+		relatedToColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		sortHandler.setComparator(relatedToColumn, new Comparator<ImpedimentItem>() {
 			@Override
 			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
-				return o1.getHumandReadableId().compareTo(o2.getHumandReadableId());
+				return o1.getRelatedTo().compareTo(o2.getRelatedTo());
 			}
 		});
-		cellTable.setColumnWidth(idColumn, 36, Unit.PX);
-		cellTable.addColumn(idColumn, new TextHeader(messages.id()));
+		cellTable.setColumnWidth(relatedToColumn, 72, Unit.PX);
+		cellTable.addColumn(relatedToColumn, new TextHeader(messages.related()));
 
 		final Column<ImpedimentItem, String> startDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override

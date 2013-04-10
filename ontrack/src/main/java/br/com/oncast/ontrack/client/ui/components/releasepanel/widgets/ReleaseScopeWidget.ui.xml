@@ -57,9 +57,9 @@
 	    .percentualBar {
 			position: absolute;
 			bottom: 0px;
-			left: 11px;
+			left: 0px;
 			right: 0px;
-			height: 3px;
+			top: 0px;
 		}
 		
 		.descriptionContainer {
@@ -101,6 +101,13 @@
             background-repeat: repeat-y;
 		}
 		
+		.progressIconDone, .progressIconUnderwork, .progressIconNotStarted, .progressIconHasOpenImpediments {
+			position: relative;
+			right: 6px;
+			margin-left: 5px;
+			cursor: pointer;
+		}
+		
 		@sprite .progressIconDone {
         	gwt-image: 'done';
 		}
@@ -113,18 +120,8 @@
 	        gwt-image: 'notStarted';
 		}
 		
-		.progressUnderWork {
-			right: 7px;
-		}
-		
-		.hasOpenImpediments {
+		.progressIconHasOpenImpediments {
 			color: COLOR_ERROR_PRIMARY;
-		}
-		
-		.progressIcon {
-			position: relative;
-			right: 6px;
-			cursor: pointer;
 		}
 		
 		.tags {
@@ -139,23 +136,25 @@
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel}">
-		<g:HorizontalPanel ui:field="internalPanel" styleName="{style.internalPanel}" verticalAlignment="middle">
-			<g:cell height="100%">
-				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
-					<g:SimplePanel styleName="{style.draggableImage}"/>
-				</g:FocusPanel>
-			</g:cell>
+		<g:HTMLPanel>
 			<t:PercentualBar ui:field="percentualBar" styleName="{style.percentualBar}" />
-			<s:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
-	  		<g:cell width="100%">
-	  			<g:HTMLPanel styleName="{style.descriptionContainer}">
-	  				<span ui:field="humanIdLabel" class="{style.humanId}"/>
-					<span ui:field="descriptionLabel"/>
-					<s:ScopeAssociatedTagsWidget ui:field="tags" styleName="{style.tags}"/>
-	  			</g:HTMLPanel>
-	  		</g:cell>
-  			<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
- 			<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIcon}"/>
-		</g:HorizontalPanel>
+			<g:HorizontalPanel ui:field="internalPanel" styleName="{style.internalPanel}" verticalAlignment="middle">
+				<g:cell height="100%">
+					<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
+						<g:SimplePanel styleName="{style.draggableImage}"/>
+					</g:FocusPanel>
+				</g:cell>
+				<s:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
+		  		<g:cell width="100%">
+		  			<g:HTMLPanel styleName="{style.descriptionContainer}">
+		  				<span ui:field="humanIdLabel" class="{style.humanId}"/>
+						<span ui:field="descriptionLabel"/>
+						<s:ScopeAssociatedTagsWidget ui:field="tags" styleName="{style.tags}"/>
+		  			</g:HTMLPanel>
+		  		</g:cell>
+	  			<t:FastLabel ui:field="effortLabel" styleName="{style.effortLabel}" />
+	 			<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIconNotStarted}"/>
+			</g:HorizontalPanel>
+		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

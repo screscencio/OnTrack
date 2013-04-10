@@ -291,7 +291,8 @@ public class Project implements Serializable, HasUUID {
 	}
 
 	public boolean hasDescription(final UUID subjectId) {
-		return findDescriptionFor(subjectId) != null;
+		final Description description = findDescriptionFor(subjectId);
+		return description != null && !description.isEmpty();
 	}
 
 	public void declareTimeSpent(final UUID scopeId, final UUID userId, final Float timeSpent) {

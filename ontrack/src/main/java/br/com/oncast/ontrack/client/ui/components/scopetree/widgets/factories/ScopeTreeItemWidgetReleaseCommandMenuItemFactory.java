@@ -33,7 +33,7 @@ public class ScopeTreeItemWidgetReleaseCommandMenuItemFactory implements ScopeTr
 			public void execute() {
 				controller.bindRelease(releaseToBind);
 			}
-		});
+		}).setRtl(true);
 	}
 
 	@Override

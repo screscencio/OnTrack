@@ -20,7 +20,6 @@ import br.com.oncast.ontrack.client.utils.jquery.JQuery;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.DescriptionAction;
-import br.com.oncast.ontrack.shared.model.action.DescriptionCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
@@ -112,13 +111,9 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		});
 
 		descriptionLabel = new DescriptionRichTextLabel(new EditableLabelEditionHandler() {
-
 			@Override
 			public boolean onEditionRequest(final String text) {
-				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
-
-				actionExecutionService.onUserActionExecutionRequest(new DescriptionCreateAction(subjectId, text));
-
+				SERVICE_PROVIDER.getDetailsService().updateDescription(subjectId, text);
 				return true;
 			}
 
@@ -141,13 +136,13 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 		try {
 			final Description description = ClientServiceProvider.getCurrentProjectContext().findDescriptionFor(subjectId);
-			this.descriptionLabel.setText(description.getDescription());
+			updateDescription(description.getDescription());
 		}
 		catch (final DescriptionNotFoundException e) {}
 	}
 
 	private void updateDescription(final String description) {
-		descriptionLabel.update(description);
+		descriptionLabel.setText(description);
 	}
 
 	public static AnnotationsPanel forRelease(final Release release) {
@@ -179,7 +174,6 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	@Override
 	public void show() {
 		JQuery.jquery(rootPanel).clearQueue().customDropDownAbsolutePositioning(600, new AnimationCallback() {
-
 			@Override
 			public void onComplete() {
 				annotations.setFocus(true);

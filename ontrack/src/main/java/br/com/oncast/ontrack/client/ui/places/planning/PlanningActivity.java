@@ -11,8 +11,6 @@ import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.helper.ScopeTreeMouseHelper;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
@@ -91,7 +89,6 @@ public class PlanningActivity extends AbstractActivity {
 		view.getScopeTree().setFocus(true);
 
 		registrations.add(registerScopeSelectionEventHandler());
-		registrations.add(registerScopeImpedimentUpdateEventHandler());
 
 		if (filteredTagId != null) view.getScopeTree().filterByTag(filteredTagId);
 
@@ -139,23 +136,6 @@ public class PlanningActivity extends AbstractActivity {
 		for (final HandlerRegistration registration : registrations) {
 			registration.removeHandler();
 		}
-	}
-
-	private HandlerRegistration registerScopeImpedimentUpdateEventHandler() {
-		return ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
-			@Override
-			public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
-				final Scope scope = event.getTargetScope();
-				final Release release = scope.getRelease();
-				if (release == null) return;
-
-				final ReleaseWidget releaseWidget = view.getReleasePanel().getWidgetFor(release);
-
-				final ReleaseScopeWidget scopeWidget = releaseWidget.getScopeContainer().getWidgetFor(scope);
-				scopeWidget.setHasOpenImpediments(event.hasOpenImpediments());
-			}
-
-		});
 	}
 
 	private HandlerRegistration registerScopeSelectionEventHandler() {

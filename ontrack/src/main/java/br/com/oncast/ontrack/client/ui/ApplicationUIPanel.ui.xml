@@ -19,11 +19,6 @@
 			background-repeat: repeat;
 		}
 		
-		.applicationPanel {
-			position: absolute;
-		    top: 0; right: 0; bottom: 0; left: 0;
-		}
-		
 		.maskContainer {
 			position: relative;
 			height: 100%;
@@ -50,6 +45,6 @@
 		<div class="{style.maskContainer}">
 			<div class="{style.radialMask}"/>
 		</div>
-		<g:SimplePanel styleName="{style.applicationPanel}" ui:field="panel" />
+		<g:SimplePanel ui:field="panel" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

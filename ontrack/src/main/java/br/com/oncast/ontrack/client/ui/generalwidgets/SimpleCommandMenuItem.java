@@ -10,6 +10,7 @@ public class SimpleCommandMenuItem implements CommandMenuItem {
 	private MenuItem menuItem;
 	private final String value;
 	private boolean growAnimation = true;
+	private boolean isRtl = false;
 
 	public SimpleCommandMenuItem(final String text, final Command command) {
 		this.text = text;
@@ -44,6 +45,7 @@ public class SimpleCommandMenuItem implements CommandMenuItem {
 		if (menuItem != null) return menuItem;
 		menuItem = new MenuItem(text, true, command);
 		menuItem.setStyleName("gwt-MenuItem-noGrow", !growAnimation);
+		menuItem.setStyleName("gwt-MenuItem-rtl", isRtl);
 		return menuItem;
 	}
 
@@ -61,6 +63,11 @@ public class SimpleCommandMenuItem implements CommandMenuItem {
 
 	public SimpleCommandMenuItem setGrowAnimation(final boolean animated) {
 		growAnimation = animated;
+		return this;
+	}
+
+	public SimpleCommandMenuItem setRtl(final boolean isRtl) {
+		this.isRtl = isRtl;
 		return this;
 	}
 }

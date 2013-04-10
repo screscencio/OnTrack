@@ -3,6 +3,10 @@
 
 package br.com.oncast.ontrack.shared.model.progress;
 
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,7 +25,7 @@ public class Progress implements Serializable {
 	public static final String DEFAULT_NOT_STARTED_NAME = "Not Started";
 
 	public enum ProgressState {
-		NOT_STARTED("") {
+		NOT_STARTED("", DEFAULT_NOT_STARTED_NAME) {
 			@Override
 			public boolean matches(final String description) {
 				final String[] acceptableDescriptions = { "not started", "notstarted", "not_started", "ns", "n", "" };
@@ -50,6 +54,12 @@ public class Progress implements Serializable {
 
 		private final String description;
 
+		private final String label;
+
+		public static String getLabelForDescription(final String description) {
+			return NOT_STARTED.matches(description) ? NOT_STARTED.getLabel() : description;
+		}
+
 		public static ProgressState getStateForDescription(final String description) {
 			for (final ProgressState item : ProgressState.values())
 				if (item != UNDER_WORK && item.matches(description)) return item;
@@ -57,11 +67,20 @@ public class Progress implements Serializable {
 		}
 
 		private ProgressState(final String description) {
+			this(description, description);
+		}
+
+		private ProgressState(final String description, final String label) {
 			this.description = description;
+			this.label = label;
 		}
 
 		public String getDescription() {
 			return description;
+		}
+
+		public String getLabel() {
+			return label;
 		}
 
 		@Override
@@ -117,12 +136,16 @@ public class Progress implements Serializable {
 		return !description.isEmpty();
 	}
 
+	public boolean isNotStarted() {
+		return getState() == NOT_STARTED;
+	}
+
 	public boolean isDone() {
-		return stateManager.getCurrentStateValue() == ProgressState.DONE;
+		return getState() == DONE;
 	}
 
 	public boolean isUnderWork() {
-		return stateManager.getCurrentStateValue() == ProgressState.UNDER_WORK;
+		return getState() == UNDER_WORK;
 	}
 
 	void setState(final ProgressState newState, final UserRepresentation author, final Date timestamp) {

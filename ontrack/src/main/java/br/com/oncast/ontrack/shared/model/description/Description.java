@@ -72,4 +72,8 @@ public class Description implements Serializable, HasUUID {
 		return UUIDUtils.equals(this, obj);
 	}
 
+	public boolean isEmpty() {
+		return description.isEmpty();
+	}
+
 }

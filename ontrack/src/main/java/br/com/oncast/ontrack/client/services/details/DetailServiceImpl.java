@@ -20,12 +20,15 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
 import br.com.oncast.ontrack.shared.model.action.DescriptionAction;
+import br.com.oncast.ontrack.shared.model.action.DescriptionCreateAction;
+import br.com.oncast.ontrack.shared.model.action.DescriptionRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
+import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -58,8 +61,8 @@ public class DetailServiceImpl implements DetailService {
 	@Override
 	public boolean hasDetails(final UUID subjectId) {
 		final ProjectContext context = contextProviderService.getCurrent();
-
 		return context.hasChecklistsFor(subjectId) || context.hasDescriptionFor(subjectId) || hasAnnotationsFor(subjectId);
+
 	}
 
 	private boolean hasAnnotationsFor(final UUID subjectId) {
@@ -139,6 +142,11 @@ public class DetailServiceImpl implements DetailService {
 		return getCurrentContext().findAnnotationsFor(subjectId);
 	}
 
+	@Override
+	public List<Annotation> getImpedimentsFor(final UUID subjectId) {
+		return getCurrentContext().findImpedimentsFor(subjectId);
+	}
+
 	private ProjectContext getCurrentContext() {
 		return contextProviderService.getCurrent();
 	}
@@ -154,7 +162,7 @@ public class DetailServiceImpl implements DetailService {
 
 	private boolean hasMatchingAnnotation(final UUID subjectId, final AnnotationType type, final boolean isDeprecated) {
 		for (final Annotation annotation : getCurrentContext().findAnnotationsFor(subjectId)) {
-			if (isDeprecated == annotation.isDeprecated() && type.equals(annotation.getType())) return true;
+			if (isDeprecated == annotation.isDeprecated() && type == annotation.getType()) return true;
 		}
 		return false;
 	}
@@ -190,6 +198,22 @@ public class DetailServiceImpl implements DetailService {
 		}
 		catch (final DescriptionNotFoundException e) {}
 		return event;
+	}
+
+	@Override
+	public void updateDescription(final UUID subjectId, final String text) {
+		if (text.trim().isEmpty()) {
+			try {
+				final Description description = findDescriptionFor(subjectId);
+				actionExecutionService.onUserActionExecutionRequest(new DescriptionRemoveAction(subjectId, description.getId(), true));
+			}
+			catch (final DescriptionNotFoundException e) {}
+		}
+		else actionExecutionService.onUserActionExecutionRequest(new DescriptionCreateAction(subjectId, text));
+	}
+
+	private Description findDescriptionFor(final UUID subjectId) throws DescriptionNotFoundException {
+		return getCurrentContext().findDescriptionFor(subjectId);
 	}
 
 }

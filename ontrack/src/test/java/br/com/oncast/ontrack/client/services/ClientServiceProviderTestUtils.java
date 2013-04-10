@@ -56,7 +56,7 @@ public class ClientServiceProviderTestUtils {
 
 		public ClientServiceProviderTestConfiguration mockAnnotationService() {
 			final DetailService service = mock(DetailService.class);
-			when(mock.getAnnotationService()).thenReturn(service);
+			when(mock.getDetailsService()).thenReturn(service);
 			return this;
 		}
 

@@ -9,7 +9,7 @@
 	<ui:style src="../../style/default.css">
 	
 		.root {
-			width: 396px;
+			width: 400px;
 		}
 		
 		.impedimentsContainer {
@@ -18,13 +18,29 @@
 			width: 100%;
 		}
 		
+		.noImpedimentsItem {
+			position: relative;
+			border-top: BORDER_HEADER;
+			padding: 9px;
+			min-height: 36px;
+			line-height: 36px;
+			font-size: FONT_SIZE_LARGE;
+			white-space: nowrap;
+			text-align: center;
+		}
+	
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.root}">
 		<w:IconTextBox ui:field="newImpedimentDescription" iconStyle="icon-flag" helpText="ENTER to add new impediment">
 			<ui:attribute name="helpText" description="Impediment creation textBox help text"/>
 		</w:IconTextBox>
-		<w:ModelWidgetContainer ui:field="impedimentsContainer" styleName="{style.impedimentsContainer}"/>
+		<div class = "{style.impedimentsContainer}">
+			<div ui:field="noImpedimentsItem" class="{style.noImpedimentsItem}">
+				<ui:msg description="text showed when there is no impediments at all">Oh no! Your first imepdiment!</ui:msg>
+			</div>
+			<w:ModelWidgetContainer ui:field="impedimentsContainer"/>
+		</div>
 	</g:HTMLPanel>
 	
 </ui:UiBinder> 

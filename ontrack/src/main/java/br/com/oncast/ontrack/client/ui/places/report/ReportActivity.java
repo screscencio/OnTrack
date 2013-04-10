@@ -26,10 +26,6 @@ public class ReportActivity extends AbstractActivity {
 		this.requestedReleaseId = place.getRequestedReleaseId();
 	}
 
-	private void exitToPlanningPlace() {
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(requestedProjectId));
-	}
-
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		try {
@@ -49,6 +45,10 @@ public class ReportActivity extends AbstractActivity {
 		catch (final ReleaseNotFoundException e) {
 			exitToPlanningPlace();
 		}
+	}
+
+	private void exitToPlanningPlace() {
+		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(requestedProjectId));
 	}
 
 	@Override

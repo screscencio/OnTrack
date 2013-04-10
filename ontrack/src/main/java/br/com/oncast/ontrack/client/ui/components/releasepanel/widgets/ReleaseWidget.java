@@ -19,7 +19,9 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandle
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentListWidget;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.ui.places.report.ReportPlace;
@@ -32,6 +34,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -84,6 +88,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected EditableLabel descriptionLabel;
 
 	@UiField
+	protected FocusPanel impedimentsIcon;
+
+	@UiField
 	protected FocusPanel detailLink;
 
 	@UiField
@@ -91,6 +98,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiField
 	protected SimplePanel progressBar;
+
+	@UiField
+	protected FocusPanel navigationIcon;
 
 	@UiField
 	protected FocusPanel menuIcon;
@@ -180,18 +190,17 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		};
 
 		initWidget(uiBinder.createAndBindUi(this));
-		setupDetails();
 		setVisible(false);
 
 		scopeContainer.setOwnerRelease(release);
 
 		update();
 
+		setupNavigationIcon(release, kanbanSpecific);
 		setContainerState(DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE, false);
 		setVisible(true);
 
 		ClientServiceProvider.getInstance().getEventBus().addHandler(ReleaseScopeListUpdateEvent.TYPE, new ReleaseScopeListUpdateEventHandler() {
-
 			@Override
 			public void onScopeListInteraction(final Release r) {
 				if (release.equals(r)) infoWidget.show();
@@ -200,23 +209,52 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		});
 	}
 
-	private void setupDetails() {
-		final DetailService annotationService = ClientServiceProvider.getInstance().getAnnotationService();
-		setHasDetails(annotationService.hasDetails(release.getId()));
+	private void setupNavigationIcon(final Release release, final boolean kanbanSpecific) {
+		if (kanbanSpecific) {
+			navigationIcon.addStyleName("icon-sitemap");
+			navigationIcon.setTitle(messages.goToPlanning());
+			navigationIcon.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(final ClickEvent event) {
+					goToPlanning();
+				}
+			});
+		}
+		else if (release.isLeaf()) {
+			navigationIcon.addStyleName("icon-columns");
+			navigationIcon.setTitle(messages.goToKanban());
+			navigationIcon.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(final ClickEvent event) {
+					goToProgress();
+				}
+			});
+		}
+		else navigationIcon.removeFromParent();
+	}
+
+	@UiHandler("impedimentsIcon")
+	protected void showImpediments(final ClickEvent event) {
+		event.stopPropagation();
+		popImpediments(header);
+	}
+
+	private void popImpediments(final UIObject alignmentWidget) {
+		PopupConfig.configPopup().popup(new ImpedimentListWidget(release))
+				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(alignmentWidget, HorizontalAlignment.RIGHT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(alignmentWidget, VerticalAlignment.BOTTOM))
+				.pop();
 	}
 
 	@UiHandler("detailLink")
 	protected void showAnnotationPanel(final ClickEvent event) {
-		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(release.getId());
+		getDetailsService().showAnnotationsFor(release.getId());
 		event.stopPropagation();
 	}
 
 	@UiHandler("progressIcon")
 	protected void showChartPanel(final ClickEvent event) {
-		configPopup().popup(getChartPanel())
-				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.CENTER))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.MIDDLE))
-				.pop();
+		popChartPanel();
 		event.stopPropagation();
 	}
 
@@ -239,26 +277,18 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		if (mouseCommandsMenu != null) return mouseCommandsMenu;
 
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		if (kanbanSpecific) {
-			itens.add(new TextAndImageCommandMenuItem("icon-sitemap", messages.planning(), new Command() {
-				@Override
-				public void execute() {
-					final ClientServiceProvider provider = ClientServiceProvider.getInstance();
-					final UUID projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
-					provider.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
-				}
-			}));
-		}
-		if (!kanbanSpecific && release.isLeaf()) {
-			itens.add(new TextAndImageCommandMenuItem("icon-columns", messages.kanban(), new Command() {
-				@Override
-				public void execute() {
-					final ClientServiceProvider provider = ClientServiceProvider.getInstance();
-					final UUID projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
-					provider.getApplicationPlaceController().goTo(new ProgressPlace(projectId, release.getId()));
-				}
-			}));
-		}
+		itens.add(new TextAndImageCommandMenuItem("icon-info-sign", messages.details(), new Command() {
+			@Override
+			public void execute() {
+				getDetailsService().showAnnotationsFor(release.getId());
+			}
+		}));
+		itens.add(new TextAndImageCommandMenuItem("icon-bar-chart", messages.burnUp(), new Command() {
+			@Override
+			public void execute() {
+				popChartPanel();
+			}
+		}));
 		itens.add(new TextAndImageCommandMenuItem("icon-file-alt", messages.report(), new Command() {
 			@Override
 			public void execute() {
@@ -276,22 +306,25 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		}
 		if (!kanbanSpecific) {
 			itens.add(new SpacerCommandMenuItem());
+			itens.add(new TextAndImageCommandMenuItem("icon-flag", messages.impediments(), new Command() {
+				@Override
+				public void execute() {
+					popImpediments(header);
+				}
+			}));
 			itens.add(new TextAndImageCommandMenuItem("icon-arrow-up", messages.increasePriority(), new Command() {
-
 				@Override
 				public void execute() {
 					releasePanelInteractionHandler.onReleaseIncreasePriorityRequest(release);
 				}
 			}));
 			itens.add(new TextAndImageCommandMenuItem("icon-arrow-down", messages.decreasePriority(), new Command() {
-
 				@Override
 				public void execute() {
 					releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
 				}
 			}));
 			itens.add(new TextAndImageCommandMenuItem("icon-trash", messages.deleteRelease(), new Command() {
-
 				@Override
 				public void execute() {
 					releasePanelInteractionHandler.onReleaseDeletionRequest(release);
@@ -319,6 +352,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		final boolean releaseUpdate = updateChildReleaseWidgets();
 		final boolean scopeUpdate = updateScopeWidgets();
+
+		detailLink.setVisible(getDetailsService().hasDetails(release.getId()));
+		impedimentsIcon.setVisible(getDetailsService().hasOpenImpediment(release.getId()));
 
 		laterSeparator.setVisible(release.hasDirectScopes() && release.hasChildren());
 
@@ -380,6 +416,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ReleaseContainerStateChangeEvent(release, isContainerStateOpen), this);
 	}
 
+	private void popChartPanel() {
+		configPopup().popup(getChartPanel())
+				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.CENTER))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.MIDDLE))
+				.pop();
+	}
+
 	private ReleaseChartPopup getChartPanel() {
 		if (chartPanel != null) return chartPanel;
 		chartPanel = new ReleaseChartPopup(release);
@@ -419,7 +462,24 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		return (ReleaseWidget) current;
 	}
 
-	public void setHasDetails(final boolean hasDetails) {
-		detailLink.setStyleName("icon-plus-sign", true);
+	private void goToPlanning() {
+		goTo(new PlanningPlace(getProjectId()));
 	}
+
+	private void goToProgress() {
+		goTo(new ProgressPlace(getProjectId(), release.getId()));
+	}
+
+	private void goTo(final Place place) {
+		ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(place);
+	}
+
+	private UUID getProjectId() {
+		return ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent().getId();
+	}
+
+	private DetailService getDetailsService() {
+		return ClientServiceProvider.getInstance().getDetailsService();
+	}
+
 }

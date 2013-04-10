@@ -217,7 +217,7 @@ public class ClientServiceProvider {
 		return clientStorageService;
 	}
 
-	public DetailService getAnnotationService() {
+	public DetailService getDetailsService() {
 		if (annotationService != null) return annotationService;
 		return annotationService = new DetailServiceImpl(getActionExecutionService(), getContextProviderService(),
 				getApplicationPlaceController(), getEventBus());

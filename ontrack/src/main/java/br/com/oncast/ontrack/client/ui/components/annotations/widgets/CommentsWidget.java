@@ -96,7 +96,7 @@ public class CommentsWidget extends Composite {
 		final String message = newCommentText.getText().trim();
 		if (message.trim().isEmpty()) return;
 
-		getProvider().getAnnotationService().createAnnotationFor(subjectId, message, null);
+		getProvider().getDetailsService().createAnnotationFor(subjectId, message, null);
 	}
 
 	private void update() {
@@ -117,7 +117,7 @@ public class CommentsWidget extends Composite {
 	}
 
 	private DetailService getAnnotationService() {
-		return getProvider().getAnnotationService();
+		return getProvider().getDetailsService();
 	}
 
 	private ActionExecutionService getActionExecutionService() {
