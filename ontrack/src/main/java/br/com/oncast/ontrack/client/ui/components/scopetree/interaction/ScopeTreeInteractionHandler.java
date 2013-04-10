@@ -73,10 +73,10 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 				internalAction.execute(tree);
 			}
 			catch (final OperationNotAllowedException e) {
-				ClientServiceProvider.getInstance().getClientAlertingService().showWarning(e.getLocalizedMessage());
+				ClientServiceProvider.get().alerting().showWarning(e.getLocalizedMessage());
 			}
 			catch (final UnableToCompleteActionException e) {
-				ClientServiceProvider.getInstance().getClientAlertingService().showError(e.getLocalizedMessage());
+				ClientServiceProvider.get().alerting().showError(e.getLocalizedMessage());
 			}
 		}
 	}

@@ -71,7 +71,7 @@ public enum NotificationType implements NotificationMessageCode {
 
 	private static String getProjectLinkFor(final NotificationWidgetMessages messages, final Notification notification) {
 		try {
-			final ProjectRepresentation project = ClientServiceProvider.getInstance().getProjectRepresentationProvider()
+			final ProjectRepresentation project = ClientServiceProvider.get().projectRepresentationProvider()
 					.getProjectRepresentation(notification.getProjectId());
 			return LinkFactory.getLinkForProject(project).asString();
 		}

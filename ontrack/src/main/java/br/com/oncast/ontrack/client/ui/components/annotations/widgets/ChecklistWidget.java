@@ -164,7 +164,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	private void addItem() {
 		final String itemDescription = newItemDescription.getText().trim();
 		if (itemDescription.isEmpty()) {
-			ClientServiceProvider.getInstance().getClientAlertingService().showWarning(messagtes.emptyChecklistItemError());
+			ClientServiceProvider.get().alerting().showWarning(messagtes.emptyChecklistItemError());
 			newItemDescription.setFocus(true);
 			return;
 		}
@@ -193,11 +193,11 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.getInstance().getActionExecutionService();
+		return ClientServiceProvider.get().actionExecution();
 	}
 
 	private ChecklistService getChecklistService() {
-		return ClientServiceProvider.getInstance().getChecklistService();
+		return ClientServiceProvider.get().checklists();
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {

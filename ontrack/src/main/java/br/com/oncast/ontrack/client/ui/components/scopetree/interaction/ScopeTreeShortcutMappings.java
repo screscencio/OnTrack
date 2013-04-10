@@ -261,7 +261,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	OPEN_ANNOTATIONS(new Shortcut(BrowserKeyCodes.KEY_A).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			ClientServiceProvider.getInstance().getDetailsService().showAnnotationsFor(scope.getId());
+			ClientServiceProvider.get().details().showAnnotationsFor(scope.getId());
 		}
 
 		@Override
@@ -326,7 +326,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	FIND_SCOPE_AT_RELEASE_WIDGET(new Shortcut(BrowserKeyCodes.KEY_F).with(AltModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
+			ClientServiceProvider.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
 		}
 
 		@Override
@@ -339,7 +339,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	SELECT_PREVIOUS_SELECTED_SCOPE(new Shortcut(BrowserKeyCodes.KEY_LEFT).with(AltModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			ClientServiceProvider.getInstance().getClientApplicationStateService().jumpToPreviousSelection();
+			ClientServiceProvider.get().applicationState().jumpToPreviousSelection();
 		}
 
 		@Override
@@ -352,7 +352,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	SELECT_NEXT_SELECTED_SCOPE(new Shortcut(BrowserKeyCodes.KEY_RIGHT).with(AltModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			ClientServiceProvider.getInstance().getClientApplicationStateService().jumpToNextSelection();
+			ClientServiceProvider.get().applicationState().jumpToNextSelection();
 		}
 
 		@Override

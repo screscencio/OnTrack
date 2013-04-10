@@ -200,7 +200,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		setContainerState(DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE, false);
 		setVisible(true);
 
-		ClientServiceProvider.getInstance().getEventBus().addHandler(ReleaseScopeListUpdateEvent.TYPE, new ReleaseScopeListUpdateEventHandler() {
+		ClientServiceProvider.get().eventBus().addHandler(ReleaseScopeListUpdateEvent.TYPE, new ReleaseScopeListUpdateEventHandler() {
 			@Override
 			public void onScopeListInteraction(final Release r) {
 				if (release.equals(r)) infoWidget.show();
@@ -293,14 +293,14 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			@Override
 			public void execute() {
 				final UUID project = ClientServiceProvider.getCurrentProjectContext().getId();
-				ClientServiceProvider.getInstance().getApplicationPlaceController().open(new ReportPlace(project, release.getId()));
+				ClientServiceProvider.get().placeController().open(new ReportPlace(project, release.getId()));
 			}
 		}));
 		if (release.hasDirectScopes()) {
 			itens.add(new TextAndImageCommandMenuItem("icon-time", messages.timesheet(), new Command() {
 				@Override
 				public void execute() {
-					ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(release.getId());
+					ClientServiceProvider.get().getTimesheetService().showTimesheetFor(release.getId());
 				}
 			}));
 		}
@@ -413,7 +413,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		isContainerStateOpen = shouldOpen;
 
 		if (!shouldFireEvent) return;
-		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ReleaseContainerStateChangeEvent(release, isContainerStateOpen), this);
+		ClientServiceProvider.get().eventBus().fireEventFromSource(new ReleaseContainerStateChangeEvent(release, isContainerStateOpen), this);
 	}
 
 	private void popChartPanel() {
@@ -471,15 +471,15 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void goTo(final Place place) {
-		ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(place);
+		ClientServiceProvider.get().placeController().goTo(place);
 	}
 
 	private UUID getProjectId() {
-		return ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent().getId();
+		return ClientServiceProvider.get().projectRepresentationProvider().getCurrent().getId();
 	}
 
 	private DetailService getDetailsService() {
-		return ClientServiceProvider.getInstance().getDetailsService();
+		return ClientServiceProvider.get().details();
 	}
 
 }

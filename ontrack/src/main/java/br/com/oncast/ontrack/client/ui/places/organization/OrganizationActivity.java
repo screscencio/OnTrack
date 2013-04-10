@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class OrganizationActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider PROVIDER = ClientServiceProvider.get();
 	private final OrganizationPlace place;
 
 	public OrganizationActivity(final OrganizationPlace place) {
@@ -29,7 +29,7 @@ public class OrganizationActivity extends AbstractActivity {
 		menu.clearCustomMenuItems();
 		menu.setBackButtonVisibility(true);
 
-		PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingContainer());
+		PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
 	}
 
 	@Override

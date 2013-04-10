@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseSelectionWidget extends Composite implements HasCloseHandlers<ReleaseSelectionWidget>, PopupAware {
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private static ReleaseSelectionWidgetUiBinder uiBinder = GWT.create(ReleaseSelectionWidgetUiBinder.class);
 
@@ -50,7 +50,7 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 	public ReleaseSelectionWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
+		projectId = SERVICE_PROVIDER.projectRepresentationProvider().getCurrent().getId();
 		updateReleaseMenuItens(getReleases());
 	}
 
@@ -77,7 +77,7 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private void openReleaseProgress(final Release release) {
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProgressPlace(projectId, release.getId()));
+		SERVICE_PROVIDER.placeController().goTo(new ProgressPlace(projectId, release.getId()));
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private Set<Release> getReleases() {
-		return SERVICE_PROVIDER.getContextProviderService().getProjectContext(projectId).getAllReleasesWithDirectScopes();
+		return SERVICE_PROVIDER.contextProvider().getProjectContext(projectId).getAllReleasesWithDirectScopes();
 	}
 
 	@Override

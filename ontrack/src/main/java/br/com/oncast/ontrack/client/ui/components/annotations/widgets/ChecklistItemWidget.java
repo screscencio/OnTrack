@@ -150,11 +150,11 @@ public class ChecklistItemWidget extends Composite implements ModelWidget<Checkl
 	}
 
 	private ChecklistService getChecklistService() {
-		return ClientServiceProvider.getInstance().getChecklistService();
+		return ClientServiceProvider.get().checklists();
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.getInstance().getActionExecutionService();
+		return ClientServiceProvider.get().actionExecution();
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {

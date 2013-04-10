@@ -134,7 +134,7 @@ public class DraggableMembersListWidget extends Composite {
 	}
 
 	public void update() {
-		final UsersStatusService usersStatusService = ClientServiceProvider.getInstance().getUsersStatusService();
+		final UsersStatusService usersStatusService = ClientServiceProvider.get().usersStatus();
 		updateMembersList(usersStatusService.getActiveUsers(), usersStatusService.getOnlineUsers());
 	}
 
@@ -153,7 +153,7 @@ public class DraggableMembersListWidget extends Composite {
 	}
 
 	private void setupActionExecutionListener() {
-		handlerRegistrations.add(ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(new ActionExecutionListener() {
+		handlerRegistrations.add(ClientServiceProvider.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet,
@@ -167,7 +167,7 @@ public class DraggableMembersListWidget extends Composite {
 	}
 
 	private void setupUsersStatusChangeListener() {
-		handlerRegistrations.add(ClientServiceProvider.getInstance().getUsersStatusService().register(new UsersStatusChangeListener() {
+		handlerRegistrations.add(ClientServiceProvider.get().usersStatus().register(new UsersStatusChangeListener() {
 			@Override
 			public void onUsersStatusListUnavailable(final Throwable caught) {
 				updateMembersList(new TreeSet<UserRepresentation>(), new TreeSet<UserRepresentation>());

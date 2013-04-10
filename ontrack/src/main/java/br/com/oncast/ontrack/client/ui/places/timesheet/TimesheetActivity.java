@@ -42,13 +42,13 @@ public class TimesheetActivity extends AbstractActivity {
 			final Release release = projectContext.findRelease(place.getReleaseId());
 			getTimesheetPanel().setRelease(release, projectContext);
 
-			if (!place.hasLoadedPlace()) register = ShortcutService.register(timesheetPanel, ClientServiceProvider.getInstance().getActionExecutionService(),
+			if (!place.hasLoadedPlace()) register = ShortcutService.register(timesheetPanel, ClientServiceProvider.get().actionExecution(),
 					UndoRedoShortCutMapping.values());
 
 			getPopupConfig().pop();
 		}
 		catch (final ReleaseNotFoundException e) {
-			ClientServiceProvider.getInstance().getClientAlertingService().showError(MESSAGES.theRequestingReleaseWasNotFound());
+			ClientServiceProvider.get().alerting().showError(MESSAGES.theRequestingReleaseWasNotFound());
 		}
 	}
 
@@ -81,7 +81,7 @@ public class TimesheetActivity extends AbstractActivity {
 	}
 
 	private ApplicationPlaceController getApplicationPlaceController() {
-		return ClientServiceProvider.getInstance().getApplicationPlaceController();
+		return ClientServiceProvider.get().placeController();
 	}
 
 }

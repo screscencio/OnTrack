@@ -30,7 +30,7 @@ public class DetailActivity extends AbstractActivity {
 
 	public void start() {
 		if (!setDetailPanel(place)) return;
-		if (!place.hasLoadedPlace()) register = ShortcutService.register(detailPanel, ClientServiceProvider.getInstance().getActionExecutionService(),
+		if (!place.hasLoadedPlace()) register = ShortcutService.register(detailPanel, ClientServiceProvider.get().actionExecution(),
 				UndoRedoShortCutMapping.values());
 
 		PopupConfig.configPopup().popup(this.detailPanel).onClose(new PopupCloseListener() {
@@ -59,8 +59,8 @@ public class DetailActivity extends AbstractActivity {
 	}
 
 	private boolean setDetailPanel(final DetailPlace place) {
-		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
-		final ProjectContext context = provider.getContextProviderService().getProjectContext(place.getRequestedProjectId());
+		final ClientServiceProvider provider = ClientServiceProvider.get();
+		final ProjectContext context = provider.contextProvider().getProjectContext(place.getRequestedProjectId());
 
 		detailPanel = null;
 		try {
@@ -71,7 +71,7 @@ public class DetailActivity extends AbstractActivity {
 				detailPanel = AnnotationsPanel.forRelease(context.findRelease(place.getSubjectId()));
 			}
 			catch (final ReleaseNotFoundException e1) {
-				provider.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().errorShowingDetails());
+				provider.alerting().showError(ClientServiceProvider.get().errorMessages().errorShowingDetails());
 				getApplicationPlaceController().goTo(new PlanningPlace(place.getRequestedProjectId()));
 				return false;
 			}
@@ -80,7 +80,7 @@ public class DetailActivity extends AbstractActivity {
 	}
 
 	private ApplicationPlaceController getApplicationPlaceController() {
-		return ClientServiceProvider.getInstance().getApplicationPlaceController();
+		return ClientServiceProvider.get().placeController();
 	}
 
 }

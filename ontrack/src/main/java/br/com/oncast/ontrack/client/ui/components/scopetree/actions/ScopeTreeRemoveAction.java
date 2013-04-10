@@ -44,7 +44,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 			}
 		}
 		catch (final UnableToCompleteActionException e) {
-			throw new UserNotFoundException(ClientServiceProvider.getInstance().getClientErrorMessages()
+			throw new UserNotFoundException(ClientServiceProvider.get().errorMessages()
 					.userNotFound(actionContext.getUserId().toString()));
 		}
 	}

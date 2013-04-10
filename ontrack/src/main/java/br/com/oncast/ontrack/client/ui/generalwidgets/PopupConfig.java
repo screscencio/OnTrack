@@ -281,7 +281,7 @@ public class PopupConfig {
 				hidePopup();
 				if (isModal) {
 					if (previousAlertingParent != null)
-					ClientServiceProvider.getInstance().getClientAlertingService()
+					ClientServiceProvider.get().alerting()
 							.setAlertingParentWidget(previousAlertingParent);
 					if (previousShortcutHelpParent != null)
 					ShortcutService.setShortcutHelpPanelParentWidget(previousShortcutHelpParent);
@@ -291,7 +291,7 @@ public class PopupConfig {
 		}, isModal);
 
 		if (isModal) {
-			previousAlertingParent = ClientServiceProvider.getInstance().getClientAlertingService().setAlertingParentWidget(RootPanel.get());
+			previousAlertingParent = ClientServiceProvider.get().alerting().setAlertingParentWidget(RootPanel.get());
 			previousShortcutHelpParent = ShortcutService.setShortcutHelpPanelParentWidget(RootPanel.get());
 		}
 

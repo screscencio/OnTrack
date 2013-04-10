@@ -42,12 +42,12 @@ public class ScopeTagWidget extends Composite implements ModelWidget<Tag>, Actio
 
 	@Override
 	protected void onLoad() {
-		ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(this);
+		ClientServiceProvider.get().actionExecution().addActionExecutionListener(this);
 	}
 
 	@Override
 	protected void onUnload() {
-		ClientServiceProvider.getInstance().getActionExecutionService().removeActionExecutionListener(this);
+		ClientServiceProvider.get().actionExecution().removeActionExecutionListener(this);
 	}
 
 	@Override

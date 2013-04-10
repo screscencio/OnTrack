@@ -41,7 +41,7 @@ public class ApplicationMenu extends Composite {
 
 	private static final ApplicationMenuMessages messages = GWT.create(ApplicationMenuMessages.class);
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private static ApplicationMenuWidgetUiBinder uiBinder = GWT.create(ApplicationMenuWidgetUiBinder.class);
 
@@ -127,11 +127,11 @@ public class ApplicationMenu extends Composite {
 	}
 
 	private ApplicationPlaceController getPlaceController() {
-		return SERVICE_PROVIDER.getApplicationPlaceController();
+		return SERVICE_PROVIDER.placeController();
 	}
 
 	private UUID getCurrentProjectId() {
-		return SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
+		return SERVICE_PROVIDER.projectRepresentationProvider().getCurrent().getId();
 	}
 
 	@Override
@@ -144,9 +144,9 @@ public class ApplicationMenu extends Composite {
 		if (registration != null) return;
 
 		registration = ClientServiceProvider
-				.getInstance()
-				.getUserDataService()
-				.registerListenerForSpecificUser(ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUserId(),
+				.get()
+				.userData()
+				.registerListenerForSpecificUser(ClientServiceProvider.get().authentication().getCurrentUserId(),
 						new UserSpecificInformationChangeListener() {
 							@Override
 							public void onInformationChange(final User user) {
@@ -240,7 +240,7 @@ public class ApplicationMenu extends Composite {
 	}
 
 	private void logUserOut() {
-		SERVICE_PROVIDER.getAuthenticationService().logout(new UserLogoutCallback() {
+		SERVICE_PROVIDER.authentication().logout(new UserLogoutCallback() {
 
 			@Override
 			public void onUserLogout() {}
@@ -248,7 +248,7 @@ public class ApplicationMenu extends Composite {
 			@Override
 			public void onFailure(final Throwable caught) {
 				// TODO Threat this error properly. Maybe even call the ErrorService.
-				ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.logoutFailed());
+				ClientServiceProvider.get().alerting().showError(messages.logoutFailed());
 			}
 		});
 	}

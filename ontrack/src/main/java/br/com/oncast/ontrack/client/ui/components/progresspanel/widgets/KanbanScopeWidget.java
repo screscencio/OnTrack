@@ -82,7 +82,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 
 		final Scope story = findStory(scope);
 		draggableAnchor.getElement().getStyle()
-				.setBackgroundColor(ClientServiceProvider.getInstance().getColorProviderService().getColorFor(story).toCssRepresentation());
+				.setBackgroundColor(ClientServiceProvider.get().colorProvider().getColorFor(story).toCssRepresentation());
 		this.scope = scope;
 		updateDescription();
 	}
@@ -100,12 +100,12 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 
 	@UiHandler("panel")
 	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
-		ClientServiceProvider.getInstance().getDetailsService().showAnnotationsFor(scope.getId());
+		ClientServiceProvider.get().details().showAnnotationsFor(scope.getId());
 	}
 
 	@UiHandler("panel")
 	public void onScopeWidgetClick(final ClickEvent e) {
-		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
+		ClientServiceProvider.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
 	}
 
 	@UiHandler("panel")

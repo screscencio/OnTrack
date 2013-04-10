@@ -50,9 +50,9 @@ public class AppActivityMapperTest extends GwtTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		when(clientServiceProvider.getAuthenticationService()).thenReturn(authenticationService);
-		when(clientServiceProvider.getServerPushClientService()).thenReturn(serverPushClientService);
-		when(clientServiceProvider.getContextProviderService()).thenReturn(contextProvider);
+		when(clientServiceProvider.authentication()).thenReturn(authenticationService);
+		when(clientServiceProvider.serverPush()).thenReturn(serverPushClientService);
+		when(clientServiceProvider.contextProvider()).thenReturn(contextProvider);
 		when(authenticationService.isUserAvailable()).thenReturn(true);
 		when(contextProvider.isContextAvailable(PROJECT_ID)).thenAnswer(new Answer<Boolean>() {
 

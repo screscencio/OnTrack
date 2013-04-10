@@ -20,7 +20,7 @@ import com.google.gwt.view.client.ProvidesKey;
 public class ImpedimentDatabase {
 
 	private static final String ID_SYMBOL = "#";
-	private static final DetailService DETAIL_SERVICE = ClientServiceProvider.getInstance().getDetailsService();
+	private static final DetailService DETAIL_SERVICE = ClientServiceProvider.get().details();
 	private static final ReportMessages MESSAGES = GWT.create(ReportMessages.class);
 
 	public static class ImpedimentItem implements Comparable<ImpedimentItem> {

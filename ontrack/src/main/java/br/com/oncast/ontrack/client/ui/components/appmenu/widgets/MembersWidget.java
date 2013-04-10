@@ -30,7 +30,7 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 
 	private static MembersWidgetUiBinder uiBinder = GWT.create(MembersWidgetUiBinder.class);
 
-	private static ClientServiceProvider PROVIDER = ClientServiceProvider.getInstance();
+	private static ClientServiceProvider PROVIDER = ClientServiceProvider.get();
 
 	interface MembersWidgetUiBinder extends UiBinder<Widget, MembersWidget> {}
 
@@ -67,7 +67,7 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 	}
 
 	private void validateCountdown() {
-		final int invitationQuota = ClientServiceProvider.getInstance().getAuthenticationService().getProjectInvitationQuota();
+		final int invitationQuota = ClientServiceProvider.get().authentication().getProjectInvitationQuota();
 
 		countdownLabel.setText(messages.inivitationQuota(invitationQuota));
 	}
@@ -97,20 +97,20 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
 
 				widget.hide();
-				ClientServiceProvider.getInstance().getClientAlertingService().showInfo(messages.processingYourInvitation());
-				PROVIDER.getProjectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
+				ClientServiceProvider.get().alerting().showInfo(messages.processingYourInvitation());
+				PROVIDER.projectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {
-						ClientServiceProvider.getInstance().getClientAlertingService()
+						ClientServiceProvider.get().alerting()
 								.showSuccess(messages.userInvited(mail));
 					}
 
 					@Override
 					public void onFailure(final Throwable caught) {
-						if (caught instanceof UnableToAuthorizeUserException) ClientServiceProvider.getInstance().getClientAlertingService()
+						if (caught instanceof UnableToAuthorizeUserException) ClientServiceProvider.get().alerting()
 								.showWarning(messages.userAlreadyInvited(mail));
 						else {
-							ClientServiceProvider.getInstance().getClientAlertingService().showWarning(caught.getMessage());
+							ClientServiceProvider.get().alerting().showWarning(caught.getMessage());
 						}
 					}
 				});

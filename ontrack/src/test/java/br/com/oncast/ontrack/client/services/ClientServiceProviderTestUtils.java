@@ -50,13 +50,13 @@ public class ClientServiceProviderTestUtils {
 
 		public ClientServiceProviderTestConfiguration mockEventBus() {
 			final EventBus bus = mock(EventBus.class);
-			when(mock.getEventBus()).thenReturn(bus);
+			when(mock.eventBus()).thenReturn(bus);
 			return this;
 		}
 
 		public ClientServiceProviderTestConfiguration mockAnnotationService() {
 			final DetailService service = mock(DetailService.class);
-			when(mock.getDetailsService()).thenReturn(service);
+			when(mock.details()).thenReturn(service);
 			return this;
 		}
 
@@ -70,7 +70,7 @@ public class ClientServiceProviderTestUtils {
 
 		private ClientServiceProviderTestConfiguration mockForTags() {
 			final ContextProviderService contextProvider = mock(ContextProviderService.class);
-			when(mock.getContextProviderService()).thenReturn(contextProvider);
+			when(mock.contextProvider()).thenReturn(contextProvider);
 			final ProjectContext context = mock(ProjectContext.class);
 			when(contextProvider.getCurrent()).thenReturn(context);
 			when(context.getMetadataList(Mockito.any(HasMetadata.class), Mockito.any(MetadataType.class))).thenReturn(new ArrayList<Metadata>());
@@ -79,7 +79,7 @@ public class ClientServiceProviderTestUtils {
 
 		private ClientServiceProviderTestConfiguration mockMembersScopeSelectionService() {
 			final ColorProviderService service = mock(ColorProviderService.class);
-			when(mock.getColorProviderService()).thenReturn(service);
+			when(mock.colorProvider()).thenReturn(service);
 			return this;
 		}
 

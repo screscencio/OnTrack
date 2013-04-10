@@ -67,8 +67,8 @@ public class LikeAnnotationMenuItem extends Composite implements AnnotationMenuI
 	void onClick(final ClickEvent e) {
 		if (readOnly || annotation.isDeprecated()) return;
 
-		if (hasVoted()) ClientServiceProvider.getInstance().getDetailsService().removeVote(subjectId, annotation.getId());
-		else ClientServiceProvider.getInstance().getDetailsService().addVote(subjectId, annotation.getId());
+		if (hasVoted()) ClientServiceProvider.get().details().removeVote(subjectId, annotation.getId());
+		else ClientServiceProvider.get().details().addVote(subjectId, annotation.getId());
 	}
 
 	@Override

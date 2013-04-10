@@ -16,7 +16,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 
 	private static final ContextLoadingMessages messages = GWT.create(ContextLoadingMessages.class);
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 	private final ProjectDependentPlace projectDependentPlace;
 
 	public ContextLoadingActivity(final ProjectDependentPlace destinationPlace) {
@@ -31,7 +31,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 		panel.setWidget(view);
 		view.setMainMessage(messages.syncing());
 
-		SERVICE_PROVIDER.getContextProviderService().loadProjectContext(projectDependentPlace.getRequestedProjectId(), new ProjectContextLoadCallback() {
+		SERVICE_PROVIDER.contextProvider().loadProjectContext(projectDependentPlace.getRequestedProjectId(), new ProjectContextLoadCallback() {
 
 			@Override
 			public void onProjectContextLoaded() {
@@ -50,23 +50,23 @@ public class ContextLoadingActivity extends AbstractActivity {
 			}
 		});
 
-		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
+		SERVICE_PROVIDER.alerting().clearAlertingParentWidget();
 	}
 
 	private void validateGatheredData() {
-		if (!SERVICE_PROVIDER.getContextProviderService().isContextAvailable(projectDependentPlace.getRequestedProjectId())) return;
+		if (!SERVICE_PROVIDER.contextProvider().isContextAvailable(projectDependentPlace.getRequestedProjectId())) return;
 
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectDependentPlace);
+		SERVICE_PROVIDER.placeController().goTo(projectDependentPlace);
 	}
 
 	private void treatFailure(final String message) {
-		SERVICE_PROVIDER.getClientAlertingService().showError(message);
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProjectSelectionPlace());
+		SERVICE_PROVIDER.alerting().showError(message);
+		SERVICE_PROVIDER.placeController().goTo(new ProjectSelectionPlace());
 	}
 
 }

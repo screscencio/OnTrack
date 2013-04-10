@@ -85,7 +85,7 @@ public class TagAssociationWidgetEditMenu extends Composite implements PopupAwar
 	}
 
 	private void launchAction(final ModelAction action) {
-		ClientServiceProvider.getInstance().getActionExecutionService().onUserActionExecutionRequest(action);
+		ClientServiceProvider.get().actionExecution().onUserActionExecutionRequest(action);
 	}
 
 	@Override

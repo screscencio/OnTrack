@@ -37,7 +37,7 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 
 	private static NotificationWidgetUiBinder uiBinder = GWT.create(NotificationWidgetUiBinder.class);
 
-	private static final NotificationService NOTIFICATION_SERVICE = ClientServiceProvider.getInstance().getNotificationService();
+	private static final NotificationService NOTIFICATION_SERVICE = ClientServiceProvider.get().notifications();
 
 	interface NotificationWidgetUiBinder extends UiBinder<Widget, NotificationListWidget> {}
 

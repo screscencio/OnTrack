@@ -85,9 +85,9 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	public ReleaseDetailWidget setSubject(final Release release) {
 		this.release = release;
-		final ClientServiceProvider serviceProvider = ClientServiceProvider.getInstance();
-		this.dataProvider = new ReleaseChartDataProvider(release, serviceProvider.getReleaseEstimatorProvider().get(),
-				serviceProvider.getActionExecutionService());
+		final ClientServiceProvider serviceProvider = ClientServiceProvider.get();
+		this.dataProvider = new ReleaseChartDataProvider(release, serviceProvider.releaseEstimator().get(),
+				serviceProvider.actionExecution());
 		update();
 		return this;
 	}
@@ -103,7 +103,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return ClientServiceProvider.getInstance().getActionExecutionService();
+		return ClientServiceProvider.get().actionExecution();
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {

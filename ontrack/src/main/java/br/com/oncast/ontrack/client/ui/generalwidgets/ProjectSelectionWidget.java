@@ -35,7 +35,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	private static final int FILTRABLE_MENU_MAX_WIDTH = 425;
 
-	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.get();
 
 	private static ProjectSelectionWidgetUiBinder uiBinder = GWT.create(ProjectSelectionWidgetUiBinder.class);
 
@@ -108,7 +108,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 			@Override
 			public CommandMenuItem createCustomItem(final String inputText) {
-				final int projectCreationQuota = SERVICE_PROVIDER.getAuthenticationService().getProjectCreationQuota();
+				final int projectCreationQuota = SERVICE_PROVIDER.authentication().getProjectCreationQuota();
 				if (projectCreationQuota > 0) return createProjectCreationItem(inputText, projectCreationQuota);
 				else return getProjectCreationQuotaRequisitionItem();
 			}
@@ -215,12 +215,12 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	private void openProject(final ProjectRepresentation projectRepresentation) {
 		final PlanningPlace projectPlanningPlace = new PlanningPlace(projectRepresentation);
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectPlanningPlace);
+		SERVICE_PROVIDER.placeController().goTo(projectPlanningPlace);
 	}
 
 	private static void createNewProject(final String inputText) {
 		final ProjectCreationPlace projectCreationPlace = new ProjectCreationPlace(inputText);
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectCreationPlace);
+		SERVICE_PROVIDER.placeController().goTo(projectCreationPlace);
 	}
 
 	@UiHandler("filtrableMenu")
@@ -230,11 +230,11 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private void registerProjectListChangeListener() {
-		SERVICE_PROVIDER.getProjectRepresentationProvider().registerProjectListChangeListener(projectListChangeListener);
+		SERVICE_PROVIDER.projectRepresentationProvider().registerProjectListChangeListener(projectListChangeListener);
 	}
 
 	private void unregisterProjectListChangeListener() {
-		SERVICE_PROVIDER.getProjectRepresentationProvider().unregisterProjectListChangeListener(projectListChangeListener);
+		SERVICE_PROVIDER.projectRepresentationProvider().unregisterProjectListChangeListener(projectListChangeListener);
 	}
 
 	@Override
@@ -259,16 +259,16 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	protected static void requestProjectCreationQuota() {
-		SERVICE_PROVIDER.getClientAlertingService().showInfo(messages.processingProjectQuotaRequest());
-		ClientServiceProvider.getInstance().getFeedbackService().requestProjectCreationQuota(new ProjectCreationQuotaRequisitionCallback() {
+		SERVICE_PROVIDER.alerting().showInfo(messages.processingProjectQuotaRequest());
+		ClientServiceProvider.get().feedback().requestProjectCreationQuota(new ProjectCreationQuotaRequisitionCallback() {
 			@Override
 			public void onRequestSentSucessfully() {
-				SERVICE_PROVIDER.getClientAlertingService().showSuccess(messages.projectQuotaRequestSent());
+				SERVICE_PROVIDER.alerting().showSuccess(messages.projectQuotaRequestSent());
 			}
 
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
-				SERVICE_PROVIDER.getClientAlertingService().showWarning(caught.getLocalizedMessage());
+				SERVICE_PROVIDER.alerting().showWarning(caught.getLocalizedMessage());
 			}
 		});
 	}

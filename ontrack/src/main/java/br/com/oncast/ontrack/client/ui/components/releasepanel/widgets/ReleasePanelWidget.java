@@ -151,7 +151,7 @@ public class ReleasePanelWidget extends Composite {
 						final UUID scopeId = (action instanceof ReleaseScopeUpdatePriorityAction) ? ((ReleaseScopeUpdatePriorityAction) (action))
 								.getScopeReferenceId() : action.getReferenceId();
 						final Release release = ClientServiceProvider.getCurrentProjectContext().findScope(scopeId).getRelease();
-						ClientServiceProvider.getInstance().getEventBus().fireEvent(new ReleaseScopeListUpdateEvent(release));
+						ClientServiceProvider.get().eventBus().fireEvent(new ReleaseScopeListUpdateEvent(release));
 					}
 					catch (final ScopeNotFoundException e) {}
 				}
@@ -161,7 +161,7 @@ public class ReleasePanelWidget extends Composite {
 
 	@Override
 	protected void onLoad() {
-		handlerRegistration.add(ClientServiceProvider.getInstance().getEventBus()
+		handlerRegistration.add(ClientServiceProvider.get().eventBus()
 				.addHandler(ReleaseContainerStateChangeEvent.getType(), new ReleaseContainerStateChangeEventHandler() {
 					@Override
 					public void onReleaseContainerStateChange(final ReleaseContainerStateChangeEvent event) {
@@ -171,7 +171,7 @@ public class ReleasePanelWidget extends Composite {
 					}
 				}));
 
-		handlerRegistration.add(ClientServiceProvider.getInstance().getEventBus()
+		handlerRegistration.add(ClientServiceProvider.get().eventBus()
 				.addHandler(ReleaseDetailUpdateEvent.getType(), new ReleaseDetailUpdateEventHandler() {
 					@Override
 					public void onReleaseDetailUpdate(final ReleaseDetailUpdateEvent event) {
@@ -180,7 +180,7 @@ public class ReleasePanelWidget extends Composite {
 						widget.update();
 					}
 				}));
-		handlerRegistration.add(ClientServiceProvider.getInstance().getEventBus()
+		handlerRegistration.add(ClientServiceProvider.get().eventBus()
 				.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
 					@Override
 					public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {

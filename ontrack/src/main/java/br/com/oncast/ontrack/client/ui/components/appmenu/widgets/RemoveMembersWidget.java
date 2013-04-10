@@ -112,10 +112,10 @@ public class RemoveMembersWidget extends Composite implements HasCloseHandlers<R
 		}
 
 		private void removeUser(final UserRepresentation user) {
-			ClientServiceProvider.getInstance().getProjectRepresentationProvider().unauthorizeUser(user, new ProjectAuthorizationCallback() {
+			ClientServiceProvider.get().projectRepresentationProvider().unauthorizeUser(user, new ProjectAuthorizationCallback() {
 				@Override
 				public void onSuccess() {
-					ClientServiceProvider.getInstance().getClientAlertingService()
+					ClientServiceProvider.get().alerting()
 							.showSuccess(messages.userRemoved());
 				}
 
@@ -124,7 +124,7 @@ public class RemoveMembersWidget extends Composite implements HasCloseHandlers<R
 					final boolean knownError = caught instanceof UnableToRemoveAuthorizationException;
 					if (!knownError) caught.printStackTrace();
 
-					ClientServiceProvider.getInstance().getClientAlertingService()
+					ClientServiceProvider.get().alerting()
 							.showError(knownError ? messages.cantRemoveAdmin() : messages.userRemoveFailed());
 				}
 			});

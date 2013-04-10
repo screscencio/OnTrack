@@ -32,7 +32,7 @@ class ScopeTreeUpdateAction implements ScopeTreeAction {
 			final Scope scope = context.findScope(action.getReferenceId());
 			final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
 			treeItem.setReferencedScope(scope);
-			treeItem.updateDetails(ClientServiceProvider.getInstance().getDetailsService().getDetailUpdateEvent(scope.getId()));
+			treeItem.updateDetails(ClientServiceProvider.get().details().getDetailUpdateEvent(scope.getId()));
 
 			if (isUserInteraction) treeItem.getTree().setSelectedItem(treeItem);
 		}

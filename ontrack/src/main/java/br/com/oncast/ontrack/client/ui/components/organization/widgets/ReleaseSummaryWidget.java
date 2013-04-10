@@ -101,7 +101,7 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 		event.stopPropagation();
 
 		if (!release.getId().isValid()) return;
-		ClientServiceProvider.getInstance().getEventBus().fireEvent(new ReleaseSelectionEvent(release, projectId));
+		ClientServiceProvider.get().eventBus().fireEvent(new ReleaseSelectionEvent(release, projectId));
 	}
 
 	public void setSelected(final boolean b) {

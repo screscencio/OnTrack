@@ -154,7 +154,7 @@ public class AnnotationsWidget extends Composite {
 			@Override
 			public void onUploadCompleted(final UUID fileRepresentationId) {
 				uploadWidget.setUploadFieldVisible(false);
-				getProvider().getDetailsService().createAnnotationFor(subjectId, message, fileRepresentationId);
+				getProvider().details().createAnnotationFor(subjectId, message, fileRepresentationId);
 				newAnnotationText.setText("");
 			}
 		});
@@ -179,15 +179,15 @@ public class AnnotationsWidget extends Composite {
 	}
 
 	private DetailService getAnnotationService() {
-		return getProvider().getDetailsService();
+		return getProvider().details();
 	}
 
 	private ActionExecutionService getActionExecutionService() {
-		return getProvider().getActionExecutionService();
+		return getProvider().actionExecution();
 	}
 
 	private ClientServiceProvider getProvider() {
-		return ClientServiceProvider.getInstance();
+		return ClientServiceProvider.get();
 	}
 
 }

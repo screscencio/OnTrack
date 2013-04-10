@@ -14,6 +14,6 @@ public class NotAuthenticatedExceptionGlobalHandler implements FailureHandler<No
 
 	@Override
 	public void handle(final NotAuthenticatedException caught) {
-		authenticationService.onUserLoginRequired(ClientServiceProvider.getInstance().getApplicationPlaceController().getCurrentPlace());
+		authenticationService.onUserLoginRequired(ClientServiceProvider.get().placeController().getCurrentPlace());
 	}
 }

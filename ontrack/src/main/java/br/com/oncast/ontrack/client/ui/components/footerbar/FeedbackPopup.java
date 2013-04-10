@@ -57,18 +57,18 @@ public class FeedbackPopup extends Composite implements HasCloseHandlers<Feedbac
 		}
 
 		hide();
-		ClientServiceProvider.getInstance().getFeedbackService().sendFeedback(feedbackMessage.replaceAll(NEW_LINE, "<br/>"), new SendFeedbackCallback() {
+		ClientServiceProvider.get().feedback().sendFeedback(feedbackMessage.replaceAll(NEW_LINE, "<br/>"), new SendFeedbackCallback() {
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
-				ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.feedbackNotSent());
+				ClientServiceProvider.get().alerting().showError(messages.feedbackNotSent());
 			}
 
 			@Override
 			public void onFeedbackSentSucessfully() {
-				ClientServiceProvider.getInstance().getClientAlertingService().showSuccess(messages.feedbackSent());
+				ClientServiceProvider.get().alerting().showSuccess(messages.feedbackSent());
 			}
 		});
-		ClientServiceProvider.getInstance().getClientAlertingService().showInfo(messages.processingYourFeedback());
+		ClientServiceProvider.get().alerting().showInfo(messages.processingYourFeedback());
 	}
 
 	@Override

@@ -227,7 +227,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 	private void activateEventHandlers() {
 		deactivateEventHandlers();
 
-		final EventBus eventBus = ClientServiceProvider.getInstance().getEventBus();
+		final EventBus eventBus = ClientServiceProvider.get().eventBus();
 
 		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {
 			@Override
@@ -360,9 +360,9 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 				if (!selectedItem.isRoot()) addBorderToSelectedItem();
 
-				ClientServiceProvider.getInstance().getEventBus()
+				ClientServiceProvider.get().eventBus()
 						.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
-				ClientServiceProvider.getInstance().getEventBus()
+				ClientServiceProvider.get().eventBus()
 						.fireEventFromSource(new ScopeTreeItemSelectionEvent(selectedItem.getScopeTreeItemWidget()), ScopeTreeWidget.this);
 			}
 		}));
