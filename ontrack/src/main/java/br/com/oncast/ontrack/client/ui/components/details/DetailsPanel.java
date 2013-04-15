@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ChecklistsContainerWidget;
-import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ScopeDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.SubjectDetailWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DescriptionRichTextLabel;
@@ -15,6 +14,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
+import br.com.oncast.ontrack.client.ui.generalwidgets.release.ReleaseDetailsInBlockWidget;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.utils.jquery.JQuery;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
@@ -174,7 +174,7 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 	}
 
 	public static DetailsPanel forRelease(final Release release) {
-		return new DetailsPanel(new ReleaseDetailWidget().setSubject(release), release.getId(), release.getDescription(), "", "");
+		return new DetailsPanel(new ReleaseDetailsInBlockWidget(release), release.getId(), release.getDescription(), "", "");
 	}
 
 	public static DetailsPanel forScope(final Scope scope) {

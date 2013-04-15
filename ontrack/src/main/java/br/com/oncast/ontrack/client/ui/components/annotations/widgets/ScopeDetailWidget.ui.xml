@@ -22,18 +22,6 @@
 			float: left;
 		}
 		
-		.detailLabel {
-			text-align: right;
-			color: COLOR_BLUE_DARK;
-			cursor: default;
-		}
-		
-		.detailValue {
-			cursor: default;
-		}
-		
-		.detailValueCell {}
-		
 		.tags {
 			margin: 5px;
 			margin-bottom: 10px;

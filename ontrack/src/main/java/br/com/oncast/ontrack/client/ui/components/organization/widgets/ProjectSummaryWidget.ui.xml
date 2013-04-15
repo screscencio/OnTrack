@@ -48,7 +48,7 @@
 		
 		.content {
 			position: relative;
-			height: 400px;
+			height: 477px;
 		}
 		
 		.loadingIndicatorPanel {
@@ -67,7 +67,7 @@
 			position: absolute;
 			top: -5px;
 			right: -7px;
-			bottom: 240px;
+			bottom: 317px;
 			left: -7px;
 			overflow: auto;
 			background: #666;
@@ -89,7 +89,7 @@
 		.detailsContainer {
 			position: relative;
 			width: 250px;
-			height: 223px;
+			height: 302px;
 			
 			padding: PADDING_SMALL;
 			
@@ -117,7 +117,7 @@
 		}
 		
 		.releaseChartContainer { 
-			width: 400px;
+			width: 520px;
 		}
 		
 		.scopesListDeck {
