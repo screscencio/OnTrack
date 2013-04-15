@@ -25,6 +25,7 @@ public class Color implements Serializable {
 	public static final Color INFO = new Color(250, 250, 250);
 	public static final Color ORANGE_LIGHT = new Color(191, 179, 72);
 	public static final Color DARK_GREEN = new Color(20, 175, 113);
+	public static final Color WHITE = new Color(255, 255, 255);
 
 	static {
 		PRESET_COLORS.add(new Color("#FF4D50"));

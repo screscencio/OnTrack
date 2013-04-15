@@ -28,7 +28,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -63,8 +62,8 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	@UiField
 	ModelWidgetContainer<ChecklistItem, ChecklistItemWidget> items;
 
-	@UiField
-	HasClickHandlers addButton;
+	// @UiField
+	// HasClickHandlers addButton;
 
 	@UiField
 	Label addItemLabel;
@@ -147,9 +146,10 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 		enterCreateItemMode();
 	}
 
-	@UiHandler("addButton")
+	@UiHandler("newItemIcon")
 	public void onAddItemClick(final ClickEvent e) {
-		addItem();
+		if (addItemDeck.getVisibleWidget() == 0) enterCreateItemMode();
+		else addItem();
 	}
 
 	@UiHandler("newItemDescription")

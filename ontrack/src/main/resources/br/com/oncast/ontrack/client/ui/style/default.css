@@ -96,6 +96,19 @@
 
 /* Styles */
 
+.humanId {
+	background: #C0C0C0;
+	color: #444;
+	font-size: 8pt;
+	line-height: 16px;
+
+	height: 16px;
+	padding: 0px 5px;
+	border-radius: 2px;
+
+	cursor: default;
+}
+
 .menuBar, .colorMenuBackgroundGradient {
 	background: COLOR_BACKGROUND_MENUBAR;
 	

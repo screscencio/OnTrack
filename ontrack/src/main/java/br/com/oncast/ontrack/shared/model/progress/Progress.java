@@ -9,22 +9,25 @@ import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
 
 import br.com.oncast.ontrack.shared.model.ModelState;
 import br.com.oncast.ontrack.shared.model.ModelStateManager;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityByGetter;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
-public class Progress implements Serializable {
+public class Progress implements Serializable, Iterable<ModelState<ProgressState>> {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String DEFAULT_NOT_STARTED_NAME = "Not Started";
 
 	public enum ProgressState {
+
 		NOT_STARTED("", DEFAULT_NOT_STARTED_NAME) {
 			@Override
 			public boolean matches(final String description) {
@@ -180,6 +183,11 @@ public class Progress implements Serializable {
 	public Long getCycleTime() {
 		if (!isDone()) return null;
 		return stateManager.getDurationOfState(ProgressState.UNDER_WORK);
+	}
+
+	@Override
+	public Iterator<ModelState<ProgressState>> iterator() {
+		return stateManager.iterator();
 	}
 
 }

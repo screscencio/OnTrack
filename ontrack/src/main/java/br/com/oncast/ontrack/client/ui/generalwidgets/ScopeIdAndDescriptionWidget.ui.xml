@@ -2,17 +2,9 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:style>
+	<ui:style src="../style/default.css">
 		.descriptionContainer {
 			padding: 5px 5px;
-		}
-		
-		.humanId {
-			color: white;
-			font-size: 8pt;
-			background: #C0C0C0;
-			border-radius: 2px;
-			padding: 1px 5px;
 		}
 	</ui:style>
 

@@ -6,7 +6,6 @@
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		
 		<!-- PRODUCTION VERSION -->
-		
 		<properties>
             <!-- MySQL -->
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />

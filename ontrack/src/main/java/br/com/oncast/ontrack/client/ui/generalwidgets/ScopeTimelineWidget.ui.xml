@@ -1,0 +1,63 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style src="../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.ScopeTimelineWidget.ScopeTimelineWidgetStyle">
+	
+		.container {
+			position: relative;
+			padding: 0px 5px;
+		}
+
+		.timelineBar {
+			height: 40px;
+		}
+		
+		.timelineNotStarted {
+			color: COLOR_TEXT_PRIMARY;
+		}
+		
+		.timelineUnderwork {
+			color: rgb(154, 203, 230);
+		}
+		
+		.timelineDone {
+			color: rgb(212, 250, 22);
+		}
+		
+		.timelineDot, .timelineStroke {
+			display: inline-block;
+		}
+		
+		@def timelineDotSize 6px;
+		.timelineDot {
+			height: timelineDotSize;
+			width: timelineDotSize;
+
+			border: 4px solid;
+			border-radius: 50%;
+			margin-top: 13px;
+		}
+		
+		.timelineUnfinishedDot {
+			position: relative;
+			top: 12px;
+			font-size: 14px;
+		}
+		
+		.timelineStroke {
+			border-top: 2px solid;
+			border-bottom: 2px solid;
+			margin-top: 18px;
+			height: 0px;
+			width: 100%
+		}
+			
+
+	</ui:style>
+	
+	<g:HTMLPanel styleName="{style.container}">
+		<g:HorizontalPanel ui:field="timelineBar" styleName="{style.timelineBar}"/>
+	</g:HTMLPanel>
+		
+</ui:UiBinder> 

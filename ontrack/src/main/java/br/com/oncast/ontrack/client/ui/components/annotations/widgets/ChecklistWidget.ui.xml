@@ -14,10 +14,11 @@
 		
 		.title {
 			cursor: default;
-			padding: 10px 0px 6px 23px;
+			padding: 5px 0px;
 			text-align: left;
 			font-weight: bold;
-			font-size: 15px;
+			font-size: 14px;
+			border-bottom: BORDER_SECONDARY;
 		}
 		
 		.remove {
@@ -37,20 +38,15 @@
 			box-shadow: inset -1px -1px 1px #E9E9E9;
 		}
 		
-		.separator {
-			margin: 10px 0px;
-		}
-		
 		.addButton {
 			cursor: pointer;
 			font-weight: bold;
 			text-align: center;
-
-			padding: BORDER_RADIUS_SMALL;
-			margin: 0px 5px;
-
+			padding: 0px 2px;
+			margin: 0 5px;
 			border: 1px solid transparent;
-			border-radius: BORDER_RADIUS_SMALL;
+			border-radius: 2px;
+			line-height: 18px;
 		}
 		
 		.addButton:HOVER {
@@ -65,30 +61,21 @@
 		}
 		
 		.addItemLabel {
-			width: 144px !important;
-			margin-right: auto;
-			
 			cursor: pointer;
-			font-weight: bold;
-			text-align: center;
-			
+			line-height: 29px;
+		}
+		
+		.newItemContainer {
 			margin-left: 5px;
-			padding: BORDER_RADIUS_SMALL;
-			
-			border: 1px solid transparent;
-			border-radius: BORDER_RADIUS_SMALL;
 		}
 		
-		.addItemLabel:HOVER {
-			border-color: #AEAEAE;
-			-webkit-box-shadow: inset -1px -1px 1px #E9E9E9;
-			-moz-box-shadow: inset -1px -1px 1px #E9E9E9;
-			box-shadow: inset -1px -1px 1px #E9E9E9;
+		.newItemIcon {
+			cursor: pointer;
+			line-height: 30px;
 		}
 		
-		.addItemDeck {
+		.newItemDeck {
 			padding-left: 7px;
-			margin-top: 5px;
 		}
 		
 	</ui:style>
@@ -102,20 +89,19 @@
 				<g:Label ui:field="remove" text="x" styleName="{style.remove}"/>
 			</g:HorizontalPanel>
 			<misc:ModelWidgetContainer ui:field="items" />
-			<g:DeckPanel ui:field="addItemDeck" styleName="{style.addItemDeck}">
-				<g:Label ui:field="addItemLabel" styleName="{style.addItemLabel}">
-					<ui:msg description="add item label">+ add item</ui:msg>
-				</g:Label>
-				<g:HorizontalPanel width="100%" verticalAlignment="middle">
-					<g:Label ui:field="addButton" text="+" styleName="{style.addButton}"/>
-					<g:cell width="100%">
+			<g:HorizontalPanel width="100%" verticalAlignment="middle" styleName="{style.newItemContainer}">
+				<g:Label ui:field="newItemIcon" styleName="icon-plus-sign {style.newItemIcon}"/>
+				<g:cell width="100%">
+					<g:DeckPanel ui:field="addItemDeck" styleName="{style.newItemDeck}">
+						<g:Label ui:field="addItemLabel" styleName="{style.addItemLabel}">
+							<ui:msg description="add item label">add item</ui:msg>
+						</g:Label>
 						<misc:DefaultTextedTextBox ui:field="newItemDescription" styleName="{style.newItemDescription}" defaultText="New Item Description">
 							<ui:attribute name="defaultText" description="new checklist item input default text" />
 						</misc:DefaultTextedTextBox>
-					</g:cell>
-				</g:HorizontalPanel>
-			</g:DeckPanel>
-			<misc:Separator styleName="{style.separator}"/>
+					</g:DeckPanel>
+				</g:cell>
+			</g:HorizontalPanel>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

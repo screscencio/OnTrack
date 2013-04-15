@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.annotations;
+package br.com.oncast.ontrack.client.ui.components.details;
 
 import java.util.Set;
 
@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallbac
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.utils.jquery.JQuery;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.DescriptionAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -33,6 +34,9 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundExceptio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -46,15 +50,18 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AnnotationsPanel extends Composite implements HasCloseHandlers<AnnotationsPanel>, PopupAware {
+public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsPanel>, PopupAware {
 
 	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static final AnnotationsPanelMessages messages = GWT.create(AnnotationsPanelMessages.class);
 
-	private static AnnotationsPanelUiBinder uiBinder = GWT.create(AnnotationsPanelUiBinder.class);
+	private static DetailsPanelUiBinder uiBinder = GWT.create(DetailsPanelUiBinder.class);
 
-	interface AnnotationsPanelUiBinder extends UiBinder<Widget, AnnotationsPanel> {}
+	interface DetailsPanelUiBinder extends UiBinder<Widget, DetailsPanel> {}
+
+	@UiField
+	SpanElement humanId;
 
 	@UiField(provided = true)
 	SubjectDetailWidget subjectDetails;
@@ -74,11 +81,18 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	@UiField
 	ChecklistsContainerWidget checklist;
 
+	@UiField
+	DivElement releaseContainer;
+
+	@UiField
+	DivElement releaseTag;
+
 	private final UUID subjectId;
 
 	private com.google.web.bindery.event.shared.HandlerRegistration handlerRegistration;
 
-	private AnnotationsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId, final String subjectDescription) {
+	private DetailsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId, final String subjectDescription, final String headerTagDescription,
+			final String humanId) {
 		this.subjectId = subjectId;
 		subjectTitle = new EditableLabel(new EditableLabelEditionHandler() {
 
@@ -132,25 +146,41 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		initWidget(uiBinder.createAndBindUi(this));
 
 		checklist.setSubjectId(subjectId);
-		this.subjectTitle.setValue(subjectDescription);
+		subjectTitle.setValue(subjectDescription);
 
 		try {
 			final Description description = ClientServices.getCurrentProjectContext().findDescriptionFor(subjectId);
 			updateDescription(description.getDescription());
 		}
 		catch (final DescriptionNotFoundException e) {}
+
+		setHeaderTagDescription(headerTagDescription);
+		setHumanId(humanId);
+	}
+
+	private void setHumanId(final String humanId) {
+		ElementUtils.setVisible(this.humanId, !humanId.isEmpty());
+		this.humanId.setInnerText(humanId);
+		subjectTitle.getElement().getStyle().setLeft(humanId.isEmpty() ? 9 : 36, Unit.PX);
+	}
+
+	private void setHeaderTagDescription(final String tagDescription) {
+		ElementUtils.setVisible(releaseContainer, !tagDescription.isEmpty());
+		releaseTag.setInnerText(tagDescription);
 	}
 
 	private void updateDescription(final String description) {
 		descriptionLabel.setText(description);
 	}
 
-	public static AnnotationsPanel forRelease(final Release release) {
-		return new AnnotationsPanel(new ReleaseDetailWidget().setSubject(release), release.getId(), release.getDescription());
+	public static DetailsPanel forRelease(final Release release) {
+		return new DetailsPanel(new ReleaseDetailWidget().setSubject(release), release.getId(), release.getDescription(), "", "");
 	}
 
-	public static AnnotationsPanel forScope(final Scope scope) {
-		return new AnnotationsPanel(new ScopeDetailWidget(scope), scope.getId(), scope.getDescription());
+	public static DetailsPanel forScope(final Scope scope) {
+		final Release release = scope.getRelease();
+		final String humanId = ClientServices.getCurrentProjectContext().getHumanId(scope);
+		return new DetailsPanel(new ScopeDetailWidget(scope), scope.getId(), scope.getDescription(), release == null ? "" : release.getDescription(), humanId);
 	}
 
 	@UiHandler("rootPanel")
@@ -166,8 +196,13 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		hide();
 	}
 
+	@UiHandler("addChecklistButton")
+	protected void onAddChecklistClick(final ClickEvent e) {
+		checklist.enterEditMode();
+	}
+
 	@Override
-	public HandlerRegistration addCloseHandler(final CloseHandler<AnnotationsPanel> handler) {
+	public HandlerRegistration addCloseHandler(final CloseHandler<DetailsPanel> handler) {
 		return addHandler(handler, CloseEvent.getType());
 	}
 
@@ -189,7 +224,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 			@Override
 			public void onComplete() {
-				CloseEvent.fire(AnnotationsPanel.this, AnnotationsPanel.this);
+				CloseEvent.fire(DetailsPanel.this, DetailsPanel.this);
 			}
 		});
 	}
