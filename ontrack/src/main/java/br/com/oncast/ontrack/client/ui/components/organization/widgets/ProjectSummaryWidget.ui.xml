@@ -159,7 +159,7 @@
 			<g:cell width="100%">
 				<g:Label ui:field="name" styleName="{style.name} {style.noSelection}"/>
 			</g:cell>
-			<g:FocusPanel ui:field="planningLink" styleName="{style.planningLink} icon-external-link" title="Planning">
+			<g:FocusPanel ui:field="planningLink" styleName="{style.planningLink} icon-sitemap" title="Planning">
 				<ui:attribute name="title" description="Planning"/>
 			</g:FocusPanel>
 		</g:HorizontalPanel>
