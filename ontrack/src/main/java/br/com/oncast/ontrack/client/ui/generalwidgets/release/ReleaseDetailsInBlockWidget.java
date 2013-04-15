@@ -3,8 +3,10 @@ package br.com.oncast.ontrack.client.ui.generalwidgets.release;
 import java.util.Date;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.SubjectDetailWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.InformationBlockWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ProgressBlockWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -18,17 +20,17 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidget<Release> {
+public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidget<Release>, SubjectDetailWidget {
 
 	private static ReleaseDetailsInBlockWidgetUiBinder uiBinder = GWT.create(ReleaseDetailsInBlockWidgetUiBinder.class);
 
 	interface ReleaseDetailsInBlockWidgetUiBinder extends UiBinder<Widget, ReleaseDetailsInBlockWidget> {}
 
 	@UiField
-	InformationBlockWidget effort;
+	ProgressBlockWidget effort;
 
 	@UiField
-	InformationBlockWidget value;
+	ProgressBlockWidget value;
 
 	@UiField
 	InformationBlockWidget estimatedSpeed;
@@ -64,8 +66,8 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 
 	@Override
 	public boolean update() {
-		effort.setValue(round(release.getEffortSum()));
-		value.setValue(round(release.getValueSum()));
+		effort.setValue(release.getAccomplishedEffortSum(), release.getEffortSum());
+		value.setValue(release.getAccomplishedValueSum(), release.getValueSum());
 		estimatedSpeed.setValue(round(getEstimator().getEstimatedVelocity(release)));
 		actualSpeed.setValue(release.getActualVelocity());
 
