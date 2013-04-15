@@ -100,8 +100,7 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 			return;
 		}
 
-		// FIXME LOBO REmove the split workaround.
-		final String differenceText[] = HumanDateFormatter.getDifferenceText(difference, 1).split(" ");
+		final String differenceText[] = HumanDateFormatter.getSplittedDifferenceText(difference, 1);
 		widget.setValue(differenceText[0]);
 		widget.setPosfix(differenceText[1]);
 	}

@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.details;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
-import br.com.oncast.ontrack.client.ui.components.annotations.AnnotationsPanel;
+import br.com.oncast.ontrack.client.ui.components.details.DetailsPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupOpenListener;
@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class DetailActivity extends AbstractActivity {
 
-	private AnnotationsPanel detailPanel;
+	private DetailsPanel detailPanel;
 	private HandlerRegistration register;
 	private final DetailPlace place;
 
@@ -64,11 +64,11 @@ public class DetailActivity extends AbstractActivity {
 
 		detailPanel = null;
 		try {
-			detailPanel = AnnotationsPanel.forScope(context.findScope(place.getSubjectId()));
+			detailPanel = DetailsPanel.forScope(context.findScope(place.getSubjectId()));
 		}
 		catch (final ScopeNotFoundException e) {
 			try {
-				detailPanel = AnnotationsPanel.forRelease(context.findRelease(place.getSubjectId()));
+				detailPanel = DetailsPanel.forRelease(context.findRelease(place.getSubjectId()));
 			}
 			catch (final ReleaseNotFoundException e1) {
 				provider.alerting().showError(ClientServices.get().errorMessages().errorShowingDetails());

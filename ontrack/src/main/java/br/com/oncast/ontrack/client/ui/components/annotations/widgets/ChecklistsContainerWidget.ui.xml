@@ -12,32 +12,6 @@
 			width: 100%;
 		}
 		
-		.addChecklistLabel {
-			width: 198px !important;
-			margin: auto;
-			
-			font-weight: bold;
-			text-align: center;
-			color: COLOR_TEXT_SECONDARY;
-
-			padding: PADDING_MEDIUM;
-			border: 1px solid transparent;
-			border-radius: BORDER_RADIUS_SMALL;
-			
-			cursor: pointer;
-		}
-
-		.addChecklistLabel:hover {
-			border-color: #AEAEAE;
-			-webkit-box-shadow: inset -1px -1px 1px #E9E9E9;
-			-moz-box-shadow: inset -1px -1px 1px #E9E9E9;
-			box-shadow: inset -1px -1px 1px #E9E9E9;
-		}
-		
-		.addChecklistDeck {
-			margin-top: 3px;
-		}
-
 		.addButton {
 			cursor: pointer;
 			font-weight: bold;
@@ -61,20 +35,14 @@
 	<g:HTMLPanel>
 		<misc:ModelWidgetContainer ui:field="checklists"/>
 		
-		<g:DeckPanel ui:field="addChecklistDeck" styleName="{style.addChecklistDeck}">
-			<g:Label ui:field="addChecklistLabel" styleName="{style.addChecklistLabel}">
-				<ui:msg description="add checklist label">+ Add checklist</ui:msg>
-			</g:Label>
-			
-			<g:HorizontalPanel width="100%" verticalAlignment="middle">
-				<g:Label ui:field="addButton" text="+" styleName="{style.addButton}"/>
-				<g:cell width="100%">
-					<misc:DefaultTextedTextBox ui:field="newChecklistTitle" styleName="{style.newChecklistTitle}" defaultText="New Checklist Title">
-						<ui:attribute name="defaultText" description="new checklist input default text" />
-					</misc:DefaultTextedTextBox>
-				</g:cell>
-			</g:HorizontalPanel>
-		</g:DeckPanel>
+		<g:HorizontalPanel ui:field="addContainer" width="100%" verticalAlignment="middle">
+			<g:Label ui:field="addButton" text="+" styleName="{style.addButton}"/>
+			<g:cell width="100%">
+				<misc:DefaultTextedTextBox ui:field="newChecklistTitle" styleName="{style.newChecklistTitle}" defaultText="New Checklist Title">
+					<ui:attribute name="defaultText" description="new checklist input default text" />
+				</misc:DefaultTextedTextBox>
+			</g:cell>
+		</g:HorizontalPanel>
 		
 	</g:HTMLPanel>
 </ui:UiBinder> 

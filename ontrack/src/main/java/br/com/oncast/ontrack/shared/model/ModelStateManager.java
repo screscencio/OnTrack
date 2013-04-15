@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -97,7 +98,7 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 
 	@Override
 	public Iterator<ModelState<T>> iterator() {
-		return statesList.iterator();
+		return Collections.unmodifiableList(statesList).iterator();
 	}
 
 }

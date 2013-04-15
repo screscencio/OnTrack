@@ -9,7 +9,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -96,7 +96,7 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 	}
 
 	@UiHandler("visualizationLabel")
-	protected void onDoubleClick(final DoubleClickEvent event) {
+	protected void onClick(final ClickEvent event) {
 		event.preventDefault();
 		switchToEdit();
 	}

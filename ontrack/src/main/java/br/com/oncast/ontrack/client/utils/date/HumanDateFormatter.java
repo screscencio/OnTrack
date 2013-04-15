@@ -175,4 +175,9 @@ public enum HumanDateFormatter {
 		onlyNumbers = DEFAULT_ONLY_NUMBERS;
 		return differenceText;
 	}
+
+	// FIXME LOBO Remove the split workaround.
+	public static String[] getSplittedDifferenceText(final Long difference, final int digits) {
+		return getDifferenceText(difference, digits).split(" ");
+	}
 }

@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import static br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat.roundFloat;
-
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
@@ -9,10 +7,14 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.InformationBlockWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ProgressBlockWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ScopeTimelineWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.TagAssociationWidget;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
@@ -20,9 +22,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
@@ -32,12 +32,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeDetailWidget extends Composite implements SubjectDetailWidget {
-
-	private static final ScopeDetailWidgetMessages messages = GWT.create(ScopeDetailWidgetMessages.class);
 
 	private static ScopeDetailWidgetUiBinder uiBinder = GWT.create(ScopeDetailWidgetUiBinder.class);
 
@@ -48,22 +45,16 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	}
 
 	@UiField
-	HasText parent;
+	ProgressBlockWidget effort;
 
 	@UiField
-	HasText humanId;
+	ProgressBlockWidget value;
 
 	@UiField
-	HasText effort;
+	InformationBlockWidget cycletime;
 
 	@UiField
-	HasText value;
-
-	@UiField
-	HasText progress;
-
-	@UiField
-	HasText release;
+	InformationBlockWidget leadtime;
 
 	@UiField(provided = true)
 	UserWidget ownerWidget;
@@ -75,6 +66,9 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	@IgnoredByDeepEquality
 	protected ModelWidgetContainer<TagAssociationMetadata, TagAssociationWidget> tags;
 
+	@UiField
+	ScopeTimelineWidget timeline;
+
 	private Scope scope;
 
 	private ActionExecutionListener actionExecutionListener;
@@ -83,6 +77,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 		associatedUsers = new ScopeAssociatedMembersWidget(scope, null, 10, true);
 		tags = createTagsContainer();
 		ownerWidget = new UserWidget(scope.getOwner());
+		ownerWidget.setSmallSize();
 		initWidget(uiBinder.createAndBindUi(this));
 		setSubject(scope);
 		associatedUsers.getElement().getParentElement().setAttribute("colspan", "2");
@@ -134,26 +129,26 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	}
 
 	private void update() {
-		this.parent.setText(scope.isRoot() ? messages.none() : scope.getParent().getDescription());
-		this.humanId.setText(ClientServices.getCurrentProjectContext().getHumanId(scope));
-		this.effort.setText(formatProgressText(scope.getEffort().getAccomplished(), scope.getEffort().getInfered(), " ep"));
-		this.value.setText(formatProgressText(scope.getValue().getAccomplished(), scope.getValue().getInfered(), " vp"));
-		final String progress = scope.getProgress().getDescription();
-		this.progress.setText(progress.isEmpty() ? Progress.DEFAULT_NOT_STARTED_NAME : progress);
-		final Release release = scope.getRelease();
-		this.release.setText(release == null ? messages.none() : release.getDescription());
+		setTimeDifference(cycletime, scope.getProgress().getCycleTime());
+		setTimeDifference(leadtime, scope.getProgress().getLeadTime());
+		timeline.setScope(scope);
+
+		this.effort.setValue(scope.getEffort().getAccomplished(), scope.getEffort().getInfered());
+		this.value.setValue(scope.getValue().getAccomplished(), scope.getValue().getInfered());
+
 		associatedUsers.update();
 		tags.update(ClientServices.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
 	}
 
-	private String formatProgressText(final float accomplished, final float total, final String unit) {
-		if (total == 0) return format(total) + unit;
-		final String percentage = accomplished == 0 ? "" : (" ( " + format(accomplished * 100 / total) + "% )");
-		return format(accomplished) + " / " + format(total) + unit + percentage;
-	}
+	private void setTimeDifference(final InformationBlockWidget widget, final Long difference) {
+		if (difference == null) {
+			widget.setAsNull();
+			return;
+		}
 
-	private String format(final float floatValue) {
-		return roundFloat(floatValue, 0);
+		final String differenceText[] = HumanDateFormatter.getSplittedDifferenceText(difference, 1);
+		widget.setValue(differenceText[0]);
+		widget.setPosfix(differenceText[1]);
 	}
 
 }

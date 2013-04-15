@@ -1,0 +1,225 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
+	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+	
+	<ui:style src="../../style/default.css">
+
+		.rootPanel {
+			position: absolute;
+			top: 40px;
+			right: 40px;
+			left: 40px;
+			bottom: 40px;
+			opacity: 0;
+		}
+
+		.rootContainer {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			bottom: 0px;
+			left: 0px;
+			min-width: 720px;
+			
+			color: COLOR_TEXT_SECONDARY;
+			background-color: transparent;
+		}
+		
+		.closeIcon {
+			color: COLOR_TEXT_PRIMARY;
+			position: absolute;
+			top: 9px;
+			right: 9px;
+			cursor: pointer;
+			z-index: 10;
+		}
+		
+		.blockTitle {
+			color: COLOR_TEXT_SECONDARY;
+			font-size: 12pt;
+			border-bottom: 1px solid #ccc;
+			line-height: 30px;
+			margin: 0px 10px;
+		}
+
+		.headerBar {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			left: 0px;
+			height: 36px;
+			line-height: 36px;
+		}
+		
+		.humanId {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+		}
+		
+		.subjectTitle {
+			position: absolute;
+			top: 0px;
+			right: 253px;
+			left: 36px;
+			font-weight: bold;
+		}		
+		
+		.clickable:hover {
+			cursor: pointer;
+		}
+		
+		.scrollContainer {
+			width: 100%;
+			height: 100%;
+		}
+		
+		.contentContainer {
+			position: absolute;
+			top: 36px;
+			right: 0px;
+			left: 0px;
+			bottom: 0px;
+			overflow: auto;
+			overflow-x: hidden;
+			background: #EAEAEA;
+		}
+		
+		.flowContainer {
+		}
+				
+		.rightPanel {
+			margin-left: 0px;
+			height: 100%;
+			background: #444;
+		}
+		
+		.description {
+		}
+		
+		.annotationsPanel {
+			padding: POPUP_PADDING;
+		}
+		
+		.checklist {
+			padding: 5px 15px;
+		}
+		
+		.releaseContainer {
+			position: absolute;
+			right: 0px;
+			top: 0px;
+			
+			height: 36px;
+			line-height: 36px;
+			font-size: 18px;
+
+			width: 253px;
+			overflow: hidden;
+		}
+		
+		.releaseTag {
+			height: 100%;
+			width: 100%;
+			
+			background: rgba(0,0,0,0.2);
+			position: relative;
+		}
+		
+		.releaseText {
+			position: absolute;
+			left: 10px;
+			right: 25px;
+			font-size: 14px;
+		}
+			
+		.createButton {
+			width: 213px;
+			background: #666;
+			padding: 5px 10px;
+			margin: 4px auto;		
+			cursor: pointer;
+			color: #fafafa;
+			text-align: center;
+			line-height: 18px;
+		}
+		
+		.createButtonIcon {
+			float: left;
+			margin-top: 2px;
+		}
+		
+		.categoryContainer {
+			padding: 0px 10px;
+
+		}
+		
+		.categoryTitle {
+			color: COLOR_TEXT_PRIMARY;
+			font-size: 12pt;
+			border-bottom: 1px solid #999;
+			line-height: 30px;
+			margin-bottom: 5px;
+			letter-spacing: 1px;
+		}
+		
+	</ui:style>
+        
+
+	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
+		<g:HTMLPanel ui:field="container" styleName="{style.popupContainer} {style.rootContainer}">
+			<div class="{style.headerBar}">
+				<span ui:field="humanId" class="{style.humanId}"/>
+				<w:EditableLabel ui:field="subjectTitle" styleName="{style.subjectTitle} {style.clickable}" />
+				<g:FocusPanel ui:field="closeIcon" styleName="{style.closeIcon} icon-remove"/>
+				<div ui:field="releaseContainer" class="{style.releaseContainer}">
+					<div class="{style.releaseTag}">
+						<div ui:field="releaseTag" class="{style.releaseText} v-ellip"/>
+					</div>
+				</div>
+			</div>
+			<g:HTMLPanel styleName="{style.contentContainer}">
+				<table class="{style.scrollContainer}" cellpadding="0" cellspacing="0">
+					<tr>
+						<td width="*" style="vertical-align: top;">
+							<div class="{style.flowContainer}">
+								<w:DescriptionRichTextLabel ui:field="descriptionLabel" styleName="{style.description}" />
+								<aw:ChecklistsContainerWidget ui:field="checklist" styleName="{style.checklist}"/>
+								<div>
+									<g:Label styleName="{style.blockTitle}">
+										<ui:msg description="Annotations">Annotations</ui:msg>
+									</g:Label>
+									<aw:AnnotationsWidget ui:field="annotations" styleName="{style.annotationsPanel}" />
+								</div>
+							</div>
+						</td>
+						<td width="253px" style="vertical-align: top;">
+							<div class="{style.rightPanel}" >
+								<aw:SubjectDetailWidget ui:field="subjectDetails" />
+								<div class="{style.categoryContainer}">
+									<div class="{style.categoryTitle}"/>
+									<g:FocusPanel ui:field="addChecklistButton" styleName="{style.createButton}">
+										<g:HTMLPanel>
+											<i class="icon-list-ul {style.createButtonIcon}"/> <span><ui:msg description="Add checklist">Add checklist</ui:msg></span>
+										</g:HTMLPanel>
+									</g:FocusPanel>
+<!-- 									<g:FocusPanel ui:field="addImpedimentButton" styleName="{style.createButton}"> -->
+<!-- 										<g:HTMLPanel> -->
+<!-- 											<i class="icon-flag {style.createButtonIcon}"/> <span><ui:msg description="Add impediment">Add impediment</ui:msg></span> -->
+<!-- 										</g:HTMLPanel> -->
+<!-- 									</g:FocusPanel> -->
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</g:HTMLPanel>
+		</g:HTMLPanel>
+	</g:FocusPanel>
+</ui:UiBinder> 

@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.annotations;
+package br.com.oncast.ontrack.client.ui.components.details;
 
 import br.com.oncast.ontrack.client.i18n.BaseMessages;
 

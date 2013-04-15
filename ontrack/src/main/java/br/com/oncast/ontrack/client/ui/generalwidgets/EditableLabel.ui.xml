@@ -11,8 +11,12 @@
 			position: relative;
 		}
 		
-		.container {
+		.visualizationLabel, .editionBox {
 			height: 100%;
+		}
+		
+		.visualizationLabel:hover {
+			text-decoration: underline;
 		}
 		
 		.editionBox {
@@ -31,10 +35,10 @@
 	</ui:style>
 
 		<g:DeckPanel ui:field="deckPanel" addStyleNames="{style.editableLabel}">
-			<g:Label ui:field="visualizationLabel" addStyleNames="{style.container} v-ellip" title="Double click to edit" >
-				<ui:attribute name='title' description='tooltip double click to edit'/>
+			<g:Label ui:field="visualizationLabel" addStyleNames="{style.visualizationLabel} v-ellip" title="Click to edit" >
+				<ui:attribute name='title' description='tooltip click to edit'/>
 			</g:Label>
-			<g:TextBox ui:field="editionBox" addStyleNames="{style.textBoxDecoration} {style.container} {style.editionBox}" />
+			<g:TextBox ui:field="editionBox" addStyleNames="{style.textBoxDecoration} {style.editionBox}" />
 		</g:DeckPanel>
 	
 </ui:UiBinder> 

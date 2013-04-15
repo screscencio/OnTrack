@@ -1,8 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:gs="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope"
-	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	xmlns:s="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope"
+	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:u="urn:import:br.com.oncast.ontrack.client.ui.components.user"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
@@ -10,21 +10,16 @@
 
 	<ui:style src="../../../style/default.css">
 	
-		.rootPanel {}
+		.rootPanel {
+			padding-top: 8px;
+		}
 	
-		.subjectTitle {
-			color: COLOR_TEXT_SECONDARY;
-			font-size: 12pt;
-			font-weight: bold;
-			border-bottom: 1px solid #ccc;
-			line-height: 30px;
-			margin: 0px 10px;
+		.centralized {
+			margin: 0px auto;
 		}
 		
-		.details {
-			margin: 0px auto;
-			margin-top: 5px;
-			width: 100%;
+		.informationBlock {
+			float: left;
 		}
 		
 		.detailLabel {
@@ -41,6 +36,7 @@
 		
 		.tags {
 			margin: 5px;
+			margin-bottom: 10px;
 			display: inline-block;
 		}
 
@@ -48,99 +44,77 @@
 			width: 40px;
 		}
 		
+		.timelineContainer {
+			width: 100%;
+			margin: 10px 0px;
+		}
+		
+		.categoryContainer {
+			padding: 0px 10px;
+
+		}
+		
+		.categoryTitle {
+			color: COLOR_TEXT_PRIMARY;
+			font-size: 12pt;
+			border-bottom: 1px solid #999;
+			line-height: 30px;
+			margin-bottom: 5px;
+			letter-spacing: 1px;
+		}
+		
+		.creator {
+			display: inline-block;
+		}
+		
+		.creatorContainer {
+			text-align: right;
+			color: #C0C0C0;
+			font-size: 12px;
+		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.rootPanel}">
-		<g:Label styleName="{style.subjectTitle}">
-			<ui:msg description="details label">Details</ui:msg>
-		</g:Label>
+		<g:HorizontalPanel styleName="{style.centralized}">
+			<w:ProgressBlockWidget ui:field="effort" addStyleNames="{style.informationBlock}" posfix="ep">
+				<ui:msg description="effort">Effort</ui:msg>
+			</w:ProgressBlockWidget>
+			<w:InformationBlockWidget ui:field="cycletime" addStyleNames="{style.informationBlock}">
+				<ui:msg description="cycletime">Cycletime</ui:msg>
+			</w:InformationBlockWidget>
+		</g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.centralized}">
+			<w:ProgressBlockWidget ui:field="value" addStyleNames="{style.informationBlock}" posfix="vp">
+				<ui:msg description="value">Value</ui:msg>
+			</w:ProgressBlockWidget>
+			<w:InformationBlockWidget ui:field="leadtime" addStyleNames="{style.informationBlock}">
+				<ui:msg description="leadtime">Leadtime</ui:msg>
+			</w:InformationBlockWidget>
+		</g:HorizontalPanel>
+		<div class="{style.categoryContainer}">
+			<div class="{style.categoryTitle}">Timeline</div>
+			<w:ScopeTimelineWidget ui:field="timeline"/>
+		</div>
 		
-		<g:Grid styleName="{style.details}">
-			<g:row>
-				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
-					<gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
-				</g:customCell>
-			</g:row>
-			
-			<g:row>
-				<g:customCell horizontalAlignment="right">
-					<g:Label styleName="{style.detailLabel}">
-						<ui:msg description="human id label">Id:</ui:msg>
-					</g:Label>
-				</g:customCell>
-				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
-					<g:Label ui:field="humanId" styleName="{style.detailValue}" />
-				</g:customCell>
-			</g:row>
-			
-			<g:row>
-				<g:customCell horizontalAlignment="right">
-					<g:Label styleName="{style.detailLabel}">
-						<ui:msg description="scope parent label">Part of:</ui:msg>
-					</g:Label>
-				</g:customCell>
-				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
-					<g:Label ui:field="parent" styleName="{style.detailValue}" />
-				</g:customCell>
-			</g:row>
-			
-			<g:row>
-				<g:customCell horizontalAlignment="right">
-					<g:Label styleName="{style.detailLabel}">
-						<ui:msg description="scope effort label">Effort:</ui:msg>
-					</g:Label>
-				</g:customCell>
-				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
-					<g:Label ui:field="effort" styleName="{style.detailValue}" />
-				</g:customCell>
-			</g:row>
-			
-			<g:row>
-				<g:customCell horizontalAlignment="right">
-					<g:Label styleName="{style.detailLabel}">
-						<ui:msg description="scope value label">Value:</ui:msg>
-					</g:Label>
-				</g:customCell>
-				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
-					<g:Label ui:field="value" styleName="{style.detailValue}" />
-				</g:customCell>
-			</g:row>
-			
-			<g:row>
-				<g:customCell horizontalAlignment="right">
-					<g:Label styleName="{style.detailLabel}">
-						<ui:msg description="scope progress label">Progress:</ui:msg>
-					</g:Label>
-				</g:customCell>
-				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
-					<g:Label ui:field="progress" styleName="{style.detailValue}" />
-				</g:customCell>
-			</g:row>
-			
-			<g:row>
-				<g:customCell horizontalAlignment="right">
-					<g:Label styleName="{style.detailLabel}">
-						<ui:msg description="scope release label">Release:</ui:msg>
-					</g:Label>
-				</g:customCell>
-				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
-					<g:Label ui:field="release" styleName="{style.detailValue}" />
-				</g:customCell>
-			</g:row>
-			<g:row>
-				<g:customCell horizontalAlignment="right">
-					<g:Label styleName="{style.detailLabel}">
-						<ui:msg description="scope owner label">Owner:</ui:msg>
-					</g:Label>
-				</g:customCell>
-				<g:customCell styleName="{style.detailValueCell}"  horizontalAlignment="left">
-					<u:UserWidget ui:field="ownerWidget" styleName="{style.detailValue} {style.ownerImage}" />
-				</g:customCell>
-			</g:row>
-		 </g:Grid>
-		 <g:HTMLPanel styleName="{style.tags}">
-			<t:ModelWidgetContainer ui:field="tags" />
-		 </g:HTMLPanel>
+		<div class="{style.categoryContainer}">
+			<div class="{style.categoryTitle}">
+				<ui:msg description="People">People</ui:msg>
+			</div>
+			<s:ScopeAssociatedMembersWidget ui:field="associatedUsers"/>
+			<div class="{style.creatorContainer}">
+				<ui:msg description="created by">Created by</ui:msg> <u:UserWidget ui:field="ownerWidget" styleName="{style.creator}"/>
+			</div>
+		</div>
+		
+		<div class="{style.categoryContainer}">
+			<div class="{style.categoryTitle}">
+				<ui:msg description="Tags">Tags</ui:msg>
+			</div>
+			<div class="{style.tags}">
+				<w:ModelWidgetContainer ui:field="tags" />
+			</div>
+		</div>
 	</g:HTMLPanel>
 	
 </ui:UiBinder> 

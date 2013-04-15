@@ -25,8 +25,7 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DeckPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ChecklistsContainerWidget extends Composite {
@@ -38,13 +37,10 @@ public class ChecklistsContainerWidget extends Composite {
 	interface ChecklistsContainerWidgetUiBinder extends UiBinder<Widget, ChecklistsContainerWidget> {}
 
 	@UiField
-	Label addChecklistLabel;
+	HorizontalPanel addContainer;
 
 	@UiField
 	HasClickHandlers addButton;
-
-	@UiField
-	DeckPanel addChecklistDeck;
 
 	@UiField
 	ModelWidgetContainer<Checklist, ChecklistWidget> checklists;
@@ -93,7 +89,6 @@ public class ChecklistsContainerWidget extends Composite {
 		e.stopPropagation();
 
 		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER) createChecklist();
-
 		else if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hideNewChecklistTitle();
 
 	}
@@ -103,9 +98,8 @@ public class ChecklistsContainerWidget extends Composite {
 		createChecklist();
 	}
 
-	@UiHandler("addChecklistLabel")
-	void onAddChecklistLabelClick(final ClickEvent e) {
-		addChecklistDeck.showWidget(1);
+	public void enterEditMode() {
+		addContainer.setVisible(true);
 		newChecklistTitle.setFocus(true);
 	}
 
@@ -117,7 +111,7 @@ public class ChecklistsContainerWidget extends Composite {
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof ChecklistAction && action.getReferenceId().equals(subjectId)) {
 					justCreatedAnChecklist = isUserAction && (action instanceof ChecklistCreateAction);
-					checklists.update(context.findChecklistsFor(subjectId));
+					update();
 				}
 			}
 		};
@@ -138,12 +132,16 @@ public class ChecklistsContainerWidget extends Composite {
 	}
 
 	private void hideNewChecklistTitle() {
-		addChecklistDeck.showWidget(0);
+		addContainer.setVisible(false);
 	}
 
 	public void setSubjectId(final UUID subjectId) {
 		this.subjectId = subjectId;
-		checklists.update(ClientServices.getCurrentProjectContext().findChecklistsFor(subjectId));
+		update();
+	}
+
+	private void update() {
+		this.checklists.update(ClientServices.getCurrentProjectContext().findChecklistsFor(subjectId));
 	}
 
 	private ClientServices getProvider() {
