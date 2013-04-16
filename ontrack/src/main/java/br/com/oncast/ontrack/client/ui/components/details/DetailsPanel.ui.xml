@@ -3,6 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	xmlns:i="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.impediment"
 	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"

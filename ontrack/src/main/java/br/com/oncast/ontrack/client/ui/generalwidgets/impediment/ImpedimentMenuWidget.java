@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -50,12 +50,12 @@ public class ImpedimentMenuWidget extends Composite implements ModelWidget<Annot
 	@UiField
 	SpanElement timestamp;
 
-	private final HasUUID subject;
+	private final UUID subjectId;
 
 	private final Annotation impediment;
 
-	public ImpedimentMenuWidget(final HasUUID subject, final Annotation impediment) {
-		this.subject = subject;
+	public ImpedimentMenuWidget(final UUID subjectId, final Annotation impediment) {
+		this.subjectId = subjectId;
 		this.impediment = impediment;
 		userWidget = new UserWidget(impediment.getAuthor(), this);
 		initWidget(uiBinder.createAndBindUi(this));
@@ -66,8 +66,8 @@ public class ImpedimentMenuWidget extends Composite implements ModelWidget<Annot
 	void onCheckClick(final ClickEvent e) {
 		final ImpedimentAction action =
 				impediment.getType() == OPEN_IMPEDIMENT ?
-						new ImpedimentSolveAction(subject.getId(), impediment.getId()) :
-						new ImpedimentCreateAction(subject.getId(), impediment.getId());
+						new ImpedimentSolveAction(subjectId, impediment.getId()) :
+						new ImpedimentCreateAction(subjectId, impediment.getId());
 
 		ClientServices.get().actionExecution().onUserActionExecutionRequest(action);
 	}
