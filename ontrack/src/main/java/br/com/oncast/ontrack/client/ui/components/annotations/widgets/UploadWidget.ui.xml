@@ -2,49 +2,60 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="uploadImg" src="upload.png"></ui:image>
-	<ui:image field="removeImg" src="remove.png"></ui:image>
-	
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetStyle">
 	
-		@sprite .uploadImg {
-			gwt-image: 'uploadImg';
+		.container {
+			border-radius: 2px;
 		}
-		
-		@sprite .removeImg {
-			gwt-image: 'removeImg';
-			opacity: 0.5;
+	
+		.hasChosenUploadFile {
+			border: 1px solid;
 		}
 		
 		.uploadIcon {
 			cursor: pointer;
 			display: inline-block;
 			
-			margin: 1px;
+			border: 1px solid transparent;
 			
-			border-radius: 3px;
-			padding: 2px;
+			border-radius: 2px;
+			padding: 2px 5px;
 			background-position: center;
+			height: 20px;
+			line-height: 20px;
+		}
+		
+		.hasChosenUploadFile .uploadIcon {
+			height: 18px;
+			line-height: 16px;
 		}
 		
 		.uploadIcon:HOVER {
-			margin: 0px;
 			border: 1px solid #AEAEAE;
 			box-shadow: inset 1px 1px 1px white;
 		}
 		
+		.hasChosenUploadFile .uploadIcon:HOVER {
+			border: 1px solid transparent;
+			box-shadow: none;
+		}
+		
 		.fileNameLabel {
-			margin-right: 10px;
+			margin: 0px 8px;
 			white-space: nowrap;
+			line-height: 24px;
 		}
 		
 	</ui:style>
 
-	<g:HorizontalPanel>
-		<g:cell verticalAlignment="middle">
-			<g:Label ui:field="fileNameLabel" styleName="{style.fileNameLabel}"/>
-		</g:cell>
-		<g:FocusPanel ui:field="uploadIcon" styleName="{style.uploadIcon} {style.uploadImg}"/>
-		<g:SimplePanel ui:field="formPanel" visible="false"/>
-	</g:HorizontalPanel>
+	<g:FocusPanel>
+		<g:HorizontalPanel ui:field="container" styleName="{style.container}">
+			<g:cell verticalAlignment="middle">
+				<g:Label ui:field="fileNameLabel" styleName="{style.fileNameLabel}"/>
+			</g:cell>
+			<g:FocusPanel ui:field="uploadIcon" styleName="icon-paper-clip icon-large {style.uploadIcon}"/>
+			<g:SimplePanel ui:field="formPanel" visible="false"/>
+		</g:HorizontalPanel>
+	</g:FocusPanel>
+	
 </ui:UiBinder> 

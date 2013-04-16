@@ -7,7 +7,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 	
-	<ui:style>
+	<ui:style src="../../../style/default.css">
 	
 		.container {
 			position: relative;
@@ -18,21 +18,65 @@
 			overflow-x: hidden;
 		}
 	
-		.separator {
-			margin: -14px -15px 10px -15px;
-		}
-		
 		.spacer {
 			height: 10px;
 			display: block;
+		}
+		
+		.buttonContainer {
+			margin-left: 10px;
+		}
+		
+		.create {
+			border: 1px solid transparent;
+			border-radius: 2px;
+			padding: 2px;
+			
+			cursor: pointer;
+			background: transparent;
+			color: #444;
+			margin: 0px;
+		}
+		
+		.create:HOVER {
+			border: 1px solid #AEAEAE;
+			box-shadow: inset 1px 1px 1px rgba(255,255,255,0.7);
+		}
+		
+		.create:disabled {
+			background-color: transparent;
+			color: gray;
+			border: 1px solid transparent;
+			cursor: default;
+			box-shadow: none;
+		}
+		
+		.messageBody {
+			border: 1px solid #ccc;
+			border-radius: 2px;
+			background: white;
+			width: 100%;
+			margin: 0px;
+			line-height: 15px;
+			height: 15px;
+			padding: 3px;
+			
+			-webkit-transition: height 500ms;
 		}
 		
 	</ui:style>
 	
 	<g:FocusPanel>
 		<g:VerticalPanel height="100%" width="100%">
-			<misc:Separator styleName="{style.separator}"/>
-			<aw:ExtendableTextArea ui:field="newCommentText" />
+			<misc:Separator/>
+			<g:HorizontalPanel width="100%">
+				<g:cell width="100%">
+					<g:TextArea ui:field="newCommentText" styleName="{style.messageBody}" />
+				</g:cell>
+				<g:HTMLPanel styleName="{style.buttonContainer}">
+					<g:Button ui:field="createButton" styleName="icon-plus-sign icon-large {style.create}"/>
+				</g:HTMLPanel>
+			</g:HorizontalPanel>
 			<g:SimplePanel ui:field="separator" styleName="{style.spacer}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">
