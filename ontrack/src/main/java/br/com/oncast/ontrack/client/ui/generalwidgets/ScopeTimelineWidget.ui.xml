@@ -52,11 +52,24 @@
 			height: 0px;
 			width: 100%
 		}
-			
+		
+		.timelineMark {
+			position: absolute;
+			bottom: 50%;
+			margin-bottom: 4px;
+		}
+		
+		.openImpedimentMark {
+			color: COLOR_ERROR_SECONDARY;
+		}
+		
+		.solvedImpedimentMark {
+			color: COLOR_SUCCESS_TERTIARY;
+		}
 
 	</ui:style>
 	
-	<g:HTMLPanel styleName="{style.container}">
+	<g:HTMLPanel ui:field="container" styleName="{style.container}">
 		<g:HorizontalPanel ui:field="timelineBar" styleName="{style.timelineBar}"/>
 	</g:HTMLPanel>
 		

@@ -55,11 +55,15 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 	@UiField(provided = true)
 	ModelWidgetContainer<Annotation, ImpedimentMenuWidget> impedimentsContainer;
 
-	private final HasUUID subject;
+	private final UUID subjectId;
 
 	public ImpedimentListWidget(final HasUUID subject) {
-		this.subject = subject;
-		impedimentsContainer = createImpedimentsContainer(subject);
+		this(subject.getId());
+	}
+
+	public ImpedimentListWidget(final UUID subjectId) {
+		this.subjectId = subjectId;
+		impedimentsContainer = createImpedimentsContainer(subjectId);
 		initWidget(uiBinder.createAndBindUi(this));
 		update();
 	}
@@ -75,7 +79,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 		if (event.getNativeKeyCode() != BrowserKeyCodes.KEY_ENTER || description.isEmpty()) return;
 
 		ClientServices.get().actionExecution()
-				.onUserActionExecutionRequest(new AnnotationCreateAction(subject.getId(), AnnotationType.OPEN_IMPEDIMENT, description));
+				.onUserActionExecutionRequest(new AnnotationCreateAction(subjectId, AnnotationType.OPEN_IMPEDIMENT, description));
 		hide();
 	}
 
@@ -85,7 +89,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 	}
 
 	private void update() {
-		final List<Annotation> impediments = getCurrentProjectContext().findImpedimentsFor(subject.getId());
+		final List<Annotation> impediments = getCurrentProjectContext().findImpedimentsFor(subjectId);
 		Collections.sort(impediments, new Comparator<Annotation>() {
 			@Override
 			public int compare(final Annotation o1, final Annotation o2) {
@@ -100,11 +104,11 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 		newImpedimentDescription.setFocus(focused);
 	}
 
-	private ModelWidgetContainer<Annotation, ImpedimentMenuWidget> createImpedimentsContainer(final HasUUID subject) {
+	private ModelWidgetContainer<Annotation, ImpedimentMenuWidget> createImpedimentsContainer(final UUID subjectId) {
 		return new ModelWidgetContainer<Annotation, ImpedimentMenuWidget>(new ModelWidgetFactory<Annotation, ImpedimentMenuWidget>() {
 			@Override
 			public ImpedimentMenuWidget createWidget(final Annotation modelBean) {
-				return new ImpedimentMenuWidget(subject, modelBean);
+				return new ImpedimentMenuWidget(subjectId, modelBean);
 			}
 		});
 	}
@@ -142,7 +146,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 			final Set<UUID> inferenceInfluencedScopeSet,
 			final boolean isUserAction) {
 
-		if ((action instanceof AnnotationAction || action instanceof ImpedimentAction) && action.getReferenceId().equals(subject.getId())) update();
+		if ((action instanceof AnnotationAction || action instanceof ImpedimentAction) && action.getReferenceId().equals(subjectId)) update();
 
 	}
 }
