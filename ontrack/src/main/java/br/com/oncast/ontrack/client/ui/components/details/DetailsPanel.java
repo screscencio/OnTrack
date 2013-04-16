@@ -196,6 +196,11 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 		hide();
 	}
 
+	@UiHandler("addAnnotationButton")
+	protected void onAddAnnotationClick(final ClickEvent e) {
+		annotations.enterEditMode();
+	}
+
 	@UiHandler("addChecklistButton")
 	protected void onAddChecklistClick(final ClickEvent e) {
 		checklist.enterEditMode();

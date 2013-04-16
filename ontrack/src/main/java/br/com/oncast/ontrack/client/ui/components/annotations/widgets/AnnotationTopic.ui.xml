@@ -44,13 +44,8 @@
 		}
 		
 		.commentsPanel {
-			padding: 20px;
-			padding-bottom: 0px;
+			padding: 0px 20px;
 			height: auto;
-		}
-		
-		.separator {
-			margin: 6px -15px 5px -15px;
 		}
 		
 		.deprecatedLabel {
@@ -88,7 +83,7 @@
 		}
 		
 		.messageContainer {
-			margin-left: 5px;
+			margin-left: 10px;
 		}
 		
 	</ui:style>
@@ -116,6 +111,6 @@
 				<g:Label ui:field="closedDeprecatedLabel" styleName="{style.closedDeprecatedLabel} v-ellip"/>
 			</g:SimplePanel>
 		</g:DeckPanel>
-		<misc:Separator styleName="{style.separator}"/>
+		<misc:Separator/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -62,9 +62,6 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	@UiField
 	ModelWidgetContainer<ChecklistItem, ChecklistItemWidget> items;
 
-	// @UiField
-	// HasClickHandlers addButton;
-
 	@UiField
 	Label addItemLabel;
 

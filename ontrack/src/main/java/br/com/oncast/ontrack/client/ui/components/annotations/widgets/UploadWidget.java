@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
@@ -21,6 +23,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -34,6 +37,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -50,11 +54,14 @@ public class UploadWidget extends Composite {
 	interface UploadWidgetUiBinder extends UiBinder<Widget, UploadWidget> {}
 
 	interface UploadWidgetStyle extends CssResource {
-		String removeImg();
+		String hasChosenUploadFile();
 	}
 
 	@UiField
 	protected UploadWidgetStyle style;
+
+	@UiField
+	protected HorizontalPanel container;
 
 	@UiField
 	protected FocusPanel uploadIcon;
@@ -81,7 +88,10 @@ public class UploadWidget extends Composite {
 
 	private TextBox fileId;
 
+	private final List<UploadFileChangeListener> listeners;
+
 	public UploadWidget() {
+		listeners = new ArrayList<UploadWidget.UploadFileChangeListener>();
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -91,22 +101,44 @@ public class UploadWidget extends Composite {
 
 	@Override
 	protected void onLoad() {
+		clearChosenFile();
+	}
+
+	public HandlerRegistration registerUploadFileChangeListener(final UploadFileChangeListener listener) {
+		listeners.add(listener);
+		return new HandlerRegistration() {
+			@Override
+			public void removeHandler() {
+				listeners.remove(listener);
+			}
+		};
+	}
+
+	public interface UploadFileChangeListener {
+		void onFileChange();
+	}
+
+	public void clearChosenFile() {
 		setUploadFieldVisible(false);
 	}
 
-	public void setUploadFieldVisible(final boolean b) {
+	private void setUploadFieldVisible(final boolean b) {
 		fileNameLabel.setVisible(b);
-		uploadIcon.setStyleName(style.removeImg(), b);
+		uploadIcon.setStyleName("icon-paper-clip", !b);
+		uploadIcon.setStyleName("icon-remove", b);
+		container.setStyleName(style.hasChosenUploadFile(), b);
 		if (form != null && !b) form.reset();
+		for (final UploadFileChangeListener l : listeners)
+			l.onFileChange();
 	}
 
 	@UiHandler("uploadIcon")
 	protected void onUploadIconClicked(final ClickEvent e) {
-		if (!isUploadWidgetVisible()) clickOnInputFile(getFileUpload().getElement());
-		else setUploadFieldVisible(false);
+		if (!hasChosenUploadFile()) clickOnInputFile(getFileUpload().getElement());
+		else clearChosenFile();
 	}
 
-	private boolean isUploadWidgetVisible() {
+	public boolean hasChosenUploadFile() {
 		return fileNameLabel.isVisible();
 	}
 

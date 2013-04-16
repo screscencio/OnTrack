@@ -6,14 +6,13 @@ import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.details.DetailService;
-import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ExtendableTextArea.ExpansionListener;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadFileChangeListener;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetListener;
+import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
-import br.com.oncast.ontrack.client.utils.jquery.JQuery;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
@@ -21,18 +20,21 @@ import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationsWidget extends Composite {
@@ -41,19 +43,25 @@ public class AnnotationsWidget extends Composite {
 
 	interface AnnotationsWidgetUiBinder extends UiBinder<Widget, AnnotationsWidget> {}
 
-	private static final AnnotationsWidgetMessages messages = GWT.create(AnnotationsWidgetMessages.class);
-
 	@UiField
-	protected ExtendableTextArea newAnnotationText;
+	protected RichTextArea newAnnotationText;
 
 	@UiField
 	protected UploadWidget uploadWidget;
 
 	@UiField
-	protected Widget separator;
+	protected Panel newAnnotationContainer;
 
 	@UiField
-	protected FocusPanel createNotificationButton;
+	protected Button createButton;
+
+	@UiField
+	protected UserWidget author;
+
+	@UiFactory
+	protected UserWidget createUserWidget() {
+		return new UserWidget(new UserRepresentation(ClientServices.getCurrentUser()));
+	}
 
 	@UiField
 	protected ModelWidgetContainer<Annotation, AnnotationTopic> annotationsWidgetContainer;
@@ -68,21 +76,6 @@ public class AnnotationsWidget extends Composite {
 		});
 	}
 
-	Timer buttonTimer = new Timer() {
-
-		@Override
-		public void run() {
-			JQuery.jquery(createNotificationButton).clearQueue().fadeOut(300, new AnimationCallback() {
-
-				@Override
-				public void onComplete() {
-					createNotificationButton.setVisible(false);
-					newAnnotationText.hideRichTextArea();
-				}
-			});
-		}
-	};
-
 	private final UUID subjectId;
 
 	private ActionExecutionListener actionsListener;
@@ -90,25 +83,16 @@ public class AnnotationsWidget extends Composite {
 	public AnnotationsWidget(final UUID subjectId) {
 		this.subjectId = subjectId;
 		initWidget(uiBinder.createAndBindUi(this));
-		createNotificationButton.setVisible(false);
-		uploadWidget.setVisible(false);
+		newAnnotationContainer.setVisible(false);
 		uploadWidget.setActionUrl("/application/file/upload");
-		createNotificationButton.setTitle(messages.createAnnotation());
-		newAnnotationText.registerExpansionListener(new ExpansionListener() {
-
+		uploadWidget.registerUploadFileChangeListener(new UploadFileChangeListener() {
 			@Override
-			public void onExpandded() {
-				createNotificationButton.setVisible(true);
-				uploadWidget.setVisible(true);
+			public void onFileChange() {
+				updateAnnotationCreateButton();
 			}
 
-			@Override
-			public void onShrinked() {
-				createNotificationButton.setVisible(false);
-				uploadWidget.setVisible(false);
-				addAnnotation();
-			}
 		});
+		createButton.setEnabled(false);
 	}
 
 	@Override
@@ -123,18 +107,47 @@ public class AnnotationsWidget extends Composite {
 		getActionExecutionService().removeActionExecutionListener(actionsListener);
 	}
 
-	@UiHandler("createNotificationButton")
-	protected void onNewAnnotationClick(final ClickEvent event) {
+	@UiHandler("createButton")
+	protected void onCreateClick(final ClickEvent event) {
 		addAnnotation();
+	}
+
+	@UiHandler("cancelButton")
+	protected void onCancelClick(final ClickEvent event) {
+		cancelCreation();
 	}
 
 	@UiHandler("newAnnotationText")
 	protected void onNewAnnotationTextKeyDown(final KeyDownEvent e) {
+		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) cancelCreation();
 		if (!new Shortcut(BrowserKeyCodes.KEY_ENTER).with(ControlModifier.PRESSED).accepts(e.getNativeEvent())) return;
+
 		e.preventDefault();
 		e.stopPropagation();
 
 		addAnnotation();
+	}
+
+	@UiHandler("newAnnotationText")
+	protected void onNewAnnotationTextKeyUp(final KeyUpEvent e) {
+		updateAnnotationCreateButton();
+	}
+
+	private void updateAnnotationCreateButton() {
+		createButton.setEnabled(uploadWidget.hasChosenUploadFile() || !isNewAnnotationTextEmpty());
+	}
+
+	private boolean isNewAnnotationTextEmpty() {
+		return newAnnotationText.getText().trim().isEmpty();
+	}
+
+	private void cancelCreation() {
+		hideNewAnnotationContainer();
+	}
+
+	public void enterEditMode() {
+		newAnnotationContainer.setVisible(true);
+		setFocus(true);
 	}
 
 	public void setFocus(final boolean b) {
@@ -146,18 +159,23 @@ public class AnnotationsWidget extends Composite {
 	}
 
 	private void addAnnotation() {
-		final String message = newAnnotationText.getText().trim();
 		final String fileName = uploadWidget.getFilename();
-		if (message.trim().isEmpty() && fileName.isEmpty()) return;
+		if (isNewAnnotationTextEmpty() && fileName.isEmpty()) return;
 
 		uploadWidget.submitForm(new UploadWidgetListener() {
 			@Override
 			public void onUploadCompleted(final UUID fileRepresentationId) {
-				uploadWidget.setUploadFieldVisible(false);
-				getProvider().details().createAnnotationFor(subjectId, message, fileRepresentationId);
-				newAnnotationText.setText("");
+				getProvider().details().createAnnotationFor(subjectId, newAnnotationText.getHTML().trim(), fileRepresentationId);
+				hideNewAnnotationContainer();
 			}
+
 		});
+	}
+
+	private void hideNewAnnotationContainer() {
+		uploadWidget.clearChosenFile();
+		newAnnotationText.setText("");
+		newAnnotationContainer.setVisible(false);
 	}
 
 	private void update() {

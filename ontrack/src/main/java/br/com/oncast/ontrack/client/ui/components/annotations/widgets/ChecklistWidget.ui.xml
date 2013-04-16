@@ -38,24 +38,6 @@
 			box-shadow: inset -1px -1px 1px #E9E9E9;
 		}
 		
-		.addButton {
-			cursor: pointer;
-			font-weight: bold;
-			text-align: center;
-			padding: 0px 2px;
-			margin: 0 5px;
-			border: 1px solid transparent;
-			border-radius: 2px;
-			line-height: 18px;
-		}
-		
-		.addButton:HOVER {
-			border-color: #AEAEAE;
-			-webkit-box-shadow: inset -1px -1px 1px #E9E9E9;
-			-moz-box-shadow: inset -1px -1px 1px #E9E9E9;
-			box-shadow: inset -1px -1px 1px #E9E9E9;
-		}
-		
 		.newItemDescription {
 			width: 100%;
 		}

@@ -20,12 +20,19 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CommentsWidget extends Composite {
@@ -35,7 +42,10 @@ public class CommentsWidget extends Composite {
 	interface CommentsWidgetUiBinder extends UiBinder<Widget, CommentsWidget> {}
 
 	@UiField
-	protected ExtendableTextArea newCommentText;
+	protected TextBoxBase newCommentText;
+
+	@UiField
+	protected Button createButton;
 
 	@UiField
 	protected Widget separator;
@@ -60,6 +70,7 @@ public class CommentsWidget extends Composite {
 	public CommentsWidget(final UUID subjectId) {
 		this.subjectId = subjectId;
 		initWidget(uiBinder.createAndBindUi(this));
+		createButton.setEnabled(false);
 	}
 
 	@Override
@@ -75,13 +86,42 @@ public class CommentsWidget extends Composite {
 	}
 
 	@UiHandler("newCommentText")
-	protected void onNewAnnotationTextKeyDown(final KeyDownEvent e) {
+	protected void onNewCommentTextFocus(final FocusEvent e) {
+		newCommentText.getElement().getStyle().setHeight(45, Unit.PX);
+	}
+
+	@UiHandler("newCommentText")
+	protected void onNewCommentTextBlur(final BlurEvent e) {
+		newCommentText.getElement().getStyle().clearHeight();
+	}
+
+	@UiHandler("newCommentText")
+	protected void onNewCommentTextKeyDown(final KeyDownEvent e) {
+
+		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) {
+			if (!newCommentText.getText().trim().isEmpty()) e.stopPropagation();
+			clear();
+		}
 		if (!new Shortcut(BrowserKeyCodes.KEY_ENTER).with(ControlModifier.PRESSED).accepts(e.getNativeEvent())) return;
-		e.preventDefault();
+
 		e.stopPropagation();
+		e.preventDefault();
 
 		addComment();
+	}
+
+	private void clear() {
 		newCommentText.setText("");
+	}
+
+	@UiHandler("newCommentText")
+	protected void onNewCommentTextKeyUp(final KeyUpEvent e) {
+		createButton.setEnabled(!newCommentText.getText().trim().isEmpty());
+	}
+
+	@UiHandler("createButton")
+	void onCreateClick(final ClickEvent e) {
+		addComment();
 	}
 
 	public void setFocus(final boolean b) {
@@ -97,6 +137,7 @@ public class CommentsWidget extends Composite {
 		if (message.trim().isEmpty()) return;
 
 		getProvider().details().createAnnotationFor(subjectId, message, null);
+		clear();
 	}
 
 	private void update() {
