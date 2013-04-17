@@ -1,9 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
-import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -26,11 +24,13 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 		final Scope parentScope = scope.getParent();
 		final int index = parentScope.getChildIndex(scope);
 
-		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
+		ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
 		treeItem.remove();
+		if (treeItem.isFake()) treeItem = new ScopeTreeItem(scope);
 		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope);
-		parentItem.insertItem(index, treeItem.isFake() ? new ScopeTreeItem(scope) : treeItem);
+		parentItem.insertItem(index, treeItem);
 
-		if (isUserInteraction) ClientServices.get().eventBus().fireEvent(new ScopeSelectionEvent(scope));
+		if (isUserInteraction) tree.setSelectedItem(treeItem, true);
+
 	}
 }
