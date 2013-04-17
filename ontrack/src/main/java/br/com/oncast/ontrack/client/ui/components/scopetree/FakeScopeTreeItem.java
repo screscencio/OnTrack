@@ -81,4 +81,7 @@ public class FakeScopeTreeItem extends ScopeTreeItem implements IsTreeItem {
 	@Override
 	public void removeSelectedMember(final UserRepresentation member) {}
 
+	@Override
+	public void updateDisplay() {}
+
 }

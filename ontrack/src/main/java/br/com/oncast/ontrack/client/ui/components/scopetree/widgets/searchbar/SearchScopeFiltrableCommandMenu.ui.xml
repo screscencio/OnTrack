@@ -78,6 +78,7 @@
 	}
 	
 	.scrollpanel {
+		position: relative;
 		max-height: 475px;
 		overflow: auto;
 	}

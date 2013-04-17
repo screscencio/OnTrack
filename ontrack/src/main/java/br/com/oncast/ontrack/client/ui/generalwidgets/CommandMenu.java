@@ -60,7 +60,6 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 		menu.setAutoOpen(true);
 
 		menu.setItemSelectionHandler(new ItemSelectionHandler() {
-
 			@Override
 			public void onItemSelected() {
 				notifyItemSelectionHandler();

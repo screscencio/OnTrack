@@ -271,7 +271,7 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 			@Override
 			public void execute() {
 				WidgetVisibilityEnsurer.ensureVisible(selectedTask.getElement(), taskListScroll.getElement(), Orientation.VERTICAL,
-						ContainerAlignment.END, -50);
+						ContainerAlignment.BEGIN, ContainerAlignment.END, 3, 3);
 			}
 		});
 	}

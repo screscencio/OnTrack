@@ -220,8 +220,8 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 		final Element element = selectedWidget.asWidget().getElement();
 		final Element container = releaseContainer.getElement();
 
-		WidgetVisibilityEnsurer.ensureVisible(element, container, Orientation.HORIZONTAL, ContainerAlignment.BEGIN, MARGIN_LEFT);
-		WidgetVisibilityEnsurer.ensureVisible(element, container, Orientation.VERTICAL, ContainerAlignment.CENTER, 0);
+		WidgetVisibilityEnsurer.ensureVisible(element, container, Orientation.HORIZONTAL, MARGIN_LEFT);
+		WidgetVisibilityEnsurer.ensureVisible(element, container, Orientation.VERTICAL, ContainerAlignment.CENTER, ContainerAlignment.CENTER, 0, 0);
 	}
 
 	private ReleaseSummaryWidget getWidget(final Release release) {
