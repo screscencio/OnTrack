@@ -215,11 +215,6 @@
 											<i class="icon-list-ul {style.createButtonIcon}"/> <span><ui:msg description="Add checklist">Add checklist</ui:msg></span>
 										</g:HTMLPanel>
 									</g:FocusPanel>
-<!-- 									<g:FocusPanel ui:field="addImpedimentButton" styleName="{style.createButton}"> -->
-<!-- 										<g:HTMLPanel> -->
-<!-- 											<i class="icon-flag {style.createButtonIcon}"/> <span><ui:msg description="Add impediment">Add impediment</ui:msg></span> -->
-<!-- 										</g:HTMLPanel> -->
-<!-- 									</g:FocusPanel> -->
 								</div>
 							</div>
 						</td>

@@ -73,7 +73,7 @@
 		
 	</ui:style>
 	
-	<g:FocusPanel>
+	<g:FocusPanel ui:field="root">
 		<g:HTMLPanel styleName="{style.container}">
 			<g:HTMLPanel ui:field="newAnnotationContainer" width="100%">
 				<g:HorizontalPanel width="100%">
