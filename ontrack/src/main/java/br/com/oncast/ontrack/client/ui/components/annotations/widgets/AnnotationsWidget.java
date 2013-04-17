@@ -33,6 +33,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,6 +43,9 @@ public class AnnotationsWidget extends Composite {
 	private static AnnotationsWidgetUiBinder uiBinder = GWT.create(AnnotationsWidgetUiBinder.class);
 
 	interface AnnotationsWidgetUiBinder extends UiBinder<Widget, AnnotationsWidget> {}
+
+	@UiField
+	protected FocusPanel root;
 
 	@UiField
 	protected RichTextArea newAnnotationText;
@@ -176,6 +180,7 @@ public class AnnotationsWidget extends Composite {
 		uploadWidget.clearChosenFile();
 		newAnnotationText.setText("");
 		newAnnotationContainer.setVisible(false);
+		root.setFocus(true);
 	}
 
 	private void update() {
