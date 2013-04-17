@@ -244,8 +244,8 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 		final CommandMenuItem selectedItem = menu.getSelectedItem();
 		if (selectedItem == null) return;
 
-		WidgetVisibilityEnsurer.ensureVisible(selectedItem.getMenuItem().getElement(),
-				scrollPanel.getElement(), Orientation.VERTICAL, ContainerAlignment.BEGIN, 3);
+		WidgetVisibilityEnsurer.ensureVisible(selectedItem.getMenuItem().getElement().getFirstChildElement(),
+				scrollPanel.getElement(), Orientation.VERTICAL, ContainerAlignment.BEGIN, ContainerAlignment.END, 3, 3);
 	}
 
 	private void eatEvent(final DomEvent<?> event) {
@@ -256,7 +256,6 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	private void configureMenu() {
 		menu.setFocusWhenMouseOver(false);
 		menu.setItemSelectionHandler(new ItemSelectionHandler() {
-
 			@Override
 			public void onItemSelected() {
 				ensureSelectedItemIsVisible();

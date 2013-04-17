@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
-import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
@@ -140,11 +139,7 @@ public class OrganizationPanel extends Composite {
 
 	private void ensureVisible(final ProjectSummaryWidget widget) {
 		widget.setContainerState(true);
-		WidgetVisibilityEnsurer.ensureVisible(
-				widget.getElement(),
-				container.getElement(),
-				Orientation.VERTICAL,
-				ContainerAlignment.BEGIN, 10);
+		WidgetVisibilityEnsurer.ensureVisible(widget.getElement(), container.getElement(), Orientation.VERTICAL, 10);
 	}
 
 }

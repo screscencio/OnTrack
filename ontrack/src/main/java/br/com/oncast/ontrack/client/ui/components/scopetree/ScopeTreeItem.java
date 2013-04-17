@@ -105,9 +105,9 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	public boolean mountTwoLevels() {
 		if (hasFakeItens) {
+			this.hasFakeItens = false;
 			super.removeItems();
 			insertChildren();
-			this.hasFakeItens = false;
 			return true;
 		}
 		return false;
@@ -200,6 +200,16 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			hiddenItens.add(this);
 		}
 		return hiddenItens;
+	}
+
+	public void updateDisplay() {
+		scopeItemWidget.updateDisplay();
+	}
+
+	@Override
+	public void insertItem(final int beforeIndex, final TreeItem item) throws IndexOutOfBoundsException {
+		if (hasFakeItens) return;
+		super.insertItem(beforeIndex, item);
 	}
 
 }

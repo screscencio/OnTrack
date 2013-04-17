@@ -27,6 +27,7 @@ import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeTree implements Component {
@@ -64,12 +65,15 @@ public class ScopeTree implements Component {
 					for (final UUID id : inferenceInfluencedScopeSet)
 						inferenceInfluencedScopes.add(context.findScope(id));
 
-					for (final Scope scope : inferenceInfluencedScopes)
-						tree.findScopeTreeItem(scope).getScopeTreeItemWidget().updateDisplay();
+					for (final Scope scope : inferenceInfluencedScopes) {
+						tree.findScopeTreeItem(scope).updateDisplay();
+					}
 
 					if (isUserAction) instructionGuide.onActionExecution(action);
 				}
 				catch (final RuntimeException e) {
+					e.printStackTrace();
+					Window.alert(e.toString());
 					// This happens when the incoming action is not important for ScopeTree
 				}
 				catch (final ModelBeanNotFoundException e) {

@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
-import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
@@ -235,8 +234,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		final CommandMenuItem selectedItem = menu.getSelectedItem();
 		if (selectedItem == null) return;
 
-		WidgetVisibilityEnsurer.ensureVisible(selectedItem.getMenuItem().getElement(), scrollPanel.getElement(), Orientation.VERTICAL,
-				ContainerAlignment.BEGIN, 3);
+		WidgetVisibilityEnsurer.ensureVisible(selectedItem.getMenuItem().getElement(), scrollPanel.getElement(), Orientation.VERTICAL, 3);
 	}
 
 	private void eatEvent(final DomEvent<?> event) {
