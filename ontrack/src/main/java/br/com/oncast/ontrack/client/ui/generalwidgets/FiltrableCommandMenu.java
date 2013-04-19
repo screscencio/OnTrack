@@ -29,6 +29,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -234,7 +235,14 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		final CommandMenuItem selectedItem = menu.getSelectedItem();
 		if (selectedItem == null) return;
 
-		WidgetVisibilityEnsurer.ensureVisible(selectedItem.getMenuItem().getElement(), scrollPanel.getElement(), Orientation.VERTICAL, 3);
+		WidgetVisibilityEnsurer.ensureVisible(selectedItem.getMenuItem().getElement(), scrollPanel.getElement(), Orientation.VERTICAL, 5);
+
+		if (selectedItem instanceof SimpleCommandMenuItem && ((SimpleCommandMenuItem) selectedItem).isRtl()) new Timer() {
+			@Override
+			public void run() {
+				scrollPanel.setHorizontalScrollPosition(Integer.MAX_VALUE);
+			}
+		}.schedule(350);
 	}
 
 	private void eatEvent(final DomEvent<?> event) {

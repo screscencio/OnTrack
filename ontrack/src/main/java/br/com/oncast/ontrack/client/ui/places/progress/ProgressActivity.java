@@ -7,6 +7,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
@@ -47,26 +48,26 @@ public class ProgressActivity extends AbstractActivity {
 
 	private final List<HandlerRegistration> registrations;
 
-	private final UUID requestedProjectId;
-	private final UUID requestedReleaseId;
-
 	private Scope currSelectedScope;
 
+	private final ProgressPlace place;
+
+	private final TimeTrackingEvent tracking;
+
 	public ProgressActivity(final ProgressPlace place) {
-		requestedProjectId = place.getRequestedProjectId();
-		requestedReleaseId = place.getRequestedReleaseId();
+		this.place = place;
+		tracking = ClientServices.get().metrics().startPlaceLoad(place);
 
 		registrations = new ArrayList<HandlerRegistration>();
 
 		try {
-			projectContext = SERVICE_PROVIDER.contextProvider().getProjectContext(requestedProjectId);
-			release = projectContext.findRelease(requestedReleaseId);
+			projectContext = SERVICE_PROVIDER.contextProvider().getProjectContext(place.getRequestedProjectId());
+			release = projectContext.findRelease(place.getRequestedReleaseId());
 			final Kanban kanban = projectContext.getKanban(release);
 			view = new ProgressPanel(release, kanban);
 			view.getKanbanPanel().setActionExecutionService(SERVICE_PROVIDER.actionExecution());
 
 			kanbanActionSyncController = new KanbanActionSyncController(SERVICE_PROVIDER.actionExecution(), release, new Display() {
-
 				@Override
 				public void update() {
 					updateViewData();
@@ -74,7 +75,7 @@ public class ProgressActivity extends AbstractActivity {
 
 				@Override
 				public void exit() {
-					exitToPlanningPlace();
+					exitToPlanningPlace(place.getRequestedProjectId());
 				}
 
 				@Override
@@ -84,13 +85,17 @@ public class ProgressActivity extends AbstractActivity {
 			}, ClientServices.get().errorMessages());
 		}
 		catch (final ReleaseNotFoundException e) {
-			exitToPlanningPlace();
+			tracking.end();
+			ClientServices.get().metrics().onException(e);
 		}
 	}
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-		if (view == null) throw new RuntimeException("The view wasnt initialized correctly.");
+		if (view == null) {
+			exitToPlanningPlace(place.getRequestedProjectId());
+			return;
+		}
 
 		view.getApplicationMenu().setProjectName(ClientServices.get().projectRepresentationProvider().getCurrent().getName());
 		view.getApplicationMenu().setBackButtonVisibility(true);
@@ -130,6 +135,7 @@ public class ProgressActivity extends AbstractActivity {
 						selectScopeWidget(event.getTargetScope(), event.getSource() instanceof KanbanScopeWidget);
 					}
 				}));
+		tracking.end();
 	}
 
 	private ProjectListChangeListener getProjectRepresentationListener() {
@@ -202,8 +208,7 @@ public class ProgressActivity extends AbstractActivity {
 		view.getProgressDetailWidget().update();
 	}
 
-	private void exitToPlanningPlace() {
-		final UUID projectId = SERVICE_PROVIDER.projectRepresentationProvider().getCurrent().getId();
+	private void exitToPlanningPlace(final UUID projectId) {
 		SERVICE_PROVIDER.placeController().goTo(new PlanningPlace(projectId));
 	}
 
@@ -221,14 +226,14 @@ public class ProgressActivity extends AbstractActivity {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		final ProgressActivity other = (ProgressActivity) obj;
-		if (requestedProjectId == null) {
-			if (other.requestedProjectId != null) return false;
+		if (place.getRequestedProjectId() == null) {
+			if (other.place.getRequestedProjectId() != null) return false;
 		}
-		else if (!requestedProjectId.equals(other.requestedProjectId)) return false;
-		if (requestedReleaseId == null) {
-			if (other.requestedReleaseId != null) return false;
+		else if (!place.getRequestedProjectId().equals(other.place.getRequestedProjectId())) return false;
+		if (place.getRequestedReleaseId() == null) {
+			if (other.place.getRequestedReleaseId() != null) return false;
 		}
-		else if (!requestedReleaseId.equals(other.requestedReleaseId)) return false;
+		else if (!place.getRequestedReleaseId().equals(other.place.getRequestedReleaseId())) return false;
 		return true;
 	}
 

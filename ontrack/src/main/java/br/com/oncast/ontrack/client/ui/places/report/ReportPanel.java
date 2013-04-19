@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.TimesheetWidget;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.common.base.Joiner;
 import com.google.gwt.core.client.GWT;
@@ -53,6 +54,9 @@ public class ReportPanel extends Composite {
 	ReleaseDetailWidget details;
 
 	@UiField(provided = true)
+	ScopeReportTable epicsTable;
+
+	@UiField(provided = true)
 	ScopeReportTable scopeTable;
 
 	@UiField(provided = true)
@@ -85,6 +89,8 @@ public class ReportPanel extends Composite {
 		chart = new ReleaseChart(release, true);
 		details = ReleaseDetailWidget.forReport(release);
 		scopeTable = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
+		epicsTable = new ScopeReportTable(getEpics(release.getAllScopesIncludingDescendantReleases()), projectContext, messages);
+		epicsTable.showOnlyEpicColumns();
 		impedimentTable = new ImpedimentReportTable(release, projectContext, messages);
 		timesheet = new TimesheetWidget(release, true);
 
@@ -106,6 +112,15 @@ public class ReportPanel extends Composite {
 
 		burnUpPanel.add(chart);
 		chart.updateData();
+	}
+
+	private List<Scope> getEpics(final List<Scope> scopes) {
+		final ArrayList<Scope> epics = new ArrayList<Scope>();
+		for (final Scope scope : scopes) {
+			final Scope parent = scope.getParent();
+			if (!epics.contains(parent)) epics.add(parent);
+		}
+		return epics;
 	}
 
 	private String getAncestorsBreadcrumb(final Release release) {

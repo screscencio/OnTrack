@@ -250,7 +250,7 @@ public class OnTrackMetricsPanel extends Composite {
 
 	private void update() {
 		setOptionsEnabled(false);
-		ClientServices.get().getClientMetricsService().getMetrics(new AsyncCallback<OnTrackServerMetrics>() {
+		ClientServices.get().metrics().getMetrics(new AsyncCallback<OnTrackServerMetrics>() {
 
 			@Override
 			public void onSuccess(final OnTrackServerMetrics statistic) {

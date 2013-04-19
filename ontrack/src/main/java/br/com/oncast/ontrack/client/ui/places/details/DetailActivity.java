@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.details;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.components.details.DetailsPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
@@ -30,6 +31,7 @@ public class DetailActivity extends AbstractActivity {
 
 	public void start() {
 		if (!setDetailPanel(place)) return;
+		final TimeTrackingEvent timeTracking = ClientServices.get().metrics().startPlaceLoad(place);
 		if (!place.hasLoadedPlace()) register = ShortcutService.register(detailPanel, ClientServices.get().actionExecution(),
 				UndoRedoShortCutMapping.values());
 
@@ -44,6 +46,7 @@ public class DetailActivity extends AbstractActivity {
 			@Override
 			public void onWillOpen() {
 				detailPanel.registerActionExecutionListener();
+				timeTracking.end();
 			}
 		}).setModal(true).pop();
 	}

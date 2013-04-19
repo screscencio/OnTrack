@@ -130,7 +130,7 @@ public class ClientServices {
 		authorization().registerAuthorizationExceptionGlobalHandler();
 		actionSync();
 		placeController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
-				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), storage());
+				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), storage(), metrics());
 		colorProvider();
 	}
 
@@ -277,7 +277,7 @@ public class ClientServices {
 		return get().authentication().getCurrentUserId();
 	}
 
-	public ClientMetricsService getClientMetricsService() {
+	public ClientMetricsService metrics() {
 		return clientMetricsService == null ? clientMetricsService = new ClientMetricsServiceImpl(request()) : clientMetricsService;
 	}
 

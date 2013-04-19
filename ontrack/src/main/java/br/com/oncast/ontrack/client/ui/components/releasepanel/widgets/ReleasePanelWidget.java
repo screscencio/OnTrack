@@ -175,7 +175,7 @@ public class ReleasePanelWidget extends Composite {
 				.addHandler(ReleaseDetailUpdateEvent.getType(), new ReleaseDetailUpdateEventHandler() {
 					@Override
 					public void onReleaseDetailUpdate(final ReleaseDetailUpdateEvent event) {
-						final ReleaseWidget widget = releaseContainer.getWidgetFor(event.getTargetRelease());
+						final ReleaseWidget widget = releaseContainer.getWidgetFor(event.getTargetSubject());
 						if (widget == null) return;
 						widget.update();
 					}
@@ -184,7 +184,7 @@ public class ReleasePanelWidget extends Composite {
 				.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
 					@Override
 					public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
-						final Scope scope = event.getTargetScope();
+						final Scope scope = event.getTargetSubject();
 						final Release release = scope.getRelease();
 						if (release == null) return;
 

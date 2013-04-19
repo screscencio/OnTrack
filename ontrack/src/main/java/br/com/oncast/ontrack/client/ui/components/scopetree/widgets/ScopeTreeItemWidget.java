@@ -389,13 +389,15 @@ public class ScopeTreeItemWidget extends Composite {
 	public void updateDetails(final SubjectDetailUpdateEvent event) {
 		if (event == null) return;
 		setSpanElementVisible(this.annotationIcon, event.hasAnnotations());
+		this.annotationIcon.setTitle(messages.annotationsIconTitle("" + event.getAnnotationsCount()));
 		setSpanElementVisible(this.descriptionIcon, event.hasDescription());
+		this.descriptionIcon.setTitle(event.getDescriptionText());
 
 		updateChecklistIndicator(event);
 
 		setSpanElementVisible(this.openImpedimentIcon, event.hasOpenImpediments());
 		final int count = event.getOpenImpedimentsCount();
-		this.openImpedimentIcon.setInnerText(count > 1 ? (" " + count) : "");
+		this.openImpedimentIcon.setTitle(count == 1 ? event.getOpenImpediments().get(0).getMessage() : messages.openImpediments("" + count));
 	}
 
 	private void updateChecklistIndicator(final SubjectDetailUpdateEvent event) {
@@ -403,7 +405,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final boolean isComplete = event.isChecklistComplete();
 		setElementStyle(this.checklistIcon, style.checklistComplete(), isComplete);
-		this.checklistIcon.setInnerText(isComplete ? "" : (" " + event.getChecklistCompletitionText()));
+		this.checklistIcon.setTitle(messages.checklistCompletition("" + event.getCheckedItemCount(), "" + event.getTotalChecklistItemCount()));
 	}
 
 	private void setElementStyle(final Element element, final String styleName, final boolean add) {

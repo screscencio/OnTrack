@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.organization;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.organization.OrganizationPanel;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
@@ -21,6 +22,7 @@ public class OrganizationActivity extends AbstractActivity {
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+		final TimeTrackingEvent timeTracking = ClientServices.get().metrics().startPlaceLoad(place);
 		Window.setTitle(DefaultViewSettings.TITLE);
 		final OrganizationPanel view = new OrganizationPanel(place.getProject());
 		panel.setWidget(view);
@@ -30,6 +32,7 @@ public class OrganizationActivity extends AbstractActivity {
 		menu.setBackButtonVisibility(true);
 
 		PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
+		timeTracking.end();
 	}
 
 	@Override

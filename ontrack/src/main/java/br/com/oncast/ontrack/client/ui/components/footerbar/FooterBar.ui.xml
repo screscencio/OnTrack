@@ -200,7 +200,7 @@
 				<ui:msg description="shortcuts button text">Shortcuts</ui:msg>
 			</g:Button>
 			<g:Button ui:field="feedback" styleName="{style.menuboxButton} {style.feedback}">
-				<ui:msg description="feedback button text">Give us Feedback</ui:msg>
+				<ui:msg description="feedback button text">Feedback</ui:msg>
 			</g:Button>
 		</g:HTMLPanel>
 	</g:FocusPanel>
