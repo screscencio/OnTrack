@@ -84,16 +84,11 @@
 			font-size: 120%;
 		}
 		
-		.scopesTable {
-		}
-		
-		.impedimentTable {
-		}
-		
 		.timesheetTable {
 			margin: 0px auto;
 			padding: 9px 36px;
 		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel ui:field="rootPanel" styleName="{style.root} reportPanel-root">
@@ -112,12 +107,16 @@
 			<d:ReleaseDetailWidget ui:field="details"  styleName="{style.details}"/>
 		</div>
 		<div class="{style.sectionContainer}">
+			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Epics">Epics</ui:msg></g:Label>
+		    <r:ScopeReportTable ui:field="epicsTable" />
+		</div>
+		<div class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Stories">Stories</ui:msg></g:Label>
-		    <r:ScopeReportTable ui:field="scopeTable" styleName="{style.scopesTable}" />
+		    <r:ScopeReportTable ui:field="scopeTable"/>
 		</div>
 		<div ui:field="impedimentsContainer" class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Impediments">Impediments</ui:msg></g:Label>
-		    <r:ImpedimentReportTable ui:field="impedimentTable" styleName="{style.impedimentTable}" />
+		    <r:ImpedimentReportTable ui:field="impedimentTable" />
 		</div>
 		<div ui:field="timesheetContainer" class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Time spent">Time spent</ui:msg></g:Label>

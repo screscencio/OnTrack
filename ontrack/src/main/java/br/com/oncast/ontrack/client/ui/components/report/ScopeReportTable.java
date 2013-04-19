@@ -37,6 +37,8 @@ public class ScopeReportTable extends Composite {
 
 	private final ReportMessages messages;
 
+	private Column<ScopeItem, String> idColumn;
+
 	public ScopeReportTable(final List<Scope> scopeList, final ProjectContext context, final ReportMessages messages) {
 		this.messages = messages;
 		cellTable = new CellTable<ScopeItem>(Integer.MAX_VALUE, ScopeDatabase.ScopeItem.KEY_PROVIDER);
@@ -54,7 +56,7 @@ public class ScopeReportTable extends Composite {
 
 	private void initTableColumns(final SelectionModel<ScopeItem> selectionModel, final ListHandler<ScopeItem> sortHandler) {
 
-		final Column<ScopeItem, String> idColumn = new Column<ScopeItem, String>(new TextCell()) {
+		idColumn = new Column<ScopeItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ScopeItem object) {
 				return object.getHumandReadableId();
@@ -84,6 +86,7 @@ public class ScopeReportTable extends Composite {
 				return o1.getDescription().compareTo(o2.getDescription());
 			}
 		});
+		cellTable.setColumnWidth(descriptionColumn, 100, Unit.PCT);
 		cellTable.addColumn(descriptionColumn, new TextHeader(messages.scopeDescription()));
 
 		final Column<ScopeItem, String> effortColumn = new Column<ScopeItem, String>(new TextCell()) {
@@ -179,5 +182,10 @@ public class ScopeReportTable extends Composite {
 		if (l1 == null) l1 = Long.MIN_VALUE;
 		if (l2 == null) l2 = Long.MIN_VALUE;
 		return l1.compareTo(l2);
+	}
+
+	public void showOnlyEpicColumns() {
+		cellTable.removeColumn(idColumn);
+		cellTable.getElement().addClassName("cellTableEpicTable");
 	}
 }

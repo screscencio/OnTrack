@@ -70,4 +70,8 @@ public class SimpleCommandMenuItem implements CommandMenuItem {
 		this.isRtl = isRtl;
 		return this;
 	}
+
+	public boolean isRtl() {
+		return isRtl;
+	}
 }

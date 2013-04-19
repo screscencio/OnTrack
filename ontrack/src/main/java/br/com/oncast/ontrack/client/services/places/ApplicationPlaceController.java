@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.services.places;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.ui.places.AppActivityManager;
 import br.com.oncast.ontrack.client.ui.places.RestorablePlace;
@@ -28,6 +29,7 @@ public class ApplicationPlaceController {
 	private final Set<PlaceChangeListener> placeChangeListeners;
 	private PlaceHistoryMapper placeHistoryMapper;
 	private ClientStorageService clientStorageService;
+	private ClientMetricsService metricsService;
 
 	public ApplicationPlaceController(final EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -36,6 +38,7 @@ public class ApplicationPlaceController {
 	}
 
 	public void open(final OpenInNewWindowPlace place) {
+		metricsService.onNewWindowPlaceRequest(place);
 		final OpenInNewWindowPlace p = place;
 		String url = GWT.getHostPageBaseURL() + "#";
 		url += p.getPlacePrefix() + ":";
@@ -45,14 +48,16 @@ public class ApplicationPlaceController {
 
 	public void goTo(final Place place) {
 		if (place instanceof RestorablePlace) clientStorageService.storeDefaultPlaceToken(placeHistoryMapper.getToken(place));
+		metricsService.onPlaceRequest(place);
 		placeController.goTo(place);
 	}
 
 	public void configure(final AcceptsOneWidget container, final Place defaultAppPlace, final ActivityMapper activityMapper,
-			final PlaceHistoryMapper placeHistoryMapper, final ClientStorageService clientStorageService) {
+			final PlaceHistoryMapper placeHistoryMapper, final ClientStorageService clientStorageService, final ClientMetricsService metricsService) {
 
 		this.placeHistoryMapper = placeHistoryMapper;
 		this.clientStorageService = clientStorageService;
+		this.metricsService = metricsService;
 		if (configured) throw new RuntimeException("The placeController is already configured.");
 		configured = true;
 

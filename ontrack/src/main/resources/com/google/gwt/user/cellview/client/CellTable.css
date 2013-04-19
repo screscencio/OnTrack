@@ -46,8 +46,19 @@
   overflow: hidden;
 }
 
+@external .cellTableEpicTable;
+
+.cellTableEpicTable .cellTableHeader:first-child {
+  text-align: left;
+}
+
 .cellTableHeader:nth-child\(2\) {
   text-align: left;
+  padding: 3px 0px;
+}
+
+.cellTableEpicTable .cellTableHeader:nth-child\(2\) {
+  text-align: center;
   padding: 3px 0px;
 }
 

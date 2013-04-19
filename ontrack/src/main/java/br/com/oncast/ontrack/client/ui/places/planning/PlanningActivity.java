@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
@@ -24,9 +25,10 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.web.bindery.event.shared.HandlerRegistration;
@@ -37,22 +39,19 @@ public class PlanningActivity extends AbstractActivity {
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private PlanningView view;
 	private List<HandlerRegistration> registrations;
-	private final UUID selectedScopeId;
-	private final UUID requestedProjectId;
 	private final ScopeTreeMouseHelper mouseHelper;
-	private final UUID filteredTagId;
 	private ProjectContext projectContext;
+	private final PlanningPlace place;
 
 	public PlanningActivity(final PlanningPlace place) {
-		requestedProjectId = place.getRequestedProjectId();
-		selectedScopeId = place.getSelectedScopeId();
-		filteredTagId = place.getTagId();
+		this.place = place;
 		activityActionExecutionListener = new ActivityActionExecutionListener();
 		mouseHelper = new ScopeTreeMouseHelper();
 	}
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+		final TimeTrackingEvent timeTracking = ClientServices.get().metrics().startPlaceLoad(place);
 		registrations = new ArrayList<HandlerRegistration>();
 		view = new PlanningPanel();
 		view.setVisible(false);
@@ -90,13 +89,20 @@ public class PlanningActivity extends AbstractActivity {
 
 		registrations.add(registerScopeSelectionEventHandler());
 
-		if (filteredTagId != null) view.getScopeTree().filterByTag(filteredTagId);
+		if (place.getTagId() != null) view.getScopeTree().filterByTag(place.getTagId());
 
-		SERVICE_PROVIDER.applicationState().restore(selectedScopeId);
+		SERVICE_PROVIDER.applicationState().restore(place.getSelectedScopeId());
 		SERVICE_PROVIDER.applicationState().startRecording();
 
 		mouseHelper.register(eventBus, actionExecutionService, view.getScopeTree().getScopeTreeInternalActionHandler(), projectContext, view.getScopeTree()
 				.getSelected());
+
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				timeTracking.end();
+			}
+		});
 
 	}
 
@@ -184,14 +190,14 @@ public class PlanningActivity extends AbstractActivity {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		final PlanningActivity other = (PlanningActivity) obj;
-		if (requestedProjectId == null) {
-			if (other.requestedProjectId != null) return false;
+		if (place.getRequestedProjectId() == null) {
+			if (other.place.getRequestedProjectId() != null) return false;
 		}
-		else if (!requestedProjectId.equals(other.requestedProjectId)) return false;
-		if (selectedScopeId == null) {
-			if (other.selectedScopeId != null) return false;
+		else if (!place.getRequestedProjectId().equals(other.place.getRequestedProjectId())) return false;
+		if (place.getSelectedScopeId() == null) {
+			if (other.place.getSelectedScopeId() != null) return false;
 		}
-		else if (!selectedScopeId.equals(other.selectedScopeId)) return false;
+		else if (!place.getSelectedScopeId().equals(other.place.getSelectedScopeId())) return false;
 		return true;
 	}
 }

@@ -193,33 +193,25 @@
 					<table border="0" cellspacing="0" cellpadding="0">
 						<tbody>
 							<tr>
-								<td>
-									<span ui:field="openImpedimentIcon" class="icon-flag {style.detailsIcon} {style.impedimentIcon}" title="Open impediments">
-										<ui:attribute name="title" description="Open impediments indicator tooltip"/>
-									</span>
-								</td>
-								<td>
-									<span ui:field="annotationIcon" class="icon-comment-alt {style.detailsIcon} {style.annotationIcon}" title="Annotations">
-										<ui:attribute name="title" description="Annotation indicator tooltip"/>
-									</span>
-								</td>
-								<td>
-									<span ui:field="checklistIcon" class="icon-list-ul {style.detailsIcon}" title="Checklists">
-										<ui:attribute name="title" description="Checklist indicator tooltip"/>
-									</span>
-								</td>
-								<td>
-									<span ui:field="descriptionIcon" class="icon-quote-right {style.detailsIcon} {style.descriptionIcon}" title="Description">
-										<ui:attribute name="title" description="Description indicator tooltip"/>
-									</span>
-								</td>
-								<td>
-									<t:ModelWidgetContainer ui:field="tags" styleName="{style.tags}" />
-								</td>
 								<td width="100%">
 									<div class="{style.descriptionContainer}">
 										<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip"/>
 									</div>
+								</td>
+								<td>
+									<span ui:field="openImpedimentIcon" class="icon-flag {style.detailsIcon} {style.impedimentIcon}"/>
+								</td>
+								<td>
+									<span ui:field="annotationIcon" class="icon-comment-alt {style.detailsIcon} {style.annotationIcon}" />
+								</td>
+								<td>
+									<span ui:field="checklistIcon" class="icon-list-ul {style.detailsIcon}"/>
+								</td>
+								<td>
+									<span ui:field="descriptionIcon" class="icon-quote-right {style.detailsIcon} {style.descriptionIcon}" />
+								</td>
+								<td>
+									<t:ModelWidgetContainer ui:field="tags" styleName="{style.tags}" />
 								</td>
 								<td>
 									<g:HTMLPanel ui:field="valuePanel" styleName="{style.amount}">

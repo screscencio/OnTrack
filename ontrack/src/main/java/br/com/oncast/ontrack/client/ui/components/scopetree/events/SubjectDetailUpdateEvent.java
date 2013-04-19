@@ -17,6 +17,10 @@ public interface SubjectDetailUpdateEvent {
 
 	public List<Checklist> getChecklists();
 
+	public int getCheckedItemCount();
+
+	public int getTotalChecklistItemCount();
+
 	public boolean isChecklistComplete();
 
 	public String getChecklistCompletitionText();
@@ -34,5 +38,9 @@ public interface SubjectDetailUpdateEvent {
 	public void setDescription(Description description);
 
 	public boolean hasDescription();
+
+	public String getDescriptionText();
+
+	public List<Annotation> getOpenImpediments();
 
 }

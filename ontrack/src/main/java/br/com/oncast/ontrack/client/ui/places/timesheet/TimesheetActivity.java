@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
@@ -37,6 +38,7 @@ public class TimesheetActivity extends AbstractActivity {
 	}
 
 	public void start() {
+		final TimeTrackingEvent timeTracking = ClientServices.get().metrics().startPlaceLoad(place);
 		try {
 			final ProjectContext projectContext = ClientServices.getCurrentProjectContext();
 			final Release release = projectContext.findRelease(place.getReleaseId());
@@ -46,8 +48,11 @@ public class TimesheetActivity extends AbstractActivity {
 					UndoRedoShortCutMapping.values());
 
 			getPopupConfig().pop();
+			timeTracking.end();
 		}
 		catch (final ReleaseNotFoundException e) {
+			ClientServices.get().metrics().onException(e);
+			timeTracking.end();
 			ClientServices.get().alerting().showError(MESSAGES.theRequestingReleaseWasNotFound());
 		}
 	}

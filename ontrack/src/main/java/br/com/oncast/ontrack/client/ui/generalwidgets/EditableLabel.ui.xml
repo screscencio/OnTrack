@@ -17,6 +17,7 @@
 		
 		.visualizationLabel:hover {
 			text-decoration: underline;
+			cursor: pointer;
 		}
 		
 		.editionBox {

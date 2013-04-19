@@ -6,6 +6,7 @@ import java.util.Set;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
@@ -47,7 +48,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		userAuthenticatedListeners = new HashSet<UserAuthenticationListener>();
 
 		serverPushClientService.registerServerEventHandler(UserInformationChangeEvent.class, new ServerPushEventHandler<UserInformationChangeEvent>() {
-
 			@Override
 			public void onEvent(final UserInformationChangeEvent event) {
 				processUserInformationUpdate(event);
@@ -63,7 +63,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	@Override
 	public void loadCurrentUserInformation(final UserInformationLoadCallback callback) {
 		dispatchService.dispatch(new CurrentUserInformationRequest(), new DispatchCallback<CurrentUserInformationResponse>() {
-
 			@Override
 			public void onSuccess(final CurrentUserInformationResponse result) {
 				final User user = result.getUser();
@@ -228,6 +227,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	private void updateCurrentUser(final User user) {
+		ClientServices.get().metrics().onUserLogin(user);
 		currentUserId = user.getId();
 		projectCreationQuota = user.getProjectCreationQuota();
 		projectInvitationQuota = user.getProjectInvitationQuota();
@@ -252,6 +252,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		currentUserId = null;
 		projectCreationQuota = 0;
 		projectInvitationQuota = 0;
+		ClientServices.get().metrics().onUserLogout();
 
 		notifyLogoutToUserAuthenticationListeners();
 		applicationPlaceController.goTo(destinationPlace);

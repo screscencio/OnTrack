@@ -343,7 +343,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		handlerRegistrations.add(eventBus.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
 			@Override
 			public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
-				final Scope scope = event.getTargetScope();
+				final Scope scope = event.getTargetSubject();
 
 				final ScopeTreeItem item = findScopeTreeItem(scope);
 				item.updateDetails(event);
