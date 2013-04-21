@@ -12,4 +12,8 @@ public interface PlanningShortcutMappingsMessage extends BaseMessages {
 	@Description("Description for toggle release panel shortcut")
 	String toggleReleasePanel();
 
+	@DefaultMessage("Export current project to MindMap")
+	@Description("Export to mindmap shotcut description")
+	String exportToMindMap();
+
 }

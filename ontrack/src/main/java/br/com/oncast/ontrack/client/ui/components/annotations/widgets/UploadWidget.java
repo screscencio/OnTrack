@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.utils.forms.ResponseParser;
+import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.messageCode.UploadMessages;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
@@ -29,7 +30,6 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -134,7 +134,7 @@ public class UploadWidget extends Composite {
 
 	@UiHandler("uploadIcon")
 	protected void onUploadIconClicked(final ClickEvent e) {
-		if (!hasChosenUploadFile()) clickOnInputFile(getFileUpload().getElement());
+		if (!hasChosenUploadFile()) ElementUtils.click(getFileUpload().getElement());
 		else clearChosenFile();
 	}
 
@@ -263,10 +263,6 @@ public class UploadWidget extends Composite {
 	private ActionExecutionService getActionExecutionService() {
 		return ClientServices.get().actionExecution();
 	}
-
-	private static native void clickOnInputFile(Element elem) /*-{
-		elem.click();
-	}-*/;
 
 	public interface UploadWidgetListener {
 

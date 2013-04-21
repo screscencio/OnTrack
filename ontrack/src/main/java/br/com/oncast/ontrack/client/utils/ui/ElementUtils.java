@@ -16,4 +16,8 @@ public class ElementUtils {
 		else element.getStyle().setDisplay(Display.NONE);
 	}
 
+	public static native void click(Element elem) /*-{
+		elem.click();
+	}-*/;
+
 }
