@@ -21,16 +21,21 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
+import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class PlanningActivity extends AbstractActivity {
@@ -200,4 +205,16 @@ public class PlanningActivity extends AbstractActivity {
 		else if (!place.getSelectedScopeId().equals(other.place.getSelectedScopeId())) return false;
 		return true;
 	}
+
+	public void exportToMindMap() {
+		final String url = URLBuilder.buildMindMapExportURL(place.getRequestedProjectId());
+		final Element anchor = DOM.createAnchor();
+		anchor.setAttribute("href", url);
+		anchor.setAttribute("type", "application/xml");
+		anchor.setAttribute("download", ClientServices.get().projectRepresentationProvider().getCurrent().getName() + ".mm");
+		DOM.appendChild(RootPanel.getBodyElement(), anchor);
+		ElementUtils.click(anchor);
+		anchor.removeFromParent();
+	}
+
 }
