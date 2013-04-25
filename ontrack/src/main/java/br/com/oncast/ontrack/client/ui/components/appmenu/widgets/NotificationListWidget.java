@@ -12,7 +12,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
-import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ScrollEvent;
@@ -44,19 +43,15 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 	private final NotificationListChangeListener notificationListChangeListener;
 
 	@UiField
-	@IgnoredByDeepEquality
 	protected DeckPanel deckPanel;
 
 	@UiField
-	@IgnoredByDeepEquality
 	protected TabLayoutPanel container;
 
 	@UiField
-	@IgnoredByDeepEquality
 	protected DeckPanel notificationDeckPanel;
 
 	@UiField
-	@IgnoredByDeepEquality
 	protected DeckPanel activityDeckPanel;
 
 	@UiField
@@ -66,11 +61,9 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 	protected ScrollPanel activityScrollContainer;
 
 	@UiField(provided = true)
-	@IgnoredByDeepEquality
 	protected ModelWidgetContainer<Notification, NotificationWidget> notificationContainer;
 
 	@UiField(provided = true)
-	@IgnoredByDeepEquality
 	protected ModelWidgetContainer<Notification, NotificationWidget> activityContainer;
 
 	private final Timer timer = new Timer() {
