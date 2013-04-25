@@ -10,12 +10,11 @@ public class GoogleAnalytics {
 		$wnd.ga(trackerPrefix + 'set', name, value);
 	}-*/;
 
-	public static native void trackTiming(String trackerPrefix, String category, String variable, double time, String optLabel) /*-{
+	public static native void trackTiming(String trackerPrefix, String category, String variable, Number time) /*-{
 		$wnd.ga(trackerPrefix + 'send', 'timing', {
 			'timingCategory' : category,
 			'timingVar' : variable,
-			'timingValue' : time,
-			'timingLabel' : optLabel
+			'timingValue' : time
 		});
 	}-*/;
 
@@ -29,15 +28,6 @@ public class GoogleAnalytics {
 		$wnd.ga('create', 'UA-33652748-1', {
 			'name' : clientId,
 			'clientId' : clientId
-		});
-	}-*/;
-
-	public static native void createForTest(final String clientId, Number sampleRate) /*-{
-		$wnd.ga('create', 'UA-33652748-1', {
-			'name' : clientId,
-			'clientId' : clientId,
-			'sampleRate' : sampleRate,
-			'cookieDomain' : 'none'
 		});
 	}-*/;
 

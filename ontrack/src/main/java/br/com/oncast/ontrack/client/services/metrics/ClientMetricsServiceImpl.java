@@ -79,7 +79,7 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	}
 
 	void onTimeTrackingEnd(final TimeTrackingEvent event) {
-		GoogleAnalytics.trackTiming(trackerPrefix, event.getValue(), event.getCategory(), event.getTotalDuration(), GWT.getPermutationStrongName());
+		GoogleAnalytics.trackTiming(trackerPrefix, event.getValue(), event.getCategory(), event.getTotalDuration());
 	}
 
 	@Override
@@ -90,7 +90,6 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	@Override
 	public void onUserLogin(final User user) {
 		final String userId = user.getId().toString().replaceAll("[^a-zA-Z0-9-_]+", "");
-		if (isDevMode()) GoogleAnalytics.createForTest(userId, 100);
 		GoogleAnalytics.create(userId);
 		trackerPrefix = userId + ".";
 		updateCurrentPage();
@@ -107,7 +106,4 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 		GoogleAnalytics.set(trackerPrefix, "page", "/" + MetricsTokenizer.forPlace(place));
 	}
 
-	private boolean isDevMode() {
-		return !GWT.getUniqueThreadId().isEmpty();
-	}
 }
