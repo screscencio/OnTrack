@@ -37,6 +37,7 @@
 			text-align: left;
 			font-size: 13px;
 			line-height: 36px;
+			white-space: nowrap;
 		}
 		
 		.activeColumnIndicatorLabel:hover,.inactiveColumnIndicatorLabel:hover {
