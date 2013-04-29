@@ -258,4 +258,5 @@ public class TimesheetWidget extends Composite {
 	protected void onClick(final ClickEvent event) {
 		selectionController.deselectAll();
 	}
+
 }

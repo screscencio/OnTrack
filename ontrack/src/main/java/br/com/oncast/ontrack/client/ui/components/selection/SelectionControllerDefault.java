@@ -17,10 +17,9 @@ public class SelectionControllerDefault implements SelectionController {
 	@Override
 	public void selectNext() {
 		new Timer() {
-
 			@Override
 			public void run() {
-				verifyAndUpdateCurrentSelection();
+				updateSelection();
 				if (currentSelectionIndex == null) return;
 				final int referenceIndex = currentSelectionIndex;
 				final int destinationIndex = referenceIndex >= selectables.size() - 1 ? 0 : referenceIndex + 1;
@@ -33,10 +32,9 @@ public class SelectionControllerDefault implements SelectionController {
 	@Override
 	public void selectPrevious() {
 		new Timer() {
-
 			@Override
 			public void run() {
-				verifyAndUpdateCurrentSelection();
+				updateSelection();
 				if (currentSelectionIndex == null) return;
 				final int referenceIndex = currentSelectionIndex;
 				final int destinationIndex = referenceIndex <= 0 ? selectables.size() - 1 : referenceIndex - 1;
@@ -49,16 +47,16 @@ public class SelectionControllerDefault implements SelectionController {
 	@Override
 	public void setSelected(final IsSelectable selectable) {
 		currentSelectionIndex = selectables.indexOf(selectable);
-		verifyAndUpdateCurrentSelection();
+		updateSelection();
 	}
 
-	private void verifyAndUpdateCurrentSelection() {
+	private void updateSelection() {
 		if (selectables.size() == 0) {
 			currentSelectionIndex = null;
 			return;
 		}
 
-		if (!(currentSelectionIndex != null && selectables.get(currentSelectionIndex).isSelected())) {
+		if (currentSelectionIndex == null || !selectables.get(currentSelectionIndex).isSelected()) {
 			for (int i = 0; i < selectables.size(); i++) {
 				final IsSelectable selectable = selectables.get(i);
 				if (!selectable.isSelected()) continue;

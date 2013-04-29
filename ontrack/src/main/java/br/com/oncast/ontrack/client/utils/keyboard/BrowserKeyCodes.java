@@ -140,6 +140,7 @@ public class BrowserKeyCodes {
 			keysRepresentations.put(KEY_7, "7");
 			keysRepresentations.put(KEY_SLASH, "/");
 			keysRepresentations.put(KEY_A, "a");
+			keysRepresentations.put(KEY_E, "e");
 			keysRepresentations.put(KEY_F, "f");
 			keysRepresentations.put(KEY_M, "m");
 			keysRepresentations.put(KEY_N, "n");
@@ -158,6 +159,7 @@ public class BrowserKeyCodes {
 			shiftedKeysRepresentations.put(KEY_7, "&");
 			shiftedKeysRepresentations.put(KEY_SLASH, "?");
 			shiftedKeysRepresentations.put(KEY_A, "A");
+			shiftedKeysRepresentations.put(KEY_E, "E");
 			shiftedKeysRepresentations.put(KEY_F, "F");
 			shiftedKeysRepresentations.put(KEY_M, "M");
 			shiftedKeysRepresentations.put(KEY_N, "N");
@@ -170,17 +172,21 @@ public class BrowserKeyCodes {
 		}
 
 		private static String getString(final int keyCode) {
-			if (!keysRepresentations.containsKey(keyCode)) throw new RuntimeException("The given keyCode is not mapped yet");
+			if (!keysRepresentations.containsKey(keyCode)) throw new RuntimeException(getExceptionMessage(keyCode));
 
 			return keysRepresentations.get(keyCode);
 		}
 
 		private static String getString(final int keyCode, final boolean shiftPressed) {
-			if (!keysRepresentations.containsKey(keyCode)) throw new RuntimeException("The given keyCode is not mapped yet");
+			if (!keysRepresentations.containsKey(keyCode)) throw new RuntimeException(getExceptionMessage(keyCode));
 
 			if (!shiftPressed) return getString(keyCode);
 
 			return shiftedKeysRepresentations.containsKey(keyCode) ? shiftedKeysRepresentations.get(keyCode) : keysRepresentations.get(keyCode);
+		}
+
+		private static String getExceptionMessage(final int keyCode) {
+			return "The keyCode (\"" + (char) keyCode + "\", " + keyCode + ") was not mapped";
 		}
 	}
 
