@@ -89,9 +89,10 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 
 	@Override
 	public void onUserLogin(final User user) {
-		final String userId = user.getId().toString().replaceAll("[^a-zA-Z0-9-_]+", "");
-		GoogleAnalytics.create(userId);
-		trackerPrefix = userId + ".";
+		final String userId = user.getId().toString();
+		trackerPrefix = userId.replaceAll("[^a-zA-Z0-9]+", "");
+		GoogleAnalytics.create(trackerPrefix, userId);
+		trackerPrefix += ".";
 		updateCurrentPage();
 	}
 

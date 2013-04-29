@@ -24,9 +24,9 @@ public class GoogleAnalytics {
 		});
 	}-*/;
 
-	public static native void create(final String clientId) /*-{
+	public static native void create(final String trackerName, String clientId) /*-{
 		$wnd.ga('create', 'UA-33652748-1', {
-			'name' : clientId,
+			'name' : trackerName,
 			'clientId' : clientId
 		});
 	}-*/;

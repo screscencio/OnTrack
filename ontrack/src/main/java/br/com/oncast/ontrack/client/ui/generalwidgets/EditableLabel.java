@@ -98,6 +98,7 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 	@UiHandler("visualizationLabel")
 	protected void onClick(final ClickEvent event) {
 		event.preventDefault();
+		event.stopPropagation();
 		switchToEdit();
 	}
 
@@ -122,16 +123,15 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 
 	public void switchToEdit() {
 		if (isEditionMode() || isReadOnly) return;
-		editionHandler.onEditionStart();
 
 		editionBox.setText(getValue());
 		deckPanel.showWidget(1);
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
 			@Override
 			public void execute() {
 				editionBox.setFocus(true);
+				editionHandler.onEditionStart();
 			}
 		});
 	}
