@@ -16,9 +16,12 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembe
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.TagAssociationWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
@@ -123,6 +126,11 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 						|| action instanceof ScopeBindReleaseAction)
 						&& action.getReferenceId().equals(scope.getId())
 						|| inferenceInfluencedScopeSet.contains(scope.getId())) update();
+				else if ((action instanceof ScopeDeclareProgressAction
+						|| action instanceof ImpedimentAction
+						|| action instanceof AnnotationCreateAction)
+						&& action.getReferenceId().equals(scope.getId())) timeline
+						.setScope(scope);
 			}
 		};
 		return actionExecutionListener;
