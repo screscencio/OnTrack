@@ -80,6 +80,7 @@ public class ScopeTimelineWidget extends Composite {
 	}
 
 	public void setScope(final Scope scope) {
+		timelineBar.clear();
 		final Progress progress = scope.getProgress();
 
 		start = progress.getCreationDate().getTime();

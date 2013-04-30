@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
@@ -60,6 +61,7 @@ public class ScopeTreeActionFactory {
 				tree, action);
 		else if (action instanceof TagRemoveAction) return new ScopeTreeTagRemoveUpdateAction(tree, (TagRemoveAction) action);
 		else if (action instanceof TagCreateAction) return new ScopeTreeTagUpdateAction(tree, action);
+		else if (action instanceof AnnotationCreateAction) return new ScopeTreeUpdateAction(tree, action);
 
 		throw new RuntimeException("It was not possible to find the desired action.");
 	}
