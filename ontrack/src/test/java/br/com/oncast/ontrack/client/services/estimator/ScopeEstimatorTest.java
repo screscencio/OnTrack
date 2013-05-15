@@ -90,8 +90,8 @@ public class ScopeEstimatorTest {
 
 	@Test
 	public void theScopeRemainingTimeShouldBeTheTimeDifferenceBetweenDueDateAndNow() throws Exception {
-		scope.setDueDate(addToNow(2, 3, 4));
-		final long timeDifference = 2 * DateUnit.HOUR + 3 * DateUnit.MINUTE + 4 * DateUnit.SECOND;
+		scope.setDueDate(addToNow(1, 2, 3));
+		final long timeDifference = 1 * DateUnit.HOUR + 2 * DateUnit.MINUTE + 3 * DateUnit.SECOND;
 		assertRemainingTimeWithSecondsOfPrecision(timeDifference);
 	}
 
@@ -123,8 +123,7 @@ public class ScopeEstimatorTest {
 		cal.add(Calendar.HOUR, hours);
 		cal.add(Calendar.MINUTE, minutes);
 		cal.add(Calendar.SECOND, seconds);
-		final Date dueDate = cal.getTime();
-		return dueDate;
+		return cal.getTime();
 	}
 
 	private void assertRemainingTimeWithSecondsOfPrecision(final long timeDifference) {

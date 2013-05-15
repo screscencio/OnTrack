@@ -36,8 +36,7 @@ public class ScopeEstimator {
 	}
 
 	private long getTimeBetween(final Date from, final Date to) {
-		final long timeDifference = getTimeOnly(to) - getTimeOnly(from);
-		return timeDifference;
+		return getTimeOnly(to) - getTimeOnly(from);
 	}
 
 	private int getWorkingDaysBetween(final Date from, final Date to) {
