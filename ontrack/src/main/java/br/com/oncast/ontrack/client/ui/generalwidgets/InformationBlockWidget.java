@@ -1,10 +1,16 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
+import java.util.Date;
+
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -12,7 +18,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
-public class InformationBlockWidget extends Composite implements HasText {
+public class InformationBlockWidget extends Composite implements HasText, HasClickHandlers {
 
 	private static InformationBlockWidgetUiBinder uiBinder = GWT.create(InformationBlockWidgetUiBinder.class);
 
@@ -56,6 +62,17 @@ public class InformationBlockWidget extends Composite implements HasText {
 		setValue(number == null ? null : ClientDecimalFormat.roundFloat(number, 1));
 	}
 
+	public void setValue(final Date date) {
+		if (date == null) {
+			setAsNull();
+			return;
+		}
+
+		this.value.setInnerText(DateTimeFormat.getFormat("dd").format(date));
+		this.decimal.setInnerText(DateTimeFormat.getFormat("/MM").format(date));
+		this.posfix.setInnerText(DateTimeFormat.getFormat("yyyy").format(date));
+	}
+
 	public void setValue(final WorkingDay day) {
 		if (day == null) {
 			setAsNull();
@@ -87,6 +104,11 @@ public class InformationBlockWidget extends Composite implements HasText {
 		this.value.setInnerText("---");
 		this.decimal.setInnerText("");
 		this.posfix.setInnerText("");
+	}
+
+	@Override
+	public HandlerRegistration addClickHandler(final ClickHandler handler) {
+		return rootPanel.addClickHandler(handler);
 	}
 
 }

@@ -108,7 +108,7 @@ public class ScopeTestUtils {
 		return setProgress(scope, progress, DEFAULT_TIMESTAMP);
 	}
 
-	public static Scope setDelcaredEffort(final Scope scope, final float effort) {
+	public static Scope declareEffort(final Scope scope, final float effort) {
 		scope.getEffort().setDeclared(effort);
 		return scope;
 	}
@@ -123,7 +123,7 @@ public class ScopeTestUtils {
 
 	public static Scope createScope(final String name, final ProgressState progress, final Integer effort, final WorkingDay startDay, final WorkingDay endDay) {
 		final Scope scope = ScopeTestUtils.createScope(name, startDay.getJavaDate());
-		if (effort != null) setDelcaredEffort(scope, effort);
+		if (effort != null) declareEffort(scope, effort);
 		if (startDay != null) setStartDate(scope, startDay);
 		if (progress != null) setProgress(scope, progress, endDay);
 		if (endDay != null) setEndDate(scope, endDay);

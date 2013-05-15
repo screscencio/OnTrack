@@ -30,7 +30,10 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope);
 		parentItem.insertItem(index, treeItem);
 
-		if (isUserInteraction) tree.setSelectedItem(treeItem, true);
+		if (isUserInteraction) {
+			treeItem.setHierarchicalState(true);
+			tree.setSelectedItem(treeItem, true);
+		}
 
 	}
 }

@@ -517,7 +517,7 @@ public class ReleaseTest {
 	@Test
 	public void getEstimatedVelocityShouldReturnNullIfThereIsNoDeclaredVelocity() throws Exception {
 		final Release release = ReleaseFactoryTestUtil.create("Any Release");
-		assertNull(release.getEstimatedVelocity());
+		assertNull(release.getEstimatedSpeed());
 	}
 
 	@Test
@@ -527,13 +527,13 @@ public class ReleaseTest {
 
 		release.declareEstimatedVelocity(declaredVelocity);
 
-		assertEquals(declaredVelocity, release.getEstimatedVelocity());
+		assertEquals(declaredVelocity, release.getEstimatedSpeed());
 	}
 
 	@Test
 	public void shouldNotHaveDeclaredEstimatedVelocityWhenNoOneDeclared() throws Exception {
 		final Release release = ReleaseFactoryTestUtil.create("Any Release");
-		assertFalse(release.hasDeclaredEstimatedVelocity());
+		assertFalse(release.hasDeclaredEstimatedSpeed());
 	}
 
 	@Test
@@ -543,7 +543,7 @@ public class ReleaseTest {
 
 		release.declareEstimatedVelocity(declaredVelocity);
 
-		assertTrue(release.hasDeclaredEstimatedVelocity());
+		assertTrue(release.hasDeclaredEstimatedSpeed());
 	}
 
 	private void setStartDayOnScope(final Scope scope, final WorkingDay day) throws Exception {

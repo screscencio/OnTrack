@@ -31,6 +31,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareDueDateAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
@@ -143,6 +144,7 @@ public class ReleasePanelWidget extends Composite {
 						action instanceof ReleaseScopeUpdatePriorityAction ||
 						action instanceof ReleaseRenameAction ||
 						action instanceof ReleaseDeclareEstimatedVelocityAction ||
+						action instanceof ScopeDeclareDueDateAction ||
 						action instanceof KanbanAction) update();
 
 				if (action instanceof ScopeBindReleaseAction || action instanceof ReleaseScopeUpdatePriorityAction

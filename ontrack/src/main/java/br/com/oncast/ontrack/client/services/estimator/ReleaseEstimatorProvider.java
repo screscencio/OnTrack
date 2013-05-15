@@ -5,23 +5,23 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class ReleaseEstimatorProvider {
+public class ReleaseEstimatorProvider implements ContextChangeListener {
 
 	private final ContextProviderService contextProviderService;
+
 	private ReleaseEstimator releaseEstimator;
 
 	public ReleaseEstimatorProvider(final ContextProviderService contextProviderService) {
 		this.contextProviderService = contextProviderService;
-		contextProviderService.addContextLoadListener(new ContextChangeListener() {
-
-			@Override
-			public void onProjectChanged(final UUID projectId) {
-				releaseEstimator = null;
-			}
-		});
+		contextProviderService.addContextLoadListener(this);
 	}
 
 	public ReleaseEstimator get() {
 		return releaseEstimator == null ? releaseEstimator = new ReleaseEstimator(contextProviderService.getCurrent().getProjectRelease()) : releaseEstimator;
+	}
+
+	@Override
+	public void onProjectChanged(final UUID projectId) {
+		releaseEstimator = null;
 	}
 }

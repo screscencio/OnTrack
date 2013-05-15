@@ -27,6 +27,7 @@ import org.mockito.verification.VerificationMode;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.estimator.ScopeEstimatorProvider;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.client.ui.events.ScopeAddMemberSelectionEvent;
@@ -84,6 +85,9 @@ public class MembersScopeSelectionServiceImplTest {
 	@Mock
 	private ColorPackPicker colorPackPicker;
 
+	@Mock
+	private ScopeEstimatorProvider scopeEstimatorProvider;
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Before
 	public void setup() throws Exception {
@@ -103,7 +107,7 @@ public class MembersScopeSelectionServiceImplTest {
 		when(serverPushClientService.registerServerEventHandler(eq(UserClosedProjectEvent.class), userClosedProjectEventHandlerCaptor.capture())).thenReturn(
 				null);
 
-		new ColorProviderServiceImpl(requestDispatchService, contextProviderService, serverPushClientService,
+		new ColorProviderServiceImpl(requestDispatchService, contextProviderService, scopeEstimatorProvider, serverPushClientService,
 				eventBus, usersStatusServiceImpl, colorPicker, colorPackPicker);
 
 		userClosedProjectEventHandler = userClosedProjectEventHandlerCaptor.getValue();

@@ -359,7 +359,7 @@ public class Release implements Serializable, HasUUID {
 		return accomplishedValueSum;
 	}
 
-	public Float getActualVelocity() {
+	public Float getActualSpeed() {
 		final WorkingDay endDay = WorkingDay.getEarliest(getInferedEndDay(), WorkingDayFactory.create());
 		final WorkingDay startDay = getStartDay();
 
@@ -468,11 +468,11 @@ public class Release implements Serializable, HasUUID {
 		this.declaredEstimatedVelocity = declaredVelocity;
 	}
 
-	public boolean hasDeclaredEstimatedVelocity() {
+	public boolean hasDeclaredEstimatedSpeed() {
 		return declaredEstimatedVelocity != null;
 	}
 
-	public Float getEstimatedVelocity() {
+	public Float getEstimatedSpeed() {
 		return declaredEstimatedVelocity;
 	}
 

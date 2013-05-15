@@ -48,6 +48,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareDueDateAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareTimeSpentAction;
@@ -183,7 +184,12 @@ public class UserActionTestUtils {
 		userActions.add(createScopeBindHumanIdAction());
 		userActions.add(createScopeUnbindHumanIdAction());
 		userActions.add(createScopeDeclareTimeSpentAction());
+		userActions.add(createScopeDeclareDueDateAction());
 		return userActions;
+	}
+
+	private static UserAction createScopeDeclareDueDateAction() throws Exception {
+		return createUserAction(new ScopeDeclareDueDateAction(new UUID(), new Date()));
 	}
 
 	private static UserAction createScopeDeclareTimeSpentAction() throws Exception {

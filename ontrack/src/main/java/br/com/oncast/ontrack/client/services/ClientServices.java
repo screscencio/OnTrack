@@ -22,6 +22,7 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.services.details.DetailServiceImpl;
 import br.com.oncast.ontrack.client.services.estimator.ReleaseEstimatorProvider;
+import br.com.oncast.ontrack.client.services.estimator.ScopeEstimatorProvider;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.instruction.UserGuidService;
@@ -105,6 +106,7 @@ public class ClientServices {
 
 	private TimesheetService timesheetService;
 	private ReleaseEstimatorProvider releaseEstimatorProvider;
+	private ScopeEstimatorProvider scopeEstimatorProvider;
 
 	private static ClientServices instance;
 
@@ -247,7 +249,7 @@ public class ClientServices {
 
 	public ColorProviderService colorProvider() {
 		if (colorProviderService == null) colorProviderService = new ColorProviderServiceImpl(request(),
-				contextProvider(), serverPush(), eventBus(), usersStatus(), new ColorPicker(), new ColorPackPicker());
+				contextProvider(), scopeEstimator(), serverPush(), eventBus(), usersStatus(), new ColorPicker(), new ColorPackPicker());
 		return colorProviderService;
 	}
 
@@ -284,5 +286,10 @@ public class ClientServices {
 	public TimesheetService getTimesheetService() {
 		if (timesheetService == null) timesheetService = new TimesheetServiceImpl(placeController(), contextProvider());
 		return timesheetService;
+	}
+
+	public ScopeEstimatorProvider scopeEstimator() {
+		if (scopeEstimatorProvider == null) scopeEstimatorProvider = new ScopeEstimatorProvider(contextProvider(), releaseEstimator());
+		return scopeEstimatorProvider;
 	}
 }

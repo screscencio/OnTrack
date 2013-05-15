@@ -126,6 +126,11 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 		return widgetMap.equals(((ModelWidgetContainer<?, ?>) obj).widgetMap);
 	}
 
+	@Override
+	public int hashCode() {
+		return widgetMap.hashCode();
+	}
+
 	public void clear() {
 		cellContainer.clear();
 		widgetMap.clear();

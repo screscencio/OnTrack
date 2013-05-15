@@ -32,14 +32,14 @@ public class ReleaseEstimatorTest {
 	@Test
 	public void estimatedVelocityShouldBeOneWhenThereIsNoPreviousDoneRelease() throws Exception {
 		sampleReleases.addChild(actual);
-		assertEquals(DEFAULT_VELOCITY, estimator.getInferedEstimatedVelocity(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(DEFAULT_VELOCITY, estimator.getInferedEstimatedSpeed(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	@Test
 	public void estimatedVelocityIsTheVelocityOfThePreviousDoneReleaseWhenThereIsOnlyOnePreviousDoneRelease() throws Exception {
 		sampleReleases.addChild(createRelease(velocity));
 		sampleReleases.addChild(actual);
-		assertEquals(velocity, estimator.getInferedEstimatedVelocity(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(velocity, estimator.getInferedEstimatedSpeed(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class ReleaseEstimatorTest {
 		notLeafRelease.addChild(createRelease(velocity));
 		sampleReleases.addChild(notLeafRelease);
 		sampleReleases.addChild(actual);
-		assertEquals(velocity, estimator.getInferedEstimatedVelocity(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(velocity, estimator.getInferedEstimatedSpeed(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class ReleaseEstimatorTest {
 		sampleReleases.addChild(createRelease(8.2F, false));
 		sampleReleases.addChild(actual);
 
-		assertEquals(velocity, estimator.getInferedEstimatedVelocity(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(velocity, estimator.getInferedEstimatedSpeed(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class ReleaseEstimatorTest {
 		sampleReleases.addChild(createRelease(5.7F));
 		sampleReleases.addChild(createRelease(8.2F));
 
-		assertEquals(velocity, estimator.getInferedEstimatedVelocity(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(velocity, estimator.getInferedEstimatedSpeed(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class ReleaseEstimatorTest {
 		sampleReleases.addChild(actual);
 
 		final Float velocity = calculateProjectionVelocity(velocities);
-		assertEquals(velocity, estimator.getInferedEstimatedVelocity(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(velocity, estimator.getInferedEstimatedSpeed(actual), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	private Float calculateProjectionVelocity(final Float[] velocities) {
@@ -98,7 +98,7 @@ public class ReleaseEstimatorTest {
 	private Release createRelease(final Float actualVelocity, final boolean isDone) {
 		final Release release = ReleaseTestUtils.getEmptyRelease();
 		final Release spy = Mockito.spy(release);
-		when(spy.getActualVelocity()).thenReturn(actualVelocity);
+		when(spy.getActualSpeed()).thenReturn(actualVelocity);
 		when(spy.isDone()).thenReturn(isDone);
 		return spy;
 	}

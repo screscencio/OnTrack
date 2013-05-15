@@ -1,15 +1,20 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
+import java.util.Date;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.InformationBlockWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProgressBlockWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ScopeTimelineWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
@@ -21,6 +26,7 @@ import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareDueDateAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
@@ -31,8 +37,12 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,6 +68,9 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 
 	@UiField
 	InformationBlockWidget leadtime;
+
+	@UiField
+	InformationBlockWidget dueDate;
 
 	@UiField(provided = true)
 	UserWidget ownerWidget;
@@ -101,6 +114,23 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 		update();
 	}
 
+	@UiHandler("dueDate")
+	void onDueDateClick(final ClickEvent e) {
+		final PopupConfig config = PopupConfig.configPopup();
+		final DatePickerPopup pickerPopup = new DatePickerPopup(scope.getDueDate());
+		pickerPopup.addValueChangeHandler(new ValueChangeHandler<Date>() {
+			@Override
+			public void onValueChange(final ValueChangeEvent<Date> event) {
+				ClientServices.get().actionExecution().onUserActionExecutionRequest(new ScopeDeclareDueDateAction(scope.getId(), event.getValue()));
+				config.hidePopup();
+			}
+		});
+		config.popup(pickerPopup)
+				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(dueDate, HorizontalAlignment.CENTER))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(dueDate, VerticalAlignment.BOTTOM, 3))
+				.pop();
+	}
+
 	@Override
 	protected void onLoad() {
 		getActionExecutionService().addActionExecutionListener(getActionExecutionListener());
@@ -123,9 +153,10 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 				if ((action instanceof ScopeUpdateAction
 						|| action instanceof ScopeAddTagAssociationAction
 						|| action instanceof ScopeRemoveTagAssociationAction
-						|| action instanceof ScopeBindReleaseAction)
-						&& action.getReferenceId().equals(scope.getId())
-						|| inferenceInfluencedScopeSet.contains(scope.getId())) update();
+						|| action instanceof ScopeBindReleaseAction
+						|| action instanceof ScopeDeclareDueDateAction)
+						&& (action.getReferenceId().equals(scope.getId())
+						|| inferenceInfluencedScopeSet.contains(scope.getId()))) update();
 				else if ((action instanceof ScopeDeclareProgressAction
 						|| action instanceof ImpedimentAction
 						|| action instanceof AnnotationCreateAction)
@@ -139,6 +170,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	private void update() {
 		setTimeDifference(cycletime, scope.getProgress().getCycleTime());
 		setTimeDifference(leadtime, scope.getProgress().getLeadTime());
+		dueDate.setValue(scope.getDueDate());
 		timeline.setScope(scope);
 
 		this.effort.setValue(scope.getEffort().getAccomplished(), scope.getEffort().getInfered());

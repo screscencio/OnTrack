@@ -230,9 +230,9 @@ public class ReleaseInfoWidget extends Composite {
 	}
 
 	private void updateSpeed() {
-		speedFocus.setStyleName(style.speedInputDeclared(), release.hasDeclaredEstimatedVelocity());
-		speedFocus.setStyleName(style.speedInputInfered(), !release.hasDeclaredEstimatedVelocity());
-		estimatedVelocity = releaseEstimator.getEstimatedVelocity(release);
+		speedFocus.setStyleName(style.speedInputDeclared(), release.hasDeclaredEstimatedSpeed());
+		speedFocus.setStyleName(style.speedInputInfered(), !release.hasDeclaredEstimatedSpeed());
+		estimatedVelocity = releaseEstimator.getEstimatedSpeed(release);
 		speedLabel.setValue(round(estimatedVelocity));
 	}
 

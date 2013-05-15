@@ -183,25 +183,25 @@ public class ReleaseChartDataProviderTest {
 	@Test
 	public void getEstimatedVelocityShouldReturnTheDeclaredOneWhenAlreadyDeclared() throws Exception {
 		final Float declaredVelocity = 1.5f;
-		Mockito.when(release.hasDeclaredEstimatedVelocity()).thenReturn(true);
-		Mockito.when(release.getEstimatedVelocity()).thenReturn(declaredVelocity);
+		Mockito.when(release.hasDeclaredEstimatedSpeed()).thenReturn(true);
+		Mockito.when(release.getEstimatedSpeed()).thenReturn(declaredVelocity);
 
 		assertEquals(declaredVelocity, getProvider().getEstimatedVelocity());
 
-		Mockito.verify(release).getEstimatedVelocity();
+		Mockito.verify(release).getEstimatedSpeed();
 	}
 
 	@Test
 	public void getEstimatedVelocityShouldReturnTheInferedOneWhenNotDeclared() throws Exception {
 		final Float inferedVelocity = 5.6f;
 
-		Mockito.when(release.hasDeclaredEstimatedVelocity()).thenReturn(false);
-		Mockito.when(estimatorMock.getInferedEstimatedVelocity(Mockito.any(Release.class))).thenReturn(inferedVelocity);
+		Mockito.when(release.hasDeclaredEstimatedSpeed()).thenReturn(false);
+		Mockito.when(estimatorMock.getInferedEstimatedSpeed(Mockito.any(Release.class))).thenReturn(inferedVelocity);
 
 		assertEquals(inferedVelocity, getProvider().getEstimatedVelocity());
 
-		Mockito.verify(release, Mockito.never()).getEstimatedVelocity();
-		Mockito.verify(estimatorMock).getInferedEstimatedVelocity(Mockito.any(Release.class));
+		Mockito.verify(release, Mockito.never()).getEstimatedSpeed();
+		Mockito.verify(estimatorMock).getInferedEstimatedSpeed(Mockito.any(Release.class));
 	}
 
 	@Test
@@ -290,7 +290,7 @@ public class ReleaseChartDataProviderTest {
 		releaseEffortSum = 10F;
 
 		final Scope parent = ScopeTestUtils.createScope(parentCreation);
-		ScopeTestUtils.setDelcaredEffort(parent, releaseEffortSum);
+		ScopeTestUtils.declareEffort(parent, releaseEffortSum);
 
 		final Scope childB = ScopeTestUtils.createScope(parentCreation);
 		parent.add(childB);
@@ -400,7 +400,7 @@ public class ReleaseChartDataProviderTest {
 		private static Scope createScope(final ProgressState progress, final int effort) {
 			final Scope scope = ScopeTestUtils.createScope("Scope " + effort);
 			ScopeTestUtils.setProgress(scope, progress);
-			ScopeTestUtils.setDelcaredEffort(scope, effort);
+			ScopeTestUtils.declareEffort(scope, effort);
 			return scope;
 		}
 
