@@ -6,34 +6,18 @@
 	
 		.icon {
 			opacity: 0.7;
-			
-			background-size: 12px 12px;
-			width: 12px;
-			height: 12px;
-			
-			margin-bottom: -1px;
-			
 			cursor: pointer;
+			font-size: 14px;
+			display: inline-block;
+			margin-right: 5px;
 		}
 
 		.iconActive, .icon:HOVER {
 			opacity: 1;
 		}
 		
-		.label {
-			margin-right: 5px;
-			font-weight: bold;
-			cursor: default;
-		}
-		
-		.item {
-			display: inline-block;
-		}
-		
 	</ui:style>
 	
-	<g:HTMLPanel styleName="{style.item}">
-		<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon} icon-ban-circle" />
-		<g:Label ui:field="label" styleName="{style.item} {style.label}"/>
-	</g:HTMLPanel>
+	<g:FocusPanel ui:field="icon" styleName="{style.icon} icon-ban-circle" />
+	
 </ui:UiBinder> 

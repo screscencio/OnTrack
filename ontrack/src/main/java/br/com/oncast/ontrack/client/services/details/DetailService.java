@@ -36,4 +36,6 @@ public interface DetailService {
 
 	List<Annotation> getImpedimentsFor(UUID subjectId);
 
+	void removeAnnotation(UUID subjectId, UUID annotationId);
+
 }

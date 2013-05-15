@@ -221,7 +221,7 @@ public class UserDataServiceImpl implements UserDataService {
 	}
 
 	@Override
-	public User retrieveRealUser(final UserRepresentation userRepresentation) {
+	public User getRealUser(final UserRepresentation userRepresentation) {
 		return retrieveRealUser(userRepresentation.getId());
 	}
 

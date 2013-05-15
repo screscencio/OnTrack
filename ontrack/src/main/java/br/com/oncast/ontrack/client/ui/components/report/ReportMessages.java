@@ -12,6 +12,10 @@ public interface ReportMessages extends BaseMessages {
 	@DefaultMessage("Open")
 	String openImpediment();
 
+	@Description("message shown in the report table to indicate that an impediment is deprecated")
+	@DefaultMessage("Deprecated")
+	String deprecatedImpediment();
+
 	@Description("message shown in the report table as header for impediment status column")
 	@DefaultMessage("Status")
 	String status();

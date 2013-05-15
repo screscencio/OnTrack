@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveDeprecationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
@@ -77,6 +78,11 @@ public class DetailServiceImpl implements DetailService {
 	@Override
 	public void createAnnotationFor(final UUID subjectId, final String message, final UUID attachmentId) {
 		doUserAction(new AnnotationCreateAction(subjectId, message, attachmentId));
+	}
+
+	@Override
+	public void removeAnnotation(final UUID subjectId, final UUID annotationId) {
+		doUserAction(new AnnotationRemoveAction(subjectId, annotationId));
 	}
 
 	@Override

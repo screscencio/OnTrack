@@ -59,6 +59,8 @@ public class ImpedimentDatabase {
 		}
 
 		public String getState() {
+			if (annotation.isDeprecated()) return MESSAGES.deprecatedImpediment();
+
 			return annotation.isImpeded() ? MESSAGES.openImpediment() : MESSAGES.solvedImpediment();
 		}
 
@@ -110,8 +112,9 @@ public class ImpedimentDatabase {
 	}
 
 	private int addScopeImpediments(final String humanId, final List<ImpedimentItem> list, int priority, final Scope scope) {
-		for (final Annotation annotation : DETAIL_SERVICE.getImpedimentsFor(scope.getId()))
+		for (final Annotation annotation : DETAIL_SERVICE.getImpedimentsFor(scope.getId())) {
 			list.add(new ImpedimentItem(humanId, annotation, priority++));
+		}
 		return priority;
 	}
 
