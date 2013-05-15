@@ -237,7 +237,6 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 	public void registerActionExecutionListener() {
 		unregisterActionExecutionListener();
 		handlerRegistration = SERVICE_PROVIDER.actionExecution().addActionExecutionListener(new ActionExecutionListener() {
-
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet,

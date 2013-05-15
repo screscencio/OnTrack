@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -9,6 +11,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareDueDateAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
@@ -27,10 +30,17 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 // TODO ++Refactor this class to decentralize Action to WidgetActionFactory mappings.
 public class ScopeTreeActionFactory {
+
+	private static final ScopeTreeAction IGNORE_ACTION = new ScopeTreeAction() {
+		@Override
+		public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction)
+				throws ModelBeanNotFoundException {}
+	};
 
 	private final ScopeTreeWidget tree;
 
@@ -62,6 +72,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof TagRemoveAction) return new ScopeTreeTagRemoveUpdateAction(tree, (TagRemoveAction) action);
 		else if (action instanceof TagCreateAction) return new ScopeTreeTagUpdateAction(tree, action);
 		else if (action instanceof AnnotationCreateAction) return new ScopeTreeUpdateAction(tree, action);
+		else if (action instanceof ScopeDeclareDueDateAction) return IGNORE_ACTION;
 
 		throw new RuntimeException("It was not possible to find the desired action.");
 	}

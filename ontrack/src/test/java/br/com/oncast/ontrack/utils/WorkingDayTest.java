@@ -15,6 +15,16 @@ import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 public class WorkingDayTest {
 
 	@Test
+	public void anyDayIsBeforeNull() throws Exception {
+		assertTrue(WorkingDayFactory.create().isBefore(null));
+	}
+
+	@Test
+	public void anyDayIsAfterNull() throws Exception {
+		assertTrue(WorkingDayFactory.create().isAfter(null));
+	}
+
+	@Test
 	public void todayIsBeforeFiveDaysFromNow() throws Exception {
 		final WorkingDay today = WorkingDayFactory.create();
 
@@ -50,13 +60,30 @@ public class WorkingDayTest {
 	}
 
 	@Test
+	public void whenTheGivenDayIsNullCountToShouldReturnZero() throws Exception {
+		assertEquals(0, WorkingDayFactory.create().countTo(null));
+	}
+
+	@Test
 	public void theNumberOfDaysFromMondayToFridayIsFive() throws Exception {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		final WorkingDay monday = WorkingDayFactory.create(calendar.getTime());
 
 		calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-		assertEquals(5, monday.countTo(WorkingDayFactory.create(calendar.getTime())));
+		final WorkingDay friday = WorkingDayFactory.create(calendar.getTime());
+		assertEquals(5, monday.countTo(friday));
+	}
+
+	@Test
+	public void theNumberOfDaysFromFridayToMondayIsNegativeFive() throws Exception {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		final WorkingDay monday = WorkingDayFactory.create(calendar.getTime());
+
+		calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+		final WorkingDay friday = WorkingDayFactory.create(calendar.getTime());
+		assertEquals(-5, friday.countTo(monday));
 	}
 
 	@Test
@@ -67,7 +94,9 @@ public class WorkingDayTest {
 
 		calendar.add(Calendar.DAY_OF_MONTH, 3);
 
-		assertEquals(2, friday.countTo(WorkingDayFactory.create(calendar.getTime())));
+		final WorkingDay nextMonday = WorkingDayFactory.create(calendar.getTime());
+		assertEquals(2, friday.countTo(nextMonday));
+		assertEquals(-2, nextMonday.countTo(friday));
 	}
 
 	@Test
@@ -120,4 +149,5 @@ public class WorkingDayTest {
 		final WorkingDay day2 = WorkingDayFactory.create(2011, Calendar.OCTOBER, 21);
 		assertEquals(-1, day1.compareTo(day2));
 	}
+
 }

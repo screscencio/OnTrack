@@ -68,8 +68,8 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 	public boolean update() {
 		effort.setValue(release.getAccomplishedEffortSum(), release.getEffortSum());
 		value.setValue(release.getAccomplishedValueSum(), release.getValueSum());
-		estimatedSpeed.setValue(round(getEstimator().getEstimatedVelocity(release)));
-		actualSpeed.setValue(release.getActualVelocity());
+		estimatedSpeed.setValue(round(getEstimator().getEstimatedSpeed(release)));
+		actualSpeed.setValue(release.getActualSpeed());
 
 		startDay.setValue(getEstimator().getEstimatedStartDayFor(release));
 		endDay.setValue(getEstimator().getEstimatedEndDayFor(release));
@@ -83,7 +83,7 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 
 	private void updateDuration() {
 		final float effortSum = release.getEffortSum();
-		final float estimatedVelocity = getEstimator().getEstimatedVelocity(release);
+		final float estimatedVelocity = getEstimator().getEstimatedSpeed(release);
 		if (effortSum < 1) {
 			duration.setAsNull();
 			return;

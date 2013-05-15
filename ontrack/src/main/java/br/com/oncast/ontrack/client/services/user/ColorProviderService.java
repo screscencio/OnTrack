@@ -19,4 +19,6 @@ public interface ColorProviderService {
 
 	ColorPack pickColorPack();
 
+	Color getDueDateColor(Scope scope);
+
 }

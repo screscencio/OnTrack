@@ -35,7 +35,7 @@ public class ReleaseDeclareEstimatedVelocityAction implements ReleaseAction {
 		if (estimatedVelocity != null && estimatedVelocity < 0.01F) throw new UnableToCompleteActionException(
 				ActionExecutionErrorMessageCode.DECLARE_ESTIMATED_VELOCITY_AS_ZERO);
 		final Release release = ActionHelper.findRelease(releaseId, context);
-		final Float previousDeclaration = release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : null;
+		final Float previousDeclaration = release.hasDeclaredEstimatedSpeed() ? release.getEstimatedSpeed() : null;
 
 		release.declareEstimatedVelocity(estimatedVelocity);
 		return new ReleaseDeclareEstimatedVelocityAction(releaseId, previousDeclaration);

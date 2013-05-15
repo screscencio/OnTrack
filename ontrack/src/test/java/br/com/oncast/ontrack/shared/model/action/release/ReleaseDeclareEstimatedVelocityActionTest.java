@@ -66,8 +66,8 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 
 	@Test
 	public void undoActionShouldRevertDeclaredEndDayToNullWhenTheReleaseHadntAnyDeclaredEndDayBefore() throws Exception {
-		when(release.hasDeclaredEstimatedVelocity()).thenReturn(false);
-		when(release.getEstimatedVelocity()).thenReturn(previouslyDeclaredEstimatedVelocity);
+		when(release.hasDeclaredEstimatedSpeed()).thenReturn(false);
+		when(release.getEstimatedSpeed()).thenReturn(previouslyDeclaredEstimatedVelocity);
 
 		final ModelAction undoAction = executeAction();
 		verify(release).declareEstimatedVelocity(Mockito.anyFloat());
@@ -78,8 +78,8 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 
 	@Test
 	public void undoActionShouldRevertDeclaredEndDayToPreviousValueWhenTheReleaseAlreadyHadADeclaredEndDayBefore() throws Exception {
-		when(release.hasDeclaredEstimatedVelocity()).thenReturn(true);
-		when(release.getEstimatedVelocity()).thenReturn(previouslyDeclaredEstimatedVelocity);
+		when(release.hasDeclaredEstimatedSpeed()).thenReturn(true);
+		when(release.getEstimatedSpeed()).thenReturn(previouslyDeclaredEstimatedVelocity);
 
 		final ModelAction undoAction = executeAction();
 		verify(release).declareEstimatedVelocity(Mockito.anyFloat());

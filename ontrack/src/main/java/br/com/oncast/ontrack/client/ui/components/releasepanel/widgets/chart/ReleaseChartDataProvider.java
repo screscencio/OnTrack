@@ -38,12 +38,12 @@ public class ReleaseChartDataProvider {
 	}
 
 	public WorkingDay getInferedEstimatedEndDay() {
-		return releaseEstimator.getEstimatedEndDayUsingInferedEstimatedVelocity(release);
+		return releaseEstimator.getEstimatedEndDayUsingInferedEstimatedSpeed(release);
 	}
 
 	public float getEstimatedVelocity() {
-		return release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : releaseEstimator
-				.getInferedEstimatedVelocity(release);
+		return release.hasDeclaredEstimatedSpeed() ? release.getEstimatedSpeed() : releaseEstimator
+				.getInferedEstimatedSpeed(release);
 	}
 
 	public WorkingDay getEstimatedStartDay() {
@@ -90,11 +90,11 @@ public class ReleaseChartDataProvider {
 	}
 
 	public boolean hasDeclaredEstimatedVelocity() {
-		return release.hasDeclaredEstimatedVelocity();
+		return release.hasDeclaredEstimatedSpeed();
 	}
 
 	public Float getActualVelocity() {
-		return release.getActualVelocity();
+		return release.getActualSpeed();
 	}
 
 	public float getValueSum() {
@@ -121,7 +121,7 @@ public class ReleaseChartDataProvider {
 
 	private List<WorkingDay> calculateReleaseDays() {
 		final WorkingDay startDay = releaseEstimator.getEstimatedStartDayFor(release);
-		final WorkingDay inferedEstimatedEndDay = releaseEstimator.getEstimatedEndDayUsingInferedEstimatedVelocity(release);
+		final WorkingDay inferedEstimatedEndDay = releaseEstimator.getEstimatedEndDayUsingInferedEstimatedSpeed(release);
 		final WorkingDay estimatedEndDay = releaseEstimator.getEstimatedEndDayFor(release);
 
 		final WorkingDay lastReleaseDay = WorkingDay.getLatest(inferedEstimatedEndDay, estimatedEndDay, release.getInferedEndDay());

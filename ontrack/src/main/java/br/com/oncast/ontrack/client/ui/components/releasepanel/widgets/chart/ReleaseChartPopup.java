@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseChartPopup extends Composite implements HasCloseHandlers<ReleaseChartPopup>, PopupAware {
 
-	private static final ReleaseChartMessages messages = GWT.create(ReleaseChartMessages.class);
+	private static final ReleaseChartMessages MESSAGES = GWT.create(ReleaseChartMessages.class);
 
 	private static ChartPanelUiBinder uiBinder = GWT.create(ChartPanelUiBinder.class);
 
@@ -135,7 +135,7 @@ public class ReleaseChartPopup extends Composite implements HasCloseHandlers<Rel
 		final float estimatedVelocity = dataProvider.getEstimatedVelocity();
 		velocity.setValue(estimatedVelocity, false);
 		velocity.setRemoveValueAvailable(dataProvider.hasDeclaredEstimatedVelocity());
-		if (estimatedVelocity < ReleaseEstimator.MIN_VELOCITY) showWarning();
+		if (estimatedVelocity < ReleaseEstimator.MIN_SPEED) showWarning();
 
 		final Float actualVelocityValue = dataProvider.getActualVelocity();
 		this.actualVelocity.setText(actualVelocityValue != null ? round(actualVelocityValue) : "-");
@@ -148,7 +148,7 @@ public class ReleaseChartPopup extends Composite implements HasCloseHandlers<Rel
 
 	private void showWarning() {
 		ClientServices.get().userGuide()
-				.addWarningTip(velocity, messages.lowEstimatedVelocityWarningTitle(), messages.lowEstimatedVelocityTips());
+				.addWarningTip(velocity, MESSAGES.lowEstimatedVelocityWarningTitle(), MESSAGES.lowEstimatedVelocityTips());
 	}
 
 	private boolean hasDifferentEstimatives(final ReleaseChartDataProvider dataProvider) {

@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:s="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope"
+	xmlns:a="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets"
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:u="urn:import:br.com.oncast.ontrack.client.ui.components.user"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
@@ -20,6 +21,14 @@
 		
 		.informationBlock {
 			float: left;
+		}
+		
+		.editableInformationBlock:HOVER {
+			text-decoration: underline;
+		}
+		
+		.editableInformationBlock span, .editableInformationBlock div {
+			cursor: pointer !important;
 		}
 		
 		.tags {
@@ -78,6 +87,11 @@
 			</w:ProgressBlockWidget>
 			<w:InformationBlockWidget ui:field="leadtime" addStyleNames="{style.informationBlock}">
 				<ui:msg description="leadtime">Leadtime</ui:msg>
+			</w:InformationBlockWidget>
+		</g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.centralized}">
+			<w:InformationBlockWidget ui:field="dueDate" addStyleNames="{style.informationBlock} {style.editableInformationBlock}">
+				<ui:msg description="Due date">Due date</ui:msg>
 			</w:InformationBlockWidget>
 		</g:HorizontalPanel>
 		<div class="{style.categoryContainer}">

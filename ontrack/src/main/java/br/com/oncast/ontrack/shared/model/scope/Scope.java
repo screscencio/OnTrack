@@ -16,6 +16,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
+import com.google.gwt.user.datepicker.client.CalendarUtil;
+
 public class Scope implements Serializable, HasMetadata, HasUUID {
 
 	private static final long serialVersionUID = 1L;
@@ -38,6 +40,8 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 	private Value value;
 
 	private Progress progress;
+
+	private Date dueDate;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Scope() {}
@@ -212,4 +216,17 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 			current = current.getParent();
 		return current;
 	}
+
+	public void setDueDate(final Date dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public Date getDueDate() {
+		return CalendarUtil.copyDate(dueDate);
+	}
+
+	public boolean hasDueDate() {
+		return dueDate != null;
+	}
+
 }

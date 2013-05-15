@@ -56,8 +56,17 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		return getDaysBetween(day) < 0;
 	}
 
+	/**
+	 * Counts the number of working days until the given day
+	 * If the given day is same day it will return 1
+	 * It's safe to give previous days, it will return the negative number of days representing x days ago
+	 * @param day
+	 * @return the number of days until the given day (the given day is included)
+	 */
 	public int countTo(final WorkingDay day) {
-		if (day == null) return -1;
+		if (day == null) return 0;
+		if (isAfter(day)) return -day.countTo(this);
+
 		int nWorkingDays = 1; // Today included
 		final WorkingDay copy = copy();
 		while (copy.isBefore(day)) {
@@ -75,7 +84,7 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		return new WorkingDay(javaDate);
 	}
 
-	Date getNearestWorkingDayFrom(final Date date) {
+	private Date getNearestWorkingDayFrom(final Date date) {
 		while (isWeekend(date))
 			CalendarUtil.addDaysToDate(date, 1);
 		return date;

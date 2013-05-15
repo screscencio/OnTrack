@@ -9,17 +9,20 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.estimator.ScopeEstimatorProvider;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.client.ui.events.ScopeAddMemberSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeRemoveMemberSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
+import br.com.oncast.ontrack.client.utils.ColorUtil;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.color.ColorPack;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.ScopeEstimator;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserScopeSelectionMulticastRequest;
@@ -39,10 +42,13 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 	private final ColorPicker colorPicker;
 	private final EventBus eventBus;
 	private final ColorPackPicker colorPackPicker;
+	private final ScopeEstimatorProvider scopeEstimatorProvider;
 
 	public ColorProviderServiceImpl(final DispatchService requestDispatchService, final ContextProviderService contextProviderService,
+			final ScopeEstimatorProvider scopeEstimatorProvider,
 			final ServerPushClientService serverPushClientService, final EventBus eventBus, final UsersStatusService usersStatusServiceImpl,
 			final ColorPicker colorPicker, final ColorPackPicker colorPackPicker) {
+		this.scopeEstimatorProvider = scopeEstimatorProvider;
 		this.colorPicker = colorPicker;
 		this.colorPackPicker = colorPackPicker;
 		this.eventBus = eventBus;
@@ -149,7 +155,20 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 		return colorPicker.pick();
 	}
 
+	@Override
 	public ColorPack pickColorPack() {
 		return colorPackPicker.pick();
+	}
+
+	@Override
+	public Color getDueDateColor(final Scope scope) {
+		if (!scope.hasDueDate() || scope.getProgress().isDone()) return Color.TRANSPARENT;
+
+		final ScopeEstimator estimator = scopeEstimatorProvider.get();
+		final double duration = estimator.getDuration(scope);
+		final double timeLeft = estimator.getRemainingTime(scope);
+		if (timeLeft > duration * 2) return Color.TRANSPARENT;
+		if (timeLeft > duration) return ColorUtil.getTransitionColor(Color.YELLOW, Color.RED, 1 - (timeLeft - duration) / duration);
+		return Color.RED;
 	}
 }
