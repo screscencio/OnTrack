@@ -391,13 +391,18 @@ public class ScopeTreeItemWidget extends Composite {
 		setSpanElementVisible(this.annotationIcon, event.hasAnnotations());
 		this.annotationIcon.setTitle(messages.annotationsIconTitle("" + event.getAnnotationsCount()));
 		setSpanElementVisible(this.descriptionIcon, event.hasDescription());
-		this.descriptionIcon.setTitle(event.getDescriptionText());
+		this.descriptionIcon.setTitle(removeHtmlTags(event.getDescriptionText()));
 
 		updateChecklistIndicator(event);
 
 		setSpanElementVisible(this.openImpedimentIcon, event.hasOpenImpediments());
 		final int count = event.getOpenImpedimentsCount();
 		this.openImpedimentIcon.setTitle(count == 1 ? event.getOpenImpediments().get(0).getMessage() : messages.openImpediments("" + count));
+	}
+
+	private String removeHtmlTags(String html) {
+		html = html.replaceAll("(<([^>]+)>)", "");
+		return html;
 	}
 
 	private void updateChecklistIndicator(final SubjectDetailUpdateEvent event) {
