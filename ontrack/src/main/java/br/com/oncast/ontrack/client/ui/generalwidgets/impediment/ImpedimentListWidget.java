@@ -122,6 +122,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 	public void hide() {
 		if (!this.isVisible()) return;
 
+		newImpedimentDescription.setText("");
 		setFocus(false);
 		CloseEvent.fire(this, this);
 	}
