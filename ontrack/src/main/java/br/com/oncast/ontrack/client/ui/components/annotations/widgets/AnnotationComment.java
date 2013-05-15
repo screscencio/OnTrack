@@ -2,8 +2,8 @@ package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuWidget;
-import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.DeprecateAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.LikeAnnotationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.RemoveAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.SinceAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationComment extends Composite implements ModelWidget<Annotation> {
 
-	private static final DetailPanelMessages messages = GWT.create(DetailPanelMessages.class);
+	private static final DetailPanelMessages MESSAGES = GWT.create(DetailPanelMessages.class);
 
 	private static AnnotationCommentUiBinder uiBinder = GWT.create(AnnotationCommentUiBinder.class);
 
@@ -111,7 +111,7 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 	private void updateMenu() {
 		menu.clear();
 
-		menu.add(new DeprecateAnnotationMenuItem(subjectId, annotation));
+		menu.add(new RemoveAnnotationMenuItem(subjectId, annotation));
 		menu.add(new LikeAnnotationMenuItem(subjectId, annotation));
 		menu.addSeparator();
 		menu.add(new SinceAnnotationMenuItem(annotation));
@@ -132,16 +132,16 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 		deprecatedLabel.setText(getDeprecationText());
 		deprecatedLabel.setTitle(absoluteDate);
 
-		closedDeprecatedLabel.setText(messages.deprecated(annotation.getMessage()));
+		closedDeprecatedLabel.setText(MESSAGES.deprecated(annotation.getMessage()));
 		closedDeprecatedLabel.setTitle(absoluteDate);
 	}
 
 	private String getDeprecationText() {
 		final User user = ClientServices.get().userData()
-				.retrieveRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
+				.getRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
 		final String formattedDate = HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 
-		return messages.deprecationDetails(user.getName(), formattedDate);
+		return MESSAGES.deprecationDetails(user.getName(), formattedDate);
 	}
 
 	@Override

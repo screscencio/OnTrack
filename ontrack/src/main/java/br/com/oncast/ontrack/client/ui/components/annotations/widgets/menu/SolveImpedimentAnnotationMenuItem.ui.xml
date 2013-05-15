@@ -5,34 +5,23 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 	
-	<ui:image field="iconImg" src="../solved_impediment.png"></ui:image>
-	<ui:style>
+	<ui:style src="../../../../style/default.css">
 	
-		.icon:HOVER {
-			opacity: 1;
-		}
-		
-		@sprite .icon {
-			gwt-image: 'iconImg';
-			opacity: 0.70;
-			
-			background-size: 12px 12px;
-			width: 12px;
-			height: 12px;
-			
-			margin-bottom: -1px;
-			margin-right: 5px;
-			
+		.icon {
+			opacity: 0.7;
 			cursor: pointer;
-		}
-		
-		.item {
+			font-size: 14px;
+			color: COLOR_SUCCESS_TERTIARY;
 			display: inline-block;
+			margin-right: 5px;
+		}
+
+		.iconActive, .icon:HOVER {
+			opacity: 1;
 		}
 		
 	</ui:style>
 	
-	<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon}" title="Mark As Solved">
-		<ui:attribute name="title" description="mark as solved hint text" />
-	</g:FocusPanel>
+	<g:FocusPanel ui:field="icon" styleName="{style.icon} icon-ok"/>
+	
 </ui:UiBinder> 

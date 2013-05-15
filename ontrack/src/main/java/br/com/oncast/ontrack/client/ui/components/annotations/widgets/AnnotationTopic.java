@@ -1,16 +1,26 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
+import java.util.Set;
+
+import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.CommentsAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.DeprecateAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.LikeAnnotationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.RemoveAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -20,6 +30,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -28,7 +39,7 @@ import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AnnotationTopic extends Composite implements ModelWidget<Annotation> {
+public class AnnotationTopic extends Composite implements ModelWidget<Annotation>, ActionExecutionListener {
 
 	private static final DetailPanelMessages messages = GWT.create(DetailPanelMessages.class);
 
@@ -79,6 +90,8 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	private AnnotationType currentType;
 
+	private CommentsAnnotationMenuItem commentsMenuItem;
+
 	public AnnotationTopic() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -98,7 +111,20 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	@Override
 	protected void onLoad() {
+		ClientServices.get().actionExecution().addActionExecutionListener(this);
 		update();
+	}
+
+	@Override
+	protected void onUnload() {
+		ClientServices.get().actionExecution().removeActionExecutionListener(this);
+	}
+
+	@Override
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+			final Set<UUID> inferenceInfluencedScopeSet,
+			final boolean isUserAction) {
+		if (action instanceof AnnotationAction && action.getReferenceId().equals(annotation.getId())) update();
 	}
 
 	@UiHandler("closedDeprecatedLabel")
@@ -107,7 +133,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	@UiHandler("deprecatedLabel")
-	protected void ondeprecatedLabelClick(final ClickEvent e) {
+	protected void onDeprecatedLabelClick(final ClickEvent e) {
 		deckPanel.showWidget(1);
 	}
 
@@ -142,6 +168,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		menu.clear();
 
 		menu.add(new DeprecateAnnotationMenuItem(subjectId, annotation));
+		menu.add(new RemoveAnnotationMenuItem(subjectId, annotation));
 
 		final AnnotationTypeItemsMapper mapper = AnnotationTypeItemsMapper.get(annotation.getType());
 		mapper.populateMenu(menu, subjectId, annotation);
@@ -160,11 +187,12 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	private void updateComments() {
 		commentsPanel.setReadOnly(annotation.isDeprecated());
 		commentsPanel.setVisible(commentsPanel.getWidgetCount() > 0);
+		if (commentsMenuItem != null) commentsMenuItem.update();
 	}
 
 	private void addCommentsMenuItem() {
-		final CommentsAnnotationMenuItem comment = new CommentsAnnotationMenuItem(annotation);
-		comment.addClickHandler(new ClickHandler() {
+		commentsMenuItem = new CommentsAnnotationMenuItem(annotation);
+		commentsMenuItem.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				if (annotation.isDeprecated() && commentsPanel.getWidgetCount() == 0) return;
@@ -173,7 +201,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 				commentsPanel.setFocus(true);
 			}
 		});
-		menu.add(comment);
+		menu.add(commentsMenuItem);
 	}
 
 	private void updateDeprecation() {
@@ -187,17 +215,29 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	private void updateDeprecatedLabels() {
 		final String absoluteDate = HumanDateFormatter.getAbsoluteText(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 
-		deprecatedLabel.setText(getDeprecationText());
+		updateDeprecationLabel();
 		deprecatedLabel.setTitle(absoluteDate);
 
 		closedDeprecatedLabel.setText(messages.deprecated(annotation.getMessage()));
 		closedDeprecatedLabel.setTitle(absoluteDate);
 	}
 
-	private String getDeprecationText() {
-		// TODO final String username = removeEmailDomain(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
+	private void updateDeprecationLabel() {
 		final String formattedDate = HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
-		return messages.deprecationDetails("user", formattedDate);
+		deprecatedLabel.setText(messages.deprecationDetails("user", formattedDate));
+		ClientServices.get().userData()
+				.loadRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED).getId(), new AsyncCallback<User>() {
+
+					@Override
+					public void onSuccess(final User result) {
+						deprecatedLabel.setText(messages.deprecationDetails(result.getName(), formattedDate));
+					}
+
+					@Override
+					public void onFailure(final Throwable caught) {
+
+					}
+				});
 	}
 
 	@Override

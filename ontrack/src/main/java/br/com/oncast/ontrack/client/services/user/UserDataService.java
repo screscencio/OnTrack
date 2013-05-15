@@ -11,7 +11,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface UserDataService {
 
-	User retrieveRealUser(UserRepresentation user);
+	User getRealUser(UserRepresentation user);
 
 	void loadRealUser(UUID userId, AsyncCallback<User> callback);
 

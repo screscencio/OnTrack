@@ -5,7 +5,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 	
-	<ui:style>
+	<ui:style src="../../../../style/default.css">
 	
 		.icon:HOVER {
 			opacity: 1;
@@ -13,24 +13,16 @@
 		
 		.icon {
 			opacity: 0.7;
-			
-			background-size: 12px 12px;
-			width: 12px;
-			height: 12px;
-			
-			margin-bottom: -1px;
-			margin-right: 5px;
-			
+			font-size: 14px;
 			cursor: pointer;
-		}
-		
-		.item {
+			color: COLOR_ERROR_PRIMARY;
 			display: inline-block;
+			margin-right: 5px;
 		}
 		
 	</ui:style>
 	
-	<g:FocusPanel ui:field="icon" title="Mark as Impediment" styleName="{style.item} {style.icon} icon-flag">
+	<g:FocusPanel ui:field="icon" title="Mark as Impediment" styleName="{style.icon} icon-flag">
 		<ui:attribute name="title" description="mark as impediment hint text" />
 	</g:FocusPanel>
 </ui:UiBinder> 

@@ -714,7 +714,7 @@ public class ScopeTreeItemWidget extends Composite {
 			selectionColor = selectionsList.get(0).getColor();
 			final ArrayList<String> selectionNames = new ArrayList<String>();
 			for (final Selection s : selectionsList) {
-				final User user = ClientServices.get().userData().retrieveRealUser(s.getUser());
+				final User user = ClientServices.get().userData().getRealUser(s.getUser());
 				final String name = user.getName();
 				if (!selectionNames.contains(name)) selectionNames.add(name);
 			}
