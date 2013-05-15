@@ -71,7 +71,7 @@ public class ScopeTreeActionFactory {
 				tree, action);
 		else if (action instanceof TagRemoveAction) return new ScopeTreeTagRemoveUpdateAction(tree, (TagRemoveAction) action);
 		else if (action instanceof TagCreateAction) return new ScopeTreeTagUpdateAction(tree, action);
-		else if (action instanceof AnnotationCreateAction) return new ScopeTreeUpdateAction(tree, action);
+		else if (action instanceof AnnotationCreateAction) return new ScopeTreeUpdateAction(tree, action, true);
 		else if (action instanceof ScopeDeclareDueDateAction) return IGNORE_ACTION;
 
 		throw new RuntimeException("It was not possible to find the desired action.");
