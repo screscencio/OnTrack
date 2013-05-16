@@ -83,7 +83,7 @@
 			float: right;
 		}
 		
-		.user {
+		.icon {
 			cursor: pointer;
 			line-height: 54px;
 		}
@@ -95,12 +95,11 @@
 			<g:FocusPanel ui:field="logo" styleName="{style.logo}" title="See the summary of my projects">
 				<ui:attribute name="title" description="Tooltip for OrganizationPlace link"/>
 			</g:FocusPanel>
+			
 		    <div class="{style.backButtonContainer}">
     			<g:Image ui:field="backButton" resource="{backBtnImg}" styleName="{style.backButton}"/>
 		    </div>
-		    <aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" contentStyle="{style.user} icon-user icon-2x" title="User">
-				<ui:attribute name="title" description="user menu item text" />
-			</aw:ApplicationMenuItem>
+		    
 			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItem}" text="Project" biggerFont="true">
 				<ui:attribute name="text" description="project menu item text" />
 			</aw:ApplicationMenuItem>
@@ -109,9 +108,16 @@
     				<ui:attribute name="text" description="release menu item text" />
     			</aw:ApplicationMenuItem>
 			</g:HTMLPanel>
+			
+		    <aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" contentStyle="{style.icon} icon-user icon-2x" title="User">
+				<ui:attribute name="title" description="user menu item title" />
+			</aw:ApplicationMenuItem>
 			<aw:NotificationMenuItem ui:field="notificationMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" title="Notifications">
-				<ui:attribute name="title" description="notifications menu item text" />
+				<ui:attribute name="title" description="notifications menu item title" />
 			</aw:NotificationMenuItem>
+		    <aw:ApplicationMenuItem ui:field="assignedToMeMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" contentStyle="{style.icon} icon-tasks icon-2x" title="Assigned to me">
+				<ui:attribute name="title" description="assigned to me menu item title" />
+			</aw:ApplicationMenuItem>
 		</g:HTMLPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

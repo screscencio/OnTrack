@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSubmenu;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.AssignedToMeWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationListWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
@@ -70,6 +71,9 @@ public class ApplicationMenu extends Composite {
 	protected ApplicationMenuItem userMenuItem;
 
 	@UiField
+	protected ApplicationMenuItem assignedToMeMenuItem;
+
+	@UiField
 	protected HTMLPanel itemContainer;
 
 	@UiField
@@ -99,6 +103,8 @@ public class ApplicationMenu extends Composite {
 		createNotificationMenu();
 
 		createUserMenu();
+
+		createAssignedToMeMenu();
 
 		backButton.addClickHandler(enableProjectDependantMenus ? new ClickHandler() {
 			@Override
@@ -237,6 +243,14 @@ public class ApplicationMenu extends Composite {
 		registerUserDataUpdateListener();
 
 		userMenuItem.setPopupConfig(popup);
+	}
+
+	private void createAssignedToMeMenu() {
+		final PopupConfig config = PopupConfig.configPopup()
+				.popup(new AssignedToMeWidget())
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
+				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(assignedToMeMenuItem, HorizontalAlignment.RIGHT));
+		assignedToMeMenuItem.setPopupConfig(config);
 	}
 
 	private void logUserOut() {

@@ -104,6 +104,13 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 		return value;
 	}
 
+	public Scope getStory() {
+		Scope story = this;
+		while (!story.isRoot() && !story.hasRelease())
+			story = story.getParent();
+		return story;
+	}
+
 	public Scope add(final Scope scope) {
 		childrenList.add(scope);
 		scope.parent = this;
@@ -152,6 +159,10 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 
 	public Release getRelease() {
 		return release;
+	}
+
+	public boolean hasRelease() {
+		return release != null;
 	}
 
 	public Progress getProgress() {

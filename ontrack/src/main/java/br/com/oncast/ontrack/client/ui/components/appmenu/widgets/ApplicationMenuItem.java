@@ -73,6 +73,8 @@ public class ApplicationMenuItem extends Composite implements HasText {
 	}
 
 	public void toggleMenu() {
+		if (popup == null) return;
+
 		if (!isOpen) popup.pop();
 		else popup.hidePopup();
 	}
