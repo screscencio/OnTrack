@@ -1,0 +1,28 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+	
+	<ui:style>
+	
+		.icon {
+			opacity: 0.7;
+			cursor: pointer;
+			font-size: 14px;
+			display: inline-block;
+			margin-right: 5px;
+		}
+
+		.icon:HOVER {
+			opacity: 1;
+		}
+		
+	</ui:style>
+	
+	<g:FocusPanel ui:field="icon" styleName="{style.icon} icon-trash" title="Remove">
+		<ui:attribute name="title" description="Remove annotation tooltip"/>
+	</g:FocusPanel>
+		
+</ui:UiBinder> 
