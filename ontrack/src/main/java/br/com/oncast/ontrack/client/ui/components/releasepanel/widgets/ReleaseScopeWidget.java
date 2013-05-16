@@ -21,16 +21,13 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuItem;
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.BgColorAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
-import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
-import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -45,7 +42,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -59,13 +55,13 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
-	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
+	private static final CommandMenuMessages MESSAGES = GWT.create(CommandMenuMessages.class);
 
 	private static ReleaseScopeWidgetUiBinder uiBinder = GWT.create(ReleaseScopeWidgetUiBinder.class);
 
 	interface ReleaseScopeWidgetUiBinder extends UiBinder<Widget, ReleaseScopeWidget> {}
 
-	interface ReleaseScopeWidgetStyle extends CssResource {
+	interface ReleaseScopeWidgetStyle extends ProgressIconUpdaterStyle {
 		String selected();
 
 		String targetHighlight();
@@ -73,14 +69,6 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		String associationHighlight();
 
 		String draggingMousePointer();
-
-		String progressIconDone();
-
-		String progressIconUnderwork();
-
-		String progressIconNotStarted();
-
-		String progressIconHasOpenImpediments();
 	}
 
 	@UiField
@@ -287,7 +275,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		for (final String progressDefinition : context.getProgressDefinitions(scope))
 			items.add(createItem(ProgressState.getLabelForDescription(progressDefinition), progressDefinition));
 		items.add(new SpacerCommandMenuItem());
-		items.add(new TextAndImageCommandMenuItem("icon-flag", messages.impediments(), new Command() {
+		items.add(new TextAndImageCommandMenuItem("icon-flag", MESSAGES.impediments(), new Command() {
 			@Override
 			public void execute() {
 				skipScopeSelectionEventOnPopupClose = true;
@@ -346,7 +334,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 			@Override
 			public CommandMenuItem createCustomItem(final String inputText) {
-				return new SimpleCommandMenuItem(messages.markAs(inputText), inputText, new Command() {
+				return new SimpleCommandMenuItem(MESSAGES.markAs(inputText), inputText, new Command() {
 					@Override
 					public void execute() {
 						declareProgress(inputText);
@@ -422,100 +410,6 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	private ScopeAssociatedMembersWidget createAssociatedUsersListWidget(final Scope scope, final DragAndDropManager userDragAndDropMananger) {
 		return new ScopeAssociatedMembersWidget(scope, userDragAndDropMananger, 2);
-	}
-
-	private enum ProgressIconUpdater {
-		NOT_STARTED_UPDATER(ProgressState.NOT_STARTED) {
-			@Override
-			String getStyle(final ReleaseScopeWidgetStyle style) {
-				return style.progressIconNotStarted();
-			}
-
-			@Override
-			String getTitle(final Scope scope) {
-				final float accomplishedPercentual = scope.getEffort().getAccomplishedPercentual();
-				return accomplishedPercentual != 0 ? messages.accomplished(ClientDecimalFormat.roundFloat(accomplishedPercentual, 0)) : "";
-			}
-		},
-		UNDER_WORK_UPDATER(ProgressState.UNDER_WORK) {
-			@Override
-			String getStyle(final ReleaseScopeWidgetStyle style) {
-				return style.progressIconUnderwork();
-			}
-
-			@Override
-			String getTitle(final Scope scope) {
-				return scope.getProgress().getDescription();
-			}
-
-			@Override
-			public void animate(final HorizontalPanel panel) {
-				new BgColorAnimation(panel, Color.GRAY).animate();
-			}
-		},
-		DONE_UPDATER(ProgressState.DONE) {
-			@Override
-			String getStyle(final ReleaseScopeWidgetStyle style) {
-				return style.progressIconDone();
-			}
-
-			@Override
-			String getTitle(final Scope scope) {
-				return messages.finishedIn(HumanDateFormatter.getRelativeDate(scope.getProgress().getEndDay().getJavaDate()));
-			}
-
-			@Override
-			public void animate(final HorizontalPanel panel) {
-				new BgColorAnimation(panel, Color.GREEN).animate();
-			}
-		},
-		IMPEDIMENTS_UPDATER(null) {
-			@Override
-			String getStyle(final ReleaseScopeWidgetStyle style) {
-				return "icon-flag " + style.progressIconHasOpenImpediments();
-			}
-
-			@Override
-			String getTitle(final Scope scope) {
-				return messages.hasOpenImpediments();
-			}
-
-			@Override
-			public void animate(final HorizontalPanel panel) {
-				new BgColorAnimation(panel, Color.RED).animate();
-			}
-		},
-		NULL_UPDATER(null) {
-			@Override
-			String getStyle(final ReleaseScopeWidgetStyle style) {
-				return "";
-			}
-
-			@Override
-			String getTitle(final Scope scope) {
-				return "";
-			}
-		};
-
-		final ProgressState state;
-
-		ProgressIconUpdater(final ProgressState state) {
-			this.state = state;
-		}
-
-		public void animate(final HorizontalPanel panel) {}
-
-		public static ProgressIconUpdater getUpdater(final Scope scope, final boolean hasImpediments) {
-			if (hasImpediments) return IMPEDIMENTS_UPDATER;
-
-			for (final ProgressIconUpdater updater : values())
-				if (updater.state == scope.getProgress().getState()) return updater;
-			return NULL_UPDATER;
-		}
-
-		abstract String getStyle(ReleaseScopeWidgetStyle style);
-
-		abstract String getTitle(Scope scope);
 	}
 
 }

@@ -1,0 +1,77 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
+	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+	
+	<ui:style src="../../../style/default.css">
+	
+		.rootContainer {
+			padding: 0px;
+			color: COLOR_TEXT_MENUBAR;
+		}
+		
+		.rootPanel {
+			width: 353px;
+			min-width: 250px;			
+		}
+		
+		.scrollContainer {
+			overflow-y: auto;
+			overflow-x: hidden !important;
+		}
+		
+		.emptyMessageContainer {
+			position: relative;
+			padding: 0px;
+			padding-top: PADDING_LARGE;
+			padding-bottom: 30px;
+			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
+			width: 100%;
+		}
+	   	
+	   	.emptyMessage {
+			color: COLOR_GRAY;
+			text-align: center;
+			width: 100%;
+			margin-bottom: PADDING_LARGE;
+			font-size: FONT_SIZE_MEDIUM;
+			font-family: FONT_DEFAULT;
+		}
+		
+		.helpLabel {
+			position: absolute;
+			bottom: 5px;
+			left: 0px;
+			right: 0px;
+			
+			color: COLOR_GRAY_LIGHT;
+			text-align: center;
+		}
+		
+		.scopes {
+	   		width: 100%;
+	   	}
+		
+	</ui:style>
+	
+	<layout:ApplicationPopupBoxContainer ui:field="rootPanel" styleName="{style.rootPanel}" addContainerStyleNames="{style.rootContainer}">
+		<g:ScrollPanel ui:field="notificationScrollContainer" styleName="{style.scrollContainer}">
+			<g:DeckPanel ui:field="deck">
+				<g:FlowPanel styleName="{style.emptyMessageContainer}">
+					<g:Label styleName="{style.emptyMessage}">
+						<ui:msg description="no assigned items in this project">You don't have any scope related to you</ui:msg>
+					</g:Label>
+					<g:Label styleName="{style.helpLabel}">
+						<ui:msg description="no assigned items help message">Drag your picture on a story that you want to do</ui:msg>
+					</g:Label>
+				</g:FlowPanel>
+				<w:ModelWidgetContainer ui:field="assignedScopesContainer" styleName="{style.scopes}" />
+			</g:DeckPanel>
+		</g:ScrollPanel>
+	</layout:ApplicationPopupBoxContainer>
+</ui:UiBinder> 

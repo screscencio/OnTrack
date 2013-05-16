@@ -87,57 +87,57 @@
 	</ui:style>
 
 	<layout:ApplicationPopupBoxContainer ui:field="rootPanel" styleName="{style.rootPanel}" addContainerStyleNames="{style.rootContainer}">
-			<g:DeckPanel ui:field="deckPanel" height="350px">
-				<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
-					<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
-				</g:SimplePanel>
-				<g:TabLayoutPanel ui:field="container" barHeight="35">
-					<g:tab>
-						<g:header>
-							<span class="{style.stackHeaderLabel}">
-								<ui:msg description="Notifications">Notifications</ui:msg>
-							</span>
-						</g:header>
-						
-						<g:ScrollPanel ui:field="notificationScrollContainer" styleName="{style.scrollContainer}">
-							<g:DeckPanel ui:field="notificationDeckPanel">
-								<g:FlowPanel styleName="{style.noNotificationContainer}">
-									<g:Label styleName="{style.noNotificationLabel}">
-										<ui:msg description="no notifications in project message">No Notification yet</ui:msg>
-									</g:Label>
-									<g:Label styleName="{style.helpLabel}">
-										<ui:msg description="notification help message">Notifications will arise when relevant events happen</ui:msg>
-									</g:Label>
-								</g:FlowPanel>
-								<misc:ModelWidgetContainer ui:field="notificationContainer" styleName="{style.notifications}" />
-							</g:DeckPanel>
-						</g:ScrollPanel>	
-					</g:tab>
+		<g:DeckPanel ui:field="deckPanel" height="350px">
+			<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
+				<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
+			</g:SimplePanel>
+			<g:TabLayoutPanel ui:field="container" barHeight="35">
+				<g:tab>
+					<g:header>
+						<span class="{style.stackHeaderLabel}">
+							<ui:msg description="Notifications">Notifications</ui:msg>
+						</span>
+					</g:header>
 					
-					<g:tab>
-						<g:header>
-							<span class="{style.stackHeaderLabel}">
-								<ui:msg description="Activities">Activities</ui:msg>
-							</span>
-						</g:header>
-						
-						<g:ScrollPanel ui:field="activityScrollContainer" styleName="{style.scrollContainer}">
-							<g:DeckPanel ui:field="activityDeckPanel">
-								<g:FlowPanel styleName="{style.noNotificationContainer}">
-									<g:Label styleName="{style.noNotificationLabel}">
-										<ui:msg description="no activities in project message">No Activities yet</ui:msg>
-									</g:Label>
-									<g:Label styleName="{style.helpLabel}">
-										<ui:msg description="activity help message">Activities will arise when any event happen in this project</ui:msg>
-									</g:Label>
-								</g:FlowPanel>
-								<misc:ModelWidgetContainer ui:field="activityContainer" styleName="{style.notifications}" />
-							</g:DeckPanel>
-						</g:ScrollPanel>
-					</g:tab>
+					<g:ScrollPanel ui:field="notificationScrollContainer" styleName="{style.scrollContainer}">
+						<g:DeckPanel ui:field="notificationDeckPanel">
+							<g:FlowPanel styleName="{style.noNotificationContainer}">
+								<g:Label styleName="{style.noNotificationLabel}">
+									<ui:msg description="no notifications in project message">No Notification yet</ui:msg>
+								</g:Label>
+								<g:Label styleName="{style.helpLabel}">
+									<ui:msg description="notification help message">Notifications will arise when relevant events happen</ui:msg>
+								</g:Label>
+							</g:FlowPanel>
+							<misc:ModelWidgetContainer ui:field="notificationContainer" styleName="{style.notifications}" />
+						</g:DeckPanel>
+					</g:ScrollPanel>	
+				</g:tab>
+				
+				<g:tab>
+					<g:header>
+						<span class="{style.stackHeaderLabel}">
+							<ui:msg description="Activities">Activities</ui:msg>
+						</span>
+					</g:header>
 					
-				</g:TabLayoutPanel>
-			</g:DeckPanel>
+					<g:ScrollPanel ui:field="activityScrollContainer" styleName="{style.scrollContainer}">
+						<g:DeckPanel ui:field="activityDeckPanel">
+							<g:FlowPanel styleName="{style.noNotificationContainer}">
+								<g:Label styleName="{style.noNotificationLabel}">
+									<ui:msg description="no activities in project message">No Activities yet</ui:msg>
+								</g:Label>
+								<g:Label styleName="{style.helpLabel}">
+									<ui:msg description="activity help message">Activities will arise when any event happen in this project</ui:msg>
+								</g:Label>
+							</g:FlowPanel>
+							<misc:ModelWidgetContainer ui:field="activityContainer" styleName="{style.notifications}" />
+						</g:DeckPanel>
+					</g:ScrollPanel>
+				</g:tab>
+				
+			</g:TabLayoutPanel>
+		</g:DeckPanel>
 	</layout:ApplicationPopupBoxContainer>
 
 </ui:UiBinder>

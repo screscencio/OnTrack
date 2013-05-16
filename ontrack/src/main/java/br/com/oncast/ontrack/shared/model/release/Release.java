@@ -193,6 +193,14 @@ public class Release implements Serializable, HasUUID {
 		return descendantReleases;
 	}
 
+	public List<Scope> getAllStoriesInTemporalOrderIncludingDescendantReleases() {
+		final List<Scope> scopes = new ArrayList<Scope>();
+		for (final Release release : getAllReleasesInTemporalOrder()) {
+			scopes.addAll(release.getScopeList());
+		}
+		return scopes;
+	}
+
 	/**
 	 * Returns a copy of the list of associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope, int)} and
 	 * {@link Release#removeScope(Scope)}. Do NOT manipulate this list directly.
