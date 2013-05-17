@@ -28,6 +28,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -108,7 +110,14 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 		return new ModelWidgetContainer<Annotation, ImpedimentMenuWidget>(new ModelWidgetFactory<Annotation, ImpedimentMenuWidget>() {
 			@Override
 			public ImpedimentMenuWidget createWidget(final Annotation modelBean) {
-				return new ImpedimentMenuWidget(subjectId, modelBean);
+				final ImpedimentMenuWidget widget = new ImpedimentMenuWidget(subjectId, modelBean);
+				widget.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(final ClickEvent event) {
+						hide();
+					}
+				});
+				return widget;
 			}
 		});
 	}

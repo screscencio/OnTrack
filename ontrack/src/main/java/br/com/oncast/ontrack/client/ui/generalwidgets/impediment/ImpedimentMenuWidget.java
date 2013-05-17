@@ -21,6 +21,9 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -29,7 +32,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ImpedimentMenuWidget extends Composite implements ModelWidget<Annotation>, UserUpdateListener {
+public class ImpedimentMenuWidget extends Composite implements HasClickHandlers, ModelWidget<Annotation>, UserUpdateListener {
 
 	private static ImpedimentMenuWidgetUiBinder uiBinder = GWT.create(ImpedimentMenuWidgetUiBinder.class);
 
@@ -94,6 +97,11 @@ public class ImpedimentMenuWidget extends Composite implements ModelWidget<Annot
 				if (author != null) author.setInnerText(user.getName());
 			}
 		});
+	}
+
+	@Override
+	public HandlerRegistration addClickHandler(final ClickHandler handler) {
+		return check.addClickHandler(handler);
 	}
 
 }
