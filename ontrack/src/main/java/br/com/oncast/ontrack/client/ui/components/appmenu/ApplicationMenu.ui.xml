@@ -115,8 +115,8 @@
 			<aw:NotificationMenuItem ui:field="notificationMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" title="Notifications">
 				<ui:attribute name="title" description="notifications menu item title" />
 			</aw:NotificationMenuItem>
-		    <aw:ApplicationMenuItem ui:field="assignedToMeMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" contentStyle="{style.icon} icon-tasks icon-2x" title="Assigned to me">
-				<ui:attribute name="title" description="assigned to me menu item title" />
+		    <aw:ApplicationMenuItem ui:field="assignedToMeMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" contentStyle="{style.icon} icon-tasks icon-2x" title="Related to me">
+				<ui:attribute name="title" description="related to me menu item title" />
 			</aw:ApplicationMenuItem>
 		</g:HTMLPanel>
 	</g:FlowPanel>
