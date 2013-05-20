@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
-import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -22,6 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,6 +52,9 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	FocusPanel panel;
 
 	@UiField
+	FlowPanel internalPanel;
+
+	@UiField
 	// TODO use FastLabel
 	Label descriptionLabel;
 
@@ -75,27 +79,14 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	// IMPORTANT Used to refresh DOM only when needed.
 	public KanbanScopeWidget(final Scope scope, final ProgressPanelWidgetInteractionHandler progressPanelInteractionHandler,
 			final DragAndDropManager userDragAndDropMananger) {
+		this.scope = scope;
+
 		associatedUsers = new ScopeAssociatedMembersWidget(scope, userDragAndDropMananger);
 		tags = new ScopeAssociatedTagsWidget(scope);
-
 		initWidget(uiBinder.createAndBindUi(this));
 
-		final Scope story = findStory(scope);
-		draggableAnchor.getElement().getStyle()
-				.setBackgroundColor(ClientServices.get().colorProvider().getColorFor(story).toCssRepresentation());
-		this.scope = scope;
+		ElementUtils.setBackgroundColor(draggableAnchor, ClientServices.get().colorProvider().getColorFor(scope.getStory()));
 		updateDescription();
-	}
-
-	private Scope findStory(final Scope scope) {
-		Release release = scope.getRelease();
-		Scope currentScope = scope;
-
-		while (scope.isLeaf() && release == null && !currentScope.isRoot()) {
-			currentScope = currentScope.getParent();
-			release = currentScope.getRelease();
-		}
-		return currentScope;
 	}
 
 	@UiHandler("panel")
@@ -123,6 +114,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 		associatedUsers.setShouldShowDone(!scope.getProgress().isDone());
 		associatedUsers.update();
 		tags.update();
+		ElementUtils.setBackgroundColor(internalPanel, ClientServices.get().colorProvider().getDueDateColor(scope));
 
 		final boolean isShowingAssociatedUsers = !scope.getProgress().isDone() && associatedUsers.getWidgetCount() > 0;
 		descriptionLabel.setStyleName(style.descriptionLabelWithAssociatedUsers(), isShowingAssociatedUsers);
