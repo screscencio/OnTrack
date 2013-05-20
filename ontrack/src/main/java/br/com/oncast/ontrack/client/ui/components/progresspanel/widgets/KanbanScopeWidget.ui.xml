@@ -102,7 +102,7 @@
 	            </g:FocusPanel>
 			</g:cell>
             <g:cell width="100%">
-	            <g:FlowPanel>
+	            <g:FlowPanel ui:field="internalPanel">
 	                <g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 	                <s:ScopeAssociatedMembersWidget ui:field="associatedUsers" styleName="{style.associatedMembers}"/>
 	                <s:ScopeAssociatedTagsWidget ui:field="tags" styleName="{style.associatedTags}"/>

@@ -34,6 +34,7 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class ColorProviderServiceImpl implements ColorProviderService {
 
+	private static final double DUE_DATE_COLOR_ALPHA = 0.5;
 	private static final double SCOPE_COLOR_ALPHA = 0.4;
 	private HashMap<UserRepresentation, Scope> userSelectionMap;
 	private HashMap<UserRepresentation, Color> userColorMap;
@@ -168,7 +169,8 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 		final double duration = estimator.getDuration(scope);
 		final double timeLeft = estimator.getRemainingTime(scope);
 		if (timeLeft > duration * 2) return Color.TRANSPARENT;
-		if (timeLeft > duration) return ColorUtil.getTransitionColor(Color.YELLOW, Color.RED, 1 - (timeLeft - duration) / duration);
-		return Color.RED;
+		if (timeLeft > duration) return ColorUtil.getTransitionColor(Color.YELLOW, Color.RED, 1 - (timeLeft - duration) / duration).setAlpha(
+				DUE_DATE_COLOR_ALPHA);
+		return Color.RED.setAlpha(DUE_DATE_COLOR_ALPHA);
 	}
 }
