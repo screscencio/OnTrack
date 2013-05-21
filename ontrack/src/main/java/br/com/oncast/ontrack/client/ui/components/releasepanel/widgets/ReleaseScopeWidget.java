@@ -143,7 +143,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	private void updateDueDate() {
 		final String color = SERVICE_PROVIDER.colorProvider().getDueDateColor(scope).toCssRepresentation();
-		panel.getElement().getStyle().setBackgroundColor(color);
+		internalPanel.getElement().getStyle().setBackgroundColor(color);
 	}
 
 	private void updateAssociatedUsers() {
