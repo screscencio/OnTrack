@@ -28,6 +28,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareDueDateAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
@@ -154,6 +155,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 						|| action instanceof ScopeAddTagAssociationAction
 						|| action instanceof ScopeRemoveTagAssociationAction
 						|| action instanceof ScopeBindReleaseAction
+						|| action instanceof ScopeRemoveAssociatedUserAction
 						|| action instanceof ScopeDeclareDueDateAction)
 						&& (action.getReferenceId().equals(scope.getId())
 						|| inferenceInfluencedScopeSet.contains(scope.getId()))) update();

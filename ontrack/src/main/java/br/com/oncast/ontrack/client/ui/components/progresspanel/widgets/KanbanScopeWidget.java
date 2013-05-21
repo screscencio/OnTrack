@@ -1,6 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
+import java.util.Set;
+
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
@@ -10,7 +13,14 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareDueDateAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -22,12 +32,12 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWidget<Scope> {
+public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWidget<Scope>, ActionExecutionListener {
 
 	private static KanbanScopeWidgetUiBinder uiBinder = GWT.create(KanbanScopeWidgetUiBinder.class);
 
@@ -52,10 +62,9 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	FocusPanel panel;
 
 	@UiField
-	FlowPanel internalPanel;
+	HorizontalPanel internalPanel;
 
 	@UiField
-	// TODO use FastLabel
 	Label descriptionLabel;
 
 	@UiField
@@ -180,6 +189,25 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	public void addAssociatedUsers(final DraggableMemberWidget memberWidget) {
 		memberWidget.setSizeSmall();
 		associatedUsers.add(memberWidget);
+	}
+
+	@Override
+	protected void onLoad() {
+		ClientServices.get().actionExecution().addActionExecutionListener(this);
+	}
+
+	@Override
+	protected void onUnload() {
+		ClientServices.get().actionExecution().removeActionExecutionListener(this);
+	}
+
+	@Override
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+			final Set<UUID> inferenceInfluencedScopeSet,
+			final boolean isUserAction) {
+		if ((action instanceof ScopeDeclareDueDateAction ||
+				action instanceof ScopeDeclareEffortAction ||
+				action instanceof ScopeDeclareProgressAction) && action.getReferenceId().equals(scope.getId())) update();
 	}
 
 }
