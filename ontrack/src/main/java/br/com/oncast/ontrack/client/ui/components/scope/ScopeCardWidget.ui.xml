@@ -8,7 +8,7 @@
 	<ui:image field="underwork" src="underwork.png"/>
 	<ui:image field="done" src="done.png"/>
 	
-	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget.ReleaseScopeWidgetStyle">
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget.ScopeCardWidgetStyle">
 	
 		.panel {
 			position: relative;
@@ -118,7 +118,7 @@
 			position: absolute;
 			top: 2px;
 			left: 5px;
-			right: 86px;
+			right: 80px;
 		}
 		
 		.descriptionContainer {

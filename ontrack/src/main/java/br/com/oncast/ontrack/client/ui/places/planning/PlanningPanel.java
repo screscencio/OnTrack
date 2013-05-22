@@ -3,8 +3,8 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.footerbar.FooterBar;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ScopeWidgetDropController;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar.SearchBar;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DraggableMembersListWidget;
@@ -87,7 +87,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 		final DropControllerFactory userDropControllerFactory = new DropControllerFactory() {
 			@Override
 			public DropController create(final Widget panel) {
-				return new ScopeWidgetDropController((ReleaseScopeWidget) panel);
+				return new ScopeWidgetDropController((ScopeCardWidget) panel);
 			}
 		};
 		releasePanel = new ReleasePanel(userDragAndDropManager, userDropControllerFactory);

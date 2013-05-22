@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
 import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.ReleasePanelInteractionHandler;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
@@ -27,7 +27,7 @@ class ProgressReleaseDropManager implements DropController {
 
 	@Override
 	public void onDrop(final DragContext context) {
-		interactionHandler.onScopeUnderworkdDropRequest(((ReleaseScopeWidget) context.draggable).getScope());
+		interactionHandler.onScopeUnderworkdDropRequest(((ScopeCardWidget) context.draggable).getScope());
 	}
 
 	@Override

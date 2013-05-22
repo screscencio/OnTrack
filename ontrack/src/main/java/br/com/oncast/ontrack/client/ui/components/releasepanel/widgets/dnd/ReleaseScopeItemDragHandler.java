@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidgetContainer;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.ModelWidgetContainerDragHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -21,7 +21,7 @@ public class ReleaseScopeItemDragHandler extends ModelWidgetContainerDragHandler
 	public void onDragEnd(final DragEndEvent event) {
 		super.onDragEnd(event); // IMPORTANT This keeps ModelWidgetContainer synchronized
 
-		final ReleaseScopeWidget draggedScopeWidget = (ReleaseScopeWidget) event.getContext().draggable;
+		final ScopeCardWidget draggedScopeWidget = (ScopeCardWidget) event.getContext().draggable;
 		final DropController dropTargetController = event.getContext().finalDropController;
 		if (dropTargetController == null) return;
 

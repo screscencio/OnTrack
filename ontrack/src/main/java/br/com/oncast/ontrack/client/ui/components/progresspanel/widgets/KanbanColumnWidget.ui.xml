@@ -9,7 +9,7 @@
 	
 		.rootPanel {
 			height: 100%;
-			width: 244px;
+			width: 275px;
 		}
 		
         .createButton {
@@ -30,7 +30,7 @@
 			overflow-y: auto;
 			overflow-x: hidden;
 			padding: 3px;
-			width: 215px;
+			width: 246px;
         }
         
         .highlightBlock {
