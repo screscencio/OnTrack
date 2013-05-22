@@ -3,10 +3,10 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidgetFactory;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanColumnDragHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanScopeItemDragHandler;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
@@ -87,7 +87,7 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 		interactionHandler = new ProgressPanelInteractionHandler(release, kanban);
 		scopeDragAndDropMangager.addDragHandler(new KanbanScopeItemDragHandler(interactionHandler));
 
-		scopeWidgetFactory = new KanbanScopeWidgetFactory(scopeDragAndDropMangager, interactionHandler, userDragAndDropManager, userDropControllerFactory);
+		scopeWidgetFactory = new KanbanScopeWidgetFactory(scopeDragAndDropMangager, userDragAndDropManager, userDropControllerFactory);
 
 		notStartedColumn = new KanbanColumnWidget(release, kanban.getNotStartedColumn(), scopeDragAndDropMangager, interactionHandler, scopeWidgetFactory);
 		doneColumn = new KanbanColumnWidget(release, kanban.getDoneColumn(), scopeDragAndDropMangager, interactionHandler, scopeWidgetFactory);
@@ -116,7 +116,7 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 	}
 
 	@Override
-	public KanbanScopeWidget getWidgetFor(final Scope scope) {
+	public ScopeCardWidget getWidgetFor(final Scope scope) {
 		final KanbanColumnWidget columnWidget = getColumnFor(scope.getProgress());
 		if (columnWidget == null) return null;
 

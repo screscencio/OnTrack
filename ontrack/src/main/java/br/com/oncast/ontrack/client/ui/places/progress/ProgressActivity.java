@@ -13,8 +13,7 @@ import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMen
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController.Display;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidget;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
@@ -121,7 +120,7 @@ public class ProgressActivity extends AbstractActivity {
 					final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
 				if (action instanceof ScopeRemoveAction && currSelectedScope.getId().equals(action.getReferenceId())) {
-					currSelectedScope = null;
+					deselectCurrentScopeWidget();
 					view.getProgressDetailWidget().setSelected(null);
 				}
 			}
@@ -132,7 +131,7 @@ public class ProgressActivity extends AbstractActivity {
 					@Override
 					public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
 						deselectCurrentScopeWidget();
-						selectScopeWidget(event.getTargetScope(), event.getSource() instanceof KanbanScopeWidget);
+						selectScopeWidget(event.getTargetScope(), event.getSource());
 					}
 				}));
 		tracking.end();
@@ -157,40 +156,30 @@ public class ProgressActivity extends AbstractActivity {
 	}
 
 	private void deselectCurrentScopeWidget() {
-		setScopeSelection(currSelectedScope, false, false);
+		updateScopesSelection(currSelectedScope, false, null);
+		currSelectedScope = null;
 	}
 
-	private void selectScopeWidget(final Scope scope, final boolean isKanbanScopeWidget) {
-		setScopeSelection(scope, true, isKanbanScopeWidget);
+	private void selectScopeWidget(final Scope scope, final Object source) {
+		updateScopesSelection(scope, true, source);
 		view.getProgressDetailWidget().setSelected(scope);
 		currSelectedScope = scope;
 	}
 
-	private void setScopeSelection(final Scope scope, final boolean selection, final boolean isKanbanScopeWidget) {
-		if (scope == null) return;
+	private void updateScopesSelection(final Scope selectedScope, final boolean selection, final Object eventSource) {
+		if (selectedScope == null) return;
 
-		final ReleaseScopeWidget releaseScopeWidget = view.getReleaseWidget().getWidgetFor(release).getScopeContainer().getWidgetFor(scope);
-		if (releaseScopeWidget != null && (!selection || !isKanbanScopeWidget)) {
-			releaseScopeWidget.setSelected(selection);
-
-			for (final Scope childTask : scope.getAllLeafs()) {
-				final KanbanScopeWidget widget = view.getKanbanPanel().getWidgetFor(childTask);
-				if (widget != null) widget.setAssociationHighlight(selection);
-			}
-		}
-
-		final KanbanScopeWidget kanbanScopeWidget = view.getKanbanPanel().getWidgetFor(scope);
-		if ((!selection || isKanbanScopeWidget) && kanbanScopeWidget != null) {
-			kanbanScopeWidget.setSelected(isKanbanScopeWidget && selection);
-			view.getReleaseWidget().getWidgetFor(release).getScopeContainer().getWidgetFor(getStory(scope)).setAssociationHighlight(selection);
+		final ScopeCardWidget releaseScopeWidget = view.getReleaseWidget().getWidgetFor(release).getScopeContainer().getWidgetFor(selectedScope.getStory());
+		setSelection(releaseScopeWidget, selection, eventSource);
+		for (final Scope childTask : selectedScope.getAllLeafs()) {
+			final ScopeCardWidget widget = view.getKanbanPanel().getWidgetFor(childTask);
+			if (widget != null) setSelection(widget, selection, eventSource);
 		}
 	}
 
-	private Scope getStory(Scope scope) {
-		while (scope.getRelease() == null) {
-			scope = scope.getParent();
-		}
-		return scope;
+	private void setSelection(final ScopeCardWidget widget, final boolean selection, final Object eventSource) {
+		widget.setAssociationHighlight(selection && widget != eventSource);
+		widget.setSelected(selection && widget == eventSource);
 	}
 
 	@Override

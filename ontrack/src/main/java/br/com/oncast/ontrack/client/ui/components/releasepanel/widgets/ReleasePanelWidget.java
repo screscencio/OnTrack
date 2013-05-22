@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDet
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ItemDroppedListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ReleaseScopeItemDragHandler;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
@@ -192,7 +193,7 @@ public class ReleasePanelWidget extends Composite {
 
 						final ReleaseWidget releaseWidget = getWidgetFor(release);
 
-						final ReleaseScopeWidget scopeWidget = releaseWidget.getScopeContainer().getWidgetFor(scope);
+						final ScopeCardWidget scopeWidget = releaseWidget.getScopeContainer().getWidgetFor(scope);
 						scopeWidget.setHasOpenImpediments(event.hasOpenImpediments());
 					}
 

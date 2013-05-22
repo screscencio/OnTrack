@@ -4,9 +4,9 @@
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:s="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope">
 	
-	<ui:image field="notStarted" src="../../releasepanel/widgets/not_started.png"/>
-	<ui:image field="underwork" src="../../releasepanel/widgets/underwork.png"/>
-	<ui:image field="done" src="../../releasepanel/widgets/done.png"/>
+	<ui:image field="notStarted" src="../../scope/not_started.png"/>
+	<ui:image field="underwork" src="../../scope/underwork.png"/>
+	<ui:image field="done" src="../../scope/done.png"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.AssignedScopeWidget.AssignedScopeWidgetStyle">
 	
 		.root {

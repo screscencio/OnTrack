@@ -10,8 +10,8 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.helper.ScopeTreeMouseHelper;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
@@ -151,7 +151,7 @@ public class PlanningActivity extends AbstractActivity {
 
 	private HandlerRegistration registerScopeSelectionEventHandler() {
 		return ClientServices.get().eventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
-			private ReleaseScopeWidget selectedScope;
+			private ScopeCardWidget selectedScope;
 
 			@Override
 			public void onScopeSelectionRequest(final ScopeSelectionEvent event) {

@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -27,7 +27,7 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 	@Override
 	public void onEnter(final DragContext context) {
 		super.onEnter(context);
-		final KanbanScopeWidget draggedScope = (KanbanScopeWidget) context.draggable;
+		final ScopeCardWidget draggedScope = (ScopeCardWidget) context.draggable;
 		dropIndex = findIndex(draggedScope);
 	}
 
@@ -46,14 +46,14 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 		kanbanColumnWidget.setHighlight(true);
 	}
 
-	private int findIndex(final KanbanScopeWidget draggedScope) {
+	private int findIndex(final ScopeCardWidget draggedScope) {
 		int index = 0;
 		final List<Scope> tasks = release.getTasks();
 		final int draggedPriority = tasks.indexOf(draggedScope.getModelObject());
 		for (final Widget widget : (VerticalPanel) dropTarget) {
-			if (!(widget instanceof KanbanScopeWidget)) continue;
+			if (!(widget instanceof ScopeCardWidget)) continue;
 
-			final KanbanScopeWidget w = (KanbanScopeWidget) widget;
+			final ScopeCardWidget w = (ScopeCardWidget) widget;
 			if (tasks.indexOf(w.getModelObject()) >= draggedPriority) return index;
 			index++;
 		}

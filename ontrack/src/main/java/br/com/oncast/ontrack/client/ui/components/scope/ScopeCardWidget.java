@@ -1,11 +1,16 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
+package br.com.oncast.ontrack.client.ui.components.scope;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ProgressIconUpdater;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ProgressIconUpdaterStyle;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.SpacerCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.CommandMenuMessages;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
@@ -27,12 +32,16 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsW
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.PrioritizationCriteria;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -53,17 +62,17 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelWidget<Scope> {
+public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidget<Scope>, ActionExecutionListener {
 
 	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
 	private static final CommandMenuMessages MESSAGES = GWT.create(CommandMenuMessages.class);
 
-	private static ReleaseScopeWidgetUiBinder uiBinder = GWT.create(ReleaseScopeWidgetUiBinder.class);
+	private static ScopeCardWidgetUiBinder uiBinder = GWT.create(ScopeCardWidgetUiBinder.class);
 
-	interface ReleaseScopeWidgetUiBinder extends UiBinder<Widget, ReleaseScopeWidget> {}
+	interface ScopeCardWidgetUiBinder extends UiBinder<Widget, ScopeCardWidget> {}
 
-	interface ReleaseScopeWidgetStyle extends ProgressIconUpdaterStyle {
+	interface ScopeCardWidgetStyle extends ProgressIconUpdaterStyle {
 		String selected();
 
 		String targetHighlight();
@@ -74,7 +83,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	@UiField
-	ReleaseScopeWidgetStyle style;
+	ScopeCardWidgetStyle style;
 
 	@UiField
 	FocusPanel panel;
@@ -128,11 +137,11 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private boolean skipScopeSelectionEventOnPopupClose = false;
 	private boolean currentScopeHasOpenImpediments = false;
 
-	public ReleaseScopeWidget(final Scope scope) {
+	public ScopeCardWidget(final Scope scope) {
 		this(scope, false, null);
 	}
 
-	public ReleaseScopeWidget(final Scope scope, final boolean releaseSpecific, final DragAndDropManager userDragAndDropMananger) {
+	public ScopeCardWidget(final Scope scope, final boolean releaseSpecific, final DragAndDropManager userDragAndDropMananger) {
 		associatedUsers = createAssociatedUsersListWidget(scope, userDragAndDropMananger);
 		tags = new ScopeAssociatedTagsWidget(scope);
 		initWidget(uiBinder.createAndBindUi(this));
@@ -179,7 +188,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		hasAnyDetails |= hasDueDate;
 		if (hasDueDate) dueDateLabel.setInnerText(HumanDateFormatter.getRelativeDate(scope.getDueDate()));
 		ElementUtils.setVisible(dueDateContainer, hasDueDate);
-		ElementUtils.setBackgroundColor(dueDateLabel, SERVICE_PROVIDER.colorProvider().getDueDateColor(scope), true);
+		ElementUtils.setBackgroundColor(dueDateContainer, SERVICE_PROVIDER.colorProvider().getDueDateColor(scope), true);
 		percentualBar.setPercentual(calculatePercentual(scope));
 		return hasAnyDetails;
 	}
@@ -217,7 +226,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	 * @return if the humanId was updated.
 	 */
 	private boolean updateHumanId() {
-		final String humanId = ClientServices.getCurrentProjectContext().getHumanId(scope);
+		final String humanId = ClientServices.getCurrentProjectContext().getHumanId(scope.getStory());
 		humanIdLabel.setInnerHTML(humanId);
 		ElementUtils.setVisible(humanIdLabel, !humanId.isEmpty());
 		return true;
@@ -258,7 +267,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private void updateStoryColor(final Progress progress) {
 		final Style s = ElementUtils.getStyle(humanIdLabel);
 
-		if (!progress.isNotStarted()) s.setBackgroundColor(SERVICE_PROVIDER.colorProvider().getColorFor(scope).toCssRepresentation());
+		if (!progress.isNotStarted()) s.setBackgroundColor(SERVICE_PROVIDER.colorProvider().getColorFor(scope.getStory()).toCssRepresentation());
 		else s.clearBackgroundColor();
 	}
 
@@ -430,4 +439,20 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		return new ScopeAssociatedMembersWidget(scope, userDragAndDropMananger, 2);
 	}
 
+	@Override
+	protected void onLoad() {
+		ClientServices.get().actionExecution().addActionExecutionListener(this);
+	}
+
+	@Override
+	protected void onUnload() {
+		ClientServices.get().actionExecution().removeActionExecutionListener(this);
+	}
+
+	@Override
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+			final Set<UUID> inferenceInfluencedScopeSet,
+			final boolean isUserAction) {
+		if (action instanceof ScopeAction && action.getReferenceId().equals(scope.getId())) update();
+	}
 }

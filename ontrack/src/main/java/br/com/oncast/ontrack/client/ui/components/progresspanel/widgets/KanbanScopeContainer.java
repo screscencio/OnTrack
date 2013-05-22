@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
@@ -9,11 +10,11 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
-public class KanbanScopeContainer extends ModelWidgetContainer<Scope, KanbanScopeWidget> {
+public class KanbanScopeContainer extends ModelWidgetContainer<Scope, ScopeCardWidget> {
 
 	private final KanbanColumn kanbanColumn;
 
-	public KanbanScopeContainer(final KanbanColumn column, final ModelWidgetFactory<Scope, KanbanScopeWidget> modelWidgetFactory) {
+	public KanbanScopeContainer(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeCardWidget> modelWidgetFactory) {
 		super(modelWidgetFactory, createVerticalContainer());
 		this.kanbanColumn = column;
 	}

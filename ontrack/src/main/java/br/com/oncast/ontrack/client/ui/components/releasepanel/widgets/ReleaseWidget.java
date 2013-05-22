@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartPopup;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
@@ -139,7 +140,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
 
-	private final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory;
+	private final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory;
 
 	private boolean isContainerStateOpen = true;
 
@@ -160,13 +161,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private boolean kanbanSpecific;
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
-			final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory,
+			final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this(release, releaseWidgetFactory, scopeWidgetFactory, releasePanelInteractionHandler, false);
 	}
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
-			final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory,
+			final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean kanbanSpecific) {
 		this.release = release;
 		this.infoWidget = new ReleaseInfoWidget(release);
