@@ -57,7 +57,7 @@ public enum HumanDateFormatter {
 
 		@Override
 		protected String formatRelativeTime(final Date date) {
-			return format("E, d", date);
+			return format("EE d", date);
 		}
 	},
 	WEEKS(1 * MONTH, "yyyyMM") {
@@ -68,7 +68,7 @@ public enum HumanDateFormatter {
 
 		@Override
 		protected String formatRelativeTime(final Date date) {
-			return format("E, d", date);
+			return format("MMM d", date);
 		}
 	},
 	MONTHS(1 * YEAR, "yyyy") {
@@ -79,7 +79,7 @@ public enum HumanDateFormatter {
 
 		@Override
 		protected String formatRelativeTime(final Date date) {
-			return format("MMM, d", date);
+			return format("MMM d", date);
 		}
 	},
 	YEARS(Long.MAX_VALUE, "G") {
@@ -90,7 +90,7 @@ public enum HumanDateFormatter {
 
 		@Override
 		protected String formatRelativeTime(final Date date) {
-			return format("MMM, yyyy", date);
+			return format("MM yyyy", date);
 		}
 	};
 

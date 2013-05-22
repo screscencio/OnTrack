@@ -121,7 +121,7 @@ html,body {
 
 /* Drag n Drop */
 .dragdrop-movable-panel {
-	cursor: move !important;
+	cursor: move;
 }
 
 .dragdrop-positioner {
@@ -139,10 +139,25 @@ html,body {
 	border-width: 0px !important;
 }
 
+.dragdrop-draggable {
+	zoom: normal;
+	cursor: move;
+	cursor: grab;
+	cursor: url(https://mail.google.com/mail/images/2/openhand.cur), pointer;
+	cursor: -moz-grab;
+	cursor: -webkit-grab;
+}
+
 .dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {
 	filter: alpha(opacity \= 100);
 	opacity: 1;
 	border-width: 1px !important;
+	
+	cursor: move;
+	cursor: grabbing;
+	cursor: url(https://mail.google.com/mail/images/2/closedhand.cur), pointer;
+	cursor: -moz-grabbing;
+	cursor: -webkit-grabbing;
 }
 
 .kanban .dragdrop-selected,.kanban .dragdrop-dragging,.kanban .dragdrop-proxy {
@@ -160,10 +175,6 @@ html,body {
 	box-shadow: 0px 2px 6px #000;
 	margin-top: -2px;
 	margin-left: -1px;
-}
-
-.dragdrop-draggable {
-	zoom: normal;
 }
 
 .gwt-PopupPanel {

@@ -7,10 +7,8 @@
 	<ui:image field="notStarted" src="not_started.png"/>
 	<ui:image field="underwork" src="underwork.png"/>
 	<ui:image field="done" src="done.png"/>
-	<ui:data field="draggableImage" src="../../move_scope.png"/>
-	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget.ReleaseScopeWidgetStyle">
 	
-	    @url draggableImageUrl draggableImage;
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget.ReleaseScopeWidgetStyle">
 	
 		.panel {
 			position: relative;
@@ -23,7 +21,6 @@
 		
 		.panel:hover {
 			background-color: COLOR_HOVER_SECONDARY;
-			cursor: pointer;
 		}
 		
 		.selected {
@@ -47,33 +44,13 @@
 			z-index: 1;
 			border: 1px solid #888;
 		}	
-		
-	    .internalPanel {
-	        position: relative;
-	        height: 100%;
-	        width: 100%;
-	    }
-	    
+
 	    .percentualBar {
 			position: absolute;
 			bottom: 0px;
 			left: 0px;
 			right: 0px;
 			top: 0px;
-		}
-		
-		.descriptionContainer {
-			position: relative;
-			padding: 10px 5px;
-		}
-		
-		.effortLabel {
-			font-size: 11px;
-			padding-top: 2px;
-			padding-right: 6px;
-			font-weight: bolder;
-			color: #B3B3B3;
-			text-align: center;
 		}
 		
 		.draggable {
@@ -118,35 +95,71 @@
 		
 		.tags {
 			position: absolute;
-			right: 7px;
+			right: 86px;
 			bottom: -4px;
 		}
 		
-		.draggingMousePointer {
-			cursor: move;
+		.associatedUsers {
+			position: absolute;
+			right: 1px;
+			bottom: 0px;
 		}
+		
+		.detailsContainer {
+			height: 3px;
+			position: relative;
+		}
+		
+		.largeDetails {
+			height: 30px;
+		}	
+		
+		.detailsTagsContainer {
+			position: absolute;
+			top: 2px;
+			left: 5px;
+			right: 86px;
+		}
+		
+		.descriptionContainer {
+			padding-top: 2px;
+			padding-left: 2px;
+			position: relative;
+		}
+		
+		.dueDateContainer {
+			display: inline-block;
+		}
+		
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel}">
-		<g:HTMLPanel>
+		<g:HTMLPanel ui:field="internalPanel">
 			<t:PercentualBar ui:field="percentualBar" styleName="{style.percentualBar}" />
-			<g:HorizontalPanel ui:field="internalPanel" styleName="{style.internalPanel}" verticalAlignment="middle">
-				<g:cell height="100%">
-					<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
-						<g:SimplePanel styleName="{style.draggableImage}"/>
-					</g:FocusPanel>
-				</g:cell>
-				<s:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
-		  		<g:cell width="100%">
-		  			<g:HTMLPanel styleName="{style.descriptionContainer}">
-		  				<span ui:field="humanIdLabel" class="{style.humanId}"/>
-						<span ui:field="descriptionLabel"/>
-						<s:ScopeAssociatedTagsWidget ui:field="tags" styleName="{style.tags}"/>
-		  			</g:HTMLPanel>
-		  		</g:cell>
-	  			<t:FastLabel ui:field="effortLabel" styleName="{style.effortLabel}" />
-	 			<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIconNotStarted}"/>
-			</g:HorizontalPanel>
+			<table class="{style.descriptionContainer}">
+				<tbody>
+					<tr>
+						<td width="100%">
+							<span ui:field="humanIdLabel" class="{style.humanId}"/>
+							<span ui:field="descriptionLabel"/>
+						</td>
+						<td>
+				 			<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIconNotStarted}"/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div ui:field="detailsContainer" class="{style.detailsContainer}">
+				<div class="{style.detailsTagsContainer}">
+					<span ui:field="effortLabel" class="{style.humanId}"/>
+					<span ui:field="valueLabel" class="{style.humanId}"/>
+					<div ui:field="dueDateContainer" class="{style.dueDateContainer} {style.humanId}">
+						<i class="icon-time"></i> <span ui:field="dueDateLabel"/>
+					</div>
+				</div>
+	 			<s:ScopeAssociatedMembersWidget ui:field="associatedUsers" styleName="{style.associatedUsers}"/>
+				<s:ScopeAssociatedTagsWidget ui:field="tags" styleName="{style.tags}"/>
+			</div>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

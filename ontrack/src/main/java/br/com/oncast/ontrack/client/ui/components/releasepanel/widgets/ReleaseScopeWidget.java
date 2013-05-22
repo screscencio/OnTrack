@@ -13,7 +13,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.Horizon
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PercentualBar;
@@ -25,9 +24,11 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.PrioritizationCriteria;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -36,19 +37,20 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelWidget<Scope> {
@@ -68,7 +70,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 		String associationHighlight();
 
-		String draggingMousePointer();
+		String largeDetails();
 	}
 
 	@UiField
@@ -84,19 +86,28 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	SpanElement descriptionLabel;
 
 	@UiField
-	FocusPanel draggableAnchor;
-
-	@UiField
 	FocusPanel progressIcon;
 
 	@UiField
-	HorizontalPanel internalPanel;
+	HTMLPanel internalPanel;
 
 	@UiField
 	PercentualBar percentualBar;
 
 	@UiField
-	FastLabel effortLabel;
+	DivElement detailsContainer;
+
+	@UiField
+	SpanElement effortLabel;
+
+	@UiField
+	SpanElement valueLabel;
+
+	@UiField
+	DivElement dueDateContainer;
+
+	@UiField
+	SpanElement dueDateLabel;
 
 	@UiField(provided = true)
 	ScopeAssociatedMembersWidget associatedUsers;
@@ -128,27 +139,24 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 		this.scope = scope;
 		this.releaseSpecific = releaseSpecific;
-		effortLabel.setVisible(releaseSpecific);
 
 		update();
 	}
 
 	@Override
 	public boolean update() {
-		updateAssociatedUsers();
+		final boolean shouldBeLarge = updateAssociatedUsers() | updateValues();
+		ElementUtils.setClassName(detailsContainer, style.largeDetails(), shouldBeLarge);
 		updateTags();
-		updateDueDate();
-		return updateHumanId() | updateDescription() | updateProgress() | updateTitle() | updateValues();
+		return updateHumanId() | updateDescription() | updateProgress() | updateTitle();
 	}
 
-	private void updateDueDate() {
-		final String color = SERVICE_PROVIDER.colorProvider().getDueDateColor(scope).toCssRepresentation();
-		internalPanel.getElement().getStyle().setBackgroundColor(color);
-	}
-
-	private void updateAssociatedUsers() {
-		associatedUsers.setShouldShowDone(!scope.getProgress().isDone());
+	private boolean updateAssociatedUsers() {
+		boolean isAssociatedUsersVisible = !scope.getProgress().isDone();
+		associatedUsers.setShouldShowDone(isAssociatedUsersVisible);
 		associatedUsers.update();
+		isAssociatedUsersVisible &= associatedUsers.getWidgetCount() > 0;
+		return isAssociatedUsersVisible;
 	}
 
 	private void updateTags() {
@@ -164,15 +172,25 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	private boolean updateValues() {
-		if (!releaseSpecific) return false;
-
-		final float inferedEffort = scope.getEffort().getInfered();
-		final String effortStr = ClientDecimalFormat.roundFloat(inferedEffort, 1);
-		effortLabel.setText(effortStr);
-		effortLabel.setTitle(effortStr + " effort points");
+		boolean hasAnyDetails = false;
+		hasAnyDetails |= setPriorizationCriteria(effortLabel, "#", scope.getEffort(), "effort points");
+		hasAnyDetails |= setPriorizationCriteria(valueLabel, "$", scope.getValue(), "value points");
+		final boolean hasDueDate = scope.hasDueDate();
+		hasAnyDetails |= hasDueDate;
+		if (hasDueDate) dueDateLabel.setInnerText(HumanDateFormatter.getRelativeDate(scope.getDueDate()));
+		ElementUtils.setVisible(dueDateContainer, hasDueDate);
+		ElementUtils.setBackgroundColor(dueDateLabel, SERVICE_PROVIDER.colorProvider().getDueDateColor(scope), true);
 		percentualBar.setPercentual(calculatePercentual(scope));
+		return hasAnyDetails;
+	}
 
-		return true;
+	private boolean setPriorizationCriteria(final SpanElement label, final String symbol, final PrioritizationCriteria criteria, final String titlePosfix) {
+		final String effortStr = ClientDecimalFormat.roundFloat(criteria.getInfered(), 1);
+		label.setInnerText(symbol + " " + effortStr);
+		label.setTitle(effortStr + " " + titlePosfix);
+		final boolean visible = criteria.hasDeclared() || criteria.getInfered() >= 0.1F;
+		ElementUtils.setVisible(label, visible);
+		return visible;
 	}
 
 	private int calculatePercentual(final Scope scope) {
@@ -238,7 +256,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	private void updateStoryColor(final Progress progress) {
-		final Style s = ElementUtils.getStyle(draggableAnchor);
+		final Style s = ElementUtils.getStyle(humanIdLabel);
 
 		if (!progress.isNotStarted()) s.setBackgroundColor(SERVICE_PROVIDER.colorProvider().getColorFor(scope).toCssRepresentation());
 		else s.clearBackgroundColor();
@@ -361,12 +379,12 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	@UiHandler("panel")
 	protected void onScopeWidgetMouseDown(final MouseDownEvent event) {
-		panel.setStyleName(style.draggingMousePointer(), true);
+		panel.setStyleName("dragdrop-dragging", true);
 	}
 
 	@UiHandler("panel")
-	protected void onScopeWidgetUpDown(final MouseUpEvent event) {
-		panel.setStyleName(style.draggingMousePointer(), false);
+	protected void onScopeWidgetMouseOver(final MouseMoveEvent event) {
+		panel.setStyleName("dragdrop-dragging", false);
 	}
 
 	private void fireScopeSelectionEvent() {
