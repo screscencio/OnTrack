@@ -37,13 +37,11 @@
 		.associatedUsers {
 			background: transparent;
 			padding: 2px;
-			padding-top: 1px;
 		}
 		
 		.associatedUsers:HOVER, .associatedUsersOverflow {
 			background: COLOR_BACKGROUND_SECONDARY;
 			border: 1px solid #BEBEBE;
-			border-top: none;
 			padding: 1px;
 		}
 		
