@@ -28,10 +28,14 @@ public class KanbanTestUtils {
 	}
 
 	public static Kanban createWith(final String... columnDescriptions) {
-		final Kanban kanban = KanbanFactory.createEmpty();
+		final Kanban kanban = KanbanFactory.create();
 		for (final String description : columnDescriptions) {
 			kanban.appendColumn(description);
 		}
 		return kanban;
+	}
+
+	public static KanbanColumn createColumn(final String description) {
+		return new KanbanColumn(description);
 	}
 }

@@ -14,12 +14,12 @@ import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceTestUtils;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ScopeUpdateActionUndoAndRedoTest {
@@ -74,7 +74,7 @@ public class ScopeUpdateActionUndoAndRedoTest {
 
 		final Scope parent = currentScope.getChild(1);
 		final Scope scope = parent.getChild(0);
-		final ProjectContext context = ProjectTestUtils.createProjectContext(currentScope, ReleaseFactoryTestUtil.create("r"));
+		final ProjectContext context = ProjectTestUtils.createProjectContext(currentScope, ReleaseTestUtils.createRelease("r"));
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6), currentScope);
 
@@ -100,7 +100,7 @@ public class ScopeUpdateActionUndoAndRedoTest {
 		final Scope parent = scope.getChild(1);
 		final Scope child = parent.getChild(0);
 		executeAction(parent, new ScopeUpdateAction(child.getId(), updatePattern),
-				ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create("")));
+				ProjectTestUtils.createProjectContext(scope, ReleaseTestUtils.createRelease("")));
 
 		return scope;
 	}

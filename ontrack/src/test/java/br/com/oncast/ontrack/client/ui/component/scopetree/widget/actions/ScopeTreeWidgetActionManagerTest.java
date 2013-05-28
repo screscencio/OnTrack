@@ -25,10 +25,10 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
@@ -67,7 +67,7 @@ public class ScopeTreeWidgetActionManagerTest {
 		rootScope = ScopeTestUtils.createScope("root");
 		newScopeDescription = "description for new scope";
 
-		context = ProjectTestUtils.createProjectContext(rootScope, ReleaseFactoryTestUtil.create(""));
+		context = ProjectTestUtils.createProjectContext(rootScope, ReleaseTestUtils.createRelease(""));
 
 		final ScopeTreeAction widgetActionMock = mock(ScopeTreeAction.class);
 		normalAction = new ScopeInsertChildAction(rootScope.getId(), newScopeDescription);

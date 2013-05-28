@@ -29,6 +29,11 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_2)
 	private String columnDescription;
 
+	@ConvertUsing(StringToUuidConverter.class)
+	@ConversionAlias("columnId")
+	@Column(name = ActionTableColumns.STRING_3)
+	private String columnId;
+
 	@ConversionAlias("shouldFixKanban")
 	@Column(name = ActionTableColumns.BOOLEAN_1)
 	private boolean shouldFixKanban;
@@ -81,5 +86,13 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 
 	public void setShouldFixKanban(final boolean shouldFixKanban) {
 		this.shouldFixKanban = shouldFixKanban;
+	}
+
+	public String getColumnId() {
+		return columnId;
+	}
+
+	public void setColumnId(String columnId) {
+		this.columnId = columnId;
 	}
 }

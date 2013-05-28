@@ -12,10 +12,10 @@ import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 public class ScopeInsertSiblingUpActionTest extends ModelActionTest {
@@ -37,7 +37,7 @@ public class ScopeInsertSiblingUpActionTest extends ModelActionTest {
 
 		newScopeDescription = "description for new scope";
 
-		context = ProjectTestUtils.createProjectContext(rootScope, ReleaseFactoryTestUtil.create(""));
+		context = ProjectTestUtils.createProjectContext(rootScope, ReleaseTestUtils.createRelease(""));
 	}
 
 	@Test

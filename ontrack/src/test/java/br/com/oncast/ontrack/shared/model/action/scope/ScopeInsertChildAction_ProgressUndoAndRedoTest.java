@@ -15,11 +15,11 @@ import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.ProgressTestUtils;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
@@ -34,7 +34,7 @@ public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 
 		final Scope parent = currentScope;
 		final Scope scope = parent.getChild(1);
-		final ProjectContext context = ProjectTestUtils.createProjectContext(currentScope, ReleaseFactoryTestUtil.create("r"));
+		final ProjectContext context = ProjectTestUtils.createProjectContext(currentScope, ReleaseTestUtils.createRelease("r"));
 
 		ModelAction action = new ScopeInsertChildAction(scope.getId(), "b1 #5 %DONE");
 		ModelAction rollbackAction = executeAction(parent, action, context);
@@ -56,7 +56,7 @@ public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 
 		final Scope parent = currentScope.getChild(1);
 		final Scope scope = parent.getChild(0);
-		final ProjectContext context = ProjectTestUtils.createProjectContext(currentScope, ReleaseFactoryTestUtil.create("r"));
+		final ProjectContext context = ProjectTestUtils.createProjectContext(currentScope, ReleaseTestUtils.createRelease("r"));
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6), currentScope);
 

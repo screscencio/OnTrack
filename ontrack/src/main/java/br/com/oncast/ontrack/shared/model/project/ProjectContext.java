@@ -23,6 +23,7 @@ import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotF
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
+import br.com.oncast.ontrack.shared.model.kanban.exception.KanbanColumnNotFoundException;
 import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.HumanIdMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.Metadata;
@@ -141,7 +142,7 @@ public class ProjectContext implements HasUUID {
 		final Kanban kanban;
 		if (project.hasKanbanFor(release)) kanban = project.getKanban(release);
 		else {
-			kanban = KanbanFactory.createFor(release);
+			kanban = KanbanFactory.create();
 			project.setKanban(release, kanban);
 		}
 		if (!kanban.isLocked()) kanban.merge(getPreviousKanbanFrom(release));
@@ -156,7 +157,7 @@ public class ProjectContext implements HasUUID {
 				return project.hasKanbanFor(release);
 			}
 		});
-		return previousRelease == null ? KanbanFactory.createEmpty() : project.getKanban(previousRelease);
+		return previousRelease == null ? KanbanFactory.create() : project.getKanban(previousRelease);
 	}
 
 	public Set<Release> getAllReleasesWithDirectScopes() {
@@ -365,5 +366,11 @@ public class ProjectContext implements HasUUID {
 			tags.add(metadata.getTag());
 		}
 		return tags;
+	}
+
+	public KanbanColumn findKanbanColumn(final UUID columnId) throws KanbanColumnNotFoundException {
+		final KanbanColumn column = project.findKanbanColumn(columnId);
+		if (column == null) throw new KanbanColumnNotFoundException();
+		return column;
 	}
 }

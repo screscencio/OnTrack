@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
+import br.com.oncast.ontrack.client.ui.generalwidgets.kanban.KanbanColumnDetailsWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.release.ReleaseDetailsInBlockWidget;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.utils.jquery.JQuery;
@@ -26,6 +27,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
+import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
@@ -177,6 +179,10 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 		return new DetailsPanel(new ReleaseDetailsInBlockWidget(release), release.getId(), release.getDescription(), "", "");
 	}
 
+	public static DetailsPanel forKanbanColumn(final KanbanColumn column) {
+		return new DetailsPanel(new KanbanColumnDetailsWidget(column), column.getId(), column.getDescription(), "", "");
+	}
+
 	public static DetailsPanel forScope(final Scope scope) {
 		final Release release = scope.getRelease();
 		final String humanId = ClientServices.getCurrentProjectContext().getHumanId(scope);
@@ -252,4 +258,5 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 		handlerRegistration.removeHandler();
 		handlerRegistration = null;
 	}
+
 }

@@ -6,7 +6,6 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveAssociatedUserActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
@@ -47,7 +46,8 @@ public class ScopeRemoveAssociatedUserAction implements ScopeAction {
 			}
 		}
 
-		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_INEXISTENT);
+		throw new RuntimeException("\n\n userId: " + userId.toString() + "\nscopeId: " + scopeId.toString() + "\n\n");
+		// throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_INEXISTENT);
 	}
 
 	@Override

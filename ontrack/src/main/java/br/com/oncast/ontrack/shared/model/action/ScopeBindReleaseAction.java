@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
@@ -55,6 +55,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		this.referenceId = scopeId;
 		this.newReleaseDescription = newReleaseDescription;
 		this.scopePriority = -1;
+		this.rollbackSubActions = new ArrayList<ModelAction>();
 	}
 
 	public ScopeBindReleaseAction(final UUID scopeId, final String releaseDescription, final int scopePriority) {
@@ -76,27 +77,53 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		final int oldScopePriority = (oldRelease != null) ? oldRelease.removeScope(selectedScope) : -1;
 		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
 
-		final List<ModelAction> newRollbackSubActions = (rollbackSubActions == null) ? new ArrayList<ModelAction>() : processRollbackActions(context,
-				actionContext);
-
+		final List<ModelAction> newRollbackSubActions = processRollbackSubActions(context, actionContext);
 		if (shouldBindToNewRelease()) {
-			final ModelAction releaseExistenceAssuranceAction = assureNewReleaseExistence(context, actionContext);
-			if (releaseExistenceAssuranceAction != null) newRollbackSubActions.add(0, releaseExistenceAssuranceAction);
+			final ModelAction releaseRemoveAction = assureNewReleaseExistence(context, actionContext);
+			if (releaseRemoveAction != null) newRollbackSubActions.add(0, releaseRemoveAction);
 
 			final Release newRelease = ActionHelper.findRelease(newReleaseDescription, context);
 			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
 			else newRelease.addScope(selectedScope, scopePriority);
 
-			if (selectedScope.getProgress().getState().equals(ProgressState.UNDER_WORK)) newRollbackSubActions.add(new ScopeDeclareProgressAction(referenceId,
-					selectedScope.getProgress().getDescription()).execute(context, actionContext));
+			if (rollbackSubActionsContainsKanbanColumnCreateAction()) assureKanbanColumnExistence(selectedScope, newRelease, context);
 		}
+		newRollbackSubActions.addAll(processKanbanSubActions(context, actionContext));
 
 		return new ScopeBindReleaseAction(referenceId, oldReleaseDescription, oldScopePriority, newRollbackSubActions);
 	}
 
-	private List<ModelAction> processRollbackActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+	private boolean rollbackSubActionsContainsKanbanColumnCreateAction() {
+		for (final ModelAction action : rollbackSubActions) {
+			if (action instanceof KanbanColumnCreateAction) return true;
+		}
+		return false;
+	}
+
+	private List<ModelAction> processKanbanSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final List<ModelAction> newRollbackSubActions = new ArrayList<ModelAction>();
 		for (final ModelAction action : rollbackSubActions) {
+			if (!(action instanceof KanbanColumnCreateAction)) continue;
+
+			final ModelAction newRollbackAction = action.execute(context, actionContext);
+			newRollbackSubActions.add(0, newRollbackAction);
+		}
+		return newRollbackSubActions;
+	}
+
+	private void assureKanbanColumnExistence(final Scope scope, final Release release, final ProjectContext context) {
+		final Kanban kanban = context.getKanban(release);
+		for (final Scope taks : scope.getAllLeafs()) {
+			final String description = taks.getProgress().getDescription();
+			if (!kanban.hasNonInferedColumn(description)) rollbackSubActions.add(new KanbanColumnCreateAction(release.getId(), description, false));
+		}
+	}
+
+	private List<ModelAction> processRollbackSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+		final List<ModelAction> newRollbackSubActions = new ArrayList<ModelAction>();
+		for (final ModelAction action : rollbackSubActions) {
+			if (action instanceof KanbanColumnCreateAction) continue;
+
 			final ModelAction newRollbackAction = action.execute(context, actionContext);
 			newRollbackSubActions.add(0, newRollbackAction);
 

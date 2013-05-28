@@ -1,7 +1,11 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRenameActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -32,6 +36,9 @@ public class KanbanColumnRenameAction implements KanbanAction {
 	@ConversionAlias("newDescription")
 	private String newDescription;
 
+	@ElementList(required = false)
+	private List<ModelAction> subActions;
+
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected KanbanColumnRenameAction() {}
 
@@ -39,6 +46,7 @@ public class KanbanColumnRenameAction implements KanbanAction {
 		this.releaseId = releaseId;
 		this.columnDescription = columnDescription;
 		this.newDescription = newDescription;
+		this.subActions = new ArrayList<ModelAction>();
 	}
 
 	@Override
@@ -59,7 +67,8 @@ public class KanbanColumnRenameAction implements KanbanAction {
 			if (scope.getProgress().getDescription().equals(columnDescription)) new ScopeDeclareProgressAction(scope.getId(), newDescription).execute(context,
 					actionContext);
 		}
-		kanban.setLocked(true);
+		if (subActions.isEmpty() && !kanban.isLocked()) subActions.add(new KanbanLockAction(releaseId));
+		ActionHelper.executeSubActions(subActions, context, actionContext);
 		return new KanbanColumnRenameAction(releaseId, newDescription, columnDescription);
 	}
 

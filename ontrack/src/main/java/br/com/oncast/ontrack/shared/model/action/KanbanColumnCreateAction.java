@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
@@ -13,10 +14,10 @@ import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
+import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionHelper;
 
 @ConvertTo(KanbanColumnCreateActionEntity.class)
 public class KanbanColumnCreateAction implements KanbanAction {
@@ -26,6 +27,10 @@ public class KanbanColumnCreateAction implements KanbanAction {
 	@ConversionAlias("referenceId")
 	@Element
 	private UUID referenceId;
+
+	@ConversionAlias("columnId")
+	@Element
+	private UUID columnId;
 
 	@ConversionAlias("columnDescription")
 	@Attribute
@@ -63,7 +68,8 @@ public class KanbanColumnCreateAction implements KanbanAction {
 		this.referenceId = releaseReferenceId;
 		this.columnDescription = columnDescription;
 		this.shouldLockKanban = shouldLockKanban;
-		this.subActions = rollbackActions;
+		this.subActions = rollbackActions == null ? new ArrayList<ModelAction>() : rollbackActions;
+		this.columnId = new UUID();
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -73,13 +79,13 @@ public class KanbanColumnCreateAction implements KanbanAction {
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Release release = ActionHelper.findRelease(referenceId, context);
 		final Kanban kanban = context.getKanban(release);
-
 		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.KANBAN_COLUMN_ALREADY_SET);
-		if (!kanban.hasNonInferedColumn(columnDescription)) kanban.appendColumn(columnDescription);
+
+		if (!kanban.hasNonInferedColumn(columnDescription)) kanban.appendColumn(new KanbanColumn(columnDescription, columnId));
 
 		if (columnIndex >= 0) kanban.moveColumn(columnDescription, columnIndex);
-		if (shouldLockKanban) kanban.setLocked(true);
-		if (subActions != null) ActionExecutionHelper.executeSubActions(subActions, context, actionContext);
+		if (shouldLockKanban && subActions.isEmpty() && !kanban.isLocked()) subActions.add(new KanbanLockAction(referenceId));
+		ActionHelper.executeSubActions(subActions, context, actionContext);
 
 		return new KanbanColumnRemoveAction(referenceId, columnDescription, shouldLockKanban);
 	}

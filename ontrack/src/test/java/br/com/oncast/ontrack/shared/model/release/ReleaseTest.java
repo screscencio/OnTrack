@@ -366,9 +366,9 @@ public class ReleaseTest {
 
 	@Test
 	public void firstPastSimblingIsTheLatestPastReleaseWhenItDoesntHaveChildren() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son *");
-		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
+		final Release parent = ReleaseTestUtils.createRelease("Parent *");
+		final Release firstSon = ReleaseTestUtils.createRelease("First Son *");
+		final Release secondSon = ReleaseTestUtils.createRelease("Second Son *");
 
 		parent.addChild(firstSon);
 		parent.addChild(secondSon);
@@ -378,10 +378,10 @@ public class ReleaseTest {
 
 	@Test
 	public void futureSimblingReleasesDoesNotCount() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
-		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
-		final Release thirdSon = ReleaseFactoryTestUtil.create("Third Son *");
+		final Release parent = ReleaseTestUtils.createRelease("Parent *");
+		final Release firstSon = ReleaseTestUtils.createRelease("First Son");
+		final Release secondSon = ReleaseTestUtils.createRelease("Second Son *");
+		final Release thirdSon = ReleaseTestUtils.createRelease("Third Son *");
 
 		parent.addChild(firstSon);
 		parent.addChild(secondSon);
@@ -392,9 +392,9 @@ public class ReleaseTest {
 
 	@Test
 	public void parentReleaseIsConsideredFutureRelease() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
-		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
+		final Release parent = ReleaseTestUtils.createRelease("Parent *");
+		final Release firstSon = ReleaseTestUtils.createRelease("First Son");
+		final Release secondSon = ReleaseTestUtils.createRelease("Second Son *");
 
 		parent.addChild(firstSon);
 		parent.addChild(secondSon);
@@ -404,11 +404,11 @@ public class ReleaseTest {
 
 	@Test
 	public void testingWhenTheLatestPastReleaseIsTheSecondNephew() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
-		final Release firstNephew = ReleaseFactoryTestUtil.create("First Nephew *");
-		final Release secondNephew = ReleaseFactoryTestUtil.create("Second Nephew *");
-		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
+		final Release parent = ReleaseTestUtils.createRelease("Parent *");
+		final Release firstSon = ReleaseTestUtils.createRelease("First Son");
+		final Release firstNephew = ReleaseTestUtils.createRelease("First Nephew *");
+		final Release secondNephew = ReleaseTestUtils.createRelease("Second Nephew *");
+		final Release secondSon = ReleaseTestUtils.createRelease("Second Son *");
 
 		parent.addChild(firstSon);
 		parent.addChild(secondSon);
@@ -420,11 +420,11 @@ public class ReleaseTest {
 
 	@Test
 	public void returnsNullWhenNoReleaseSatisfiesTheGivenCondition() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("Parent");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
-		final Release firstNephew = ReleaseFactoryTestUtil.create("First Nephew");
-		final Release secondNephew = ReleaseFactoryTestUtil.create("Second Nephew");
-		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son");
+		final Release parent = ReleaseTestUtils.createRelease("Parent");
+		final Release firstSon = ReleaseTestUtils.createRelease("First Son");
+		final Release firstNephew = ReleaseTestUtils.createRelease("First Nephew");
+		final Release secondNephew = ReleaseTestUtils.createRelease("Second Nephew");
+		final Release secondSon = ReleaseTestUtils.createRelease("Second Son");
 
 		parent.addChild(firstSon);
 		parent.addChild(secondSon);
@@ -436,19 +436,19 @@ public class ReleaseTest {
 
 	@Test
 	public void firstFutureReleaseWhenThereIsOnlyOneRelease() throws Exception {
-		final Release release = ReleaseFactoryTestUtil.create("ROOT *");
+		final Release release = ReleaseTestUtils.createRelease("ROOT *");
 		assertNull(release.getFirstFutureRelease(condition));
 	}
 
 	@Test
 	public void parentReleaseIsTheFirstFutureReleaseWhenThereIsNoSimbling() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("parent *");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son *");
+		final Release parent = ReleaseTestUtils.createRelease("parent *");
+		final Release firstSon = ReleaseTestUtils.createRelease("First Son *");
 		parent.addChild(firstSon);
 
 		assertEquals(parent, firstSon.getFirstFutureRelease(condition));
 
-		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son");
+		final Release secondSon = ReleaseTestUtils.createRelease("Second Son");
 
 		parent.addChild(secondSon);
 
@@ -457,8 +457,8 @@ public class ReleaseTest {
 
 	@Test
 	public void childReleaseIsConsideredPastReleases() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("parent *");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son *");
+		final Release parent = ReleaseTestUtils.createRelease("parent *");
+		final Release firstSon = ReleaseTestUtils.createRelease("First Son *");
 		parent.addChild(firstSon);
 
 		assertNull(parent.getFirstFutureRelease(condition));
@@ -466,9 +466,9 @@ public class ReleaseTest {
 
 	@Test
 	public void firstFutureReleaseIsTheNextSimblingRelease() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son *");
-		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
+		final Release parent = ReleaseTestUtils.createRelease("Parent *");
+		final Release firstSon = ReleaseTestUtils.createRelease("First Son *");
+		final Release secondSon = ReleaseTestUtils.createRelease("Second Son *");
 
 		parent.addChild(firstSon);
 		parent.addChild(secondSon);
@@ -478,7 +478,7 @@ public class ReleaseTest {
 
 	@Test
 	public void getStartDayShouldReturnDeclaredStartDayInsteadOfInferedOneWhenDeclared() throws Exception {
-		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final Release release = ReleaseTestUtils.createRelease("Any Release");
 		final WorkingDay declaredDay = WorkingDayFactory.create(2000, 1, 27);
 		final WorkingDay inferedDay = WorkingDayFactory.create();
 
@@ -497,7 +497,7 @@ public class ReleaseTest {
 
 	@Test
 	public void getEndDayShouldReturnDeclaredStartDayInsteadOfInferedOneWhenDeclared() throws Exception {
-		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final Release release = ReleaseTestUtils.createRelease("Any Release");
 		final WorkingDay declaredDay = WorkingDayFactory.create(2000, 1, 27);
 		final WorkingDay inferedDay = WorkingDayFactory.create();
 
@@ -516,13 +516,13 @@ public class ReleaseTest {
 
 	@Test
 	public void getEstimatedVelocityShouldReturnNullIfThereIsNoDeclaredVelocity() throws Exception {
-		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final Release release = ReleaseTestUtils.createRelease("Any Release");
 		assertNull(release.getEstimatedSpeed());
 	}
 
 	@Test
 	public void getEstimatedVelocityShouldReturnTheDeclaredVelocity() throws Exception {
-		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final Release release = ReleaseTestUtils.createRelease("Any Release");
 		final Float declaredVelocity = 1.4f;
 
 		release.declareEstimatedVelocity(declaredVelocity);
@@ -532,13 +532,13 @@ public class ReleaseTest {
 
 	@Test
 	public void shouldNotHaveDeclaredEstimatedVelocityWhenNoOneDeclared() throws Exception {
-		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final Release release = ReleaseTestUtils.createRelease("Any Release");
 		assertFalse(release.hasDeclaredEstimatedSpeed());
 	}
 
 	@Test
 	public void shouldHaveDeclaredEstimatedVelocityWhenAlreadyDeclaredOne() throws Exception {
-		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final Release release = ReleaseTestUtils.createRelease("Any Release");
 		final Float declaredVelocity = 1.4f;
 
 		release.declareEstimatedVelocity(declaredVelocity);

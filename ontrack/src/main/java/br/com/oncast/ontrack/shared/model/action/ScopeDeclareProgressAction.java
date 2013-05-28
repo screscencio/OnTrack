@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
+import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -69,18 +70,12 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 
 	private List<ModelAction> processSubActions(final ProjectContext context, final ActionContext actionContext, final Scope scope)
 			throws UnableToCompleteActionException {
-		final List<ModelAction> rollbackActions = new ArrayList<ModelAction>();
-
 		if (subActionList.isEmpty()) {
 			checkUserAssociation(context, actionContext, scope);
 			assureKanbanColumnExistence(context, scope);
 		}
 
-		for (final ModelAction action : subActionList) {
-			rollbackActions.add(action.execute(context, actionContext));
-		}
-
-		return rollbackActions;
+		return ActionHelper.executeSubActions(subActionList, context, actionContext);
 	}
 
 	private void checkUserAssociation(final ProjectContext context, final ActionContext actionContext, final Scope scope) {
@@ -90,22 +85,15 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	}
 
 	private void assureKanbanColumnExistence(final ProjectContext context, final Scope scope) throws UnableToCompleteActionException {
-		if (!scope.isLeaf()) return;
+		final Scope story = scope.getStory();
+		final Release release = story.getRelease();
+		if (release == null) return;
 
-		final Release release = getScopeRelease(scope);
-		if (release == null || context.getKanban(release).hasNonInferedColumn(newProgressDescription)) return;
-
-		subActionList.add(new KanbanColumnCreateAction(release.getId(), newProgressDescription, false));
-	}
-
-	private Release getScopeRelease(final Scope scope) {
-		Scope currentScope = scope;
-		Release release = scope.getRelease();
-		while (release == null && !currentScope.isRoot()) {
-			currentScope = currentScope.getParent();
-			release = currentScope.getRelease();
+		final Kanban kanban = context.getKanban(release);
+		for (final Scope taks : story.getAllLeafs()) {
+			final String description = taks.getProgress().getDescription();
+			if (!kanban.hasNonInferedColumn(description)) subActionList.add(new KanbanColumnCreateAction(release.getId(), description, false));
 		}
-		return release;
 	}
 
 	@Override

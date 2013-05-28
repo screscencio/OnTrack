@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -193,6 +194,24 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			@Override
 			protected boolean accepts(final Field field) {
 				return ACCEPTS_ANY_FIELD;
+			}
+
+		},
+		STRING_LIST(List.class) {
+
+			@Override
+			public void validade(final String actionName, final Field field) {
+				final Column column = getAnnotation(field, Column.class);
+				ensureColumnName(column,
+						"The field " + field.getName() + " shoud have ActionTableColumns.STRING_LIST_[X] as name attribute of annotation @Column",
+						ActionTableColumns.STRING_LIST_1,
+						ActionTableColumns.STRING_LIST_2);
+				getAnnotation(field, ElementCollection.class);
+			}
+
+			@Override
+			protected boolean accepts(final Field field) {
+				return true;
 			}
 
 		};

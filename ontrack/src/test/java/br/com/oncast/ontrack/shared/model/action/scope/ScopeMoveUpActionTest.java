@@ -14,10 +14,10 @@ import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 public class ScopeMoveUpActionTest extends ModelActionTest {
@@ -34,7 +34,7 @@ public class ScopeMoveUpActionTest extends ModelActionTest {
 		rootScope.add(firstChild);
 		rootScope.add(lastChild);
 
-		context = ProjectTestUtils.createProjectContext(rootScope, ReleaseFactoryTestUtil.create("Project"));
+		context = ProjectTestUtils.createProjectContext(rootScope, ReleaseTestUtils.createRelease("Project"));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)

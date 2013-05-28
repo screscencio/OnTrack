@@ -25,4 +25,7 @@ public interface ActionTableColumns {
 
 	public static final String LONG_1 = "long_1";
 
+	public static final String STRING_LIST_1 = "modelActionEntity_stringList_1";
+	public static final String STRING_LIST_2 = "modelActionEntity_stringList_2";
+
 }

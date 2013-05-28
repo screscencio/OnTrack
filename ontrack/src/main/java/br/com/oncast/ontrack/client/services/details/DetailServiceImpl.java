@@ -71,7 +71,7 @@ public class DetailServiceImpl implements DetailService {
 	}
 
 	@Override
-	public void showAnnotationsFor(final UUID subjectId) {
+	public void showDetailsFor(final UUID subjectId) {
 		applicationPlaceController.goTo(new DetailPlace(getCurrentProjectId(), subjectId, applicationPlaceController.getCurrentPlace(), true));
 	}
 

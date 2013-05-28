@@ -1,7 +1,12 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
@@ -28,6 +33,12 @@ public class KanbanColumnMoveActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.INT_1)
 	private int desiredIndex;
 
+	@ConversionAlias("subActions")
+	@OneToMany(cascade = CascadeType.ALL)
+	@Column(name = ActionTableColumns.ACTION_LIST)
+	@JoinTable(name = "KanbanColumnMove_subActionList")
+	private List<ModelActionEntity> subActionList;
+
 	public String getReleaseId() {
 		return releaseId;
 	}
@@ -50,6 +61,14 @@ public class KanbanColumnMoveActionEntity extends ModelActionEntity {
 
 	public void setDesiredIndex(final int desiredIndex) {
 		this.desiredIndex = desiredIndex;
+	}
+
+	public List<ModelActionEntity> getSubActionList() {
+		return subActionList;
+	}
+
+	public void setSubActionList(List<ModelActionEntity> subActionList) {
+		this.subActionList = subActionList;
 	}
 
 }

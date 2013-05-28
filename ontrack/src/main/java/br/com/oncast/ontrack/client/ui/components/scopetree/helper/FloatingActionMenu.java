@@ -95,7 +95,7 @@ public class FloatingActionMenu extends Composite {
 	@UiHandler("btnDetail")
 	protected void onDetailClick(final ClickEvent event) {
 		if (scope == null) return;
-		ClientServices.get().details().showAnnotationsFor(scope.getId());
+		ClientServices.get().details().showDetailsFor(scope.getId());
 		this.setVisible(false);
 	}
 
