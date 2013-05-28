@@ -25,7 +25,7 @@ public class GoogleAnalytics {
 	}-*/;
 
 	public static native void create(final String trackerName, String clientId) /*-{
-		$wnd.ga('create', 'UA-33652748-1', {
+		$wnd.ga('create', 'UA-41266386-1', {
 			'name' : trackerName,
 			'clientId' : clientId
 		});
