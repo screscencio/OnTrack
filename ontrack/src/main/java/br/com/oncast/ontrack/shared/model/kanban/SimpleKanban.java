@@ -24,6 +24,10 @@ public class SimpleKanban implements Serializable {
 		addColumn(columns.size(), columnDescription);
 	}
 
+	public void appendColumn(final KanbanColumn column) {
+		addColumn(columns.size(), column);
+	}
+
 	protected void prependColumn(final String columnDescription) {
 		addColumn(0, columnDescription);
 	}
@@ -47,9 +51,14 @@ public class SimpleKanban implements Serializable {
 		columns.add(index, new KanbanColumn(columnDescription));
 	}
 
+	private void addColumn(final int index, final KanbanColumn column) {
+		if (hasColumn(column.getDescription())) return;
+		columns.add(index, column);
+	}
+
 	protected KanbanColumn getColumn(final String columnDescription) {
 		for (final KanbanColumn column : columns) {
-			if (column.getDescription().toLowerCase().equals(columnDescription.toLowerCase())) return column;
+			if (column.getDescription().equalsIgnoreCase(columnDescription.trim())) return column;
 		}
 		return null;
 	}
@@ -66,4 +75,5 @@ public class SimpleKanban implements Serializable {
 	protected boolean hasColumn(final String columnDescription) {
 		return getColumn(columnDescription) != null;
 	}
+
 }

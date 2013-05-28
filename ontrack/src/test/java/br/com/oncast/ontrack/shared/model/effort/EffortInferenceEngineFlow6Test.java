@@ -19,12 +19,12 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class EffortInferenceEngineFlow6Test {
@@ -45,7 +45,7 @@ public class EffortInferenceEngineFlow6Test {
 		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 
 		original = getOriginalScope(FILE_NAME_PREFIX);
-		projectContext = ProjectTestUtils.createProjectContext(original, ReleaseFactoryTestUtil.create("proj"));
+		projectContext = ProjectTestUtils.createProjectContext(original, ReleaseTestUtils.createRelease("proj"));
 		DeepEqualityTestUtils.setRequiredFloatingPointPrecision(0.1);
 
 		executeAction(new ScopeDeclareEffortAction(original.getChild(0).getId(), true, 30));

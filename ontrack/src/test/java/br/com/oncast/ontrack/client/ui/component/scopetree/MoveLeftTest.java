@@ -5,19 +5,19 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
+import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityComparator;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import com.googlecode.gwt.test.GwtTest;
@@ -36,13 +36,13 @@ public class MoveLeftTest extends GwtTest {
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		DeepEqualityTestUtils.setCustomDeepEqualityComparator(Effort.class, new EffortDeepEqualityComparator());
-		ClientServiceProviderTestUtils.configure().mockEssential();
+		ClientServicesTestUtils.configure().mockEssential();
 	}
 
 	@AfterClass
 	public static void afterClass() throws Exception {
 		DeepEqualityTestUtils.removeCustomDeepEqualityComparator(Effort.class);
-		ClientServiceProviderTestUtils.reset();
+		ClientServicesTestUtils.reset();
 	}
 
 	@Before
@@ -51,7 +51,7 @@ public class MoveLeftTest extends GwtTest {
 		tree = new ScopeTree();
 		tree.setContext(ProjectTestUtils.createProjectContext(scope, null));
 
-		projectContext = ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create(""));
+		projectContext = ProjectTestUtils.createProjectContext(scope, ReleaseTestUtils.createRelease(""));
 		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}

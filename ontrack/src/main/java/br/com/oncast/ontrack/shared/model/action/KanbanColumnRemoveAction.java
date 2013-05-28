@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -36,6 +37,9 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 	@Attribute
 	private boolean shouldLockKanban;
 
+	@ElementList(required = false)
+	private List<ModelAction> subActions;
+
 	public KanbanColumnRemoveAction(final UUID releaseReferenceId, final String columnDescription) {
 		this(releaseReferenceId, columnDescription, true);
 	}
@@ -44,6 +48,7 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 		this.referenceId = releaseReferenceId;
 		this.columnDescription = columnDescription;
 		this.shouldLockKanban = shouldLockKanban;
+		this.subActions = new ArrayList<ModelAction>();
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -63,7 +68,8 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 		final int oldColumnIndex = kanban.indexOf(columnDescription);
 		kanban.removeColumn(columnDescription);
 
-		if (shouldLockKanban) kanban.setLocked(true);
+		if (shouldLockKanban && subActions.isEmpty() && !kanban.isLocked()) subActions.add(new KanbanLockAction(referenceId));
+		ActionHelper.executeSubActions(subActions, context, actionContext);
 
 		return new KanbanColumnCreateAction(referenceId, columnDescription, shouldLockKanban, oldColumnIndex, rollbackActions);
 	}

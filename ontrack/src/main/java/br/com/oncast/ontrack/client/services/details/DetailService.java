@@ -16,7 +16,7 @@ public interface DetailService {
 
 	void removeVote(UUID subjectId, UUID annotationId);
 
-	void showAnnotationsFor(UUID subjectId);
+	void showDetailsFor(UUID subjectId);
 
 	boolean hasDetails(UUID subjectId);
 

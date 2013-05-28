@@ -6,6 +6,7 @@ import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO +++ Incorporate SimpleKanban into this class for efficiency and to remove duplications.
 public class Kanban extends SimpleKanban implements Serializable {
@@ -86,6 +87,14 @@ public class Kanban extends SimpleKanban implements Serializable {
 	}
 
 	@Override
+	public void appendColumn(final KanbanColumn column) {
+		if (column.isStaticColumn()) return;
+
+		kanbanWithoutInference.appendColumn(column);
+		fullKanban.appendColumn(column);
+	}
+
+	@Override
 	public void prependColumn(final String columnDescription) {
 		if (isStaticColumn(columnDescription)) return;
 
@@ -121,13 +130,9 @@ public class Kanban extends SimpleKanban implements Serializable {
 		if (columnToRename.isStaticColumn()) throw new RuntimeException("It's not possible to rename a static column");
 
 		final KanbanColumn desiredColumn = getColumn(newDescription);
-		if (desiredColumn != null && desiredColumn.isStaticColumn()) throw new RuntimeException("It's not possible to rename to a static column");
+		if (desiredColumn != null && !desiredColumn.equals(columnToRename)) throw new RuntimeException(
+				"It's not possible to rename to an existing column");
 
-		if (desiredColumn != null && !columnToRename.equals(desiredColumn)) {
-			fullKanban.removeColumn(columnDescription);
-			if (kanbanWithoutInferenceContainsColumn(columnDescription)) kanbanWithoutInference.removeColumn(columnDescription);
-			return;
-		}
 		fullKanban.renameColumn(columnDescription, newDescription);
 
 		if (!kanbanWithoutInferenceContainsColumn(columnDescription)) return;
@@ -163,7 +168,7 @@ public class Kanban extends SimpleKanban implements Serializable {
 	}
 
 	private String getNormalizedDescription(final String columnDescription) {
-		return columnDescription.trim().isEmpty() ? Progress.DEFAULT_NOT_STARTED_NAME : columnDescription;
+		return columnDescription.trim().isEmpty() ? Progress.DEFAULT_NOT_STARTED_NAME : columnDescription.trim();
 	}
 
 	private void assureContainsColumn(final String columnDescription) {
@@ -185,4 +190,12 @@ public class Kanban extends SimpleKanban implements Serializable {
 	public List<KanbanColumn> getNonStaticColumns() {
 		return fullKanban.getColumns();
 	}
+
+	public KanbanColumn getColumn(final UUID columnId) {
+		for (final KanbanColumn column : getColumns()) {
+			if (columnId.equals(column.getId())) return column;
+		}
+		return null;
+	}
+
 }

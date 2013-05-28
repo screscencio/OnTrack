@@ -31,7 +31,6 @@ import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
@@ -76,7 +75,7 @@ public class ProjectContextTest {
 
 	@Test
 	public void findReleaseShouldReturnARelease() throws Exception {
-		final Release expectedRelease = ReleaseFactoryTestUtil.create("R1");
+		final Release expectedRelease = ReleaseTestUtils.createRelease("R1");
 		when(releaseMock.findRelease(anyString())).thenReturn(expectedRelease);
 
 		assertEquals(expectedRelease, context.findRelease("R1"));
@@ -106,7 +105,7 @@ public class ProjectContextTest {
 	@Test
 	public void findReleaseShouldAcceptProjectReleaseInDescriptionButShouldIgnoreIt() throws Exception {
 		when(releaseMock.getDescription()).thenReturn("project release");
-		final Release expectedRelease = ReleaseFactoryTestUtil.create("R1");
+		final Release expectedRelease = ReleaseTestUtils.createRelease("R1");
 		when(releaseMock.findRelease("R1")).thenReturn(expectedRelease);
 
 		assertEquals(expectedRelease, context.findRelease("project release/R1"));
@@ -116,7 +115,7 @@ public class ProjectContextTest {
 	@Test
 	public void findReleaseShouldAcceptADescriptionWithoutProjectRelease() throws Exception {
 		when(releaseMock.getDescription()).thenReturn("project release");
-		final Release expectedRelease = ReleaseFactoryTestUtil.create("R1");
+		final Release expectedRelease = ReleaseTestUtils.createRelease("R1");
 		when(releaseMock.findRelease("R1")).thenReturn(expectedRelease);
 
 		assertEquals(expectedRelease, context.findRelease("R1"));
@@ -131,7 +130,7 @@ public class ProjectContextTest {
 
 		final Release release = ReleaseTestUtils.createRelease();
 		when(proj.hasKanbanFor(release)).thenReturn(true);
-		when(proj.getKanban(release)).thenReturn(KanbanFactory.createFor(release));
+		when(proj.getKanban(release)).thenReturn(KanbanFactory.create());
 
 		ctx.getKanban(release);
 

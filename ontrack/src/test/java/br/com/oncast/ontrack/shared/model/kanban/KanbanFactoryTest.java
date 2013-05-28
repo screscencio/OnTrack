@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
-import static br.com.oncast.ontrack.utils.model.ReleaseTestUtils.createReleaseForKanbanWithColumns;
-
 import java.util.ArrayList;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 
@@ -15,16 +15,9 @@ public class KanbanFactoryTest {
 	private static final String DONE = ProgressState.DONE.getDescription();
 	private static final String NOT_STARTED = Progress.DEFAULT_NOT_STARTED_NAME;
 
-	@Test
-	public void columnsShouldBeOrderedByProgressDeclarationOrder() throws Exception {
-		final Kanban kanban = KanbanFactory.createFor(createReleaseForKanbanWithColumns("Planning", "Implementing", "Testing"));
-		assertColumns(kanban, NOT_STARTED, "Planning", "Implementing", "Testing", DONE);
-	}
-
-	@Test
-	public void columnsShouldNotBeDuplicated() throws Exception {
-		final Kanban kanban = KanbanFactory.createFor(createReleaseForKanbanWithColumns("Planning", "Implementing", "Planning", "Testing"));
-		assertColumns(kanban, NOT_STARTED, "Planning", "Implementing", "Testing", DONE);
+	@Before
+	public void setup() throws Exception {
+		ClientServicesTestUtils.configure().mockEssential();
 	}
 
 	@Test

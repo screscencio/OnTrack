@@ -34,6 +34,7 @@ import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
+import br.com.oncast.ontrack.shared.model.action.KanbanLockAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
@@ -185,7 +186,12 @@ public class UserActionTestUtils {
 		userActions.add(createScopeUnbindHumanIdAction());
 		userActions.add(createScopeDeclareTimeSpentAction());
 		userActions.add(createScopeDeclareDueDateAction());
+		userActions.add(createKanbanLockAction());
 		return userActions;
+	}
+
+	private static UserAction createKanbanLockAction() throws Exception {
+		return createUserAction(new KanbanLockAction(new UUID()));
 	}
 
 	private static UserAction createScopeDeclareDueDateAction() throws Exception {

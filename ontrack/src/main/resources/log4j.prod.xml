@@ -12,7 +12,7 @@
 	<!-- MAIN APPENDER - Logs out to a file -->
 	<appender name="MainLogFile" class="org.apache.log4j.FileAppender">
 		<param name="File" value="/var/lib/ontrack/logs/all.log" />
-		<param name="Threshold" value="DEBUG" />
+		<param name="Threshold" value="INFO" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
 		</layout>
@@ -21,7 +21,7 @@
 	<!-- APPLICATION SPECIFIC LOG APPENDER - Logs out to a file -->
 	<appender name="AppLogFile" class="org.apache.log4j.FileAppender">
 		<param name="File" value="/var/lib/ontrack/logs/app.log" />
-		<param name="Threshold" value="DEBUG" />
+		<param name="Threshold" value="INFO" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
 		</layout>
@@ -30,7 +30,7 @@
 	<!-- REQUEST APPENDER - Logs out to a file -->
 	<appender name="RequestLogFile" class="org.apache.log4j.FileAppender">
 		<param name="File" value="/var/lib/ontrack/logs/requests.log" />
-		<param name="Threshold" value="DEBUG" />
+		<param name="Threshold" value="INFO" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
 		</layout>
@@ -38,7 +38,7 @@
 
 	<!-- Application Related Log -->
 	<logger name="br.com.oncast.ontrack">
-		<level value="DEBUG" />
+		<level value="INFO" />
 		<appender-ref ref="AppLogFile" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />

@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
+import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.Metadata;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
@@ -301,5 +302,13 @@ public class Project implements Serializable, HasUUID {
 
 	public Float getDeclaredTimeSpent(final UUID scopeId, final UUID userId) {
 		return timesheet.get(new UuidAssociation(scopeId, userId));
+	}
+
+	public KanbanColumn findKanbanColumn(final UUID columnId) {
+		for (final Kanban kanban : kanbanMap.values()) {
+			final KanbanColumn column = kanban.getColumn(columnId);
+			if (column != null) return column;
+		}
+		return null;
 	}
 }

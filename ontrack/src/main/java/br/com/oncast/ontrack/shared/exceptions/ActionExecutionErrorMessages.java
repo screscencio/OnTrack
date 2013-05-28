@@ -148,4 +148,8 @@ public interface ActionExecutionErrorMessages extends BaseMessages {
 	@DefaultMessage("Update failed: the object is exactly the same.")
 	String updateWithoutChanges();
 
+	@Description("caused when the action conflicts.")
+	@DefaultMessage("Sorry, some of your lattest actioins conflicted, please try again.")
+	String conflicted();
+
 }

@@ -5,14 +5,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
+import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityException;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
@@ -20,6 +19,7 @@ import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityC
 import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import com.googlecode.gwt.test.GwtTest;
@@ -38,14 +38,14 @@ public class InsertChildTest extends GwtTest {
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		ClientServiceProviderTestUtils.configure().mockEssential();
+		ClientServicesTestUtils.configure().mockEssential();
 		DeepEqualityTestUtils.setCustomDeepEqualityComparator(Effort.class, new EffortDeepEqualityComparator());
 	}
 
 	@AfterClass
 	public static void afterClass() throws Exception {
 		DeepEqualityTestUtils.removeCustomDeepEqualityComparator(Effort.class);
-		ClientServiceProviderTestUtils.reset();
+		ClientServicesTestUtils.reset();
 	}
 
 	@Before
@@ -57,7 +57,7 @@ public class InsertChildTest extends GwtTest {
 		tree.setContext(ProjectTestUtils.createProjectContext(scope, null));
 
 		newScopeDescription = "description for new scope";
-		projectContext = ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create(""));
+		projectContext = ProjectTestUtils.createProjectContext(scope, ReleaseTestUtils.createRelease(""));
 		projectContext.addUser(UserRepresentationTestUtils.getAdmin());
 
 		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext);

@@ -2,24 +2,33 @@ package br.com.oncast.ontrack.shared.model.kanban;
 
 import java.io.Serializable;
 
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 public class KanbanColumn implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String description;
 
-	private boolean isStaticColumn = false;
+	private boolean isStaticColumn;
 
-	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
+	private UUID id;
+
+	// IMPORTANT serialization
 	protected KanbanColumn() {}
 
 	public KanbanColumn(final String description) {
-		this.description = description;
+		this(description, false);
 	}
 
-	public KanbanColumn(final String title, final boolean isStatic) {
-		this.description = title;
+	public KanbanColumn(final String description, final boolean isStatic) {
+		this.description = description.trim();
 		this.isStaticColumn = isStatic;
+	}
+
+	public KanbanColumn(final String description, final UUID id) {
+		this(description);
+		setId(id);
 	}
 
 	public boolean isStaticColumn() {
@@ -32,5 +41,13 @@ public class KanbanColumn implements Serializable {
 
 	public void setDescription(final String description) {
 		this.description = description;
+	}
+
+	public UUID getId() {
+		return id;
+	}
+
+	public void setId(final UUID id) {
+		this.id = id;
 	}
 }

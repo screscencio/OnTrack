@@ -383,7 +383,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 
 	@UiHandler("panel")
 	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
-		SERVICE_PROVIDER.details().showAnnotationsFor(scope.getId());
+		SERVICE_PROVIDER.details().showDetailsFor(scope.getId());
 	}
 
 	@UiHandler("panel")

@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
+import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
@@ -43,13 +43,13 @@ public class BindReleaseTest extends GwtTest {
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		DeepEqualityTestUtils.setCustomDeepEqualityComparator(Effort.class, new EffortDeepEqualityComparator());
-		ClientServiceProviderTestUtils.configure().mockEssential();
+		ClientServicesTestUtils.configure().mockEssential();
 	}
 
 	@AfterClass
 	public static void afterClass() throws Exception {
 		DeepEqualityTestUtils.removeCustomDeepEqualityComparator(Effort.class);
-		ClientServiceProviderTestUtils.reset();
+		ClientServicesTestUtils.reset();
 	}
 
 	@Before

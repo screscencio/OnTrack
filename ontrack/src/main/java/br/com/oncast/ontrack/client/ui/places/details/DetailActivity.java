@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseList
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupOpenListener;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
-import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.shared.model.kanban.exception.KanbanColumnNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -74,9 +74,14 @@ public class DetailActivity extends AbstractActivity {
 				detailPanel = DetailsPanel.forRelease(context.findRelease(place.getSubjectId()));
 			}
 			catch (final ReleaseNotFoundException e1) {
-				provider.alerting().showError(ClientServices.get().errorMessages().errorShowingDetails());
-				getApplicationPlaceController().goTo(new PlanningPlace(place.getRequestedProjectId()));
-				return false;
+				try {
+					detailPanel = DetailsPanel.forKanbanColumn(context.findKanbanColumn(place.getSubjectId()));
+				}
+				catch (final KanbanColumnNotFoundException e2) {
+					provider.alerting().showError(ClientServices.get().errorMessages().errorShowingDetails());
+					getApplicationPlaceController().goTo(place.getDestinationPlace());
+					return false;
+				}
 			}
 		}
 		return true;

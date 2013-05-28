@@ -249,7 +249,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiHandler("detailLink")
 	protected void showAnnotationPanel(final ClickEvent event) {
-		getDetailsService().showAnnotationsFor(release.getId());
+		getDetailsService().showDetailsFor(release.getId());
 		event.stopPropagation();
 	}
 
@@ -281,7 +281,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		itens.add(new TextAndImageCommandMenuItem("icon-info-sign", messages.details(), new Command() {
 			@Override
 			public void execute() {
-				getDetailsService().showAnnotationsFor(release.getId());
+				getDetailsService().showDetailsFor(release.getId());
 			}
 		}));
 		itens.add(new TextAndImageCommandMenuItem("icon-bar-chart", messages.burnUp(), new Command() {

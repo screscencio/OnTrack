@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
+import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
@@ -51,12 +51,12 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		ClientServiceProviderTestUtils.configure().mockEssential();
+		ClientServicesTestUtils.configure().mockEssential();
 	}
 
 	@AfterClass
 	public static void afterClass() throws Exception {
-		ClientServiceProviderTestUtils.reset();
+		ClientServicesTestUtils.reset();
 	}
 
 	@Before

@@ -33,7 +33,7 @@ public class KanbanColumnMoveActionTest extends ModelActionTest {
 	public void setup() throws Exception {
 		final Release release = ReleaseTestUtils.createRelease();
 		releaseId = release.getId();
-		kanban = KanbanFactory.createFor(release);
+		kanban = KanbanFactory.create();
 		kanban.appendColumn("First Column");
 		kanban.appendColumn(kanbanColumnDescription);
 

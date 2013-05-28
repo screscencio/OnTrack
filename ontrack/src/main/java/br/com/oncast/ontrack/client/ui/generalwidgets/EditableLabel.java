@@ -10,6 +10,9 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -19,6 +22,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -26,7 +30,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class EditableLabel extends Composite implements HasValueChangeHandlers<String>, HasValue<String> {
+public class EditableLabel extends Composite implements HasValueChangeHandlers<String>, HasValue<String>, HasDoubleClickHandlers {
+
+	private static final int DOUBLE_CLICK_DELAY = 250;
 
 	private static EditableLabelUiBinder uiBinder = GWT.create(EditableLabelUiBinder.class);
 
@@ -55,6 +61,8 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 	private final EditableLabelEditionHandler editionHandler;
 
 	private boolean isReadOnly = false;
+
+	private Timer timer;
 
 	public EditableLabel(final EditableLabelEditionHandler editionHandler) {
 		this(editionHandler, false);
@@ -99,7 +107,13 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 	protected void onClick(final ClickEvent event) {
 		event.preventDefault();
 		event.stopPropagation();
-		switchToEdit();
+		if (timer == null) switchToEdit();
+		else timer.schedule(DOUBLE_CLICK_DELAY);
+	}
+
+	@UiHandler("visualizationLabel")
+	protected void onDoubleClick(final DoubleClickEvent event) {
+		if (timer != null) timer.cancel();
 	}
 
 	@UiHandler("editionBox")
@@ -152,5 +166,16 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 
 	public boolean isEditionMode() {
 		return deckPanel.getVisibleWidget() == 1;
+	}
+
+	@Override
+	public HandlerRegistration addDoubleClickHandler(final DoubleClickHandler handler) {
+		if (timer == null) timer = new Timer() {
+			@Override
+			public void run() {
+				switchToEdit();
+			}
+		};
+		return visualizationLabel.addDoubleClickHandler(handler);
 	}
 }

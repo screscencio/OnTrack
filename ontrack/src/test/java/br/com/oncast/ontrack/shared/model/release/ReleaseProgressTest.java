@@ -98,20 +98,20 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void aReleaseShouldNotBeDoneIfAtLeastOneOfItsChildReleasesAreNotDoneEvenIfAllItsScopeAreDone() {
-		final Release release = ReleaseFactoryTestUtil.create("R1");
+		final Release release = ReleaseTestUtils.createRelease("R1");
 
 		final Scope scope = ScopeTestUtils.createScope("scope");
 		ScopeTestUtils.setProgress(scope, ProgressState.DONE);
 		release.addScope(scope);
 
-		release.addChild(ReleaseFactoryTestUtil.create("Child release"));
+		release.addChild(ReleaseTestUtils.createRelease("Child release"));
 
 		assertFalse(release.isDone());
 	}
 
 	@Test
 	public void aReleaseShouldNotBeDoneIfItHaveNoScopeAndNoChildRelease() {
-		final Release release = ReleaseFactoryTestUtil.create("R1");
+		final Release release = ReleaseTestUtils.createRelease("R1");
 		assertFalse(release.isDone());
 	}
 
@@ -122,7 +122,7 @@ public class ReleaseProgressTest {
 		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Done");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserRepresentationTestUtils.getAdmin(), new Date());
 
-		final Release it1 = ReleaseFactoryTestUtil.create("It1");
+		final Release it1 = ReleaseTestUtils.createRelease("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
@@ -145,7 +145,7 @@ public class ReleaseProgressTest {
 		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Done");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserRepresentationTestUtils.getAdmin(), new Date());
 
-		final Release it1 = ReleaseFactoryTestUtil.create("It1");
+		final Release it1 = ReleaseTestUtils.createRelease("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
@@ -168,7 +168,7 @@ public class ReleaseProgressTest {
 		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Underwork");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserRepresentationTestUtils.getAdmin(), new Date());
 
-		final Release it1 = ReleaseFactoryTestUtil.create("It1");
+		final Release it1 = ReleaseTestUtils.createRelease("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
@@ -186,7 +186,7 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void progressPercentageShouldBe100IfAllItsChildrenAreDoneAndTheSumOfAllEstimatedEffortsIsZero() {
-		final Release release = ReleaseFactoryTestUtil.create("Release");
+		final Release release = ReleaseTestUtils.createRelease("Release");
 
 		final Scope rootScope = ScopeTestUtils.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {

@@ -19,12 +19,12 @@ import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 public class ScopeDeclareProgressActionTest extends ModelActionTest {
@@ -35,7 +35,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 	@Before
 	public void setUp() {
 		scope = ScopeTestUtils.createScope("scope description");
-		context = ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create(""));
+		context = ProjectTestUtils.createProjectContext(scope, ReleaseTestUtils.createRelease(""));
 	}
 
 	@Test

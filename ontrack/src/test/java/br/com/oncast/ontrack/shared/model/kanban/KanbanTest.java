@@ -4,6 +4,7 @@ import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.DONE;
 import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.NOT_STARTED;
 import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.assertColumns;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
@@ -13,6 +14,20 @@ public class KanbanTest {
 	public void shouldCreateWithDefaultColumns() throws Exception {
 		final Kanban kanban = new Kanban();
 		assertColumns(kanban, NOT_STARTED, DONE);
+	}
+
+	@Test
+	public void getColumnShouldIgnoreWhiteSpacesOnDescriptionEdges() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+		assertNotNull(kanban.getColumn("  A  "));
+	}
+
+	@Test
+	public void getColumnShouldBecaseInsensitive() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+		assertNotNull(kanban.getColumn("b"));
 	}
 
 	@Test
@@ -269,12 +284,19 @@ public class KanbanTest {
 		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", DONE);
 	}
 
-	@Test
-	public void renameToAnExistantColumnShouldOnlyRemoveThePreviousColumn() throws Exception {
+	@Test(expected = RuntimeException.class)
+	public void shouldNotBeAbleToRenameToAnExistantColumn() throws Exception {
 		final Kanban baseKanban = new Kanban();
 		appendColumns(baseKanban, "A", "B", "C");
 		baseKanban.renameColumn("B", "C");
 		assertColumns(baseKanban, NOT_STARTED, "A", "C", DONE);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void renameShouldIgnoreWhiteSpacesOnDescriptionUpdate() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+		baseKanban.renameColumn("B", " C");
 	}
 
 	private void prependColumns(final Kanban kanban, final String... columns) {

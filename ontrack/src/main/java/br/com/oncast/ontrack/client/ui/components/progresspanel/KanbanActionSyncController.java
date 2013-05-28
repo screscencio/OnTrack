@@ -133,7 +133,9 @@ public class KanbanActionSyncController {
 					throws ModelBeanNotFoundException {
 				try {
 					final Scope scope = context.findScope(action.getReferenceId());
-					if (releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope)) display.update();
+					if (releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope)) {
+						display.update();
+					}
 				}
 				catch (final ModelBeanNotFoundException e) {
 					if (releaseMonitor.releaseContainedScope(action.getReferenceId())) display.update();
@@ -270,6 +272,7 @@ public class KanbanActionSyncController {
 			scopeListCopy = new ArrayList<Scope>();
 
 			for (final Scope scope : release.getScopeList()) {
+				scopeListCopy.add(scope);
 				scopeListCopy.addAll(scope.getAllDescendantScopes());
 			}
 		}

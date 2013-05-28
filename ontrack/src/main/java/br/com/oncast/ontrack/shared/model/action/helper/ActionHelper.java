@@ -1,6 +1,10 @@
 package br.com.oncast.ontrack.shared.model.action.helper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
@@ -27,9 +31,18 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ActionHelper {
 
-	public static Release findRelease(final UUID referenceId, final ProjectContext context) throws UnableToCompleteActionException {
+	public static List<ModelAction> executeSubActions(final List<ModelAction> subActions, final ProjectContext context, final ActionContext actionContext)
+			throws UnableToCompleteActionException {
+		final List<ModelAction> rollbackSubActions = new ArrayList<ModelAction>();
+		for (final ModelAction action : subActions) {
+			rollbackSubActions.add(0, action.execute(context, actionContext));
+		}
+		return rollbackSubActions;
+	}
+
+	public static Release findRelease(final UUID releaseId, final ProjectContext context) throws UnableToCompleteActionException {
 		try {
-			return context.findRelease(referenceId);
+			return context.findRelease(releaseId);
 		}
 		catch (final ReleaseNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
