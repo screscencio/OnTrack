@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.impediment;
 
 import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_IMPEDIMENT;
+import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.SOLVED_IMPEDIMENT;
 
 import java.util.Date;
 
@@ -24,6 +25,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -37,6 +39,15 @@ public class ImpedimentMenuWidget extends Composite implements HasClickHandlers,
 	private static ImpedimentMenuWidgetUiBinder uiBinder = GWT.create(ImpedimentMenuWidgetUiBinder.class);
 
 	interface ImpedimentMenuWidgetUiBinder extends UiBinder<Widget, ImpedimentMenuWidget> {}
+
+	interface ImpedimentMenuWidgetStyle extends CssResource {
+		String deprecatedMessage();
+
+		String deprecatedButton();
+	}
+
+	@UiField
+	ImpedimentMenuWidgetStyle style;
 
 	@UiField(provided = true)
 	UserWidget userWidget;
@@ -67,6 +78,7 @@ public class ImpedimentMenuWidget extends Composite implements HasClickHandlers,
 
 	@UiHandler("check")
 	void onCheckClick(final ClickEvent e) {
+		if (impediment.isDeprecated()) return;
 		final ImpedimentAction action =
 				impediment.getType() == OPEN_IMPEDIMENT ?
 						new ImpedimentSolveAction(subjectId, impediment.getId()) :
@@ -78,9 +90,14 @@ public class ImpedimentMenuWidget extends Composite implements HasClickHandlers,
 	@Override
 	public boolean update() {
 		message.setText(impediment.getMessage());
+		final boolean isDeprecated = impediment.isDeprecated();
+		message.setStyleName(style.deprecatedMessage(), isDeprecated);
 		final Date t = impediment.getLastOcuurenceOf(impediment.getType());
 		timestamp.setInnerText(HumanDateFormatter.getRelativeDate(t));
-		check.setStyleName("icon-check-empty", impediment.getType() == OPEN_IMPEDIMENT);
+		check.setStyleName("icon-check-empty", !isDeprecated && impediment.getType() == OPEN_IMPEDIMENT);
+		check.setStyleName("icon-check", !isDeprecated && impediment.getType() == SOLVED_IMPEDIMENT);
+		check.setStyleName("icon-ban", isDeprecated);
+		check.setStyleName(style.deprecatedButton(), isDeprecated);
 		return false;
 	}
 

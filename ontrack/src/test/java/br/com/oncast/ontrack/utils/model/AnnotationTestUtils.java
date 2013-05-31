@@ -4,6 +4,7 @@ import java.util.Date;
 
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
+import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
@@ -26,21 +27,36 @@ public class AnnotationTestUtils {
 		return new AnnotationBuilder().setDate(date).generate();
 	}
 
+	public static Annotation createAnnotation(final AnnotationType type, final DeprecationState deprecationState) throws Exception {
+		return new AnnotationBuilder().setType(type).setDeprecated(deprecationState).generate();
+	}
+
 	private static class AnnotationBuilder {
 		private UUID id;
 		private UserRepresentation author;
 		private Date date;
 		private String message;
+		private AnnotationType type;
+		private DeprecationState deprecationState;
 
 		public AnnotationBuilder() throws Exception {
 			this.id = new UUID();
 			this.author = UserRepresentationTestUtils.createUser();
 			this.date = new Date();
 			this.message = "Message of annotation '" + id + "'.";
+			this.type = AnnotationType.SIMPLE;
+			this.deprecationState = DeprecationState.VALID;
+		}
+
+		public AnnotationBuilder setDeprecated(final DeprecationState state) {
+			this.deprecationState = state;
+			return this;
 		}
 
 		public Annotation generate() {
-			return new Annotation(id, author, date, message, AnnotationType.SIMPLE);
+			final Annotation annotation = new Annotation(id, author, date, message, type);
+			annotation.setDeprecation(deprecationState, UserRepresentationTestUtils.getAdmin(), new Date(Long.MAX_VALUE));
+			return annotation;
 		}
 
 		public AnnotationBuilder setId(final UUID id) {
@@ -61,6 +77,11 @@ public class AnnotationTestUtils {
 		@SuppressWarnings("unused")
 		public AnnotationBuilder setMessage(final String message) {
 			this.message = message;
+			return this;
+		}
+
+		public AnnotationBuilder setType(final AnnotationType type) {
+			this.type = type;
 			return this;
 		}
 
