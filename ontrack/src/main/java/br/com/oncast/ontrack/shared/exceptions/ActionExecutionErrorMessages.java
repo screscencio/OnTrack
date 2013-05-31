@@ -149,7 +149,7 @@ public interface ActionExecutionErrorMessages extends BaseMessages {
 	String updateWithoutChanges();
 
 	@Description("caused when the action conflicts.")
-	@DefaultMessage("Sorry, some of your lattest actioins conflicted, please try again.")
+	@DefaultMessage("Sorry, some of your latest actioins conflicted, please try again.")
 	String conflicted();
 
 }
