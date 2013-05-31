@@ -155,7 +155,7 @@ public class PlanningActivity extends AbstractActivity {
 
 			@Override
 			public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
-				if (selectedScope != null) selectedScope.setSelected(false);
+				if (selectedScope != null) selectedScope.setAssociationHighlight(false);
 
 				final Scope scope = event.getTargetScope().getStory();
 				final Release release = scope.getRelease();
