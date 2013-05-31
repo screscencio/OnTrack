@@ -32,4 +32,12 @@ public interface CommandMenuMessages extends BaseMessages {
 	@DefaultMessage("Show impediments")
 	String impediments();
 
+	@Description("posfix for due date, remaining days tooltip")
+	@DefaultMessage("left")
+	String left();
+
+	@Description("posfix for expired due date, delayed days tooltip")
+	@DefaultMessage("late")
+	String late();
+
 }

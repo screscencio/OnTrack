@@ -186,7 +186,12 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 		hasAnyDetails |= setPriorizationCriteria(valueLabel, "$", scope.getValue(), "value points");
 		final boolean hasDueDate = scope.hasDueDate();
 		hasAnyDetails |= hasDueDate;
-		if (hasDueDate) dueDateLabel.setInnerText(HumanDateFormatter.getRelativeDate(scope.getDueDate()));
+		if (hasDueDate) {
+			dueDateLabel.setInnerText(HumanDateFormatter.getRelativeDate(scope.getDueDate(), HumanDateFormatter.DAYS));
+			final long remainingTime = ClientServices.get().scopeEstimator().get().getRemainingTime(scope);
+			dueDateLabel.setTitle(HumanDateFormatter.getDifferenceText(Math.abs(remainingTime), HumanDateFormatter.DAYS) + " "
+					+ (remainingTime >= 0 ? MESSAGES.left() : MESSAGES.late()));
+		}
 		ElementUtils.setVisible(dueDateContainer, hasDueDate);
 		ElementUtils.setBackgroundColor(dueDateContainer, SERVICE_PROVIDER.colorProvider().getDueDateColor(scope), true);
 		percentualBar.setPercentual(calculatePercentual(scope));

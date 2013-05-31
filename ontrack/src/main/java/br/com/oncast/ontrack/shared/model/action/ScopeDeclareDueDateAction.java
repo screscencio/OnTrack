@@ -21,7 +21,7 @@ public class ScopeDeclareDueDateAction implements ScopeAction {
 	@Element
 	private UUID scopeId;
 
-	@Attribute
+	@Attribute(required = false)
 	private Date dueDate;
 
 	protected ScopeDeclareDueDateAction() {}

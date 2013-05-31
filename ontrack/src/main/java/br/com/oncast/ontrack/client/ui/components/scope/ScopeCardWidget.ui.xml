@@ -151,8 +151,8 @@
 			</table>
 			<div ui:field="detailsContainer" class="{style.detailsContainer}">
 				<div class="{style.detailsTagsContainer}">
-					<span ui:field="effortLabel" class="{style.humanId}"/>
 					<span ui:field="valueLabel" class="{style.humanId}"/>
+					<span ui:field="effortLabel" class="{style.humanId}"/>
 					<div ui:field="dueDateContainer" class="{style.dueDateContainer} {style.humanId}">
 						<i class="icon-time"></i> <span ui:field="dueDateLabel"/>
 					</div>

@@ -8,7 +8,9 @@ import static br.com.oncast.ontrack.client.utils.date.DateUnit.SECOND;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.WEEK;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.YEAR;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 
@@ -16,7 +18,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 public enum HumanDateFormatter {
-	JUST_NOW(1 * MINUTE, "yyyyMMddHHmm") {
+	SECONDS(1 * MINUTE, "yyyyMMddHHmm") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
 			return mountDifferenceText(difference, SECOND, messages.second(), messages.seconds());
@@ -96,6 +98,10 @@ public enum HumanDateFormatter {
 
 	private static final HumanDateFormatterMessages messages = GWT.create(HumanDateFormatterMessages.class);
 
+	private static final HumanDateFormatter[] VALUES = HumanDateFormatter.values();
+
+	private static final int SIZE = VALUES.length;
+
 	private static final int DEFAULT_DIGITS = 0;
 	private static final boolean DEFAULT_ONLY_NUMBERS = false;
 
@@ -112,15 +118,19 @@ public enum HumanDateFormatter {
 
 	public static String getDifferenceDate(final Date date) {
 		final long difference = new Date().getTime() - date.getTime();
-		for (final HumanDateFormatter formatter : values()) {
+		for (final HumanDateFormatter formatter : VALUES) {
 			if (formatter.maxTimeDifference > difference) { return formatter.formatDifferenceTime(difference) + " " + messages.ago(); }
 		}
 		return getAbsoluteText(date);
 	}
 
 	public static String getRelativeDate(final Date date) {
+		return getRelativeDate(date, SECONDS);
+	}
+
+	public static String getRelativeDate(final Date date, final HumanDateFormatter minimum) {
 		final Date currentDate = new Date();
-		for (final HumanDateFormatter formatter : values()) {
+		for (final HumanDateFormatter formatter : valuesFrom(minimum)) {
 			if (formatter.accepts(currentDate, date)) { return formatter.formatRelativeTime(date); }
 		}
 		return getAbsoluteText(date);
@@ -154,10 +164,14 @@ public enum HumanDateFormatter {
 	}
 
 	public static String getDifferenceText(final long difference) {
-		for (final HumanDateFormatter formatter : values()) {
+		return getDifferenceText(difference, SECONDS);
+	}
+
+	public static String getDifferenceText(final long difference, final HumanDateFormatter minimum) {
+		for (final HumanDateFormatter formatter : valuesFrom(minimum)) {
 			if (formatter.maxTimeDifference > difference) { return formatter.formatDifferenceTime(difference); }
 		}
-		return mountDifferenceText(difference, 1, "ms", "ms");
+		return minimum.formatDifferenceTime(difference);
 	}
 
 	public static String getDifferenceText(final long difference, final int digits) {
@@ -180,4 +194,9 @@ public enum HumanDateFormatter {
 	public static String[] getSplittedDifferenceText(final Long difference, final int digits) {
 		return getDifferenceText(difference, digits).split(" ");
 	}
+
+	private static List<HumanDateFormatter> valuesFrom(final HumanDateFormatter minimum) {
+		return Arrays.asList(VALUES).subList(minimum.ordinal(), SIZE);
+	}
+
 }
