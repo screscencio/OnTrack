@@ -4,7 +4,7 @@
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:u="urn:import:br.com.oncast.ontrack.client.ui.components.user">
 	
-	<ui:style src="../../style/default.css">
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentMenuWidget.ImpedimentMenuWidgetStyle">
 			.rootPanel {
 				position: relative;
 				border-top: BORDER_HEADER;
@@ -28,6 +28,10 @@
 				width: 100%;
 				line-height: 18px;
 			}
+
+			.deprecatedMessage {
+				text-decoration: line-through;	
+			}
 			
 			.check {
 				cursor: pointer;
@@ -35,7 +39,11 @@
 				bottom: 9px;
 				right: -1px;
 			}
-			
+
+			.deprecatedButton {
+				cursor: default;				
+			}
+
 			.footer {
 				position: absolute;
 				right: 9px;
@@ -44,6 +52,7 @@
 				font-size: 14px;
 				font-style: italic;
 			}
+			
 			
 		</ui:style>
 

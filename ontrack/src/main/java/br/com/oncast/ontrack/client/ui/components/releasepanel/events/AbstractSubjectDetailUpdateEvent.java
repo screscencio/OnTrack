@@ -136,7 +136,7 @@ public abstract class AbstractSubjectDetailUpdateEvent<T extends HasUUID, H exte
 	private List<Annotation> getList(final AnnotationType type) {
 		final List<Annotation> list = new ArrayList<Annotation>();
 		for (final Annotation a : annotations) {
-			if (a.getType() == type) list.add(a);
+			if (a.getType() == type && !a.isDeprecated()) list.add(a);
 		}
 		return list;
 	}
