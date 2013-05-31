@@ -157,14 +157,14 @@ public class PlanningActivity extends AbstractActivity {
 			public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
 				if (selectedScope != null) selectedScope.setSelected(false);
 
-				final Scope scope = event.getTargetScope();
+				final Scope scope = event.getTargetScope().getStory();
 				final Release release = scope.getRelease();
 				if (release == null) return;
 
 				final ReleaseWidget releaseWidget = view.getReleasePanel().getWidgetFor(release);
 
 				selectedScope = releaseWidget.getScopeContainer().getWidgetFor(scope);
-				selectedScope.setSelected(true);
+				selectedScope.setAssociationHighlight(true);
 
 				if (event.getSource() instanceof ReleaseTag || event.getSource() instanceof ScopeTreeShortcutMappings) {
 					releaseWidget.setHierarchicalContainerState(true);

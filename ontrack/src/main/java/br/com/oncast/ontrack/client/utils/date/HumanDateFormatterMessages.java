@@ -72,4 +72,44 @@ public interface HumanDateFormatterMessages extends BaseMessages {
 	@DefaultMessage("seconds")
 	String seconds();
 
+	@Description("now")
+	@DefaultMessage("now")
+	String now();
+
+	@Description("today")
+	@DefaultMessage("today")
+	String today();
+
+	@Description("this minute")
+	@DefaultMessage("this minute")
+	String thisMinute();
+
+	@Description("this hour")
+	@DefaultMessage("this hour")
+	String thisHour();
+
+	@Description("this week")
+	@DefaultMessage("this week")
+	String thisWeek();
+
+	@Description("this month")
+	@DefaultMessage("this month")
+	String thisMonth();
+
+	@Description("this year")
+	@DefaultMessage("this year")
+	String thisYear();
+
+	@Description("tomorrow")
+	@DefaultMessage("tomorrow")
+	String tomorrow();
+
+	@Description("yesterday")
+	@DefaultMessage("yesterday")
+	String yesterday();
+
+	@Description("few days")
+	@DefaultMessage("few days")
+	String fewDays();
+
 }

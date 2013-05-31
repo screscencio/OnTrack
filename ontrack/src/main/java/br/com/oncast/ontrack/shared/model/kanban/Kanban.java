@@ -131,7 +131,7 @@ public class Kanban extends SimpleKanban implements Serializable {
 
 		final KanbanColumn desiredColumn = getColumn(newDescription);
 		if (desiredColumn != null && !desiredColumn.equals(columnToRename)) throw new RuntimeException(
-				"It's not possible to rename to an existing column");
+				"The column with name " + newDescription + " already exists");
 
 		fullKanban.renameColumn(columnDescription, newDescription);
 
