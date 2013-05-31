@@ -1,9 +1,12 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -11,17 +14,22 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareProgressActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.assertions.KanbanTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
@@ -175,6 +183,35 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
 		undoAction.execute(context, actionContext);
 		assertTrue(context.getMetadataList(scope, UserAssociationMetadata.getType()).isEmpty());
+	}
+
+	@Test
+	public void shouldCreateKanbanColumnWhenNewProgressIsCreated() throws Exception {
+		final ProjectContext context = mock(ProjectContext.class);
+		final ActionContext actionContext = mockActionContext(context);
+		final Scope scope = ScopeTestUtils.createScope();
+		final Release release = ReleaseTestUtils.createRelease();
+		final Kanban kanban = KanbanTestUtils.createWith();
+		final String progress = "AnyProgress";
+		final ScopeDeclareProgressAction action = new ScopeDeclareProgressAction(scope.getId(), progress);
+		scope.setRelease(release);
+
+		when(context.findScope(scope.getId())).thenReturn(scope);
+		when(context.getKanban(release)).thenReturn(kanban);
+		when(context.findRelease(release.getId())).thenReturn(release);
+
+		action.execute(context, actionContext);
+
+		assertNotNull(kanban.getColumn(progress));
+	}
+
+	private ActionContext mockActionContext(final ProjectContext context) throws UserNotFoundException {
+		final UserRepresentation admin = UserRepresentationTestUtils.getAdmin();
+		final ActionContext actionContext = mock(ActionContext.class);
+		when(actionContext.getUserId()).thenReturn(admin.getId());
+		when(context.findUser(admin.getId())).thenReturn(admin);
+		when(actionContext.getTimestamp()).thenReturn(new Date());
+		return actionContext;
 	}
 
 	private void assertThatProgressIs(final Progress.ProgressState status) {
