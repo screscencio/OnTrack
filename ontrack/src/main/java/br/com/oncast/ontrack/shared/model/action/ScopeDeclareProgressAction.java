@@ -62,8 +62,8 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
-		final List<ModelAction> rollbackActions = processSubActions(context, actionContext, selectedScope);
 		selectedScope.getProgress().setDescription(newProgressDescription, ActionHelper.findUserFrom(actionContext, context), actionContext.getTimestamp());
+		final List<ModelAction> rollbackActions = processSubActions(context, actionContext, selectedScope);
 
 		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollbackActions);
 	}
@@ -90,8 +90,8 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		if (release == null) return;
 
 		final Kanban kanban = context.getKanban(release);
-		for (final Scope taks : story.getAllLeafs()) {
-			final String description = taks.getProgress().getDescription();
+		for (final Scope task : story.getAllLeafs()) {
+			final String description = task.getProgress().getDescription();
 			if (!kanban.hasNonInferedColumn(description)) subActionList.add(new KanbanColumnCreateAction(release.getId(), description, false));
 		}
 	}
