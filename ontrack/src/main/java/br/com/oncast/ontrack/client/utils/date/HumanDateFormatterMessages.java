@@ -112,4 +112,32 @@ public interface HumanDateFormatterMessages extends BaseMessages {
 	@DefaultMessage("few days")
 	String fewDays();
 
+	@Description("less than a minute")
+	@DefaultMessage("less than a minute")
+	String lessThanAMinute();
+
+	@Description("less than a year")
+	@DefaultMessage("less than a year")
+	String lessThanAYear();
+
+	@Description("less than a month")
+	@DefaultMessage("less than a month")
+	String lessThanAMonth();
+
+	@Description("less than a second")
+	@DefaultMessage("less than a second")
+	String lessThanASecond();
+
+	@Description("less than a hour")
+	@DefaultMessage("less than an hour")
+	String lessThanAnHour();
+
+	@Description("less than a day")
+	@DefaultMessage("less than a day")
+	String lessThanADay();
+
+	@Description("less than a week")
+	@DefaultMessage("less than a week")
+	String lessThanAWeek();
+
 }

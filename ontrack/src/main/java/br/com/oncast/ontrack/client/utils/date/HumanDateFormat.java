@@ -23,12 +23,7 @@ public abstract class HumanDateFormat {
 		return difference;
 	}
 
-	public String getDateText() {
-		if (isMinimun()) return unit.getMoment();
-		return formatDate();
-	}
-
-	protected abstract String formatDate();
+	public abstract String getDateText();
 
 	@Override
 	public String toString() {
@@ -40,7 +35,7 @@ public abstract class HumanDateFormat {
 		return difference == 1 ? unit.getSingular() : unit.getPlural();
 	}
 
-	private boolean isMinimun() {
+	protected boolean isMinimun() {
 		return 0 <= difference && difference < 1;
 	}
 

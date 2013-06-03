@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.client.utils.date;
 import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.HOURS;
 import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.ONE_DAY;
 import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.YEARS;
+import static com.ibm.icu.util.Calendar.DECEMBER;
+import static com.ibm.icu.util.Calendar.JANUARY;
 import static org.apache.commons.lang.time.DateUtils.addDays;
 import static org.apache.commons.lang.time.DateUtils.addMinutes;
 import static org.apache.commons.lang.time.DateUtils.addMonths;
@@ -38,8 +40,8 @@ public class HumanDateFormatterTest extends GwtTest {
 	}
 
 	@Test
-	public void theDifferenceOfSameDateIsNow() throws Exception {
-		assertEquals(MESSAGES.now(), formatter.formatTimeDifference(now, now));
+	public void theDifferenceOfSameDateLessThanASecond() throws Exception {
+		assertEquals(MESSAGES.lessThanASecond(), formatter.formatTimeDifference(now, now));
 	}
 
 	@Test
@@ -73,9 +75,9 @@ public class HumanDateFormatterTest extends GwtTest {
 	}
 
 	@Test
-	public void theDifferenceTextOfTwoDatesWithLessThanADayOfDifferenceIsTodayWhenTheMinimunUnitIsDay() throws Exception {
+	public void theDifferenceTextOfTwoDatesWithLessThanADayOfDifferenceIsLassThanADayWhenTheMinimunUnitIsDay() throws Exception {
 		final Date to = addMinutes(now, 43);
-		assertEquals(MESSAGES.today(), formatter.setMinimum(ONE_DAY).formatTimeDifference(now, to));
+		assertEquals(MESSAGES.lessThanADay(), formatter.setMinimum(ONE_DAY).formatTimeDifference(now, to));
 	}
 
 	@Test
@@ -104,15 +106,15 @@ public class HumanDateFormatterTest extends GwtTest {
 
 	@Test
 	public void theRelativeDateTextIsNowWhenDifferenceIsLessThanAMinute() throws Exception {
-		final Date date = date(12, 12, 12, 13);
-		final Date relativeTo = date(12, 12, 12, 00);
+		final Date date = time(12, 12, 12, 13);
+		final Date relativeTo = time(12, 12, 12, 00);
 		assertEquals(MESSAGES.now(), formatter.formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
 	public void theRelativeDateTextIsNowWhenDifferenceIsLessThanMinusMinuteInThePast() throws Exception {
-		final Date date = date(12, 12, 12, 00);
-		final Date relativeTo = date(12, 12, 12, 15);
+		final Date date = time(12, 12, 12, 00);
+		final Date relativeTo = time(12, 12, 12, 15);
 		assertEquals(MESSAGES.now(), formatter.formatDateRelativeTo(date, relativeTo));
 	}
 
@@ -130,89 +132,97 @@ public class HumanDateFormatterTest extends GwtTest {
 
 	@Test
 	public void theRelativeDateTextIsTomorrowAndHourMinuteFormatWhenDifferenceIsLessThanADayAndMoreThanMinute() throws Exception {
-		final Date date = date(12, 11, 00);
-		final Date relativeTo = date(11, 12, 00);
+		final Date date = dayAndTime(12, 11, 00);
+		final Date relativeTo = dayAndTime(11, 12, 00);
 
 		assertEquals(MESSAGES.tomorrow() + " " + MESSAGES.at() + " " + hourAndMinute.format(date), formatter.formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
 	public void theRelativeDateTextIsYesterdayAndHourMinuteFormatWhenDifferenceIsLessThanADayAndMoreThanMinuteButRelativeDateIsLater() throws Exception {
-		final Date date = date(11, 12, 00);
-		final Date relativeTo = date(12, 11, 00);
+		final Date date = dayAndTime(11, 12, 00);
+		final Date relativeTo = dayAndTime(12, 11, 00);
 
 		assertEquals(MESSAGES.yesterday() + " " + MESSAGES.at() + " " + hourAndMinute.format(date), formatter.formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
 	public void theRelativeDateTextIsHourMinuteFormatWhenDifferenceIsMoreThanMinuteAndIsInSameDay() throws Exception {
-		final Date date = date(12, 23, 59);
-		final Date relativeTo = date(12, 00, 01);
+		final Date date = dayAndTime(12, 23, 59);
+		final Date relativeTo = dayAndTime(12, 00, 01);
 
 		assertEquals(hourAndMinute.format(date), formatter.formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
 	public void theRelativeDateTextIsWeekdayDayOfMonthFormatWhenDifferenceIsMoreThanOneDayAndLessThanAWeek() throws Exception {
-		final Date date = date(27, 23, 59);
-		final Date relativeTo = date(30, 00, 01);
+		final Date date = dayAndTime(27, 23, 59);
+		final Date relativeTo = dayAndTime(30, 00, 01);
 
 		assertEquals(weekdayAndDayOfMonth.format(date), formatter.formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
 	public void theRelativeDateTextIsMonthAndDayOfMonthFormatWhenDifferenceIsMoreThanOneWeekAndLessThanAMonth() throws Exception {
-		final Date date = date(21, 23, 59);
-		final Date relativeTo = date(29, 00, 01);
+		final Date date = dayAndTime(21, 23, 59);
+		final Date relativeTo = dayAndTime(29, 00, 01);
 
 		assertEquals(monthAndDayOfMonth.format(date), formatter.formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
 	public void theRelativeDateTextIsTodayWhenMinimumIsDayWhenTheRelativeDateIsInSameDay() throws Exception {
-		final Date date = date(21, 23, 59);
-		final Date relativeTo = date(21, 18, 01);
+		final Date date = dayAndTime(21, 23, 59);
+		final Date relativeTo = dayAndTime(21, 18, 01);
 
 		assertEquals(MESSAGES.today(), formatter.setMinimum(ONE_DAY).formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
 	public void theRelativeDateTextIsTodayWhenMinimumIsDayWhenTheRelativeDateIsInSameDayAndAfterTheGivenDate() throws Exception {
-		final Date date = date(21, 21, 59);
-		final Date relativeTo = date(21, 18, 01);
+		final Date date = dayAndTime(21, 21, 59);
+		final Date relativeTo = dayAndTime(21, 18, 01);
 
 		assertEquals(MESSAGES.today(), formatter.setMinimum(ONE_DAY).formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
 	public void theRelativeDateTextIsTomorrowWhenMinimumIsDayAndTheGivenDateIsOneDayAfter() throws Exception {
-		final Date date = date(22, 18, 01);
-		final Date relativeTo = date(21, 23, 59);
+		final Date date = dayAndTime(22, 18, 01);
+		final Date relativeTo = dayAndTime(21, 23, 59);
 
 		assertEquals(MESSAGES.tomorrow(), formatter.setMinimum(ONE_DAY).formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
-	public void asdasd() throws Exception {
-		final Date date = date(05, 29);
-		final Date relativeTo = date(06, 03);
+	public void oneDayAndDifferentYearShouldReturnYesterday() throws Exception {
+		final Date date = date(2012, DECEMBER, 31);
+		final Date relativeTo = date(2013, JANUARY, 01);
 
-		assertEquals(monthAndDayOfMonth.format(date), formatter.setMinimum(ONE_DAY).formatDateRelativeTo(date, relativeTo));
+		assertEquals(MESSAGES.yesterday(), formatter.setMinimum(ONE_DAY).formatDateRelativeTo(date, relativeTo));
 	}
 
-	private Date date(final int day, final int hour, final int minute) {
-		return date(day, hour, minute, 0);
+	@Test
+	public void theDifferenceBetweenTwoDatesWithLessThanAnHourShouldBeLessThanAnHourWhenTheMinimunIsSetToHours() throws Exception {
+		final Date date = dayAndTime(21, 21, 30);
+		final Date relativeTo = dayAndTime(21, 21, 21);
+
+		assertEquals(MESSAGES.lessThanAnHour(), formatter.setMinimum(HOURS).formatTimeDifference(date, relativeTo));
 	}
 
-	private Date date(final int days, final int hours, final int minutes, final int seconds) {
+	private Date dayAndTime(final int day, final int hour, final int minute) {
+		return time(day, hour, minute, 0);
+	}
+
+	private Date time(final int days, final int hours, final int minutes, final int seconds) {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(2013, 5, days, hours, minutes, seconds);
 		return calendar.getTime();
 	}
 
-	private Date date(final int month, final int days) {
+	private Date date(final int year, final int month, final int days) {
 		final Calendar calendar = Calendar.getInstance();
-		calendar.set(2013, month, days, 12, 0, 0);
+		calendar.set(year, month, days, 12, 0, 0);
 		return calendar.getTime();
 	}
 
