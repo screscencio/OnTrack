@@ -7,7 +7,7 @@ import static br.com.oncast.ontrack.client.utils.date.DateUnit.MONTH;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.SECOND;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.WEEK;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.YEAR;
-import static br.com.oncast.ontrack.client.utils.date.HumanDateFormatter2.MESSAGES;
+import static br.com.oncast.ontrack.client.utils.date.HumanDateFormatter.MESSAGES;
 import static com.google.gwt.i18n.client.DateTimeFormat.getFormat;
 
 import java.util.Arrays;

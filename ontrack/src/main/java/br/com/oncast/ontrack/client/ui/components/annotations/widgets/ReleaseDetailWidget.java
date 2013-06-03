@@ -126,7 +126,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 		final WorkingDay startDay = dataProvider.getEstimatedStartDay();
 		final WorkingDay endDay = dataProvider.getEstimatedEndDay();
 		this.period.setText(format(startDay) + " - " + format(endDay));
-		this.duration.setText(HumanDateFormatter.getDifferenceText(endDay.getJavaDate().getTime() - startDay.getJavaDate().getTime(), 1));
+		this.duration.setText(HumanDateFormatter.get().setDecimalDigits(1).formatTimeDifference(startDay.getJavaDate(), endDay.getJavaDate()));
 		final Long cycleTimeAverage = release.getAverageCycleTime();
 		this.cycletime.setText(formatInfo(cycleTimeAverage, release.getCycleTimeDeviant()));
 		final Long leadtimeAverage = release.getAverageLeadTime();
@@ -135,7 +135,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	private String formatInfo(final Long value, final Long deviation) {
 		if (value == null) return "---";
-		return format(value) + (" ± " + (deviation == null ? "0" : HumanDateFormatter.getDifferenceText(deviation, 0, true)));
+		return format(value) + (" ± " + (deviation == null ? "0" : HumanDateFormatter.get().getTimeDifferenceFormat(deviation)));
 	}
 
 	private String format(final WorkingDay day) {
@@ -149,7 +149,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 	}
 
 	private String format(final Long value) {
-		return HumanDateFormatter.getDifferenceText(value, 0);
+		return HumanDateFormatter.get().formatTimeDifference(value);
 	}
 
 	private String format(final float floatValue) {

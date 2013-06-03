@@ -25,7 +25,7 @@ public class HumanDateFormatterTest extends GwtTest {
 	private DateTimeFormat hourAndMinute;
 	private DateTimeFormat weekdayAndDayOfMonth;
 	private DateTimeFormat monthAndDayOfMonth;
-	private HumanDateFormatter2 formatter;
+	private HumanDateFormatter formatter;
 	private Date now;
 
 	@Before
@@ -33,7 +33,7 @@ public class HumanDateFormatterTest extends GwtTest {
 		hourAndMinute = DateTimeFormat.getFormat("HH:mm");
 		weekdayAndDayOfMonth = DateTimeFormat.getFormat("EE d");
 		monthAndDayOfMonth = DateTimeFormat.getFormat("MMM d");
-		formatter = HumanDateFormatter2.get();
+		formatter = HumanDateFormatter.get();
 		now = new Date();
 	}
 
@@ -192,6 +192,14 @@ public class HumanDateFormatterTest extends GwtTest {
 		assertEquals(MESSAGES.tomorrow(), formatter.setMinimum(ONE_DAY).formatDateRelativeTo(date, relativeTo));
 	}
 
+	@Test
+	public void asdasd() throws Exception {
+		final Date date = date(05, 29);
+		final Date relativeTo = date(06, 03);
+
+		assertEquals(monthAndDayOfMonth.format(date), formatter.setMinimum(ONE_DAY).formatDateRelativeTo(date, relativeTo));
+	}
+
 	private Date date(final int day, final int hour, final int minute) {
 		return date(day, hour, minute, 0);
 	}
@@ -199,6 +207,12 @@ public class HumanDateFormatterTest extends GwtTest {
 	private Date date(final int days, final int hours, final int minutes, final int seconds) {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(2013, 5, days, hours, minutes, seconds);
+		return calendar.getTime();
+	}
+
+	private Date date(final int month, final int days) {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(2013, month, days, 12, 0, 0);
 		return calendar.getTime();
 	}
 

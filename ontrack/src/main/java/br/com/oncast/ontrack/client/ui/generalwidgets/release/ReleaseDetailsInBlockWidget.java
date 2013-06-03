@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.InformationBlockWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProgressBlockWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.client.utils.date.TimeDifferenceFormat;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
@@ -102,9 +103,9 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 			return;
 		}
 
-		final String differenceText[] = HumanDateFormatter.getSplittedDifferenceText(difference, 1);
-		widget.setValue(differenceText[0]);
-		widget.setPosfix(differenceText[1]);
+		final TimeDifferenceFormat format = HumanDateFormatter.get().setDecimalDigits(1).getTimeDifferenceFormat(difference);
+		widget.setValue(format.getDateText());
+		widget.setPosfix(format.getUnitText());
 	}
 
 	@Override

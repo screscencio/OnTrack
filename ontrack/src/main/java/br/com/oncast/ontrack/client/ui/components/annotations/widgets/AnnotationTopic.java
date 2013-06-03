@@ -213,7 +213,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	private void updateDeprecatedLabels() {
-		final String absoluteDate = HumanDateFormatter.getAbsoluteText(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
+		final String absoluteDate = HumanDateFormatter.formatAbsoluteDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 
 		updateDeprecationLabel();
 		deprecatedLabel.setTitle(absoluteDate);
@@ -223,7 +223,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	private void updateDeprecationLabel() {
-		final String formattedDate = HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
+		final String formattedDate = HumanDateFormatter.get().formatDateRelativeToNow(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 		deprecatedLabel.setText(messages.deprecationDetails("user", formattedDate));
 		ClientServices.get().userData()
 				.loadRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED).getId(), new AsyncCallback<User>() {

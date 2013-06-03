@@ -53,8 +53,8 @@ public class SinceAnnotationMenuItem extends Composite implements AnnotationMenu
 		final Date date = annotation.getLastOcuurenceOf(annotation.getType());
 		final String customDuration = duration == null ? "" : " - " + messages.duration() + duration.getDurationText(annotation);
 
-		label.setText(HumanDateFormatter.getRelativeDate(date) + customDuration);
-		label.setTitle(HumanDateFormatter.getAbsoluteText(date));
+		label.setText(HumanDateFormatter.get().formatDateRelativeToNow(date) + customDuration);
+		label.setTitle(HumanDateFormatter.formatAbsoluteDate(date));
 	}
 
 	@Override

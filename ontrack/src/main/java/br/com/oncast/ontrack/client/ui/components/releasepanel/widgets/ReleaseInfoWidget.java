@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallbac
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.client.utils.date.TimeDifferenceFormat;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -222,11 +223,9 @@ public class ReleaseInfoWidget extends Composite {
 		final Date date = new Date();
 		final WorkingDay workingDay = WorkingDayFactory.create(date);
 		workingDay.add(days);
-		final String differenceText[] = HumanDateFormatter.getDifferenceText(workingDay.getJavaDate().getTime() - date.getTime(), 1).split(" ");
-		// FIXME LOBO Correct when it is less than 1 day
-		// FIXME LOBO REmove the split workaround.
-		durationValueLabel.setText(differenceText[0]);
-		durationUnitLabel.setText(differenceText[1]);
+		final TimeDifferenceFormat format = HumanDateFormatter.get().setDecimalDigits(1).getTimeDifferenceFormat(date, workingDay.getJavaDate());
+		durationValueLabel.setText(format.getDateText());
+		durationUnitLabel.setText(format.getUnitText());
 	}
 
 	private void updateSpeed() {

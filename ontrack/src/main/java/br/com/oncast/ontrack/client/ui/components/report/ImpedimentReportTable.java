@@ -107,7 +107,7 @@ public class ImpedimentReportTable extends Composite {
 			@Override
 			public String getValue(final ImpedimentItem object) {
 				final Date date = object.getStartDate();
-				return (date == null) ? "---" : HumanDateFormatter.getShortAbsuluteDate(date);
+				return (date == null) ? "---" : HumanDateFormatter.formatShortAbsoluteDate(date);
 			}
 		};
 		startDateColumn.setSortable(true);
@@ -125,7 +125,7 @@ public class ImpedimentReportTable extends Composite {
 			@Override
 			public String getValue(final ImpedimentItem object) {
 				final Date date = object.getEndDate();
-				return (date == null) ? "---" : HumanDateFormatter.getShortAbsuluteDate(date);
+				return (date == null) ? "---" : HumanDateFormatter.formatShortAbsoluteDate(date);
 			}
 		};
 
@@ -144,7 +144,7 @@ public class ImpedimentReportTable extends Composite {
 			@Override
 			public String getValue(final ImpedimentItem object) {
 				final Long time = object.getCycletime();
-				return time == 0 ? "---" : HumanDateFormatter.getDifferenceText(time, 0);
+				return time == 0 ? "---" : HumanDateFormatter.get().formatTimeDifference(time);
 			}
 		};
 		leadTimeColumn.setSortable(true);

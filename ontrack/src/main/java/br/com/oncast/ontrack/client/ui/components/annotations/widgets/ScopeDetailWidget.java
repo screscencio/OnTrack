@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ScopeTimelineWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.TagAssociationWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.client.utils.date.TimeDifferenceFormat;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
@@ -188,9 +189,9 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 			return;
 		}
 
-		final String differenceText[] = HumanDateFormatter.getSplittedDifferenceText(difference, 1);
-		widget.setValue(differenceText[0]);
-		widget.setPosfix(differenceText[1]);
+		final TimeDifferenceFormat format = HumanDateFormatter.get().setDecimalDigits(1).getTimeDifferenceFormat(difference);
+		widget.setValue(format.getDateText());
+		widget.setPosfix(format.getUnitText());
 	}
 
 }
