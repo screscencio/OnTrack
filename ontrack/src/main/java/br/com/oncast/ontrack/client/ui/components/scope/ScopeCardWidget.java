@@ -31,6 +31,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembe
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.date.HumanDateUnit;
+import br.com.oncast.ontrack.client.utils.date.TimeDifferenceFormat;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -190,7 +191,8 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 		if (hasDueDate) {
 			dueDateLabel.setInnerText(HumanDateFormatter.get().setMinimum(HumanDateUnit.ONE_DAY).formatDateRelativeToNow(scope.getDueDate()));
 			final long remainingTime = ClientServices.get().scopeEstimator().get().getRemainingTime(scope);
-			dueDateLabel.setTitle(HumanDateFormatter.get().setMinimum(HumanDateUnit.ONE_DAY).formatTimeDifference(remainingTime));
+			final TimeDifferenceFormat format = HumanDateFormatter.get().setMinimum(HumanDateUnit.ONE_DAY).getTimeDifferenceFormat(remainingTime);
+			dueDateLabel.setTitle(format.formatWith(MESSAGES.left(), MESSAGES.late()));
 		}
 		ElementUtils.setVisible(dueDateContainer, hasDueDate);
 		ElementUtils.setBackgroundColor(dueDateContainer, SERVICE_PROVIDER.colorProvider().getDueDateColor(scope), true);

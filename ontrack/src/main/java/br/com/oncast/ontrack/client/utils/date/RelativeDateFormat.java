@@ -12,8 +12,8 @@ public class RelativeDateFormat extends HumanDateFormat {
 	}
 
 	@Override
-	public String formatDate() {
-		return unit.formatRelativeTo(date, difference);
+	public String getDateText() {
+		return isMinimun() ? unit.getMoment() : unit.formatRelativeTo(date, difference);
 	}
 
 	@Override

@@ -18,56 +18,56 @@ import com.google.common.base.Joiner;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 public enum HumanDateUnit {
-	SECONDS(MINUTE, SECOND, "yyyyMMddHHmm", MESSAGES.second(), MESSAGES.seconds(), MESSAGES.now()) {
+	SECONDS(MINUTE, SECOND, "", MESSAGES.second(), MESSAGES.seconds(), MESSAGES.now(), MESSAGES.lessThanASecond()) {
 		@Override
 		public String formatRelativeTo(final Date date, final float roundedDifference) {
 			return MESSAGES.now();
 		}
 	},
-	MINUTES(HOUR, MINUTE, "yyyyMMddHH", MESSAGES.minute(), MESSAGES.minutes(), MESSAGES.thisMinute()) {
+	MINUTES(HOUR, MINUTE, "yyyyMMdd", MESSAGES.minute(), MESSAGES.minutes(), MESSAGES.thisMinute(), MESSAGES.lessThanAMinute()) {
 		@Override
 		public String formatRelativeTo(final Date date, final float roundedDifference) {
 			return DateTimeFormat.getFormat("HH:mm").format(date);
 		}
 	},
-	HOURS(DAY, HOUR, "yyyyMMdd", MESSAGES.hour(), MESSAGES.hours(), MESSAGES.thisHour()) {
+	HOURS(DAY, HOUR, "yyyyMMdd", MESSAGES.hour(), MESSAGES.hours(), MESSAGES.thisHour(), MESSAGES.lessThanAnHour()) {
 		@Override
 		public String formatRelativeTo(final Date date, final float roundedDifference) {
 			return DateTimeFormat.getFormat("HH:mm").format(date);
 		}
 	},
-	HOURS_IN_DIFFERENT_DAY(DAY, HOUR, "yyyyMM", MESSAGES.hour(), MESSAGES.hours(), MESSAGES.thisHour()) {
+	HOURS_IN_DIFFERENT_DAY(DAY, HOUR, "", MESSAGES.hour(), MESSAGES.hours(), MESSAGES.thisHour(), MESSAGES.lessThanAnHour()) {
 		@Override
 		public String formatRelativeTo(final Date date, final float roundedDifference) {
 			final String day = roundedDifference <= 0 ? MESSAGES.tomorrow() : MESSAGES.yesterday();
 			return Joiner.on(" ").join(day, MESSAGES.at(), getFormat("HH:mm").format(date));
 		}
 	},
-	ONE_DAY(2 * DAY, DAY, "yyyyMM", MESSAGES.day(), MESSAGES.days(), MESSAGES.today()) {
+	ONE_DAY(2 * DAY, DAY, "", MESSAGES.day(), MESSAGES.days(), MESSAGES.today(), MESSAGES.lessThanADay()) {
 		@Override
 		public String formatRelativeTo(final Date date, final float roundedDifference) {
 			return roundedDifference <= 0 ? MESSAGES.tomorrow() : MESSAGES.yesterday();
 		}
 	},
-	FEW_DAYS(WEEK, DAY, "yyyyMM", MESSAGES.day(), MESSAGES.days(), MESSAGES.fewDays()) {
+	FEW_DAYS(WEEK, DAY, "", MESSAGES.day(), MESSAGES.days(), MESSAGES.fewDays(), MESSAGES.fewDays()) {
 		@Override
 		public String formatRelativeTo(final Date date, final float roundedDifference) {
 			return DateTimeFormat.getFormat("EE d").format(date);
 		}
 	},
-	WEEKS(MONTH, WEEK, "yyyyMM", MESSAGES.week(), MESSAGES.weeks(), MESSAGES.thisWeek()) {
+	WEEKS(MONTH, WEEK, "", MESSAGES.week(), MESSAGES.weeks(), MESSAGES.thisWeek(), MESSAGES.lessThanAWeek()) {
 		@Override
 		public String formatRelativeTo(final Date date, final float roundedDifference) {
 			return DateTimeFormat.getFormat("MMM d").format(date);
 		}
 	},
-	MONTHS(YEAR, MONTH, "yyyy", MESSAGES.month(), MESSAGES.months(), MESSAGES.thisMonth()) {
+	MONTHS(YEAR, MONTH, "yyyy", MESSAGES.month(), MESSAGES.months(), MESSAGES.thisMonth(), MESSAGES.lessThanAMonth()) {
 		@Override
 		public String formatRelativeTo(final Date date, final float roundedDifference) {
 			return DateTimeFormat.getFormat("MMM d").format(date);
 		}
 	},
-	YEARS(Long.MAX_VALUE, YEAR, "G", MESSAGES.year(), MESSAGES.years(), MESSAGES.thisYear()) {
+	YEARS(Long.MAX_VALUE, YEAR, "", MESSAGES.year(), MESSAGES.years(), MESSAGES.thisYear(), MESSAGES.lessThanAYear()) {
 		@Override
 		public String formatRelativeTo(final Date date, final float roundedDifference) {
 			return DateTimeFormat.getFormat("MM yyyy").format(date);
@@ -83,14 +83,16 @@ public enum HumanDateUnit {
 	private final String plural;
 	private final String moment;
 	private DateTimeFormat comparationFormat;
+	private final String lessThanMinimun;
 
 	private HumanDateUnit(final long maxDifference, final long delimiter, final String comparationFormatString, final String singular, final String plural,
-			final String moment) {
+			final String moment, final String lessThanTheMinimun) {
 		this.maxDifference = maxDifference;
 		this.delimiter = delimiter;
 		this.singular = singular;
 		this.plural = plural;
 		this.moment = moment;
+		this.lessThanMinimun = lessThanTheMinimun;
 		this.comparationFormat = DateTimeFormat.getFormat(comparationFormatString);
 	}
 
@@ -104,6 +106,10 @@ public enum HumanDateUnit {
 
 	public String getMoment() {
 		return moment;
+	}
+
+	public String getLessThanMinimun() {
+		return lessThanMinimun;
 	}
 
 	public static HumanDateUnit getSmallest() {
