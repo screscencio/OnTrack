@@ -115,9 +115,13 @@ public enum HumanDateUnit {
 	}
 
 	public static HumanDateUnit getDifferenceUnit(final Date from, final Date to, final HumanDateUnit minimum, final HumanDateUnit maximum) {
-		final long difference = absDifference(from, to);
+		return getDifferenceUnit(DateUtils.getDifferenceInMilliseconds(from, to), minimum, maximum);
+	}
+
+	public static HumanDateUnit getDifferenceUnit(final long difference, final HumanDateUnit minimum, final HumanDateUnit maximum) {
+		final long absDifference = Math.abs(difference);
 		for (final HumanDateUnit unit : valuesRange(minimum, maximum)) {
-			if (unit.accepts(difference)) return unit;
+			if (unit.accepts(absDifference)) return unit;
 		}
 		return maximum;
 	}
@@ -133,15 +137,15 @@ public enum HumanDateUnit {
 	public abstract String formatRelativeTo(Date date, float roundedDifference);
 
 	public float getDifference(final Date from, final Date to) {
-		return rawDifference(from, to) / delimiter;
+		return normalize(DateUtils.getDifferenceInMilliseconds(from, to));
+	}
+
+	public float normalize(final long difference) {
+		return difference / delimiter;
 	}
 
 	private static long absDifference(final Date from, final Date to) {
-		return Math.abs(rawDifference(from, to));
-	}
-
-	private static long rawDifference(final Date from, final Date to) {
-		return to.getTime() - from.getTime();
+		return Math.abs(DateUtils.getDifferenceInMilliseconds(from, to));
 	}
 
 	private static List<HumanDateUnit> valuesRange(final HumanDateUnit minimum, final HumanDateUnit maximum) {
