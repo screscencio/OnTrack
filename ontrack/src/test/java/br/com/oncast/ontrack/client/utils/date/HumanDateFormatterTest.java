@@ -39,67 +39,67 @@ public class HumanDateFormatterTest extends GwtTest {
 
 	@Test
 	public void theDifferenceOfSameDateIsNow() throws Exception {
-		assertEquals(MESSAGES.now(), formatter.formatDifferenceText(now, now));
+		assertEquals(MESSAGES.now(), formatter.formatTimeDifference(now, now));
 	}
 
 	@Test
 	public void theDifferenceDateOfTwoDatesWithOneScondDifferenceIsOneSecond() throws Exception {
 		final Date to = addSeconds(now, 1);
-		assertEquals(1 + " " + MESSAGES.second(), formatter.formatDifferenceText(now, to));
+		assertEquals(1 + " " + MESSAGES.second(), formatter.formatTimeDifference(now, to));
 	}
 
 	@Test
 	public void theDifferenceDateOfTwoDatesWithThreeScondsDifferenceIsThreeSeconds() throws Exception {
 		final Date to = addSeconds(now, 3);
-		assertEquals(3 + " " + MESSAGES.seconds(), formatter.formatDifferenceText(now, to));
+		assertEquals(3 + " " + MESSAGES.seconds(), formatter.formatTimeDifference(now, to));
 	}
 
 	@Test
 	public void theDifferenceDateOfTwoDatesWithOneMinuteOfDifferenceIsOneMinute() throws Exception {
 		final Date to = addMinutes(now, 1);
-		assertEquals(1 + " " + MESSAGES.minute(), formatter.formatDifferenceText(now, to));
+		assertEquals(1 + " " + MESSAGES.minute(), formatter.formatTimeDifference(now, to));
 	}
 
 	@Test
 	public void itsPossibleToConfigureDecimalDigitsToBeRounded() throws Exception {
 		final Date to = addSeconds(addMinutes(now, 1), 15);
-		assertEquals(1.2 + " " + MESSAGES.minutes(), formatter.setDecimalDigits(1).formatDifferenceText(now, to));
+		assertEquals(1.2 + " " + MESSAGES.minutes(), formatter.setDecimalDigits(1).formatTimeDifference(now, to));
 	}
 
 	@Test
 	public void unnecessaryZerosAtRightAreChopped() throws Exception {
 		final Date to = addSeconds(addMinutes(now, 1), 15);
-		assertEquals(1.25 + " " + MESSAGES.minutes(), formatter.setDecimalDigits(5).formatDifferenceText(now, to));
+		assertEquals(1.25 + " " + MESSAGES.minutes(), formatter.setDecimalDigits(5).formatTimeDifference(now, to));
 	}
 
 	@Test
 	public void theDifferenceTextOfTwoDatesWithLessThanADayOfDifferenceIsTodayWhenTheMinimunUnitIsDay() throws Exception {
 		final Date to = addMinutes(now, 43);
-		assertEquals(MESSAGES.today(), formatter.setMinimum(ONE_DAY).formatDifferenceText(now, to));
+		assertEquals(MESSAGES.today(), formatter.setMinimum(ONE_DAY).formatTimeDifference(now, to));
 	}
 
 	@Test
 	public void theDifferenceTextOfTwoDatesWithFiveDaysDifferenceIsFiveDaysWhenTheMinimunUnitIsDay() throws Exception {
 		final Date to = addDays(now, 5);
-		assertEquals(5 + " " + MESSAGES.days(), formatter.setMinimum(ONE_DAY).formatDifferenceText(now, to));
+		assertEquals(5 + " " + MESSAGES.days(), formatter.setMinimum(ONE_DAY).formatTimeDifference(now, to));
 	}
 
 	@Test
 	public void theDifferenceTextOfTwoDatesWithFiveDaysDifferenceIs120HoursWhenTheUnitIsHours() throws Exception {
 		final Date to = addDays(now, 5);
-		assertEquals(120 + " " + MESSAGES.hours(), formatter.setUnit(HOURS).formatDifferenceText(now, to));
+		assertEquals(120 + " " + MESSAGES.hours(), formatter.setUnit(HOURS).formatTimeDifference(now, to));
 	}
 
 	@Test
 	public void theDifferenceTextOfTwoDatesWithFiveDaysNegativeDifferenceIsMinus5Days() throws Exception {
 		final Date to = addDays(now, -5);
-		assertEquals(-5 + " " + MESSAGES.days(), formatter.formatDifferenceText(now, to));
+		assertEquals(-5 + " " + MESSAGES.days(), formatter.formatTimeDifference(now, to));
 	}
 
 	@Test
 	public void theDifferenceTextOfTwoDatesWithFiveDaysNegativeDifferenceIsMinusPointFiveYearsWhenTheUnitIsYearsAndDecimalDigitsIsOne() throws Exception {
 		final Date to = addMonths(now, -6);
-		assertEquals(-0.5 + " " + MESSAGES.years(), formatter.setDecimalDigits(1).setUnit(YEARS).formatDifferenceText(now, to));
+		assertEquals(-0.5 + " " + MESSAGES.years(), formatter.setDecimalDigits(1).setUnit(YEARS).formatTimeDifference(now, to));
 	}
 
 	@Test
