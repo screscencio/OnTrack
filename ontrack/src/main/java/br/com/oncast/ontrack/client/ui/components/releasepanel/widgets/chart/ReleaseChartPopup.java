@@ -141,7 +141,7 @@ public class ReleaseChartPopup extends Composite implements HasCloseHandlers<Rel
 		this.actualVelocity.setText(actualVelocityValue != null ? round(actualVelocityValue) : "-");
 
 		final WorkingDay actualEndDayValue = dataProvider.getActualEndDay();
-		this.actualEndDay.setText(actualEndDayValue != null ? HumanDateFormatter.getShortAbsuluteDate(actualEndDayValue.getJavaDate()) : "-");
+		this.actualEndDay.setText(actualEndDayValue != null ? HumanDateFormatter.formatShortAbsoluteDate(actualEndDayValue.getJavaDate()) : "-");
 
 		helpText.setVisible(hasDifferentEstimatives(dataProvider));
 	}

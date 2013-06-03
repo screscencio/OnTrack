@@ -106,7 +106,7 @@ public class ScopeTimelineWidget extends Composite {
 		mark.addStyleName(styleName);
 		mark.addStyleName(style.timelineMark());
 		mark.addStyleName("icon-flag");
-		mark.setTitle(HumanDateFormatter.getRelativeDate(timestamp) + " - " + label);
+		mark.setTitle(HumanDateFormatter.get().formatDateRelativeToNow(timestamp) + " - " + label);
 		container.add(mark);
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
@@ -147,7 +147,7 @@ public class ScopeTimelineWidget extends Composite {
 	private void setProportion(final FocusPanel stroke, final long previousTimestamp, final long currentTimestamp) {
 		final long currentPeriod = currentTimestamp - previousTimestamp;
 		timelineBar.setCellWidth(stroke, "" + (currentPeriod * PROPORTION_SENSITIVITY / totalPeriod));
-		stroke.setTitle(HumanDateFormatter.getDifferenceText(currentPeriod, 0));
+		stroke.setTitle(HumanDateFormatter.get().formatTimeDifference(currentPeriod));
 		stroke.getElement().setPropertyInt(PERIOD, (int) currentPeriod);
 	}
 
@@ -167,7 +167,7 @@ public class ScopeTimelineWidget extends Composite {
 		final Widget dot = new FocusPanel();
 		dot.addStyleName(styleName);
 		dot.addStyleName(getColorStyle(state));
-		dot.setTitle(HumanDateFormatter.getRelativeDate(timestamp) + " - " + state.getLabel());
+		dot.setTitle(HumanDateFormatter.get().formatDateRelativeToNow(timestamp) + " - " + state.getLabel());
 		timelineBar.add(dot);
 	}
 

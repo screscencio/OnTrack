@@ -48,7 +48,7 @@ public enum ProgressIconUpdater {
 
 		@Override
 		public String getTitle(final Scope scope) {
-			return MESSAGES.finishedIn(HumanDateFormatter.getRelativeDate(scope.getProgress().getEndDay().getJavaDate()));
+			return MESSAGES.finishedIn(HumanDateFormatter.get().formatDateRelativeToNow(scope.getProgress().getEndDay().getJavaDate()));
 		}
 
 		@Override

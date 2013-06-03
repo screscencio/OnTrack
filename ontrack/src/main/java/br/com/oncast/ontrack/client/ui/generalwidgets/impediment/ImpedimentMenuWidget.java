@@ -93,7 +93,7 @@ public class ImpedimentMenuWidget extends Composite implements HasClickHandlers,
 		final boolean isDeprecated = impediment.isDeprecated();
 		message.setStyleName(style.deprecatedMessage(), isDeprecated);
 		final Date t = impediment.getLastOcuurenceOf(impediment.getType());
-		timestamp.setInnerText(HumanDateFormatter.getRelativeDate(t));
+		timestamp.setInnerText(HumanDateFormatter.get().formatDateRelativeToNow(t));
 		check.setStyleName("icon-check-empty", !isDeprecated && impediment.getType() == OPEN_IMPEDIMENT);
 		check.setStyleName("icon-check", !isDeprecated && impediment.getType() == SOLVED_IMPEDIMENT);
 		check.setStyleName("icon-ban", isDeprecated);

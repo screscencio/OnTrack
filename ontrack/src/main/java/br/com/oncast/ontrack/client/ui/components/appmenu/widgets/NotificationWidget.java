@@ -84,8 +84,8 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 		userNameLabel.setText(userName);
 		notificationMessage.setHTML(notification.getType().selectMessage(messages, notification));
 
-		timestamp.setText(HumanDateFormatter.getDifferenceDate(notification.getTimestamp()));
-		timestamp.setTitle(HumanDateFormatter.getShortAbsuluteDate(notification.getTimestamp()));
+		timestamp.setText(HumanDateFormatter.get().formatDateRelativeToNow(notification.getTimestamp()));
+		timestamp.setTitle(HumanDateFormatter.formatShortAbsoluteDate(notification.getTimestamp()));
 
 		setStyleByType();
 

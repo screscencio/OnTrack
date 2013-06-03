@@ -144,7 +144,7 @@ public class ScopeReportTable extends Composite {
 			@Override
 			public String getValue(final ScopeItem object) {
 				final Long cycleTime = object.getCycleTime();
-				return cycleTime == null ? "---" : HumanDateFormatter.getDifferenceText(cycleTime, 0);
+				return cycleTime == null ? "---" : HumanDateFormatter.get().formatTimeDifference(cycleTime);
 			}
 		};
 		cycleTimeColumn.setSortable(true);
@@ -162,7 +162,7 @@ public class ScopeReportTable extends Composite {
 			@Override
 			public String getValue(final ScopeItem object) {
 				final Long leadTime = object.getLeadTime();
-				return leadTime == null ? "---" : HumanDateFormatter.getDifferenceText(leadTime, 0);
+				return leadTime == null ? "---" : HumanDateFormatter.get().formatTimeDifference(leadTime);
 			}
 		};
 		leadTimeColumn.setSortable(true);
