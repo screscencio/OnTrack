@@ -4,100 +4,104 @@ import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
 public interface ScopeTreeShortcutMappingsMessage extends BaseMessages {
 
-	@DefaultMessage("Edit the selected scope")
 	@Description("Description for update scope shortcut")
+	@DefaultMessage("Edit the selected scope")
 	String updateScope();
 
-	@DefaultMessage("Insert a scope under the selected scope")
 	@Description("Description for insert sibling down shortcut")
+	@DefaultMessage("Insert a scope under the selected scope")
 	String insertSiblingDown();
 
-	@DefaultMessage("Insert a scope above the selected scope")
 	@Description("Description for insert sibling up shortcut")
+	@DefaultMessage("Insert a scope above the selected scope")
 	String insertSiblingUp();
 
-	@DefaultMessage("Insert a scope as a child of the selected scope")
 	@Description("Description for insert child scope shortcut")
+	@DefaultMessage("Insert a scope as a child of the selected scope")
 	String insertChild();
 
-	@DefaultMessage("Insert a scope as the parent of the selected scope")
 	@Description("Description for insert parent scope shortcut")
+	@DefaultMessage("Insert a scope as the parent of the selected scope")
 	String insertParent();
 
-	@DefaultMessage("Move the selected scope up")
 	@Description("Description for move scope up shortcut")
+	@DefaultMessage("Move the selected scope up")
 	String moveUp();
 
-	@DefaultMessage("Move the selected scope down")
 	@Description("Description for move scope down shortcut")
+	@DefaultMessage("Move the selected scope down")
 	String moveScopeDown();
 
-	@DefaultMessage("Move the selected scope right as a child of the scope above")
 	@Description("Description for move scope right shortcut")
+	@DefaultMessage("Move the selected scope right as a child of the scope above")
 	String moveRight();
 
-	@DefaultMessage("Move the selected scope left as a sibling of the parent scope")
 	@Description("Description for move scope left shortcut")
+	@DefaultMessage("Move the selected scope left as a sibling of the parent scope")
 	String moveLeft();
 
-	@DefaultMessage("Removes the selected scope")
 	@Description("Description for scope remove shortcut")
+	@DefaultMessage("Removes the selected scope")
 	String deleteScope();
 
-	@DefaultMessage("View and add impediments for the selected scope")
 	@Description("open impediments of the selected scope shortcut")
+	@DefaultMessage("View and add impediments for the selected scope")
 	String declareImpediment();
 
-	@DefaultMessage("Associates the selected scope with a release of your choice")
 	@Description("Description for bind release shortcut")
+	@DefaultMessage("Associates the selected scope with a release of your choice")
 	String bindRelease();
 
-	@DefaultMessage("Declares a progress of your choice to the selected scope")
 	@Description("Description for declare progress shortcut")
+	@DefaultMessage("Declares a progress of your choice to the selected scope")
 	String declareProgress();
 
-	@DefaultMessage("Declares a effort of your choice to the selected scope")
 	@Description("Description for declare effort shortcut")
+	@DefaultMessage("Declares a effort of your choice to the selected scope")
 	String declareEffort();
 
-	@DefaultMessage("Declares a value of your choice to the selected scope")
 	@Description("Description for declare value shortcut")
+	@DefaultMessage("Declares a value of your choice to the selected scope")
 	String declareValue();
 
-	@DefaultMessage("Show annotations for the selected scope")
 	@Description("Description for show annotations shortcut")
+	@DefaultMessage("Show annotations for the selected scope")
 	String showAnnotations();
 
-	@DefaultMessage("Show / hide values of all scopes")
 	@Description("Description for toggle value column shortcut")
+	@DefaultMessage("Show / hide values of all scopes")
 	String toggleValueColumn();
 
-	@DefaultMessage("Show / hide progresses of all scopes")
 	@Description("Description for toggle progress column shortcut")
+	@DefaultMessage("Show / hide progresses of all scopes")
 	String toggleProgressColumn();
 
-	@DefaultMessage("Show / hide releases of all scopes")
 	@Description("Description for toggle release column shortcut")
+	@DefaultMessage("Show / hide releases of all scopes")
 	String toggleReleaseColumn();
 
-	@DefaultMessage("Show / hide efforts of all scopes")
 	@Description("Description for toggle effort column shortcut")
+	@DefaultMessage("Show / hide efforts of all scopes")
 	String toggleEffortColumn();
 
-	@DefaultMessage("Find scope inside a release")
 	@Description("Description for find scope inside a release shortcut")
+	@DefaultMessage("Find scope inside a release")
 	String findScopeAtReleaseWidget();
 
-	@DefaultMessage("Jump to previous selection")
 	@Description("select previous selected scope shortcut")
+	@DefaultMessage("Jump to previous selection")
 	String selectPreviousSelectedScope();
 
-	@DefaultMessage("Jump to next selection")
 	@Description("select next selected scope shortcut")
+	@DefaultMessage("Jump to next selection")
 	String selectNextSelectedScope();
 
-	@DefaultMessage("Add a tag to selection")
 	@Description("add tag to selected scope shortcut")
+	@DefaultMessage("Add a tag to selection")
 	String addTagToScope();
+
+	@Description("Can''t move the scope because both the selected scope and the targeted parent scope are in a release")
+	@DefaultMessage("Can''t move the scope because both the selected scope and the targeted parent scope are in a release")
+	String cantMoveBecauseCantCascadeScopesWithReleases();
 
 }

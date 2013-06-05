@@ -55,9 +55,7 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -111,19 +109,19 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected SpanElement openImpedimentIcon;
+	protected FocusPanel openImpedimentIcon;
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected SpanElement annotationIcon;
+	protected FocusPanel annotationIcon;
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected SpanElement checklistIcon;
+	protected FocusPanel checklistIcon;
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected SpanElement descriptionIcon;
+	protected FocusPanel descriptionIcon;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -313,6 +311,18 @@ public class ScopeTreeItemWidget extends Composite {
 		ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), releaseTag);
 	}
 
+	@UiHandler("openImpedimentIcon")
+	protected void openImpediments(final ClickEvent e) {
+		e.stopPropagation();
+		showImpedimentMenu();
+	}
+
+	@UiHandler({ "annotationIcon", "checklistIcon", "descriptionIcon" })
+	protected void openDetails(final ClickEvent e) {
+		e.stopPropagation();
+		ClientServices.get().details().showDetailsFor(scope.getId());
+	}
+
 	public void setValue(final String value) {
 		descriptionLabel.setText(value);
 		descriptionLabel.setTitle(value);
@@ -388,14 +398,14 @@ public class ScopeTreeItemWidget extends Composite {
 
 	public void updateDetails(final SubjectDetailUpdateEvent event) {
 		if (event == null) return;
-		setSpanElementVisible(this.annotationIcon, event.hasAnnotations());
+		this.annotationIcon.setVisible(event.hasAnnotations());
 		this.annotationIcon.setTitle(messages.annotationsIconTitle("" + event.getAnnotationsCount()));
-		setSpanElementVisible(this.descriptionIcon, event.hasDescription());
+		this.descriptionIcon.setVisible(event.hasDescription());
 		this.descriptionIcon.setTitle(removeHtmlTags(event.getDescriptionText()));
 
 		updateChecklistIndicator(event);
 
-		setSpanElementVisible(this.openImpedimentIcon, event.hasOpenImpediments());
+		this.openImpedimentIcon.setVisible(event.hasOpenImpediments());
 		final int count = event.getOpenImpedimentsCount();
 		this.openImpedimentIcon.setTitle(count == 1 ? event.getOpenImpediments().get(0).getMessage() : messages.openImpediments("" + count));
 	}
@@ -406,21 +416,11 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	private void updateChecklistIndicator(final SubjectDetailUpdateEvent event) {
-		setSpanElementVisible(this.checklistIcon, event.hasChecklists());
+		this.checklistIcon.setVisible(event.hasChecklists());
 
 		final boolean isComplete = event.isChecklistComplete();
-		setElementStyle(this.checklistIcon, style.checklistComplete(), isComplete);
+		this.checklistIcon.setStyleName(style.checklistComplete(), isComplete);
 		this.checklistIcon.setTitle(messages.checklistCompletition("" + event.getCheckedItemCount(), "" + event.getTotalChecklistItemCount()));
-	}
-
-	private void setElementStyle(final Element element, final String styleName, final boolean add) {
-		if (add) element.addClassName(styleName);
-		else element.removeClassName(styleName);
-	}
-
-	private void setSpanElementVisible(final Element label, final boolean visible) {
-		if (visible) label.getStyle().clearDisplay();
-		else label.getStyle().setDisplay(Display.NONE);
 	}
 
 	private void updateValueDisplay() {

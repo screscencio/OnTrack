@@ -144,6 +144,7 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
+				editionBox.selectAll();
 				editionBox.setFocus(true);
 				editionHandler.onEditionStart();
 			}

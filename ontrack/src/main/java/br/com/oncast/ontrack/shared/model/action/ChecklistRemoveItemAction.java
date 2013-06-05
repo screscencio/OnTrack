@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ChecklistRemoveItemActionEntity.class)
-public class ChecklistRemoveItemAction implements ChecklistAction {
+public class ChecklistRemoveItemAction implements ChecklistItemAction {
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,6 +46,11 @@ public class ChecklistRemoveItemAction implements ChecklistAction {
 	@Override
 	public UUID getReferenceId() {
 		return checklistId;
+	}
+
+	@Override
+	public UUID getSubjectId() {
+		return subjectId;
 	}
 
 }

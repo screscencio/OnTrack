@@ -7,4 +7,12 @@ public class ClientDecimalFormat {
 		var num = new Number(number);
 		return num.toFixed(decimalDigits).toString();
 	}-*/;
+
+	public static String removeUnnecessaryRightZeros(final String numberString) {
+		return numberString.replaceAll("\\.0+$", "");
+	}
+
+	public static String roundAndRemoveUnnecessaryRightZeros(final float number, final int decimalDigits) {
+		return removeUnnecessaryRightZeros(roundFloat(number, decimalDigits));
+	}
 }

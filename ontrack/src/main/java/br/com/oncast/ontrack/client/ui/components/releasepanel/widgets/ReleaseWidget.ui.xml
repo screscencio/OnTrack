@@ -1,228 +1,308 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:ow="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets"
-	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	xmlns:r="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets"
+	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
 	<ui:with field="resources" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Resources"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Style">
+	
+		.rootPanel {
+			position: relative;
+			width: 100%;
+			
+			margin-bottom: PADDING_MEDIUM;
+		}
 		
-			.rootPanel {
-				position: relative;
-				width: 100%;
-				
-				margin-bottom: PADDING_MEDIUM;
-			}
+		.releaseHeader {
+			height: 30px;
+			font-size: 16px;
 			
-			.releaseHeader {
-				width: 100%;
-				height: 36px;
-				
-				font-size: FONT_SIZE_LARGE;	
-				line-height: 36px;
-				padding: 0px 5px;
-				
-				background: COLOR_BACKGROUND_RELEASE_HEADER;
-				color: COLOR_TEXT_RELEASE_HEADER;
-				
-				-webkit-box-shadow: SHADOW_SECONDARY;
-				-moz-box-shadow: SHADOW_SECONDARY;
-				box-shadow: SHADOW_SECONDARY;
-			}
+			background: COLOR_BACKGROUND_RELEASE_HEADER;
+			color: COLOR_TEXT_RELEASE_HEADER;
 			
-			.containerStateToogleClickableArea {
-				width: 100%;
-				height: 100%;
-				position: relative;
-			}
-			
-			.containerStateToogleClickableArea > div > div > input {
-				height: 60% !important;
-			}
-			
-			.headerItem, .descriptionLabel {
-				cursor: pointer;
-				margin: 0px 4px;
-				line-height: 36px;
-				vertical-align: middle;
-			}
-			
-			.headerItem {
-				font-size: 14px;
-			}
-			
-			.menuIcon {
-				font-size: 10px;
-				line-height: 10px;
-				border: 1px solid transparent;
-				padding: 1px 2px;
-				border-radius: 2px;
-				margin-right: 0px
-			}
-			
-			.menuIcon:hover {
-				border: 1px solid COLOR_TEXT_PRIMARY;
-			}
-			
-			.menuIcon:hover {
-				border: 1px solid COLOR_TEXT_PRIMARY;
-			}
-			
-			.impedimentsIcon {
-				margin-left: 0px;
-				color: white;
-				text-shadow: -1px  1px 0px #cc454e,
-							 -1px -1px 0px #cc454e,
-							  1px -1px 0px #cc454e,
-							  1px  1px 0px #cc454e;
-			}
-			
-			.descriptionLabel {
-				position: absolute;
-				top: 0px;
-				left: 4px;
-				bottom: 0px;
-				right: 0px;
-				
-				cursor: auto;
-			}
-			
-			.body {
-				position: relative;
-				background-color: COLOR_MENUBOX_BACKGROUND;
-				box-shadow: SHADOW_SECONDARY;
-			}
-			
-			.releaseContainer {
-				padding: PADDING_SMALL;
-				padding-bottom: 0px;
-				width: 100%;
-			}
-			
-			.laterSeparator {
-				width: 100%;
-				padding: 0px PADDING_SMALL;
-			}
-			
-			.laterImage {
-				background-position-y: center !important;
-				height: 18px !important;
-			}
-			
-			.laterLabel {
-				margin: 0 4px;
-				color: COLOR_BORDER_MENUBAR;
-				font-size: 9pt;
-				white-space: nowrap;
-				line-height: 18px;
-			}
-			
-			.laterLine {
-				height: 1px;
-				width: 100%;
-				background-color: COLOR_BORDER_SECONDARY;
-			}
-			
-			.scopeContainer {
-				padding: 5px;
-				width: 100%;
-			}
-			
-			.chartPanel {
-                width: 900px;
-                z-index: 2;
-			}
-			
-			.chartPanel:FOCUS {
-				outline: 0px;
-			}
-			
-			.progressIcon, .progressLabel {
-				width: 60px;
-			}
-			
-			.progressIcon {
-				position: relative;
-				margin: 0px 0px -1px 7px;
-				height: 12px;
-			}
-			
-			.progressLabel {
-				font-size: 10px;
-				line-height: 11px;
-				text-align: center;
-				border: solid 1px COLOR_TEXT_PRIMARY;
-			}
-			
-			.progressLabelComplete {
-				color: COLOR_TEXT_PRIMARY;
-				background-color: COLOR_TEXT_SECONDARY;
-			}
-			
-			.progressLabelUncomplete {
-				color: COLOR_BACKGROUND_TERTIARY;
-				background-color: COLOR_TEXT_PRIMARY;
-			}
-			
-			.progressBar {
-				overflow: hidden;
-				width: 0%;
-			}
-			
-			.progressBar, .progressLabel {
-				position: absolute;
-				top: 0px;
-				left: 0px;
-				bottom: 0px;
-			}
-			
-			.progressLabel {
-				left: -1px;
-			}
-			
-		</ui:style>
-
+			-webkit-box-shadow: SHADOW_SECONDARY;
+			-moz-box-shadow: SHADOW_SECONDARY;
+			box-shadow: SHADOW_SECONDARY;
+		}
+		
+		.impeded {
+			background: COLOR_ERROR_PRIMARY;
+		}
+		
+		.containerStateToogleClickableArea {
+			width: 100%;
+			height: 20px;
+			position: relative;
+		}
+		
+		.containerStateToogleClickableArea > div > div > input {
+			height: 60% !important;
+		}
+		
+		.headerItem, .descriptionLabel {
+			cursor: pointer;
+			margin: 0px 4px;
+			vertical-align: middle;
+			margin-top: 2px;
+		}
+		
+		.descriptionLabel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+		}
+		
+		.headerItem {
+			font-size: 14px;
+		}
+		
+		.menuIcon {
+			font-size: 10px;
+			line-height: 10px;
+			border: 1px solid transparent;
+			padding: 1px 2px;
+			border-radius: 2px;
+			margin-right: 0px;
+			margin-top: 2px;
+		}
+		
+		.menuIcon:hover {
+			border: 1px solid COLOR_TEXT_PRIMARY;
+		}
+		
+		.menuIcon:hover {
+			border: 1px solid COLOR_TEXT_PRIMARY;
+		}
+		
+		.impedimentsIcon {
+			margin-left: 0px;
+			color: white;
+			text-shadow: -1px  1px 0px #cc454e,
+						 -1px -1px 0px #cc454e,
+						  1px -1px 0px #cc454e,
+						  1px  1px 0px #cc454e;
+		}
+		
+		.body {
+			position: relative;
+			background-color: COLOR_MENUBOX_BACKGROUND;
+			box-shadow: SHADOW_SECONDARY;
+		}
+		
+		.releaseContainer {
+			padding: PADDING_SMALL;
+			padding-bottom: 0px;
+			width: 100%;
+		}
+		
+		.laterSeparator {
+			width: 100%;
+			padding: 0px PADDING_SMALL;
+		}
+		
+		.laterImage {
+			background-position-y: center !important;
+			height: 18px !important;
+		}
+		
+		.laterLabel {
+			margin: 0 4px;
+			color: COLOR_BORDER_MENUBAR;
+			font-size: 9pt;
+			white-space: nowrap;
+			line-height: 18px;
+		}
+		
+		.laterLine {
+			height: 1px;
+			width: 100%;
+			background-color: COLOR_BORDER_SECONDARY;
+		}
+		
+		.scopeContainer {
+			padding: 5px;
+			width: 100%;
+		}
+		
+		.chartPanel {
+               width: 900px;
+               z-index: 2;
+		}
+		
+		.chartPanel:FOCUS {
+			outline: 0px;
+		}
+		
+		.progressIcon, .progressLabel {
+			width: 60px;
+		}
+		
+		.progressIcon {
+			position: relative;
+			margin-top: 2px;
+			height: 12px;
+		}
+		
+		.progressLabel {
+			font-size: 10px;
+			line-height: 11px;
+			text-align: center;
+			border: solid 1px COLOR_TEXT_PRIMARY;
+		}
+		
+		.progressLabelComplete {
+			color: COLOR_TEXT_PRIMARY;
+			background-color: COLOR_TEXT_SECONDARY;
+		}
+		
+		.progressLabelUncomplete {
+			color: COLOR_BACKGROUND_TERTIARY;
+			background-color: COLOR_TEXT_PRIMARY;
+		}
+		
+		.progressBar {
+			overflow: hidden;
+			width: 0%;
+		}
+		
+		.progressBar, .progressLabel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+		}
+		
+		.progressLabel {
+			left: -1px;
+		}
+		
+		.percentualBar {
+			position: absolute;
+			bottom: 0px;
+			left: 0px;
+			right: 0px;
+			top: 0px;
+		}
+		
+		.detailsContainer {
+			position: relative;
+		}
+		
+		.detailsTagsContainer {
+			background: #666;
+			padding: 4px;
+			margin: 0px 3px;
+			border: 1px solid #c0c0c0;
+			border-top: none;
+			box-shadow: inset 0px 0px 5px #444;
+			border-radius: 0px 0px 3px 3px;
+		}
+		
+		.impeded .detailsTagsContainer {
+			background: COLOR_ERROR_PRIMARY;
+		}
+		
+		.detailTag {
+			color: #eaeaea;
+			font-size: 8pt;
+			line-height: 16px;
+			height: 16px;
+			padding: 0 4px;
+			cursor: default;
+			border-right: 1px solid;
+			padding-right: 8px;
+		}
+		
+		.lastTag {
+			border-right: none;
+		}
+		
+		.descriptionContainer {
+			position: relative;
+		}
+		
+		.valueContainer {
+			display: inline-block;
+		}
+		
+		.inlineEditableLabel {
+			display: inline-block;
+			max-width: 36px;
+		}
+		
+		.clickable {
+			cursor: pointer;
+		}
+		
+	</ui:style>
+		
 	<g:HTMLPanel styleName="{style.rootPanel}">
 		<g:FocusPanel ui:field="menuMouseOverArea">
 			<g:HTMLPanel>
-				<g:HorizontalPanel ui:field="header" styleName="{style.releaseHeader}" verticalAlignment="middle">
-					<g:FocusPanel ui:field="containerStateIcon" styleName="{style.headerItem} icon-caret-down" />
-					<g:cell width="100%" height="100%">
-						<g:FocusPanel styleName="{style.containerStateToogleClickableArea}">
-							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
-						</g:FocusPanel>
-					</g:cell>
-					<g:FocusPanel ui:field="impedimentsIcon" styleName="{style.headerItem} {style.impedimentsIcon} icon-flag" title="This item has open impediments, click to see them">
-						<ui:attribute name="title" description="Has open impediments state tooltip" />
-					</g:FocusPanel>
-					<g:FocusPanel ui:field="detailLink" styleName="{style.headerItem} icon-info-sign" title="Details">
-						<ui:attribute name="title" description="detailLink icon release widget" />
-					</g:FocusPanel>
-					<g:FocusPanel ui:field="navigationIcon" styleName="{style.headerItem}"/>
-					<g:FocusPanel ui:field="progressIcon" styleName="{style.headerItem} {style.progressIcon}" title="Progress">
-						<ui:attribute name="title" description="progress icon release widget" />
-						<g:FlowPanel>
-							<g:SimplePanel>
-								<g:Label styleName="{style.progressLabel} {style.progressLabelUncomplete}">%</g:Label>
-							</g:SimplePanel>
-							<g:SimplePanel ui:field="progressBar" styleName="{style.progressBar}">
-								<g:Label styleName="{style.progressLabel} {style.progressLabelComplete}">%</g:Label>
-							</g:SimplePanel>
-						</g:FlowPanel>
-					</g:FocusPanel>
-					<g:FocusPanel ui:field="menuIcon" styleName="{style.headerItem} {style.menuIcon}" title="More">
-						<ui:attribute name="title" description="menu icon release widget" />
-						<g:SimplePanel styleName="icon-reorder"/>
-					</g:FocusPanel>
-				</g:HorizontalPanel>
+				<g:FocusPanel ui:field="header" styleName="{style.releaseHeader}">
+					<g:HTMLPanel ui:field="internalPanel">
+						<table class="{style.descriptionContainer}">
+							<tbody>
+								<tr>
+									<td>
+										<g:FocusPanel ui:field="containerStateIcon" styleName="{style.headerItem} icon-caret-down" />
+									</td>
+									<td width="100%">
+										<g:FocusPanel styleName="{style.containerStateToogleClickableArea}">
+                                      		<w:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
+                                        </g:FocusPanel>
+									</td>
+									<td>
+										<g:FocusPanel ui:field="progressIcon" styleName="{style.headerItem} {style.progressIcon}" title="Progress">
+                                               <ui:attribute name="title" description="progress icon release widget" />
+                                               <g:FlowPanel>
+                                                       <g:HTMLPanel>
+                                                               <span ui:field="progressLabelUncomplete" class="{style.progressLabel} {style.progressLabelUncomplete}">%</span>
+                                                       </g:HTMLPanel>
+                                                       <g:HTMLPanel ui:field="progressBar" styleName="{style.progressBar}">
+                                                               <span ui:field="progressLabelComplete" class="{style.progressLabel} {style.progressLabelComplete}">%</span>
+                                                       </g:HTMLPanel>
+                                               </g:FlowPanel>
+                                       </g:FocusPanel>
+									</td>
+									<td>
+							 			<g:FocusPanel ui:field="navigationIcon" styleName="{style.headerItem}"/>
+									</td>
+									<td>
+										<g:FocusPanel ui:field="menuIcon" styleName="{style.menuIcon}" title="More">
+											<ui:attribute name="title" description="menu icon release widget" />
+											<g:SimplePanel styleName="icon-reorder"/>
+										</g:FocusPanel>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</g:HTMLPanel>
+				</g:FocusPanel>
 			</g:HTMLPanel>
 		</g:FocusPanel>
 		<div ui:field="bodyContainer" class="{style.body}">
-			<ow:ReleaseInfoWidget ui:field="infoWidget" />
-			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
+			<div ui:field="detailsContainer" class="{style.detailsContainer}">
+				<div class="{style.detailsTagsContainer}">
+					<g:FocusPanel ui:field="hasDetailsIndicatorContainer" styleName="icon-info {style.valueContainer} {style.detailTag} {style.clickable}"/>
+					<span ui:field="valueLabel" class="{style.detailTag}"/>
+					<span ui:field="effortLabel" class="{style.detailTag}"/>
+					<div ui:field="periodContainer" class="{style.valueContainer} {style.detailTag}">
+						<i class="icon-time"></i> <span ui:field="periodLabel"/>
+					</div>
+					<span ui:field="durationLabel" class="{style.detailTag}"/>
+					<div class="{style.valueContainer} {style.detailTag} {style.lastTag}">
+						<i class="icon-dashboard"></i> <w:EditableLabel ui:field="speedLabel" value="2.3" styleName="{style.inlineEditableLabel}"/>
+					</div>
+				</div>
+			</div>
+			<r:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
 			<g:HorizontalPanel ui:field="laterSeparator" styleName="{style.laterSeparator}" verticalAlignment="middle">
 				<g:Image resource="{resources.laterImage}" styleName="{style.laterImage}"/>
 				<g:Label styleName="{style.laterLabel}">
@@ -232,7 +312,7 @@
 					<g:SimplePanel styleName="{style.laterLine}"/>
 				</g:cell>
 			</g:HorizontalPanel>
-			<ow:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
+			<r:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

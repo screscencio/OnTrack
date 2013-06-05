@@ -44,4 +44,8 @@ public interface ReleaseWidgetMessages extends BaseMessages {
 	@DefaultMessage("Impediments")
 	String impediments();
 
+	@Description("Should be a valid number")
+	@DefaultMessage("Should be a valid number (Ex: 3.14)")
+	String shouldBeAValidNumber();
+
 }

@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveDeprecationActi
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistItemAction;
 import br.com.oncast.ontrack.shared.model.action.DescriptionAction;
 import br.com.oncast.ontrack.shared.model.action.DescriptionCreateAction;
 import br.com.oncast.ontrack.shared.model.action.DescriptionRemoveAction;
@@ -127,15 +128,17 @@ public class DetailServiceImpl implements DetailService {
 					final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 
-				if (action instanceof AnnotationAction
+				if (action instanceof ChecklistItemAction) fireScopeDetailUpdateEvent(((ChecklistItemAction) action).getSubjectId(), context);
+
+				else if (action instanceof AnnotationAction
 						|| action instanceof ImpedimentAction
 						|| action instanceof ChecklistAction
 						|| action instanceof DescriptionAction
-				) fireScopeDetailUpdateEvent(action, context);
+				) fireScopeDetailUpdateEvent(action.getReferenceId(), context);
 			}
 
-			private void fireScopeDetailUpdateEvent(final ModelAction action, final ProjectContext context) {
-				final SubjectDetailUpdateEvent event = getDetailUpdateEvent(action.getReferenceId());
+			private void fireScopeDetailUpdateEvent(final UUID subjectId, final ProjectContext context) {
+				final SubjectDetailUpdateEvent event = getDetailUpdateEvent(subjectId);
 				if (event != null) eventBus.fireEvent((Event<?>) event);
 			}
 
