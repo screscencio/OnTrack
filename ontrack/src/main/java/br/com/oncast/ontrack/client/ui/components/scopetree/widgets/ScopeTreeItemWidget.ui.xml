@@ -199,16 +199,16 @@
 									</div>
 								</td>
 								<td>
-									<span ui:field="openImpedimentIcon" class="icon-flag {style.detailsIcon} {style.impedimentIcon}"/>
+									<g:FocusPanel ui:field="openImpedimentIcon" styleName="icon-flag {style.detailsIcon} {style.impedimentIcon}"/>
 								</td>
 								<td>
-									<span ui:field="annotationIcon" class="icon-comment-alt {style.detailsIcon} {style.annotationIcon}" />
+									<g:FocusPanel ui:field="annotationIcon" styleName="icon-comment-alt {style.detailsIcon} {style.annotationIcon}" />
 								</td>
 								<td>
-									<span ui:field="checklistIcon" class="icon-list-ul {style.detailsIcon}"/>
+									<g:FocusPanel ui:field="checklistIcon" styleName="icon-list-ul {style.detailsIcon}"/>
 								</td>
 								<td>
-									<span ui:field="descriptionIcon" class="icon-quote-right {style.detailsIcon} {style.descriptionIcon}" />
+									<g:FocusPanel ui:field="descriptionIcon" styleName="icon-quote-right {style.detailsIcon} {style.descriptionIcon}" />
 								</td>
 								<td>
 									<t:ModelWidgetContainer ui:field="tags" styleName="{style.tags}" />

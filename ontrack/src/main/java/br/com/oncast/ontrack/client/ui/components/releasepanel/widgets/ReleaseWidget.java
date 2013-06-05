@@ -4,9 +4,12 @@ import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.
 import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartPopup;
@@ -27,12 +30,25 @@ import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.ui.places.report.ReportPlace;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.client.utils.date.TimeDifferenceFormat;
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
+import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -47,6 +63,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
@@ -63,6 +80,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		String chartPanel();
 
 		String headerClosed();
+
+		String impeded();
 	}
 
 	@UiField
@@ -89,22 +108,46 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected EditableLabel descriptionLabel;
 
 	@UiField
-	protected FocusPanel impedimentsIcon;
-
-	@UiField
-	protected FocusPanel detailLink;
-
-	@UiField
 	protected FocusPanel progressIcon;
 
 	@UiField
-	protected SimplePanel progressBar;
+	protected HTMLPanel progressBar;
+
+	@UiField
+	SpanElement progressLabelUncomplete;
+
+	@UiField
+	SpanElement progressLabelComplete;
 
 	@UiField
 	protected FocusPanel navigationIcon;
 
 	@UiField
 	protected FocusPanel menuIcon;
+
+	@UiField
+	DivElement detailsContainer;
+
+	@UiField
+	SpanElement valueLabel;
+
+	@UiField
+	SpanElement effortLabel;
+
+	@UiField
+	DivElement periodContainer;
+
+	@UiField
+	SpanElement periodLabel;
+
+	@UiField
+	SpanElement durationLabel;
+
+	@UiField
+	FocusPanel hasDetailsIndicatorContainer;
+
+	@UiField(provided = true)
+	EditableLabel speedLabel;
 
 	@UiField
 	protected DivElement bodyContainer;
@@ -117,9 +160,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiField
 	protected ScopeWidgetContainer scopeContainer;
-
-	@UiField(provided = true)
-	protected ReleaseInfoWidget infoWidget;
 
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
@@ -148,7 +188,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private String currentReleaseDescription;
 
 	// IMPORTANT Used to refresh DOM only when needed.
-	private double lastProgress;
+	private float lastProgress;
 
 	private final Release release;
 
@@ -160,6 +200,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private boolean kanbanSpecific;
 
+	private ActionExecutionListener actionExecutionListener;
+
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
 			final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
@@ -170,7 +212,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean kanbanSpecific) {
 		this.release = release;
-		this.infoWidget = new ReleaseInfoWidget(release);
 		this.releaseWidgetFactory = releaseWidgetFactory;
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
@@ -190,6 +231,27 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		};
 
+		speedLabel = new EditableLabel(new EditableLabelEditionHandler() {
+			@Override
+			public void onEditionStart() {}
+
+			@Override
+			public boolean onEditionRequest(final String text) {
+				try {
+					final float speed = Float.valueOf(text.replace(',', '.'));
+					ClientServices.get().actionExecution().onUserActionExecutionRequest(new ReleaseDeclareEstimatedVelocityAction(release.getId(), speed));
+					return true;
+				}
+				catch (final Exception e) {
+					ClientServices.get().alerting().showWarning(messages.shouldBeAValidNumber());
+					return false;
+				}
+			}
+
+			@Override
+			public void onEditionExit(final boolean canceledEdition) {}
+		});
+
 		initWidget(uiBinder.createAndBindUi(this));
 		setVisible(false);
 
@@ -200,14 +262,17 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		setupNavigationIcon(release, kanbanSpecific);
 		setContainerState(DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE, false);
 		setVisible(true);
+	}
 
-		ClientServices.get().eventBus().addHandler(ReleaseScopeListUpdateEvent.TYPE, new ReleaseScopeListUpdateEventHandler() {
-			@Override
-			public void onScopeListInteraction(final Release r) {
-				if (release.equals(r)) infoWidget.show();
-				else infoWidget.hide();
-			}
-		});
+	@Override
+	protected void onLoad() {
+		ClientServices.get().actionExecution().addActionExecutionListener(getActionExecutionListener());
+	}
+
+	@Override
+	protected void onUnload() {
+		if (actionExecutionListener == null) return;
+		ClientServices.get().actionExecution().removeActionExecutionListener(actionExecutionListener);
 	}
 
 	private void setupNavigationIcon(final Release release, final boolean kanbanSpecific) {
@@ -234,12 +299,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		else navigationIcon.removeFromParent();
 	}
 
-	@UiHandler("impedimentsIcon")
-	protected void showImpediments(final ClickEvent event) {
-		event.stopPropagation();
-		popImpediments(header);
-	}
-
 	private void popImpediments(final UIObject alignmentWidget) {
 		PopupConfig.configPopup().popup(new ImpedimentListWidget(release))
 				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(alignmentWidget, HorizontalAlignment.RIGHT))
@@ -247,15 +306,15 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				.pop();
 	}
 
-	@UiHandler("detailLink")
-	protected void showAnnotationPanel(final ClickEvent event) {
-		getDetailsService().showDetailsFor(release.getId());
-		event.stopPropagation();
-	}
-
 	@UiHandler("progressIcon")
 	protected void showChartPanel(final ClickEvent event) {
 		popChartPanel();
+		event.stopPropagation();
+	}
+
+	@UiHandler("hasDetailsIndicatorContainer")
+	protected void showDetails(final ClickEvent event) {
+		ClientServices.get().details().showDetailsFor(release.getId());
 		event.stopPropagation();
 	}
 
@@ -349,17 +408,52 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	public boolean update() {
 		updateDescription();
 		updateProgress();
-		infoWidget.update();
+
+		updateDetails();
 
 		final boolean releaseUpdate = updateChildReleaseWidgets();
 		final boolean scopeUpdate = updateScopeWidgets();
 
-		detailLink.setVisible(getDetailsService().hasDetails(release.getId()));
-		impedimentsIcon.setVisible(getDetailsService().hasOpenImpediment(release.getId()));
+		laterSeparator.setVisible(isContainerStateOpen && release.hasDirectScopes() && release.hasChildren());
 
-		laterSeparator.setVisible(release.hasDirectScopes() && release.hasChildren());
+		ElementUtils.setVisible(detailsContainer, isContainerStateOpen && release.isLeaf());
 
 		return releaseUpdate || scopeUpdate;
+	}
+
+	private void updateDetails() {
+		updatePriorizationCriteria(effortLabel, "#", release.getEffortSum(), release.getAccomplishedEffortSum());
+		updatePriorizationCriteria(valueLabel, "$", release.getValueSum(), release.getAccomplishedValueSum());
+
+		ElementUtils.setVisible(periodContainer, release.getStartDay() != null);
+		periodLabel.setInnerText(format(release.getStartDay()) + " - " + format(ClientServices.get().releaseEstimator().get().getEstimatedEndDayFor(release)));
+
+		updateDuration();
+
+		header.setStyleName(style.impeded(), getDetailsService().hasOpenImpediment(release.getId()));
+		hasDetailsIndicatorContainer.setVisible(getDetailsService().hasDetails(release.getId()));
+	}
+
+	private void updatePriorizationCriteria(final SpanElement label, final String symbol, final float total, final float accomplished) {
+		ElementUtils.setVisible(label, total > 0);
+		label.setInnerText(symbol + " " + format(accomplished, total));
+	}
+
+	private void updateDuration() {
+		final float effortSum = release.getEffortSum();
+		final float estimatedVelocity = ClientServices.get().releaseEstimator().get().getEstimatedSpeed(release);
+
+		speedLabel.setValue(round(estimatedVelocity, 1));
+
+		ElementUtils.setVisible(durationLabel, effortSum >= 1);
+		if (effortSum < 1) return;
+
+		final int days = (int) Math.ceil(effortSum / estimatedVelocity);
+		final Date date = new Date();
+		final WorkingDay workingDay = WorkingDayFactory.create();
+		workingDay.add(days);
+		final TimeDifferenceFormat format = HumanDateFormatter.get().setDecimalDigits(1).getTimeDifferenceFormat(date, workingDay.getJavaDate());
+		durationLabel.setInnerText(format.toString());
 	}
 
 	private void updateDescription() {
@@ -370,20 +464,42 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void updateProgress() {
-		final double progress = getProgressPercentage();
+		final float progress = getProgressPercentage();
 		if (lastProgress == progress) return;
 
 		progressBar.getElement().getStyle().setWidth(progress, Unit.PCT);
+		final String progressText = (progress < 1 ? "" : round(progress)) + "%";
+		progressIcon.setVisible(progress > 0);
+		progressLabelUncomplete.setInnerText(progressText);
+		progressLabelComplete.setInnerText(progressText);
 		lastProgress = progress;
 	}
 
-	private double getProgressPercentage() {
+	private String format(final WorkingDay startDay) {
+		if (startDay == null) return "";
+		return startDay.getDayAndMonthString();
+	}
+
+	private String format(final float accomplished, final float total) {
+		if (accomplished < 1) return round(total, 1);
+		return round(accomplished) + "/" + round(total);
+	}
+
+	private String round(final float number) {
+		return round(number, 0);
+	}
+
+	private String round(final float number, final int decimalDigits) {
+		return ClientDecimalFormat.roundAndRemoveUnnecessaryRightZeros(number, decimalDigits);
+	}
+
+	private float getProgressPercentage() {
 		final float effortSum = release.getEffortSum();
 		if (effortSum == 0) return 0;
 
 		final float concludedEffortSum = release.getAccomplishedEffortSum();
 		final float percentage = 100 * concludedEffortSum / effortSum;
-		return Math.ceil(percentage);
+		return percentage;
 	}
 
 	public void setContainerState(final boolean shouldOpen) {
@@ -393,21 +509,15 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	public void setContainerState(final boolean shouldOpen, final boolean shouldFireEvent) {
 		if (isContainerStateOpen == shouldOpen) return;
 
-		if (shouldOpen) {
-			containerStateIcon.setStyleName("icon-caret-right", false);
-			containerStateIcon.setStyleName("icon-caret-down", true);
-		}
-		else {
-			containerStateIcon.setStyleName("icon-caret-down", false);
-			containerStateIcon.setStyleName("icon-caret-right", true);
-		}
+		containerStateIcon.setStyleName("icon-caret-right", !shouldOpen);
+		containerStateIcon.setStyleName("icon-caret-down", shouldOpen);
 
 		header.setStyleName(style.headerClosed(), !shouldOpen);
 
 		final boolean shouldShowReleaseContainer = shouldOpen && release.hasChildren();
 
 		scopeContainer.setVisible(shouldOpen);
-		infoWidget.setVisible(shouldOpen);
+		ElementUtils.setVisible(detailsContainer, shouldOpen);
 		releaseContainer.setVisible(shouldShowReleaseContainer);
 		laterSeparator.setVisible(shouldShowReleaseContainer && release.hasDirectScopes());
 
@@ -419,8 +529,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private void popChartPanel() {
 		configPopup().popup(getChartPanel())
-				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.CENTER))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.MIDDLE))
+				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(header, HorizontalAlignment.RIGHT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(header, VerticalAlignment.BOTTOM))
 				.pop();
 	}
 
@@ -481,6 +591,19 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private DetailService getDetailsService() {
 		return ClientServices.get().details();
+	}
+
+	private ActionExecutionListener getActionExecutionListener() {
+		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+					final Set<UUID> inferenceInfluencedScopeSet,
+					final boolean isUserAction) {
+				if (action instanceof ReleaseDeclareStartDayAction || action instanceof ReleaseDeclareEndDayAction
+						&& action.getReferenceId().equals(release.getId())) update();
+			}
+		};
+		return actionExecutionListener;
 	}
 
 }

@@ -135,7 +135,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	private String formatInfo(final Long value, final Long deviation) {
 		if (value == null) return "---";
-		return format(value) + (" ± " + (deviation == null ? "0" : HumanDateFormatter.get().getTimeDifferenceFormat(deviation)));
+		return format(value) + (deviation == null ? "" : " ± " + HumanDateFormatter.get().getTimeDifferenceFormat(deviation).getDateText());
 	}
 
 	private String format(final WorkingDay day) {

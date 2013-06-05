@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.utils.date;
 
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+
 import com.google.common.base.Joiner;
 
 public class TimeDifferenceFormat extends HumanDateFormat {
@@ -21,7 +23,7 @@ public class TimeDifferenceFormat extends HumanDateFormat {
 	}
 
 	private String removeUnnecessaryZeros(final float value) {
-		return Float.toString(value).replaceAll("\\.0+$", "");
+		return ClientDecimalFormat.removeUnnecessaryRightZeros(Float.toString(value));
 	}
 
 }

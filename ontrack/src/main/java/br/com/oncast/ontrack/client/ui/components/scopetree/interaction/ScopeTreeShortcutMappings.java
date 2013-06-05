@@ -13,6 +13,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LE
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.AddTagInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
@@ -152,6 +153,12 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 			final Scope target = interactionHandler.getVisibleScopeAbove(scope);
 			if (target == null) return;
+
+			if (target.getRelease() != null && scope.getRelease() != null) {
+				ClientServices.get().alerting()
+						.showWarning(messages.cantMoveBecauseCantCascadeScopesWithReleases(), ClientAlertingService.DURATION_LONG);
+				return;
+			}
 
 			interactionHandler.onUserActionExecutionRequest(new ScopeMoveToAction(scope.getId(), target.getId(), target.getChildCount()));
 		}
