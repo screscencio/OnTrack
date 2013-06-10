@@ -33,17 +33,23 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 		panel.setWidget(view);
 		view.setMainMessage(messages.establishingConnection());
 
-		SERVICE_PROVIDER.serverPush().onConnected(new ServerPushConnectionCallback() {
+		SERVICE_PROVIDER.serverPush().addConnectionListener(new ServerPushConnectionCallback() {
 			@Override
 			public void connected() {
 				validateConnection();
-				SERVICE_PROVIDER.getServerPushClientService().removeConnectionListener(this);
+				SERVICE_PROVIDER.serverPush().removeConnectionListener(this);
 			}
 
 			@Override
 			public void uncaughtExeption(final Throwable cause) {
+				// FIXME merge check this
+				SERVICE_PROVIDER.serverPush().removeConnectionListener(this);
 				treatUnexpectedFailure(cause, messages.couldNotConnectToServer());
 			}
+
+			@Override
+			public void disconnected() {}
+
 		});
 		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
 	}

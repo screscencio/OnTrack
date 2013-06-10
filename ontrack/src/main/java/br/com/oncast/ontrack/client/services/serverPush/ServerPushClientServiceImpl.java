@@ -59,6 +59,8 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			@Override
 			public void onAfterRefresh(final String connectionUUID) {}
 		};
+
+		serverPushClient = new OntrackAtmosphereClient(atmosphereListener);
 		connect();
 	}
 
@@ -124,9 +126,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	@Override
 	public void addConnectionListener(final ServerPushConnectionCallback serverPushConnectionCallback) {
 		serverPushConnectionCallbacks.add(serverPushConnectionCallback);
-		if (isConnected()) {
-			serverPushConnectionCallback.connected();
-		}
+		if (isConnected()) serverPushConnectionCallback.connected();
 	}
 
 	@Override

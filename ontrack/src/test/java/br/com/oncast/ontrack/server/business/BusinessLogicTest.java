@@ -463,7 +463,7 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestUtils.create(persistence, multicast, clientManager, authenticationManager, sessionManager);
 
 		final ProjectContextRequest request = new ProjectContextRequest(projectRepresentation.getId());
-		business.loadProjectForClient(request);
+		business.loadProjectForClient(request).getProject();
 
 		verify(clientManager, times(1)).bindClientToProject(clientId, request.getRequestedProjectId());
 	}
@@ -526,7 +526,7 @@ public class BusinessLogicTest {
 		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
 		when(sessionMock.getThreadLocalClientId()).thenReturn(new CometClientConnection("", ""));
 
-		business.loadProjectForClient(request);
+		business.loadProjectForClient(request).getProject();
 
 		verify(authorizationManager, atLeastOnce()).assureProjectAccessAuthorization(request.getRequestedProjectId());
 	}
@@ -620,7 +620,7 @@ public class BusinessLogicTest {
 	}
 
 	private Project loadProject(final UUID projectId) throws UnableToLoadProjectException, ProjectNotFoundException {
-		return business.loadProject(projectId);
+		return business.loadProject(projectId).getProject();
 	}
 
 	private ProjectRepresentation assureProjectRepresentationExistance(final UUID projectId) throws Exception {

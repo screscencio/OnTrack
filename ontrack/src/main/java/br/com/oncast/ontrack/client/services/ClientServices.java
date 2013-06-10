@@ -27,6 +27,7 @@ import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.instruction.UserGuidService;
 import br.com.oncast.ontrack.client.services.instruction.UserGuideServiceImpl;
+import br.com.oncast.ontrack.client.services.internet.NetworkMonitoringService;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsServiceImpl;
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
@@ -107,6 +108,8 @@ public class ClientServices {
 	private TimesheetService timesheetService;
 	private ReleaseEstimatorProvider releaseEstimatorProvider;
 	private ScopeEstimatorProvider scopeEstimatorProvider;
+	// private OnTrackAdminService onTrackAdminService;
+	private NetworkMonitoringService networkMonitoringService;
 
 	private static ClientServices instance;
 
@@ -134,6 +137,12 @@ public class ClientServices {
 		placeController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), storage(), metrics());
 		colorProvider();
+		getNetworkMonitoringService();
+	}
+
+	private NetworkMonitoringService getNetworkMonitoringService() {
+		if (networkMonitoringService != null) return networkMonitoringService;
+		return networkMonitoringService = new NetworkMonitoringService(request(), serverPush(), alerting(), errorMessages());
 	}
 
 	private AuthorizationService authorization() {
@@ -194,7 +203,7 @@ public class ClientServices {
 	private ActionSyncService actionSync() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(request(), serverPush(), actionExecution(),
-				projectRepresentationProvider(), alerting(), errorMessages());
+				projectRepresentationProvider(), alerting(), errorMessages(), getNetworkMonitoringService(), contextProvider());
 	}
 
 	public ServerPushClientService serverPush() {

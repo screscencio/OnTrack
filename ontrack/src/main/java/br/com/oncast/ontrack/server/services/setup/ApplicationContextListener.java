@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.services.feedback.SendFeedbackRequest;
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationVerificationAspectFilter;
+import br.com.oncast.ontrack.server.services.persistence.jpa.ModelActionSyncEventRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.AuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.CurrentUserInformationRequestHandler;
@@ -35,6 +36,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationReque
 import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.MultipleProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
@@ -97,6 +99,9 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(MultipleProjectContextRequest.class, new MultipleProjectContextRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(RemoveProjectAuthorizationRequest.class, new RemoveProjectAuthorizationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(OnTrackServerMetricsRequest.class, new OnTrackServerMetricsRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(ModelActionSyncEventRequest.class, new ModelActionSyncEventRequestHandler());
+			// FIXME merge check this
+			// DispatchServiceServlet.registerRequestHandler(OnTrackServerStatisticsRequest.class, new OnTrackServerStatisticsRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

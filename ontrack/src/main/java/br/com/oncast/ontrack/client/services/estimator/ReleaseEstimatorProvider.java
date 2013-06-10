@@ -21,7 +21,7 @@ public class ReleaseEstimatorProvider implements ContextChangeListener {
 	}
 
 	@Override
-	public void onProjectChanged(final UUID projectId) {
+	public void onProjectChanged(final UUID projectId, final Long lastActionId) {
 		releaseEstimator = null;
 	}
 }

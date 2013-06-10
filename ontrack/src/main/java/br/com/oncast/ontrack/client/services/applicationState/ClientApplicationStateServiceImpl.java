@@ -54,7 +54,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 		handlerRegistrations = new HashSet<HandlerRegistration>();
 		contextProviderService.addContextLoadListener(new ContextChangeListener() {
 			@Override
-			public void onProjectChanged(final UUID projetId) {
+			public void onProjectChanged(final UUID projetId, final Long loadedProjectRevision) {
 				previousSelectedScopes.clear();
 				nextSelectedScopes.clear();
 			}

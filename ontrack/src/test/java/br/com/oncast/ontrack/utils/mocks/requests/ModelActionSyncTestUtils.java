@@ -39,6 +39,6 @@ public class ModelActionSyncTestUtils {
 	}
 
 	public static ModelActionSyncEvent createModelActionSyncEvent() {
-		return new ModelActionSyncEvent(createRepresentation().getId(), createSomeActions(), Mockito.mock(ActionContext.class));
+		return new ModelActionSyncEvent(createRepresentation().getId(), createSomeActions(), Mockito.mock(ActionContext.class), -1);
 	}
 }

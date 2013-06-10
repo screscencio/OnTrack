@@ -14,7 +14,11 @@ public interface ServerPushClientService {
 
 	public boolean isConnected();
 
-	public void onConnected(ServerPushConnectionCallback serverPushConnectionCallback);
+	public void addConnectionListener(ServerPushConnectionCallback serverPushConnectionCallback);
+
+	void removeConnectionListener(ServerPushConnectionCallback serverPushConnectionCallback);
+
+	public void connect();
 
 	public void reconnect();
 

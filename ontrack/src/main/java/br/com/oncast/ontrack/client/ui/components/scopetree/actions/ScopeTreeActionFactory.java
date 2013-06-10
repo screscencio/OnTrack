@@ -61,7 +61,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ScopeRemoveAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeRemoveRollbackAction) return new ScopeTreeRemoveRollbackAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeUpdateAction || action instanceof ScopeBindReleaseAction) return new ScopeTreeUpdateAction(tree, action);
-		else if (action instanceof ReleaseAction) return new ScopeTreeReleaseAction(tree);
+		else if (action instanceof ReleaseAction) return new ScopeTreeReleaseAction(tree, action);
 		else if (action instanceof ScopeDeclareProgressAction) return new ScopeTreeUpdateAction(tree, action);
 		else if (action instanceof ScopeDeclareEffortAction) return new ScopeTreeUpdateAction(tree, action);
 		else if (action instanceof ScopeDeclareValueAction) return new ScopeTreeUpdateAction(tree, action);

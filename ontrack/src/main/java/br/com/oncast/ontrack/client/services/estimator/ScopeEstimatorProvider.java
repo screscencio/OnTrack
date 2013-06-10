@@ -20,7 +20,7 @@ public class ScopeEstimatorProvider implements ContextChangeListener {
 	}
 
 	@Override
-	public void onProjectChanged(final UUID projectId) {
+	public void onProjectChanged(final UUID projectId, final Long lastActionId) {
 		scopeEstimator = null;
 	}
 }

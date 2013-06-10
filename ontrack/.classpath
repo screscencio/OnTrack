@@ -70,6 +70,7 @@
 	<classpathentry kind="lib" path="lib/jackson-core-asl-1.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/javaparser-1.0.8.jar"/>
 	<classpathentry kind="lib" path="lib/paranamer-2.5.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-test-utils-0.43.jar" sourcepath="lib/gwt-test-utils-0.43-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-test-utils-0.44.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

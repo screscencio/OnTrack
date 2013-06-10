@@ -45,6 +45,7 @@ import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.project.ProjectRevision;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -52,6 +53,7 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequestResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
@@ -93,7 +95,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	@Trace
 	@Override
 	@PostProcessActions
-	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest actionSyncRequest) throws UnableToHandleActionException,
+	public long handleIncomingActionSyncRequest(final ModelActionSyncRequest actionSyncRequest) throws UnableToHandleActionException,
 			AuthorizationException {
 		final long initialTime = getCurrentTime();
 		try {
@@ -102,9 +104,8 @@ class BusinessLogicImpl implements BusinessLogic {
 
 			ModelActionSyncEvent modelActionSyncEvent = null;
 
-			final Object projectLock = syncronizationService.getSyncLockFor(projectId);
-
-			synchronized (projectLock) {
+			long lastApplyedActionId = -1;
+			synchronized (syncronizationService.getSyncLockFor(projectId)) {
 				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 				final Date timestamp = new Date();
 
@@ -112,14 +113,15 @@ class BusinessLogicImpl implements BusinessLogic {
 				final List<ModelAction> actionList = actionSyncRequest.getActionList();
 
 				validateIncomingActions(projectId, actionList, actionContext);
-				persistenceService.persistActions(projectId, actionList, authenticatedUser.getId(), timestamp);
-				modelActionSyncEvent = new ModelActionSyncEvent(projectId, actionList, actionContext);
+				lastApplyedActionId = persistenceService.persistActions(projectId, actionList, authenticatedUser.getId(), timestamp);
+				modelActionSyncEvent = new ModelActionSyncEvent(projectId, actionList, actionContext, lastApplyedActionId);
 				LOGGER.debug("Handled incoming actions " + PrettyPrinter.getSimpleNamesListString(actionList) + " from user "
 						+ authenticatedUser
 						+ " in "
 						+ getTimeSpent(initialTime) + " ms.");
 			}
 			multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(modelActionSyncEvent, projectId);
+			return lastApplyedActionId;
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
@@ -131,14 +133,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	// TODO Report errors as feedback for development.
 	// TODO Re-think validation strategy as loading the project every time may be a performance bottleneck.
 	@PostProcessActions
-	private ProjectContext validateIncomingActions(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext)
+	private void validateIncomingActions(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext)
 			throws UnableToHandleActionException {
 		try {
-			final Project project = loadProject(projectId);
+			final ProjectRevision projectVersion = loadProject(projectId);
+			final Project project = projectVersion.getProject();
 			final ProjectContext context = new ProjectContext(project);
 			for (final ModelAction action : actionList)
 				ActionExecuter.executeAction(context, actionContext, action);
-			return context;
 		}
 		catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "Unable to process action. The incoming action is invalid.";
@@ -237,22 +239,22 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	@Trace
 	@Override
-	public synchronized Project loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
+	public synchronized ProjectRevision loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
 			ProjectNotFoundException {
 		final long initialTime = getCurrentTime();
 
-		final Project loadedProject = loadProject(projectContextRequest.getRequestedProjectId());
+		final ProjectRevision loadedProject = loadProject(projectContextRequest.getRequestedProjectId());
 		final Session currentSession = sessionManager.getCurrentSession();
 		clientManager.bindClientToProject(currentSession.getThreadLocalClientId(), projectContextRequest.getRequestedProjectId());
 
-		LOGGER.debug("Loaded project '" + loadedProject.getProjectRepresentation() + "' for user '" + currentSession.getAuthenticatedUser() + " ("
+		LOGGER.debug("Loaded project '" + loadedProject.getProject().getProjectRepresentation() + "' for user '" + currentSession.getAuthenticatedUser() + " ("
 				+ currentSession.getThreadLocalClientId() + ")' in " + getTimeSpent(initialTime) + " ms.");
 		return loadedProject;
 	}
 
 	@Override
 	@DontPostProcessActions
-	public Project loadProject(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
+	public ProjectRevision loadProject(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
 		try {
 			authorizationManager.assureProjectAccessAuthorization(projectId);
 
@@ -270,21 +272,22 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	private Project doLoadProject(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
+	private ProjectRevision doLoadProject(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
 		try {
 			final ProjectSnapshot snapshot = loadProjectSnapshot(projectId);
 			final List<UserAction> actionList = persistenceService.retrieveActionsSince(projectId, snapshot.getLastAppliedActionId());
 
 			Project project = snapshot.getProject();
-			if (actionList.isEmpty()) return project;
+			if (actionList.isEmpty()) return new ProjectRevision(project, snapshot.getLastAppliedActionId());
 
 			project = applyActionsToProject(project, actionList);
 
+			final long lastAppliedActionId = (actionList.size() > 0) ? actionList.get(actionList.size() - 1).getId() : snapshot.getLastAppliedActionId();
 			if (actionList.size() > PROJECT_SNAPSHOT_UPDATE_ACTION_LIMIT) {
-				updateProjectSnapshot(snapshot, project, actionList.get(actionList.size() - 1).getId());
+				updateProjectSnapshot(snapshot, project, lastAppliedActionId);
 			}
 
-			return project;
+			return new ProjectRevision(project, lastAppliedActionId);
 		}
 		catch (final NoResultFoundException e) {
 			final String errorMessage = "The project '" + projectId + "' is inexistent.";
@@ -390,5 +393,32 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	private long getTimeSpent(final long initialTime) {
 		return getCurrentTime() - initialTime;
+	}
+
+	@Override
+	public ModelActionSyncEventRequestResponse loadProjectActions(final UUID projectId, final long lastSyncId) throws AuthorizationException,
+			UnableToLoadProjectException {
+		try {
+			authorizationManager.assureProjectAccessAuthorization(projectId);
+
+			final Session currentSession = sessionManager.getCurrentSession();
+			clientManager.bindClientToProject(currentSession.getThreadLocalClientId(), projectId);
+
+			final List<UserAction> userActionList = persistenceService.retrieveActionsSince(projectId, lastSyncId);
+			final List<ModelAction> actionList = new ArrayList<ModelAction>();
+			for (final UserAction userAction : userActionList)
+				actionList.add(userAction.getModelAction());
+
+			final long lastUserActionId = (userActionList.size() > 0) ? userActionList.get(userActionList.size() - 1).getId() : lastSyncId;
+			final Date timestamp = (userActionList.size() > 0) ? userActionList.get(userActionList.size() - 1).getTimestamp() : new Date();
+			final ActionContext actionContext = new ActionContext(authenticationManager.getAuthenticatedUser().getId(), timestamp);
+
+			return new ModelActionSyncEventRequestResponse(new ModelActionSyncEvent(projectId, actionList, actionContext, lastUserActionId));
+		}
+		catch (final PersistenceException e) {
+			final String errorMessage = "The server could not resync the project: A persistence exception occured.";
+			LOGGER.error(errorMessage, e);
+			throw new UnableToLoadProjectException(errorMessage);
+		}
 	}
 }

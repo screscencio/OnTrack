@@ -3,8 +3,6 @@ package br.com.oncast.ontrack.shared.model.kanban;
 import java.util.Collections;
 import java.util.List;
 
-import br.com.oncast.ontrack.shared.model.release.Release;
-
 public class KanbanFactory {
 
 	public static Kanban create() {

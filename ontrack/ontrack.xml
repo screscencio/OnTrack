@@ -1,0 +1,56 @@
+<ontrackXML version="2013_05_26">
+   <users class="java.util.ArrayList">
+      <user passwordHash="8onZs_r4xfx8KLgLBWV0z9qrZ9Q=" passwordSalt="HY_Hiltvi6U=">
+         <userData email="user105@email.com" projectInvitationQuota="0" projectCreationQuota="0">
+            <id id="A1404B48-C8C6-4C0B-ADAD-ECBE3111DA11"/>
+         </userData>
+      </user>
+      <user passwordHash="conH5kBYVwqSE4bEIpjXRM037l8=" passwordSalt="lmMUw1PzNfU=">
+         <userData email="user106@email.com" projectInvitationQuota="0" projectCreationQuota="0">
+            <id id="FA03AB2C-0119-4872-8915-F3B3B6BDD6D3"/>
+         </userData>
+      </user>
+   </users>
+   <projects class="java.util.ArrayList">
+      <project>
+         <projectRepresentation name="Default project" humanIdCounter="0">
+            <id id="DFAB9D00-FAC8-4B89-8D74-35B88737C926"/>
+         </projectRepresentation>
+         <actions class="java.util.ArrayList">
+            <userAction timestamp="1969-12-31 21:01:08.582 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAction">
+                  <referenceId id="7F705E40-AF2D-444D-9E2C-3273686595D2"/>
+                  <scopeUpdateRollbackAction newDescription="descricao">
+                     <referenceId id="07571C18-EB6F-437E-9D37-CF31961D8D4D"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                           <referenceId id="07571C18-EB6F-437E-9D37-CF31961D8D4D"/>
+                           <rollbackSubActions class="java.util.ArrayList"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3.0">
+                           <referenceId id="07571C18-EB6F-437E-9D37-CF31961D8D4D"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction" newProgressDescription="d">
+                           <referenceId id="07571C18-EB6F-437E-9D37-CF31961D8D4D"/>
+                           <subActionList class="java.util.ArrayList"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateRollbackAction>
+               </action>
+               <userId id="5648EC4F-5162-48E1-851D-037FA2C749E8"/>
+            </userAction>
+         </actions>
+      </project>
+   </projects>
+   <projectAuthorizations class="java.util.ArrayList">
+      <projectAuthorization>
+         <userId id="A1404B48-C8C6-4C0B-ADAD-ECBE3111DA11"/>
+         <projectId id="DFAB9D00-FAC8-4B89-8D74-35B88737C926"/>
+      </projectAuthorization>
+      <projectAuthorization>
+         <userId id="FA03AB2C-0119-4872-8915-F3B3B6BDD6D3"/>
+         <projectId id="DFAB9D00-FAC8-4B89-8D74-35B88737C926"/>
+      </projectAuthorization>
+   </projectAuthorizations>
+   <notifications class="java.util.ArrayList"/>
+</ontrackXML>

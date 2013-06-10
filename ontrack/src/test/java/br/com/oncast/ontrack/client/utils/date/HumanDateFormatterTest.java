@@ -18,9 +18,11 @@ import org.junit.Test;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 import com.ibm.icu.util.Calendar;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class HumanDateFormatterTest extends GwtTest {
 
 	private static final HumanDateFormatterMessages MESSAGES = GWT.create(HumanDateFormatterMessages.class);
@@ -224,11 +226,6 @@ public class HumanDateFormatterTest extends GwtTest {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(year, month, days, 12, 0, 0);
 		return calendar.getTime();
-	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
 	}
 
 }

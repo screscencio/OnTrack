@@ -37,7 +37,7 @@ public class TeamActionPostProcessor implements ActionPostProcessor<ModelAction>
 
 		final UUID projectId = projectContext.getProjectRepresentation().getId();
 		final ModelActionSyncEvent syncEvent = new ModelActionSyncEvent(projectId,
-				Arrays.asList(new ModelAction[] { action }), actionContext);
+				Arrays.asList(new ModelAction[] { action }), actionContext, -1);
 
 		multicastService.multicastToCurrentUserClientInSpecificProject(syncEvent, projectId);
 

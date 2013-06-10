@@ -66,4 +66,16 @@ public interface ClientErrorMessages extends BaseMessages {
 	@DefaultMessage("Please insert your username.")
 	String passwordRequestNeedsUsernameInput();
 
+	@Description("message shown when tryind to reconnect to server")
+	@DefaultMessage("Trying to reconnect...")
+	String tryingToReconnect();
+
+	@Description("message shown when reconnecting to server")
+	@DefaultMessage("Engaging server!")
+	String establishingConnection();
+
+	@Description("message shown when resync was successful")
+	@DefaultMessage("We are back!")
+	String resyncSuccess();
+
 }

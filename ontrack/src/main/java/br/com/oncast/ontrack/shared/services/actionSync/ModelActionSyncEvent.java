@@ -19,13 +19,16 @@ public class ModelActionSyncEvent implements ServerPushEvent {
 
 	private ActionContext actionContext;
 
+	private long lastActionId;
+
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected ModelActionSyncEvent() {}
 
-	public ModelActionSyncEvent(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext) {
+	public ModelActionSyncEvent(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext, final long lastActionId) {
 		this.actionList = actionList;
 		this.actionContext = actionContext;
 		this.projectId = projectId;
+		this.lastActionId = lastActionId;
 	}
 
 	public List<ModelAction> getActionList() {
@@ -38,6 +41,10 @@ public class ModelActionSyncEvent implements ServerPushEvent {
 
 	public ActionContext getActionContext() {
 		return actionContext;
+	}
+
+	public long getLastActionId() {
+		return lastActionId;
 	}
 
 	@Override
