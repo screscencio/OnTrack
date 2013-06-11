@@ -7,6 +7,7 @@ useHttps = False
 user = "admin@ontrack.com"
 password = "ontrackpoulain"
 listProjects="list-projects"
+folder=""
 
 def printTimeSpent(startTime) :
 	timeSpent = time() - startTime
@@ -89,8 +90,7 @@ def execute(projects):
 			print "\n[INFO] The file %s was removed because the project %s was not found on the server" % (xmlPath, projectId)
 		else :
 			printTimeSpent(startTime)
-			message = "[ERROR] Operation failed \n" + str(e)
-			revertFiles(projectsListPath)
+			message = "[ERROR] Operation failed check error file at '%s'\n\n%s" % (xmlPath, str(e))
 
 	print "[INFO] Downloaded %d projects" % (len(projects) - 1)
 	print message

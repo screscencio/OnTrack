@@ -6,6 +6,7 @@ useHttps = False
 user = "admin@ontrack.com"
 password = "ontrackpoulain"
 command = 'curl --basic%s -u %s:%s -F "ontrack=@%s;type=text/xml" %s/application/xml/upload > %s'
+ignoreErrors = False
 
 def executeCommand(command) :
 	#print "[EXECUTING]", command
@@ -14,19 +15,23 @@ def executeCommand(command) :
 def upload(filePath):
 	print "[UPLOADING]", filePath
 
-	logPath = filePath + ".log"
+	errorFilePath = filePath + ".html"
 	print ""
-	executeCommand( command % (ssl3, user, password, filePath, protocol, logPath) )
+	executeCommand( command % (ssl3, user, password, filePath, protocol, errorFilePath) )
 	print ""
 
-	log = open(logPath)
-	logText = log.read()
+	errorFile = open(errorFilePath)
+	errorText = errorFile.read()
 
-	if len(logText) == 0 :
-		os.remove(logPath)
+	if len(errorText) == 0 :
+		os.remove(errorFilePath)
 		print "[DONE]", filePath
 	else :
-		raise Exception("[ERROR] Check log file at '%s'" % logPath)
+		errorMsg = "[ERROR] '%s'\n\n[ERROR] Check error file at '%s'" % (errorText, errorFilePath)
+		if (ignoreErrors) :
+			print errorMsg
+		else :
+			raise Exception(errorMsg)
 
 def printTimeSpent(startTime) :
 	timeSpent = time() - startTime
@@ -87,13 +92,14 @@ def usage():
 		  -s, --use-https \t\tuse https connection
 		  -u, --user \t\tuser to be used on basic authentication [admin@ontrack.com]
 		  -p, --password \t\tpassword to be used on basic authentication [ontrackpoulain]
+		  -e, --ignore-errors \t\tignores errors and continue migration
 	'''
 
 def main():
-	global baseUrl, useHttps, user, password
+	global baseUrl, useHttps, user, password, ignoreErrors
 
 	try:
-		opts, arg = getopt.getopt(sys.argv[1:], "hb:su:p:", ["help", "base-url", "use-https", "user", "password"])
+		opts, arg = getopt.getopt(sys.argv[1:], "hb:su:p:e", ["help", "base-url", "use-https", "user", "password", "ignore-errors"])
 	except getopt.error, msg:
 		print str(msg)
 		usage()
@@ -115,6 +121,8 @@ def main():
 
 		if o in ("-p", "--password") :
 			password = a
+		if o in ("-e", "--ignore-errors") :
+			ignoreErrors = True
 
 	setup()
 	execute(arg)
