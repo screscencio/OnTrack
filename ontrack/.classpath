@@ -48,19 +48,12 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsr305-gwt-1.3.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/aspectjrt-1.6.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-deps.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-jbossweb-1.1.0.beta3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat-1.1.0.beta3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat7-1.1.0.beta3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-common-1.1.0.beta3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-server-1.1.0.beta3.jar" sourcepath="/home/rhlobo/.m2/repository/org/atmosphere/atmosphere-gwt-server/1.1.0.beta3/atmosphere-gwt-server-1.1.0.beta3-sources.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-runtime-1.1.0.beta3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/newrelic-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/org.moxieapps.gwt.highcharts-1.5.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javassist-3.12.1.GA.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jacocoagent.jar"/>
-	<classpathentry kind="lib" path="lib/atmosphere-gwt-client-1.1.0.beta3.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar"/>
@@ -72,5 +65,12 @@
 	<classpathentry kind="lib" path="lib/paranamer-2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-test-utils-0.44.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-jbossweb-1.1.0.RC1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat-1.1.0.RC1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat7-1.1.0.RC1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-common-1.1.0.RC1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-server-1.1.0.RC1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-runtime-1.1.0.RC1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-client-1.1.0.RC1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
