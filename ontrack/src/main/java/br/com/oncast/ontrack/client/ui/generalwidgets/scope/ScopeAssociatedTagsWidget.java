@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -14,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -60,7 +59,7 @@ public class ScopeAssociatedTagsWidget extends Composite implements ActionExecut
 
 	@Override
 	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final Set<UUID> inferenceInfluencedScopeSet,
+			final ActionExecutionContext executionContext,
 			final boolean isUserAction) {
 		if ((action instanceof ScopeAddTagAssociationAction || action instanceof ScopeRemoveTagAssociationAction)
 				&& action.getReferenceId().equals(scope.getId())) {

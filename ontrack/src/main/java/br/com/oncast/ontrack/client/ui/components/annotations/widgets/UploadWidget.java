@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -16,6 +15,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.storage.BeanFactory;
 import br.com.oncast.ontrack.shared.services.storage.FileUploadFieldNames;
 import br.com.oncast.ontrack.shared.services.storage.UploadResponse;
@@ -249,7 +249,7 @@ public class UploadWidget extends Composite {
 		return actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
+					final ActionExecutionContext executionContext, final boolean isUserAction) {
 				if (action instanceof FileUploadAction && action.getReferenceId().equals(uuid)) {
 					getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
 					ClientServices.get().alerting().showSuccess(messages.uploadCompleted());

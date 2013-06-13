@@ -6,6 +6,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
+import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
+import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
@@ -25,6 +27,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+		ClientServices.get().metrics().startTimeTracking(MetricsCategories.PLACE_LOAD, MetricsTokenizer.getClassSimpleName(this));
 		validateGatheredData();
 
 		final ProjectMessageView view = new ProjectMessagePanel();

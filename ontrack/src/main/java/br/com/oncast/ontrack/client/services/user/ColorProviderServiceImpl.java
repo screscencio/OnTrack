@@ -65,7 +65,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 				if (selectedScope != null && selectedScope.equals(event.getTargetScope())) return;
 
 				selectedScope = event.getTargetScope();
-				notifyScopeSelectionToServer();
+				if (selectedScope != null && selectedScope.getId() != null) notifyScopeSelectionToServer();
 			}
 
 			private void notifyScopeSelectionToServer() {

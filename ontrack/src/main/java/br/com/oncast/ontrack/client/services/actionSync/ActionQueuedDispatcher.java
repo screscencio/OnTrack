@@ -12,9 +12,11 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequestResponse;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gwt.user.client.Window;
 
 class ActionQueuedDispatcher {
@@ -22,6 +24,7 @@ class ActionQueuedDispatcher {
 	private final DispatchService requestDispatchService;
 
 	private final List<ModelAction> actionList;
+	private final List<ModelAction> reverseActionList;
 	private List<ModelAction> waitingServerAnswerActionList;
 	private final ProjectRepresentationProvider projectRepresentationProvider;
 	private final ClientErrorMessages messages;
@@ -38,25 +41,34 @@ class ActionQueuedDispatcher {
 		this.messages = messages;
 
 		actionList = new ArrayList<ModelAction>();
+		reverseActionList = new ArrayList<ModelAction>();
 		waitingServerAnswerActionList = new ArrayList<ModelAction>();
 	}
 
-	public void dispatch(final ModelAction action) {
+	public void dispatch(final ModelAction action, final ActionExecutionContext executionContext) {
 		actionList.add(action);
+		reverseActionList.add(executionContext.getReverseAction());
 		tryExchange();
 	}
 
 	public void tryExchange() {
+		tryExchange(false);
+	}
+
+	public void tryExchange(final boolean returnActionsToSender) {
 		if (paused) return;
 		if (!waitingServerAnswerActionList.isEmpty()) return;
 		if (actionList.isEmpty()) return;
 
 		waitingServerAnswerActionList = new ArrayList<ModelAction>(actionList);
+		final ArrayList<ModelAction> waitingServerAnsuerReverseActionList = new ArrayList<ModelAction>(reverseActionList);
 		actionList.removeAll(waitingServerAnswerActionList);
+		reverseActionList.removeAll(waitingServerAnsuerReverseActionList);
 
 		// TODO Display 'loading' UI indicator.
 		requestDispatchService.dispatch(
-				new ModelActionSyncRequest(projectRepresentationProvider.getCurrent(), waitingServerAnswerActionList),
+				new ModelActionSyncRequest(projectRepresentationProvider.getCurrent(), waitingServerAnswerActionList)
+						.setShouldReturnToSender(returnActionsToSender),
 				new DispatchCallback<ModelActionSyncRequestResponse>() {
 
 					@Override
@@ -68,7 +80,9 @@ class ActionQueuedDispatcher {
 					}
 
 					@Override
-					public void onTreatedFailure(final Throwable caught) {}
+					public void onTreatedFailure(final Throwable caught) {
+						resetPendingActions(waitingServerAnsuerReverseActionList);
+					}
 
 					@Override
 					public void onUntreatedFailure(final Throwable caught) {
@@ -87,13 +101,19 @@ class ActionQueuedDispatcher {
 											});
 						}
 						else {
-							alertingService.showErrorWithConfirmation(messages.connectionLost(), new AlertConfirmationListener() {
-								@Override
-								public void onConfirmation() {
-									Window.Location.reload();
-								}
-							});
+							resetPendingActions(waitingServerAnsuerReverseActionList);
 						}
+					}
+
+					private void resetPendingActions(final ArrayList<ModelAction> waitingServerAnsuerReverseActionList) {
+						for (final ModelAction pendingReverseAction : waitingServerAnsuerReverseActionList) {
+							reverseActionList.add(0, pendingReverseAction);
+						}
+
+						for (final ModelAction pendingAction : waitingServerAnswerActionList) {
+							actionList.add(0, pendingAction);
+						}
+						waitingServerAnswerActionList.clear();
 					}
 				});
 	}
@@ -109,11 +129,16 @@ class ActionQueuedDispatcher {
 	}
 
 	public void pause() {
+
 		paused = true;
 	}
 
 	public void resume() {
 		paused = false;
-		tryExchange();
 	}
+
+	public List<ModelAction> getPendingReverseActions() {
+		return ImmutableList.copyOf(reverseActionList);
+	}
+
 }

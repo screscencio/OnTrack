@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.client.services.actionExecution;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
@@ -15,7 +14,7 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
@@ -36,12 +35,11 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 		this.actionExecutionListeners = new ArrayList<ActionExecutionListener>();
 		this.contextService = contextService;
 		this.actionManager = new ActionExecutionManager(new ActionExecutionListener() {
-
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context,
 					final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet, final boolean isClientAction) {
-				notifyActionExecutionListeners(action, context, actionContext, inferenceInfluencedScopeSet, isClientAction);
+					final ActionExecutionContext executionContext, final boolean isClientAction) {
+				notifyActionExecutionListeners(action, context, actionContext, executionContext, isClientAction);
 			}
 		});
 		applicationPlaceController.addPlaceChangeListener(new PlaceChangeListener() {
@@ -50,6 +48,11 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 				actionManager.cleanActionExecutionHistory();
 			}
 		});
+	}
+
+	@Override
+	public void onNonUserActionRequest(final ModelAction action) throws UnableToCompleteActionException {
+		onNonUserActionRequest(action, createActionContext());
 	}
 
 	@Override
@@ -91,10 +94,10 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	}
 
 	private void notifyActionExecutionListeners(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final Set<UUID> inferenceInfluencedScopeSet,
+			final ActionExecutionContext executionContext,
 			final boolean isUserAction) {
 		for (final ActionExecutionListener handler : new ArrayList<ActionExecutionListener>(actionExecutionListeners)) {
-			handler.onActionExecution(action, context, actionContext, inferenceInfluencedScopeSet, isUserAction);
+			handler.onActionExecution(action, context, actionContext, executionContext, isUserAction);
 		}
 	}
 

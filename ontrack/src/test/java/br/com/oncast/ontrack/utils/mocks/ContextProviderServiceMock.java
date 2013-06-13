@@ -41,4 +41,7 @@ public class ContextProviderServiceMock implements ContextProviderService {
 
 	@Override
 	public void unloadProjectContext() {}
+
+	@Override
+	public void revertContext(final ProjectContext context) {}
 }

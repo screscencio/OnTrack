@@ -137,10 +137,10 @@ public class ClientServices {
 		placeController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), storage(), metrics());
 		colorProvider();
-		getNetworkMonitoringService();
+		networkMonitor();
 	}
 
-	private NetworkMonitoringService getNetworkMonitoringService() {
+	private NetworkMonitoringService networkMonitor() {
 		if (networkMonitoringService != null) return networkMonitoringService;
 		return networkMonitoringService = new NetworkMonitoringService(request(), serverPush(), alerting(), errorMessages());
 	}
@@ -181,7 +181,7 @@ public class ClientServices {
 	public ContextProviderService contextProvider() {
 		if (contextProviderService != null) return contextProviderService;
 		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) projectRepresentationProvider(),
-				request(), authentication());
+				request(), authentication(), metrics());
 	}
 
 	public FeedbackService feedback() {
@@ -194,8 +194,9 @@ public class ClientServices {
 		return requestDispatchService = new DispatchServiceDefault(new RequestBuilderConfigurator() {
 			@Override
 			public void configureRequestBuilder(final RequestBuilder requestBuilder) {
-				requestBuilder
-						.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME, serverPush().getConnectionID());
+				final String connectionID = serverPush().getConnectionID();
+				if (connectionID != null)
+				requestBuilder.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME, connectionID);
 			}
 		});
 	}
@@ -203,7 +204,7 @@ public class ClientServices {
 	private ActionSyncService actionSync() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(request(), serverPush(), actionExecution(),
-				projectRepresentationProvider(), alerting(), errorMessages(), getNetworkMonitoringService(), contextProvider());
+				projectRepresentationProvider(), alerting(), errorMessages(), networkMonitor(), contextProvider());
 	}
 
 	public ServerPushClientService serverPush() {

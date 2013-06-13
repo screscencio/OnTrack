@@ -13,6 +13,8 @@ public class ModelActionSyncRequest implements DispatchRequest<ModelActionSyncRe
 
 	private UUID projectId;
 
+	private boolean shouldReturnToSender = false;
+
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ModelActionSyncRequest() {}
 
@@ -25,11 +27,20 @@ public class ModelActionSyncRequest implements DispatchRequest<ModelActionSyncRe
 		this.actionList = actionList;
 	}
 
+	public ModelActionSyncRequest setShouldReturnToSender(final boolean shouldReturnToSender) {
+		this.shouldReturnToSender = shouldReturnToSender;
+		return this;
+	}
+
 	public List<ModelAction> getActionList() {
 		return actionList;
 	}
 
 	public UUID getProjectId() {
 		return projectId;
+	}
+
+	public boolean shouldReturnToSender() {
+		return shouldReturnToSender;
 	}
 }

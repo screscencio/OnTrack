@@ -29,6 +29,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -117,7 +118,7 @@ public class ProgressActivity extends AbstractActivity {
 		registrations.add(SERVICE_PROVIDER.actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet,
+					final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
 				if (action instanceof ScopeRemoveAction && currSelectedScope.getId().equals(action.getReferenceId())) {
 					deselectCurrentScopeWidget();

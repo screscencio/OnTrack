@@ -75,7 +75,11 @@ public interface ClientErrorMessages extends BaseMessages {
 	String establishingConnection();
 
 	@Description("message shown when resync was successful")
-	@DefaultMessage("We are back!")
+	@DefaultMessage("You are back online! Now you can cooperate LIKE A BOSS")
 	String resyncSuccess();
+
+	@Description("message shown when the internet is not available and is waiting for reconection")
+	@DefaultMessage("Watch out, the internet is down! You are alone from now on")
+	String offilineMode();
 
 }

@@ -26,7 +26,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -156,7 +156,7 @@ public class DraggableMembersListWidget extends Composite {
 		handlerRegistrations.add(ClientServices.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet,
+					final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
 				if (action instanceof TeamAction) {
 					update();

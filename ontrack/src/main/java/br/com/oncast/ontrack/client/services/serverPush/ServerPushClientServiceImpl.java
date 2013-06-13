@@ -24,7 +24,6 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	public ServerPushClientServiceImpl(final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 		atmosphereListener = new AtmosphereListener() {
-
 			@Override
 			public void onRefresh() {}
 
@@ -60,7 +59,6 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			public void onAfterRefresh(final String connectionUUID) {}
 		};
 
-		serverPushClient = new OntrackAtmosphereClient(atmosphereListener);
 		connect();
 	}
 

@@ -6,7 +6,6 @@ import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configP
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -43,6 +42,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
@@ -597,7 +597,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet,
+					final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
 				if (action instanceof ReleaseDeclareStartDayAction || action instanceof ReleaseDeclareEndDayAction
 						&& action.getReferenceId().equals(release.getId())) update();

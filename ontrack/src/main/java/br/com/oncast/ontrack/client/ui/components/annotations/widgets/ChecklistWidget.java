@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -22,6 +21,7 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -201,7 +201,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
+					final ActionExecutionContext executionContext, final boolean isUserAction) {
 				if (action instanceof ChecklistRenameAction && action.getReferenceId().equals(checklist.getId())) updateTitle();
 				else if (action instanceof ChecklistAddItemAction || action instanceof ChecklistRemoveItemAction
 						&& action.getReferenceId().equals(checklist.getId())) updateItems();

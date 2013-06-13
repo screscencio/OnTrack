@@ -5,7 +5,6 @@ import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentPro
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -25,6 +24,7 @@ import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -153,7 +153,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 
 	@Override
 	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final Set<UUID> inferenceInfluencedScopeSet,
+			final ActionExecutionContext executionContext,
 			final boolean isUserAction) {
 
 		if ((action instanceof AnnotationAction || action instanceof ImpedimentAction) && action.getReferenceId().equals(subjectId)) update();

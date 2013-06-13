@@ -120,7 +120,8 @@ class BusinessLogicImpl implements BusinessLogic {
 						+ " in "
 						+ getTimeSpent(initialTime) + " ms.");
 			}
-			multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(modelActionSyncEvent, projectId);
+			if (actionSyncRequest.shouldReturnToSender()) multicastService.multicastToAllUsersInSpecificProject(modelActionSyncEvent, projectId);
+			else multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(modelActionSyncEvent, projectId);
 			return lastApplyedActionId;
 		}
 		catch (final PersistenceException e) {

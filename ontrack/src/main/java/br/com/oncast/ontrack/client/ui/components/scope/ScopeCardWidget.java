@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.components.scope;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -43,7 +42,7 @@ import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -458,7 +457,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 
 	@Override
 	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final Set<UUID> inferenceInfluencedScopeSet,
+			final ActionExecutionContext executionContext,
 			final boolean isUserAction) {
 		if (action instanceof ScopeAction && action.getReferenceId().equals(scope.getId())) update();
 	}

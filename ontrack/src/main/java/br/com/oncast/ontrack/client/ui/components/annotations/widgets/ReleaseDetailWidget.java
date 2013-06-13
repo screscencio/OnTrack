@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import static br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat.roundFloat;
 
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -14,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
 import com.google.gwt.core.client.GWT;
@@ -110,7 +109,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
+					final ActionExecutionContext executionContext, final boolean isUserAction) {
 				if (action instanceof ReleaseRenameAction && action.getReferenceId().equals(release.getId())) update();
 			}
 		};

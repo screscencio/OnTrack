@@ -2,7 +2,8 @@ package br.com.oncast.ontrack.shared.metrics;
 
 public enum MetricsCategories {
 
-	PLACE_LOAD("Place Load");
+	PLACE_LOAD("Place Load"),
+	CONTEXT_LOAD("Context Load");
 
 	private final String category;
 

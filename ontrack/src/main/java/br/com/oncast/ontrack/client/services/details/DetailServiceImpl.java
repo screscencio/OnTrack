@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.services.details;
 
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -38,6 +37,7 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
@@ -126,7 +126,7 @@ public class DetailServiceImpl implements DetailService {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context,
 					final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
+					final ActionExecutionContext executionContext, final boolean isUserAction) {
 
 				if (action instanceof ChecklistItemAction) fireScopeDetailUpdateEvent(((ChecklistItemAction) action).getSubjectId(), context);
 

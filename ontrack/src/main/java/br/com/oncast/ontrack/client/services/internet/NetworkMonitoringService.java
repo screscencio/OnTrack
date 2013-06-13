@@ -17,16 +17,19 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 
 public class NetworkMonitoringService {
 
-	private boolean connected = true;
 	private final ClientErrorMessages messages;
 	private final ClientAlertingService alertingService;
 	private final ServerPushClientService serverPushClientService;
-	private final List<ConnectionListener> connectionListeners = new ArrayList<ConnectionListener>();
+
 	private AlertRegistration tryingToReconnectAlertRegistration;
 	private AlertRegistration establishingConnectionAlertRegistration;
 	private AlertRegistration errorAlertConfirmation;
-	private final Timer connectionVerificationTimer = new Timer() {
 
+	private final List<ConnectionListener> connectionListeners = new ArrayList<ConnectionListener>();
+
+	private boolean connected = true;
+
+	private final Timer connectionVerificationTimer = new Timer() {
 		@Override
 		public void run() {
 			if (connected) return;
@@ -44,7 +47,6 @@ public class NetworkMonitoringService {
 		messages = clientErrorMessages;
 
 		requestDispatchService.addFailureHandler(StatusCodeException.class, new FailureHandler<StatusCodeException>() {
-
 			@Override
 			public void handle(final StatusCodeException caught) {
 				if (caught.getStatusCode() != 0) return;
@@ -116,7 +118,7 @@ public class NetworkMonitoringService {
 
 	private void alertMissingConnection() {
 		if (errorAlertConfirmation != null) return;
-		errorAlertConfirmation = alertingService.showBlockingError(messages.connectionLost());
+		errorAlertConfirmation = alertingService.showBlockingError(messages.offilineMode());
 	}
 
 	public void addConnectionListener(final ConnectionListener connectionListener) {

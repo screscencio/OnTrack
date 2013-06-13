@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -26,7 +25,6 @@ public class ScopeTreeReleaseAction implements ScopeTreeAction {
 		try {
 			final Release release = context.findRelease(action.getReferenceId());
 			for (final Scope scope : release.getScopeList()) {
-				SpeedTracerConsole.log(scope.getDescription());
 				final ScopeTreeItem item = tree.findScopeTreeItem(scope);
 				if (!item.isFake()) item.getScopeTreeItemWidget().updateReleaseDisplay();
 			}

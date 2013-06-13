@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.client.ui.components.scopetree;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -25,6 +24,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
@@ -57,11 +57,11 @@ public class ScopeTree implements Component {
 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
+					final ActionExecutionContext executionContext, final boolean isUserAction) {
 				try {
 					treeActionFactory.createEquivalentActionFor(action).execute(context, actionContext, isUserAction);
 					final HashSet<Scope> inferenceInfluencedScopes = new HashSet<Scope>();
-					for (final UUID id : inferenceInfluencedScopeSet)
+					for (final UUID id : executionContext.getInferenceInfluencedScopeSet())
 						inferenceInfluencedScopes.add(context.findScope(id));
 
 					for (final Scope scope : inferenceInfluencedScopes) {

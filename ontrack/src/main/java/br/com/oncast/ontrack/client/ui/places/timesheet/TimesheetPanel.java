@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet;
 
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -22,7 +21,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.Release.Condition;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
@@ -262,7 +261,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet,
+					final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
 
 				if (action instanceof ScopeDeclareTimeSpentAction) timesheet.updateTimeSpent(action.getReferenceId(), actionContext.getUserId());

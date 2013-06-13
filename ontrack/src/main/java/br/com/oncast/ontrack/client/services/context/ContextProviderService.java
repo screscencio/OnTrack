@@ -17,4 +17,6 @@ public interface ContextProviderService {
 	public void addContextLoadListener(ContextChangeListener contextLoadListener);
 
 	public void unloadProjectContext();
+
+	public void revertContext(ProjectContext context);
 }

@@ -55,7 +55,7 @@ public class ActionQueuedDispatcherTest {
 			}
 		});
 		for (int i = 0; i < 100; i++)
-			actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""));
+			dispatch();
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class ActionQueuedDispatcherTest {
 		Assert.assertNull("It should not exist any callback registered.", callbackHolder.getValue());
 
 		for (int i = 0; i < 10; i++)
-			actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""));
+			dispatch();
 
 		Assert.assertNotNull("It should exist a callback registered.", callbackHolder.getValue());
 
@@ -104,7 +104,7 @@ public class ActionQueuedDispatcherTest {
 		});
 
 		for (int i = 0; i < 10; i++)
-			actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""));
+			dispatch();
 
 		Assert.assertEquals("The first action sync request should have only one action.", 1, request.getValue().getActionList().size());
 
@@ -129,20 +129,24 @@ public class ActionQueuedDispatcherTest {
 		});
 
 		for (int i = 0; i < 10; i++)
-			actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""));
+			dispatch();
 
 		Assert.assertEquals("The first action sync request should have only one action.", 1, request.getValue().getActionList().size());
 
 		callbackHolder.getValue().onSuccess(null);
 
 		for (int i = 0; i < 10; i++)
-			actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""));
+			dispatch();
 
 		Assert.assertEquals("The second action sync request should have 9 actions.", 9, request.getValue().getActionList().size());
 
 		callbackHolder.getValue().onSuccess(null);
 
 		Assert.assertEquals("The second action sync request should have all the remaining actions.", 10, request.getValue().getActionList().size());
+	}
+
+	private void dispatch() {
+		actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""), null);
 	}
 
 	private ProjectRepresentationProvider getProjectRepresentationProviderMock() {

@@ -57,7 +57,7 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	@Override
 	public void onPlaceRequest(final Place place) {
 		this.place = place;
-		GoogleAnalytics.set(trackerPrefix, "page", "/" + MetricsTokenizer.forPlace(place));
+		GoogleAnalytics.set(trackerPrefix, "page", "/" + MetricsTokenizer.getClassSimpleName(place));
 	}
 
 	@Override
@@ -75,11 +75,11 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	@Override
 	public TimeTrackingEvent startPlaceLoad(final Place place) {
 		GoogleAnalytics.trackPageview(trackerPrefix);
-		return new TimeTrackingEvent(this, PLACE_LOAD.getCategory(), MetricsTokenizer.forPlace(place));
+		return new TimeTrackingEvent(this, PLACE_LOAD.getCategory(), MetricsTokenizer.getClassSimpleName(place));
 	}
 
 	void onTimeTrackingEnd(final TimeTrackingEvent event) {
-		GoogleAnalytics.trackTiming(trackerPrefix, event.getValue(), event.getCategory(), event.getTotalDuration());
+		GoogleAnalytics.trackTiming(trackerPrefix, event.getCategory(), event.getValue(), event.getTotalDuration());
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 
 	private void updateCurrentPage() {
 		if (place == null) return;
-		GoogleAnalytics.set(trackerPrefix, "page", "/" + MetricsTokenizer.forPlace(place));
+		GoogleAnalytics.set(trackerPrefix, "page", "/" + MetricsTokenizer.getClassSimpleName(place));
 	}
 
 }

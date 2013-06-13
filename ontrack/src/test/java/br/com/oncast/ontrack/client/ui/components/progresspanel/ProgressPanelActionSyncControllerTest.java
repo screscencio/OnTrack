@@ -6,8 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashSet;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -49,6 +47,7 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
@@ -62,12 +61,14 @@ public class ProgressPanelActionSyncControllerTest {
 	private ReleaseMonitor releaseMonitor;
 	private ActionContext actionContext;
 	private Scope rootScope;
+	private ActionExecutionContext actionExecutionContext;
 
 	@Before
 	public void setUp() throws Exception {
 		display = Mockito.mock(Display.class);
 		context = mock(ProjectContext.class);
 		actionContext = mock(ActionContext.class);
+		actionExecutionContext = mock(ActionExecutionContext.class);
 		myRelease = createRelease();
 		rootScope = createScope();
 
@@ -585,7 +586,7 @@ public class ProgressPanelActionSyncControllerTest {
 	}
 
 	private void onActionExecution(final ModelAction action) throws UnableToCompleteActionException {
-		actionExecutionListener.onActionExecution(action, context, actionContext, new HashSet<UUID>(), true);
+		actionExecutionListener.onActionExecution(action, context, actionContext, actionExecutionContext, true);
 	}
 
 	private void addToContext(final Release release) throws ReleaseNotFoundException {

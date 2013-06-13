@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -36,6 +35,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 public class KanbanActionSyncController {
 
@@ -52,7 +52,7 @@ public class KanbanActionSyncController {
 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> influencedScopes, final boolean isUserAction) {
+					final ActionExecutionContext influencedScopes, final boolean isUserAction) {
 				handleActionExecution(display, action, context);
 			}
 		};

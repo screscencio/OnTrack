@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import java.util.Set;
+import java.util.List;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEventHandler;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequest;
@@ -43,6 +44,10 @@ public class ActionSyncService {
 
 	private Long lastSyncId = null;
 
+	private ProjectContext lastContext = null;
+
+	private final ContextProviderService contextProviderService;
+
 	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
 			final ActionExecutionService actionExecutionService, final ProjectRepresentationProvider projectRepresentationProvider,
 			final ClientAlertingService alertingService, final ClientErrorMessages messages, final NetworkMonitoringService networkMonitoringService,
@@ -52,6 +57,7 @@ public class ActionSyncService {
 		this.actionExecutionService = actionExecutionService;
 		this.alertingService = alertingService;
 		this.messages = messages;
+		this.contextProviderService = contextProviderService;
 		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, alertingService, messages);
 
 		serverPushClientService.registerServerEventHandler(ModelActionSyncEvent.class, new ServerActionSyncEventHandler() {
@@ -62,19 +68,18 @@ public class ActionSyncService {
 			}
 		});
 		this.actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
-
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final Set<UUID> scopeSet,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+					final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
-				handleActionExecution(action, isUserAction);
+				handleActionExecution(action, executionContext, isUserAction);
 			}
 		});
 		networkMonitoringService.addConnectionListener(new ConnectionListener() {
-
 			@Override
 			public void onConnectionRecovered() {
-				requestResyncronization();
 				actionQueuedDispatcher.resume();
+				requestResyncronization();
 			}
 
 			@Override
@@ -83,17 +88,15 @@ public class ActionSyncService {
 			}
 		});
 		contextProviderService.addContextLoadListener(new ContextChangeListener() {
-
 			@Override
 			public void onProjectChanged(final UUID projectId, final Long loadedProjectRevision) {
-				lastSyncId = loadedProjectRevision;
+				updateLastSyncId(loadedProjectRevision);
 			}
 		});
 		actionQueuedDispatcher.addDispatchCallback(new ActionQueuedDispatchCallback() {
-
 			@Override
 			public void onDispatch(final long applyedActionSyncId) {
-				lastSyncId = applyedActionSyncId;
+				updateLastSyncId(applyedActionSyncId);
 			}
 		});
 	}
@@ -106,22 +109,16 @@ public class ActionSyncService {
 			for (final ModelAction modelAction : event.getActionList()) {
 				actionExecutionService.onNonUserActionRequest(modelAction, actionContext);
 			}
-			lastSyncId = event.getLastActionId();
+			updateLastSyncId(event.getLastActionId());
 		}
 		catch (final UnableToCompleteActionException e) {
-			alertingService.showErrorWithConfirmation(messages.someChangesConflicted(),
-					new AlertConfirmationListener() {
-						@Override
-						public void onConfirmation() {
-							Window.Location.reload();
-						}
-					});
+			showFatalError(messages.someChangesConflicted());
 		}
 	}
 
-	private void handleActionExecution(final ModelAction action, final boolean isUserAction) {
+	private void handleActionExecution(final ModelAction action, final ActionExecutionContext executionContext, final boolean isUserAction) {
 		if (!isUserAction) return;
-		actionQueuedDispatcher.dispatch(action);
+		actionQueuedDispatcher.dispatch(action, executionContext);
 	}
 
 	private void checkIfRequestIsPertinentToCurrentProject(final ModelActionSyncEvent event) {
@@ -132,21 +129,25 @@ public class ActionSyncService {
 						+ "'. Please notify OnTrack team.");
 	}
 
-	protected void requestResyncronization() {
+	private void updateLastSyncId(final Long applyedActionSyncId) {
+		lastSyncId = applyedActionSyncId;
+		lastContext = applyedActionSyncId == null ? null : contextProviderService.getCurrent();
+	}
 
+	protected void requestResyncronization() {
 		if (lastSyncId == null) {
 			actionQueuedDispatcher.tryExchange();
 			return;
 		}
 
+		revertToPeviousServerState();
 		requestDispatchService.dispatch(new ModelActionSyncEventRequest(projectRepresentationProvider.getCurrent().getId(), lastSyncId),
 				new DispatchCallback<ModelActionSyncEventRequestResponse>() {
-
 					@Override
 					public void onSuccess(final ModelActionSyncEventRequestResponse result) {
 						processServerActionSyncEvent(result.getModelActionSyncEvent());
+						actionQueuedDispatcher.tryExchange(true);
 						alertingService.showSuccess(messages.resyncSuccess());
-						actionQueuedDispatcher.tryExchange();
 					}
 
 					@Override
@@ -154,13 +155,33 @@ public class ActionSyncService {
 
 					@Override
 					public void onUntreatedFailure(final Throwable caught) {
-						alertingService.showErrorWithConfirmation(messages.connectionLost(), new AlertConfirmationListener() {
-							@Override
-							public void onConfirmation() {
-								Window.Location.reload();
-							}
-						});
+						showFatalError(messages.connectionLost());
 					}
+
 				});
+	}
+
+	private void revertToPeviousServerState() {
+		final List<ModelAction> pendingActions = actionQueuedDispatcher.getPendingReverseActions();
+		if (pendingActions.isEmpty()) return;
+		try {
+			// IMPORTANT to revert view state
+			for (final ModelAction pendingAction : pendingActions) {
+				actionExecutionService.onNonUserActionRequest(pendingAction);
+			}
+			if (lastContext != null) contextProviderService.revertContext(lastContext);
+		}
+		catch (final UnableToCompleteActionException e) {
+			showFatalError(messages.someChangesConflicted());
+		}
+	}
+
+	private void showFatalError(final String errorMessage) {
+		alertingService.showErrorWithConfirmation(errorMessage, new AlertConfirmationListener() {
+			@Override
+			public void onConfirmation() {
+				Window.Location.reload();
+			}
+		});
 	}
 }

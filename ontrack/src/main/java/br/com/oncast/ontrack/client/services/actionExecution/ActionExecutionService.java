@@ -11,6 +11,8 @@ public interface ActionExecutionService extends ActionExecutionRequestHandler {
 	// TODO Analyze adding this method to ActionExecutionRequestHandler as 'onNonUserActionExecutionRequest'
 	public void onNonUserActionRequest(final ModelAction action, ActionContext actionContext) throws UnableToCompleteActionException;
 
+	public void onNonUserActionRequest(ModelAction action) throws UnableToCompleteActionException;
+
 	@Override
 	public void onUserActionExecutionRequest(final ModelAction action);
 

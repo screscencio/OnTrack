@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import java.util.Date;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -35,7 +34,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
@@ -151,7 +150,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
+					final ActionExecutionContext executionContext, final boolean isUserAction) {
 				if ((action instanceof ScopeUpdateAction
 						|| action instanceof ScopeAddTagAssociationAction
 						|| action instanceof ScopeRemoveTagAssociationAction
@@ -159,7 +158,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 						|| action instanceof ScopeRemoveAssociatedUserAction
 						|| action instanceof ScopeDeclareDueDateAction)
 						&& (action.getReferenceId().equals(scope.getId())
-						|| inferenceInfluencedScopeSet.contains(scope.getId()))) update();
+						|| executionContext.getInferenceInfluencedScopeSet().contains(scope.getId()))) update();
 				else if ((action instanceof ScopeDeclareProgressAction
 						|| action instanceof ImpedimentAction
 						|| action instanceof AnnotationCreateAction)

@@ -15,6 +15,7 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
+import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRevision;
@@ -39,6 +40,9 @@ public class ContextProviderServiceTest {
 	@Mock
 	private AuthenticationService authenticationService;
 
+	@Mock
+	private ClientMetricsService clientMetricsService;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
@@ -53,7 +57,7 @@ public class ContextProviderServiceTest {
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
 		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider,
-				requestDispatchService, authenticationService);
+				requestDispatchService, authenticationService, clientMetricsService);
 
 		Assert.assertFalse(contextProviderService.isContextAvailable(projectId));
 	}
@@ -66,7 +70,7 @@ public class ContextProviderServiceTest {
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
 		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
-				authenticationService);
+				authenticationService, clientMetricsService);
 
 		contextProviderService.loadProjectContext(projectId, Mockito.mock(ProjectContextLoadCallback.class));
 
@@ -81,7 +85,7 @@ public class ContextProviderServiceTest {
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
 		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
-				authenticationService);
+				authenticationService, clientMetricsService);
 
 		contextProviderService.loadProjectContext(projectId, Mockito.mock(ProjectContextLoadCallback.class));
 
@@ -97,7 +101,8 @@ public class ContextProviderServiceTest {
 
 	@Test
 	public void shouldBeAbleToUnloadTheCurrentProjectContext() throws Exception {
-		final ContextProviderServiceImpl service = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService, authenticationService);
+		final ContextProviderServiceImpl service = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService, authenticationService,
+				clientMetricsService);
 		service.loadProjectContext(projectId, Mockito.mock(ProjectContextLoadCallback.class));
 
 		service.unloadProjectContext();

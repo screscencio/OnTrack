@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.moxieapps.gwt.highcharts.client.Axis.Type;
 import org.moxieapps.gwt.highcharts.client.Chart;
@@ -43,7 +42,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocity
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
 import com.google.gwt.core.client.GWT;
@@ -417,7 +416,7 @@ public class ReleaseChart extends Composite {
 		return actionExecutionListener == null ? actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
+					final ActionExecutionContext executionContext, final boolean isUserAction) {
 				if (action instanceof ReleaseDeclareStartDayAction ||
 						action instanceof ReleaseDeclareEndDayAction ||
 						action instanceof ReleaseDeclareEstimatedVelocityAction) updateData();
