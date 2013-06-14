@@ -9,12 +9,12 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scopetree.FakeScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ActivateTagFilterEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ActivateTagFilterEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ClearTagFilterEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ClearTagFilterEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeClearTagFilterEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeClearTagFilterEventHandler;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeFilterByTagEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeFilterByTagEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
@@ -285,20 +285,20 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			}
 		}, ScopeTreeItemEditionCancelEvent.getType()));
 
-		handlerRegistrations.add(tree.addHandler(new ScopeTreeFilterByTagEventHandler() {
+		handlerRegistrations.add(eventBus.addHandler(ActivateTagFilterEvent.getType(), new ActivateTagFilterEventHandler() {
 			@Override
 			public void onFilterByTagRequested(final UUID tagId) {
 				interactionHandler.filterByTag(tagId);
 			}
-		}, ScopeTreeFilterByTagEvent.getType()));
+		}));
 
-		handlerRegistrations.add(tree.addHandler(new ScopeTreeClearTagFilterEventHandler() {
+		handlerRegistrations.add(eventBus.addHandler(ClearTagFilterEvent.getType(), new ClearTagFilterEventHandler() {
 
 			@Override
 			public void onClearTagFilterRequested() {
 				interactionHandler.clearTagFilter();
 			}
-		}, ScopeTreeClearTagFilterEvent.getType()));
+		}));
 
 		handlerRegistrations.add(eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 
@@ -482,7 +482,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 	@UiHandler("deleteButton")
 	protected void onClearFilterButtonClick(final ClickEvent event) {
-		interactionHandler.clearTagFilter();
+		ClientServices.get().eventBus().fireEvent(new ClearTagFilterEvent());
 	}
 
 	public void hideTagFilteringInfo() {

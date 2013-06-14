@@ -16,4 +16,6 @@ public interface ClientApplicationStateService {
 
 	void jumpToNextSelection();
 
+	UUID getFilterTagId();
+
 }

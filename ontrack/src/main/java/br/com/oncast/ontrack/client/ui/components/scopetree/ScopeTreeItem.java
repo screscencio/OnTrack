@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeFilterByTagEvent;
+import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ActivateTagFilterEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
@@ -90,7 +91,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 			@Override
 			public void onFilterByTagRequested(final UUID tagId) {
-				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeFilterByTagEvent(tagId));
+				ClientServices.get().eventBus().fireEvent(new ActivateTagFilterEvent(tagId));
 			}
 
 		}));

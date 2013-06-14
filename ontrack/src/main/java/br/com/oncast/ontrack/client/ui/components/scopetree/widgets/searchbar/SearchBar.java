@@ -1,13 +1,19 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ActivateTagFilterEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ActivateTagFilterEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ClearTagFilterEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ClearTagFilterEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
@@ -21,8 +27,11 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
+import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.core.client.GWT;
@@ -43,6 +52,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class SearchBar extends Composite implements ActionExecutionListener {
 
@@ -94,6 +104,10 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	private boolean focus;
 
+	private UUID filterTagId;
+
+	final Set<HandlerRegistration> handlerRegistrations = new HashSet<HandlerRegistration>();
+
 	public SearchBar() {
 		initWidget(uiBinder.createAndBindUi(this));
 		registerScopeTreeColumnVisibilityChangeListeners();
@@ -143,6 +157,35 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 		updateContainerVisibility();
 	}
 
+	@Override
+	protected void onLoad() {
+		if (!handlerRegistrations.isEmpty()) return;
+		handlerRegistrations.add(ClientServices.get().eventBus().addHandler(ActivateTagFilterEvent.getType(), new ActivateTagFilterEventHandler() {
+			@Override
+			public void onFilterByTagRequested(final UUID tagId) {
+				if (filterTagId == tagId) return;
+				shouldUpdate = true;
+				filterTagId = tagId;
+			}
+		}));
+
+		handlerRegistrations.add(ClientServices.get().eventBus().addHandler(ClearTagFilterEvent.getType(), new ClearTagFilterEventHandler() {
+			@Override
+			public void onClearTagFilterRequested() {
+				if (filterTagId == null) return;
+				shouldUpdate = true;
+				filterTagId = null;
+			}
+		}));
+	}
+
+	@Override
+	protected void onUnload() {
+		for (final HandlerRegistration reg : handlerRegistrations) {
+			reg.removeHandler();
+		}
+	}
+
 	private void updateContainerVisibility() {
 		if (focus) {
 			search.setVisible(true);
@@ -162,7 +205,6 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 				@Override
 				public void onComplete() {
-					// search.setVisible(false);
 					search.clear();
 				}
 			});
@@ -214,9 +256,19 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	}
 
 	private void updateItems() {
-		final List<Scope> allScopes = ClientServices.getCurrentProjectContext().getProjectScope()
-				.getAllDescendantScopes();
-		search.setItems(asCommandMenuItens(allScopes));
+		final ProjectContext context = ClientServices.getCurrentProjectContext();
+		final List<Scope> scopes;
+		if (filterTagId != null) scopes = getScopesWithTag(context, filterTagId);
+		else scopes = context.getProjectScope().getAllDescendantScopes();
+		search.setItems(asCommandMenuItens(scopes));
+	}
+
+	private List<Scope> getScopesWithTag(final ProjectContext context, final UUID filterTagId) {
+		final List<Scope> list = new ArrayList<Scope>();
+		for (final TagAssociationMetadata metadata : context.<TagAssociationMetadata> getAllMetadata(MetadataType.TAG)) {
+			if (metadata.getTag().getId().equals(filterTagId)) list.add((Scope) metadata.getSubject());
+		}
+		return list;
 	}
 
 	private List<CommandMenuItem> asCommandMenuItens(final List<Scope> scopeList) {

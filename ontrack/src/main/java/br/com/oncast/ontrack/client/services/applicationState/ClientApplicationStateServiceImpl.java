@@ -11,6 +11,10 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ActivateTagFilterEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ActivateTagFilterEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ClearTagFilterEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ClearTagFilterEventHandler;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
@@ -41,6 +45,8 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	private final Stack<Scope> previousSelectedScopes;
 	private final Stack<Scope> nextSelectedScopes;
 
+	private UUID filterTagId;
+
 	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService,
 			final ClientStorageService clientStorageService, final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 		this.eventBus = eventBus;
@@ -59,6 +65,23 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 				nextSelectedScopes.clear();
 			}
 		});
+		registerFilterByTagEvent();
+	}
+
+	private void registerFilterByTagEvent() {
+		handlerRegistrations.add(eventBus.addHandler(ActivateTagFilterEvent.getType(), new ActivateTagFilterEventHandler() {
+			@Override
+			public void onFilterByTagRequested(final UUID tagId) {
+				filterTagId = tagId;
+			}
+		}));
+
+		handlerRegistrations.add(eventBus.addHandler(ClearTagFilterEvent.getType(), new ClearTagFilterEventHandler() {
+			@Override
+			public void onClearTagFilterRequested() {
+				filterTagId = null;
+			}
+		}));
 	}
 
 	@Override
@@ -105,6 +128,11 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 		}
 
 		handlerRegistrations.clear();
+	}
+
+	@Override
+	public UUID getFilterTagId() {
+		return filterTagId;
 	}
 
 	@Override
