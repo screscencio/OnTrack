@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -64,6 +65,11 @@ public class InsertChildTest extends GwtTest {
 
 		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
+	}
+
+	@After
+	public void cleanUp() {
+		getBrowserSimulator().fireLoopEnd();
 	}
 
 	private Scope getScope() throws Exception {

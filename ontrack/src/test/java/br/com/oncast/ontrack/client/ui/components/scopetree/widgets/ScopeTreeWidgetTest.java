@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,6 +48,11 @@ public class ScopeTreeWidgetTest extends GwtTest {
 		scopeA13 = ScopeTestUtils.createScope("A13");
 		scopeA1.add(scopeA11);
 		scopeA1.add(scopeA12);
+	}
+
+	@After
+	public void cleanUp() {
+		getBrowserSimulator().fireLoopEnd();
 	}
 
 	@Test

@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
 public class ActionQueuedDispatcherTest {
@@ -146,7 +147,7 @@ public class ActionQueuedDispatcherTest {
 	}
 
 	private void dispatch() {
-		actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""), null);
+		actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""), mock(ActionExecutionContext.class));
 	}
 
 	private ProjectRepresentationProvider getProjectRepresentationProviderMock() {

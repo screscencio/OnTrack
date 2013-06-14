@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -81,6 +82,11 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		childBWidget = getWidget(childB);
 		grandChildA1Widget = getWidget(grandChildA1);
 		grandChildA2Widget = getWidget(grandChildA2);
+	}
+
+	@After
+	public void cleanUp() throws Exception {
+		getBrowserSimulator().fireLoopEnd();
 	}
 
 	@Test

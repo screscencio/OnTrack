@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.client.services.context;
 
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -16,6 +18,8 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
+import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRevision;
@@ -47,6 +51,9 @@ public class ContextProviderServiceTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		projectId = new UUID();
+
+		final TimeTrackingEvent trackingEventMock = mock(TimeTrackingEvent.class);
+		when(clientMetricsService.startTimeTracking(Mockito.any(MetricsCategories.class), Mockito.anyString())).thenReturn(trackingEventMock);
 	}
 
 	@SuppressWarnings("unchecked")

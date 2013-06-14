@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -56,6 +57,11 @@ public class MoveLeftTest extends GwtTest {
 		projectContext = ProjectTestUtils.createProjectContext(scope, ReleaseTestUtils.createRelease(""));
 		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
+	}
+
+	@After
+	public void cleanUp() throws Exception {
+		getBrowserSimulator().fireLoopEnd();
 	}
 
 	private Scope getScope() {

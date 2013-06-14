@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.services.applicationState;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -53,12 +54,18 @@ public class ClientApplicationStateServiceTest extends GwtTest {
 		service = new ClientApplicationStateServiceImpl(eventBus, contextProviderService, clientStorageService, alertingService, messages);
 	}
 
+	@After
+	public void cleanUp() throws Exception {
+		getBrowserSimulator().fireLoopEnd();
+	}
+
 	@Test
 	public void shouldSelectPreviouslySelectedScopeWhenTheGivenScopeIdIsNotNull() throws Exception {
 		final Scope storedSelectedScope = createScope();
 		setAsLoadedSelectedScope(storedSelectedScope);
 
 		service.restore(null);
+		getBrowserSimulator().fireLoopEnd();
 		assertFiredScopeSelectionEventFor(storedSelectedScope);
 	}
 
@@ -69,6 +76,7 @@ public class ClientApplicationStateServiceTest extends GwtTest {
 		final Scope givenScope = createScope();
 
 		service.restore(givenScope.getId());
+		getBrowserSimulator().fireLoopEnd();
 		assertFiredScopeSelectionEventFor(givenScope);
 	}
 

@@ -57,7 +57,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jacocoagent.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.1.jar"/>
-	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-runtime-3.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/fest-assert-core-2.0M7.jar"/>
 	<classpathentry kind="lib" path="lib/fest-util-1.2.2.jar"/>
@@ -73,5 +72,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-server-1.1.0.RC1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-runtime-1.1.0.RC1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-client-1.1.0.RC1.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
