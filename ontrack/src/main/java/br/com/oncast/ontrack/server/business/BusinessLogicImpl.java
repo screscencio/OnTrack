@@ -57,8 +57,6 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEven
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
-import com.newrelic.api.agent.Trace;
-
 class BusinessLogicImpl implements BusinessLogic {
 
 	private static final int PROJECT_SNAPSHOT_UPDATE_ACTION_LIMIT = 50;
@@ -92,7 +90,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		this.postProcessmentsControler = postProcessmentsControler;
 	}
 
-	@Trace
 	@Override
 	@PostProcessActions
 	public long handleIncomingActionSyncRequest(final ModelActionSyncRequest actionSyncRequest) throws UnableToHandleActionException,
@@ -238,7 +235,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	@Trace
 	@Override
 	public synchronized ProjectRevision loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
 			ProjectNotFoundException {
@@ -377,7 +373,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		handleIncomingActionSyncRequest(new ModelActionSyncRequest(fileRepresentation.getProjectId(), actionList));
 	}
 
-	@Trace
 	@Override
 	@PostProcessActions
 	public void loadProjectForMigration(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {

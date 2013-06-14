@@ -26,8 +26,6 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
-import com.newrelic.api.agent.Trace;
-
 public class XMLImporter {
 
 	private final PersistenceService persistenceService;
@@ -57,7 +55,6 @@ public class XMLImporter {
 		return this;
 	}
 
-	@Trace
 	public XMLImporter persistObjects() {
 		if (ontrackXML == null) throw new RuntimeException("You must use loadXML method to load xml before use this method.");
 

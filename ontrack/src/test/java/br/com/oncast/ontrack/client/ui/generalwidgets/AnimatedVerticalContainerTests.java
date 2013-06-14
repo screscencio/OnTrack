@@ -261,6 +261,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		populateContainer();
 		container.remove(3);
 		container.remove(1);
+		getBrowserSimulator().fireLoopEnd();
 		Thread.sleep(SLEEP_DELAY);
 
 		final ComplexPanel panel = container.container;
