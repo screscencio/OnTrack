@@ -51,9 +51,12 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -63,7 +66,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidget<Scope>, ActionExecutionListener {
+public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidget<Scope>, ActionExecutionListener, HasClickHandlers {
 
 	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 
@@ -460,5 +463,10 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 			final ActionExecutionContext executionContext,
 			final boolean isUserAction) {
 		if (action instanceof ScopeAction && action.getReferenceId().equals(scope.getId())) update();
+	}
+
+	@Override
+	public HandlerRegistration addClickHandler(final ClickHandler handler) {
+		return panel.addClickHandler(handler);
 	}
 }

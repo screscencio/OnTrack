@@ -1,15 +1,19 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ChecklistsContainerWidget;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ChecklistsContainerWidget.EditionListener;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CheckListWidget extends Composite {
@@ -21,6 +25,9 @@ public class CheckListWidget extends Composite {
 	@UiField
 	protected ChecklistsContainerWidget container;
 
+	@UiField
+	protected DeckPanel checklistDeck;
+
 	private final Release release;
 	private Scope scope;
 
@@ -28,10 +35,19 @@ public class CheckListWidget extends Composite {
 		this.release = release;
 		initWidget(uiBinder.createAndBindUi(this));
 		container.setSubjectId(release.getId());
-		try {
-			update();
-		}
-		catch (final DescriptionNotFoundException e) {}
+		update();
+	}
+
+	@UiHandler("addChecklistLabel")
+	void onAddChecklistLabelClick(final ClickEvent e) {
+		checklistDeck.showWidget(1);
+		container.enterEditMode(new EditionListener() {
+			@Override
+			public void onEditionEnd(final boolean editionSubmitted) {
+				if (editionSubmitted) return;
+				checklistDeck.showWidget(0);
+			}
+		});
 	}
 
 	protected String getCurrentTitle() {
@@ -54,8 +70,13 @@ public class CheckListWidget extends Composite {
 		catch (final DescriptionNotFoundException e) {}
 	}
 
-	private void update() throws DescriptionNotFoundException {
+	private void update() {
 		container.setSubjectId(getCurrentId());
+		checklistDeck.showWidget(hasChecklists() ? 1 : 0);
+	}
+
+	private boolean hasChecklists() {
+		return container.getChecklistCount() > 0;
 	}
 
 }

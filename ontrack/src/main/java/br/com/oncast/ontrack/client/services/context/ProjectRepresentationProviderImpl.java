@@ -71,7 +71,6 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 		});
 
 		serverPushClientService.registerServerEventHandler(ProjectAddedEvent.class, new ProjectAddedEventHandler() {
-
 			@Override
 			public void onEvent(final ProjectAddedEvent event) {
 				final ProjectRepresentation projectRepresentation = event.getProjectRepresentation();

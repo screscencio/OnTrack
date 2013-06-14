@@ -10,11 +10,11 @@
 			position: relative;
 			display: inline-block !important;
 			vertical-align: top;
+			cursor: default;
 		}
 	
 		.image {
 			margin: 2px;
-			cursor: move;
 		}
 	
 		@sprite .removeBtn {
@@ -24,6 +24,7 @@
 			right: 1px;
 			height: 9px;
 			width: 9px;
+			cursor: pointer;
 		}
 		
 	</ui:style>
@@ -32,7 +33,7 @@
 		<g:FocusPanel ui:field="container">
 			<u:UserWidget ui:field="userWidget" styleName="{style.image}" />
 		</g:FocusPanel>
-		<g:FocusPanel ui:field="removeBtn" styleName="{style.removeBtn}" />
+		<g:FocusPanel ui:field="removeBtn" styleName="{style.removeBtn}"/>
 	</g:HTMLPanel>
 	
 </ui:UiBinder> 

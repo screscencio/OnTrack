@@ -1,18 +1,47 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets">
+	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+	
 	<ui:style src="../style/default.css">
 		
-		.root {
-			padding: 5px;
+		.noChecklistsLabel, .addChecklistLabel {
+			text-align: center;
+			color: #666;
+		}
+
+		.noChecklistsLabel {
+			font-size: 15pt;
+			padding: 15px;
 		}
 		
-	</ui:style>
+		.addChecklistLabel {
+			font-weight: bold;
+			cursor: pointer;
+		}
+		
+		.addChecklistLabel:HOVER {
+			text-decoration: underline;
+		}
+		
+		.checklistsContainer {
+			padding: 5px;
+		}
 
-	<g:SimplePanel>
-		<g:HTMLPanel styleName="{style.root}">
-			<misc:ChecklistsContainerWidget ui:field="container" />
-		</g:HTMLPanel>
-	</g:SimplePanel>
+	</ui:style>
+	
+	<g:DeckPanel ui:field="checklistDeck">
+	    <g:HTMLPanel>
+		    <g:Label styleName="{style.noChecklistsLabel}">
+		        <ui:msg description="no checklists yet">There are no checklists at the moment</ui:msg>
+		    </g:Label>
+			<g:Label ui:field="addChecklistLabel" styleName="{style.addChecklistLabel}">
+		        <ui:msg description="click here to add one">Click here to add one</ui:msg>
+			</g:Label>				        
+	    </g:HTMLPanel>
+		<misc:ChecklistsContainerWidget ui:field="container" styleName="{style.checklistsContainer}"/>
+	</g:DeckPanel>
 </ui:UiBinder> 

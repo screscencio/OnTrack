@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
+import java.util.HashSet;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -52,6 +54,8 @@ public class ChecklistsContainerWidget extends Composite {
 
 	private ActionExecutionListener actionExecutionListener;
 
+	final Set<EditionListener> editionListeners = new HashSet<EditionListener>();
+
 	private boolean justCreatedAnChecklist = false;
 
 	@UiFactory
@@ -75,7 +79,7 @@ public class ChecklistsContainerWidget extends Composite {
 
 	@Override
 	protected void onLoad() {
-		hideNewChecklistTitle();
+		hideNewChecklistTitle(false);
 		getProvider().actionExecution().addActionExecutionListener(getActionExecutionListener());
 	}
 
@@ -89,8 +93,7 @@ public class ChecklistsContainerWidget extends Composite {
 		e.stopPropagation();
 
 		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER) createChecklist();
-		else if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hideNewChecklistTitle();
-
+		else if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hideNewChecklistTitle(false);
 	}
 
 	@UiHandler("addButton")
@@ -99,6 +102,12 @@ public class ChecklistsContainerWidget extends Composite {
 	}
 
 	public void enterEditMode() {
+		addContainer.setVisible(true);
+		newChecklistTitle.setFocus(true);
+	}
+
+	public void enterEditMode(final EditionListener listener) {
+		editionListeners.add(listener);
 		addContainer.setVisible(true);
 		newChecklistTitle.setFocus(true);
 	}
@@ -127,11 +136,15 @@ public class ChecklistsContainerWidget extends Composite {
 		}
 
 		getProvider().checklists().addChecklist(subjectId, checklistTitle);
-		hideNewChecklistTitle();
+		hideNewChecklistTitle(true);
 		newChecklistTitle.setText("");
 	}
 
-	private void hideNewChecklistTitle() {
+	private void hideNewChecklistTitle(final boolean editionSubmitted) {
+		for (final EditionListener listener : new HashSet<EditionListener>(editionListeners)) {
+			listener.onEditionEnd(editionSubmitted);
+			editionListeners.remove(listener);
+		}
 		addContainer.setVisible(false);
 	}
 
@@ -146,6 +159,14 @@ public class ChecklistsContainerWidget extends Composite {
 
 	private ClientServices getProvider() {
 		return ClientServices.get();
+	}
+
+	public int getChecklistCount() {
+		return checklists.getWidgetCount();
+	}
+
+	public interface EditionListener {
+		public void onEditionEnd(boolean editionSubmitted);
 	}
 
 }

@@ -64,6 +64,7 @@ public class ScopeUpdateAction implements ScopeAction {
 
 		final String oldDescription = selectedScope.getDescription();
 		selectedScope.setDescription(newDescription);
+		if (selectedScope.isRoot()) context.getProjectRepresentation().setName(newDescription);
 
 		return new ScopeUpdateAction(referenceId, oldDescription, subActionRollbackList);
 	}

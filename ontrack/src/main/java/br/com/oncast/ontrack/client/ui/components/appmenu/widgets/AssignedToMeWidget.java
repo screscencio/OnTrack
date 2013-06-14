@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
@@ -41,7 +42,7 @@ public class AssignedToMeWidget extends Composite implements PopupAware, HasClos
 	DeckPanel deck;
 
 	@UiField(provided = true)
-	ModelWidgetContainer<Scope, AssignedScopeWidget> assignedScopesContainer;
+	ModelWidgetContainer<Scope, ScopeCardWidget> assignedScopesContainer;
 
 	public AssignedToMeWidget() {
 		assignedScopesContainer = createAssignedScopesContainer();
@@ -49,11 +50,11 @@ public class AssignedToMeWidget extends Composite implements PopupAware, HasClos
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	private ModelWidgetContainer<Scope, AssignedScopeWidget> createAssignedScopesContainer() {
-		return new ModelWidgetContainer<Scope, AssignedScopeWidget>(new ModelWidgetFactory<Scope, AssignedScopeWidget>() {
+	private ModelWidgetContainer<Scope, ScopeCardWidget> createAssignedScopesContainer() {
+		return new ModelWidgetContainer<Scope, ScopeCardWidget>(new ModelWidgetFactory<Scope, ScopeCardWidget>() {
 			@Override
-			public AssignedScopeWidget createWidget(final Scope modelBean) {
-				final AssignedScopeWidget assignedScopeWidget = new AssignedScopeWidget(modelBean);
+			public ScopeCardWidget createWidget(final Scope modelBean) {
+				final ScopeCardWidget assignedScopeWidget = new ScopeCardWidget(modelBean);
 				assignedScopeWidget.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(final ClickEvent event) {

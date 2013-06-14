@@ -1,6 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
 	<ui:image field="avatar" src="default-avatar.png"/>
 	<ui:image field="invalidImg" src="banned.png"/>
@@ -9,6 +13,7 @@
 	
 		.container {
 			position: relative;
+			cursor: pointer;
 		}
 		
 		.activeIndicator {
@@ -25,8 +30,6 @@
 			left: 0px;
 			right: 0px;
 			bottom: 0px;
-			
-			cursor: pointer;
 		}
 	
 		.userImage {
@@ -96,7 +99,9 @@
 			</g:DeckPanel>
 			
 			<g:FocusPanel ui:field="activeIndicator" styleName="{style.activeIndicator}"/>
-			<g:FocusPanel ui:field="mask" styleName="{style.mask}"/>
+			<g:FocusPanel ui:field="mask" styleName="{style.mask}" title="Click to see or edit user informations">
+				<ui:attribute name="title" description="open userCard tooltip"/>
+			</g:FocusPanel>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 	
