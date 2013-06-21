@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 
-public class BasicAutheticator {
+public class BasicRequestAuthenticator {
 
 	public static void authenticate(final HttpServletRequest request) {
 		final String auth = request.getHeader("Authorization");

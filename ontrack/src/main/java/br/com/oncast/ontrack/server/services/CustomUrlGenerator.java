@@ -11,9 +11,13 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
  * Until a custom implementation of the history mapper is made, this class duplicates the default behavior.
  */
 public class CustomUrlGenerator {
+
+	public static String getApplicationUrl() {
+		return Configurations.getInstance().getApplicationBaseUrl();
+	}
+
 	public static String forProject(final ProjectRepresentation project) {
-		final String string = getAnchorForProject(project);
-		return Configurations.getInstance().getApplicationBaseUrl() + string;
+		return getApplicationUrl() + getAnchorForProject(project);
 	}
 
 	private static String getAnchorForProject(final ProjectRepresentation project) {

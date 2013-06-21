@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -40,6 +41,9 @@ public class AuthenticationManagerTest {
 
 	@Mock
 	private Password passwordMock;
+
+	@Mock
+	private MailFactory mailFactory;
 
 	private List<Password> userPasswords;
 
@@ -61,7 +65,7 @@ public class AuthenticationManagerTest {
 		when(requestMock.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME)).thenReturn("fakeClientId");
 
 		sessionManager.configureCurrentHttpSession(requestMock);
-		authenticationManager = new AuthenticationManager(persistenceServiceMock, sessionManager);
+		authenticationManager = new AuthenticationManager(persistenceServiceMock, sessionManager, mailFactory);
 
 		userPasswords = new ArrayList<Password>();
 		userPasswords.add(passwordMock);

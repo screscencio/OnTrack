@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import br.com.oncast.ontrack.server.services.email.PasswordResetMailFactory;
+import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -30,13 +30,17 @@ public class AuthenticationManager {
 	private static final String DEFAULT_NEW_USER_PASSWORD = "";
 
 	private final PersistenceService persistenceService;
+
 	private final SessionManager sessionManager;
+
+	private final MailFactory mailFactory;
 
 	private final Set<AuthenticationListener> authenticationListeners = new HashSet<AuthenticationListener>();
 
-	public AuthenticationManager(final PersistenceService persistenceService, final SessionManager sessionManager) {
+	public AuthenticationManager(final PersistenceService persistenceService, final SessionManager sessionManager, final MailFactory mailFactory) {
 		this.persistenceService = persistenceService;
 		this.sessionManager = sessionManager;
+		this.mailFactory = mailFactory;
 	}
 
 	public User authenticate(final String email, final String password) throws InvalidAuthenticationCredentialsException {
@@ -233,7 +237,7 @@ public class AuthenticationManager {
 			final User user = findUserByEmail(username);
 			final String newPassword = PasswordHash.generatePassword();
 			createPasswordForUser(user, newPassword);
-			new PasswordResetMailFactory().createMail().send(username, newPassword);
+			mailFactory.createPasswordResetMail().send(username, newPassword);
 		}
 		catch (final UserNotFoundException e) {
 			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";

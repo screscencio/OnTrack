@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.services.authentication.BasicAutheticator;
+import br.com.oncast.ontrack.server.services.authentication.BasicRequestAuthenticator;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 
@@ -31,31 +31,31 @@ public class BasicAuthenticatorTest {
 	@Test(expected = AuthenticationException.class)
 	public void requestWithoutAuthenticationInformationShouldThrowException() {
 		when(request.getHeader(anyString())).thenReturn(null);
-		BasicAutheticator.authenticate(request);
+		BasicRequestAuthenticator.authenticate(request);
 	}
 
 	@Test(expected = AuthenticationException.class)
 	public void requestWithoutPasswordShouldThrowException() {
 		doRequestWithCredentials("user");
-		BasicAutheticator.authenticate(request);
+		BasicRequestAuthenticator.authenticate(request);
 	}
 
 	@Test(expected = AuthenticationException.class)
 	public void shouldFailAuthenticationWhenInformedUserIsNotRegistered() {
 		doRequestWithCredentials("unregistered" + ":" + PASSWORD);
-		BasicAutheticator.authenticate(request);
+		BasicRequestAuthenticator.authenticate(request);
 	}
 
 	@Test(expected = AuthenticationException.class)
 	public void shouldFailAuthenticationWhenInformedPasswordIsNotCorrect() {
 		when(request.getHeader(anyString())).thenReturn(mountBasicCredentials(USER + ":" + "incorrect"));
-		BasicAutheticator.authenticate(request);
+		BasicRequestAuthenticator.authenticate(request);
 	}
 
 	@Test
 	public void authenticationShouldPassForValidCredentials() {
 		doRequestWithCredentials(USER + ":" + PASSWORD);
-		BasicAutheticator.authenticate(request);
+		BasicRequestAuthenticator.authenticate(request);
 	}
 
 	private void doRequestWithCredentials(final String credentials) {

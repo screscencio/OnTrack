@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.PasswordHash;
-import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
+import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -33,16 +33,16 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	private final AuthenticationManager authenticationManager;
 	private final PersistenceService persistenceService;
 	private final MulticastService multicastService;
-	private final ProjectAuthorizationMailFactory projectAuthorizationMailFactory;
+	private final MailFactory mailFactory;
 	private final ClientManager clientManager;
 
 	public AuthorizationManagerImpl(final AuthenticationManager authenticationManager, final PersistenceService persistenceService,
-			final MulticastService multicastService, final ProjectAuthorizationMailFactory projectAuthorizationMailFactory, final ClientManager clientManager) {
+			final MulticastService multicastService, final MailFactory mailFactory, final ClientManager clientManager) {
 
 		this.authenticationManager = authenticationManager;
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
-		this.projectAuthorizationMailFactory = projectAuthorizationMailFactory;
+		this.mailFactory = mailFactory;
 		this.clientManager = clientManager;
 	}
 
@@ -137,7 +137,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	private void sendMailMessage(final UUID projectId, final String userEmail, final String generatedPassword, final User authenticatedUser) {
 		try {
-			projectAuthorizationMailFactory.createMail()
+			mailFactory.createProjectAuthorizationMail()
 					.currentUser(authenticatedUser == null ? DefaultAuthenticationCredentials.USER_EMAIL : authenticatedUser.getEmail())
 					.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail, generatedPassword);
 		}
@@ -209,4 +209,5 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			logAndThrowUnableToRemoveAuthorizationException("Remove authorization failed: user or project not found", e);
 		}
 	}
+
 }

@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
-import br.com.oncast.ontrack.server.services.authentication.BasicAutheticator;
+import br.com.oncast.ontrack.server.services.authentication.BasicRequestAuthenticator;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLUtils;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -37,7 +37,7 @@ public class XMLImporterServlet extends HttpServlet {
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		try {
-			BasicAutheticator.authenticate(request);
+			BasicRequestAuthenticator.authenticate(request);
 			doReply(request, response);
 		}
 		catch (final Exception e) {

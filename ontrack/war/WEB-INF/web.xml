@@ -18,6 +18,14 @@
 		<filter-name>safareCacheWorkaroundFilter</filter-name>
 		<url-pattern>/application/*</url-pattern>
 	</filter-mapping>
+	<filter>
+		<filter-name>apiAuthenticationFilter</filter-name>
+		<filter-class>br.com.oncast.ontrack.server.services.api.authentication.ApiAuthenticationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>apiAuthenticationFilter</filter-name>
+		<url-pattern>/application/api/*</url-pattern>
+	</filter-mapping>
 
 	<!-- LISTENERS -->
 	<!-- ApplicationInitializationService -->
@@ -102,6 +110,23 @@
 		<servlet-name>fileDownloadServlet</servlet-name>
 		<url-pattern>/application/file/download</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Jersey REST servlet configurations -->
+	<servlet>
+		<servlet-name>Jersey REST Service</servlet-name>
+	<servlet-class>
+		org.glassfish.jersey.servlet.ServletContainer
+	</servlet-class>
+		<init-param>
+			<param-name>org.glassfish.jersey.config.property.packages</param-name>
+			<param-value>br.com.oncast.ontrack.server.services.api</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>     	
 	
 	<!-- SESSION CONFIGURATION -->
 	<session-config>

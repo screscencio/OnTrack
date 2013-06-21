@@ -5,8 +5,7 @@ import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProc
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManagerImpl;
-import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
-import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
+import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporterService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporterService;
 import br.com.oncast.ontrack.server.services.metrics.ServerMetricsService;
@@ -47,8 +46,7 @@ public class ServerServiceProvider {
 	private PersistenceService persistenceService;
 	private ActionPostProcessingService actionPostProcessingService;
 
-	private ProjectAuthorizationMailFactory projectAuthorizationMailFactory;
-	private FeedbackMailFactory userQuotaRequestMailFactory;
+	private MailFactory mailFactory;
 
 	private StorageService storageService;
 
@@ -72,7 +70,7 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
 			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getMulticastService(),
-					getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getFeedbackMailFactory(),
+					getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getMailFactory(),
 					getSyncronizationService(), getActionPostProcessmentsInitializer());
 		}
 	}
@@ -82,7 +80,7 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (authorizationManager != null) return authorizationManager;
 			return authorizationManager = new AuthorizationManagerImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(),
-					getProjectAuthorizationMailFactory(), getClientManagerService());
+					getMailFactory(), getClientManagerService());
 		}
 	}
 
@@ -90,7 +88,7 @@ public class ServerServiceProvider {
 		if (authenticationManager != null) return authenticationManager;
 		synchronized (this) {
 			if (authenticationManager != null) return authenticationManager;
-			return authenticationManager = new AuthenticationManager(getPersistenceService(), getSessionManager());
+			return authenticationManager = new AuthenticationManager(getPersistenceService(), getSessionManager(), getMailFactory());
 		}
 	}
 
@@ -150,19 +148,11 @@ public class ServerServiceProvider {
 		}
 	}
 
-	public ProjectAuthorizationMailFactory getProjectAuthorizationMailFactory() {
-		if (projectAuthorizationMailFactory != null) return projectAuthorizationMailFactory;
+	public MailFactory getMailFactory() {
+		if (mailFactory != null) return mailFactory;
 		synchronized (this) {
-			if (projectAuthorizationMailFactory != null) return projectAuthorizationMailFactory;
-			return projectAuthorizationMailFactory = new ProjectAuthorizationMailFactory();
-		}
-	}
-
-	private FeedbackMailFactory getFeedbackMailFactory() {
-		if (userQuotaRequestMailFactory != null) return userQuotaRequestMailFactory;
-		synchronized (this) {
-			if (userQuotaRequestMailFactory != null) return userQuotaRequestMailFactory;
-			return userQuotaRequestMailFactory = new FeedbackMailFactory();
+			if (mailFactory != null) return mailFactory;
+			return mailFactory = new MailFactory();
 		}
 	}
 

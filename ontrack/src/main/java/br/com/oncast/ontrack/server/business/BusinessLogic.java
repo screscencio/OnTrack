@@ -52,4 +52,6 @@ public interface BusinessLogic {
 	public abstract ModelActionSyncEventRequestResponse loadProjectActions(UUID projectId, long lastSyncId) throws AuthorizationException,
 			UnableToLoadProjectException;
 
+	public abstract UUID createUser(String email);
+
 }

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
-import br.com.oncast.ontrack.server.services.authentication.BasicAutheticator;
+import br.com.oncast.ontrack.server.services.authentication.BasicRequestAuthenticator;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -26,7 +26,7 @@ public class XMLExporterServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		try {
-			BasicAutheticator.authenticate(request);
+			BasicRequestAuthenticator.authenticate(request);
 			if (request.getParameter(PARAMETER_LIST_PROJECTS) != null) doReplyProjectList(response);
 			else doReply(request, response);
 		}

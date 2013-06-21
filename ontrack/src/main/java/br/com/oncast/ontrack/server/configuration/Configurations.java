@@ -30,7 +30,6 @@ public class Configurations {
 		return properties.getProperty("email.password");
 	}
 
-	// TODO change it to GWT.getModuleBaseURL() or GWT.getHostPageBaseURL();
 	public String getApplicationBaseUrl() {
 		return properties.getProperty("application.base_url");
 	}

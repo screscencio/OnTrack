@@ -38,7 +38,7 @@ import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProc
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
-import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
+import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -191,7 +191,7 @@ public class BusinessLogicTest {
 		business = new BusinessLogicImpl(persistence, multicast, clientManager, authenticationManager,
 				authorizationManager,
 				sessionManager,
-				mock(FeedbackMailFactory.class), new SyncronizationService(), postProcessmentsInitializer);
+				mock(MailFactory.class), new SyncronizationService(), postProcessmentsInitializer);
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(UUID.INVALID_UUID));

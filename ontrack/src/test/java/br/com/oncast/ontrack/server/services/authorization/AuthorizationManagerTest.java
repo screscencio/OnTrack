@@ -27,7 +27,7 @@ import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMail;
-import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
+import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -52,7 +52,7 @@ public class AuthorizationManagerTest {
 
 	private PersistenceService persistence;
 	private AuthenticationManager authenticationManager;
-	private ProjectAuthorizationMailFactory mailFactory;
+	private MailFactory mailFactory;
 	private MulticastService multicastService;
 	private User authenticatedUser;
 	private User admin;
@@ -74,7 +74,7 @@ public class AuthorizationManagerTest {
 	private void configureMockDefaultBehavior() throws Exception {
 		authenticationManager = mock(AuthenticationManager.class);
 		persistence = mock(PersistenceService.class);
-		mailFactory = mock(ProjectAuthorizationMailFactory.class);
+		mailFactory = mock(MailFactory.class);
 		multicastService = mock(MulticastService.class);
 
 		admin = persist(UserTestUtils.getAdmin());
@@ -151,7 +151,7 @@ public class AuthorizationManagerTest {
 		final ProjectAuthorizationMail mockMail = mock(ProjectAuthorizationMail.class);
 		when(mockMail.setProject(Mockito.<ProjectRepresentation> anyObject())).thenReturn(mockMail);
 		when(mockMail.currentUser(Mockito.anyString())).thenReturn(mockMail);
-		when(mailFactory.createMail()).thenReturn(mockMail);
+		when(mailFactory.createProjectAuthorizationMail()).thenReturn(mockMail);
 		final User requestUser = UserTestUtils.createUser(mail);
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(requestUser);
 		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation());
@@ -168,7 +168,7 @@ public class AuthorizationManagerTest {
 		final ProjectAuthorizationMail mockMail = mock(ProjectAuthorizationMail.class);
 		when(mockMail.setProject(Mockito.any(ProjectRepresentation.class))).thenReturn(mockMail);
 		when(mockMail.currentUser(Mockito.anyString())).thenReturn(mockMail);
-		when(mailFactory.createMail()).thenReturn(mockMail);
+		when(mailFactory.createProjectAuthorizationMail()).thenReturn(mockMail);
 		final User requestUser = UserTestUtils.createUser(mail);
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(requestUser);
 		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation(projectId));

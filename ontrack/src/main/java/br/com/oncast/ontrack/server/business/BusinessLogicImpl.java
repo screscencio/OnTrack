@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.business;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -15,8 +16,9 @@ import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.Don
 import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.PostProcessActions;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.server.services.authentication.PasswordHash;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
-import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
+import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -61,6 +63,8 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	private static final int PROJECT_SNAPSHOT_UPDATE_ACTION_LIMIT = 50;
 
+	private static final int DEFAULT_QUOTA = 1000;
+
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
 	private final PersistenceService persistenceService;
@@ -69,7 +73,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final AuthenticationManager authenticationManager;
 	private final SessionManager sessionManager;
 	private final AuthorizationManager authorizationManager;
-	private final FeedbackMailFactory feedbackMailFactory;
+	private final MailFactory mailFactory;
 
 	private final SyncronizationService syncronizationService;
 	private final ActionPostProcessmentsInitializer postProcessmentsControler;
@@ -77,7 +81,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	protected BusinessLogicImpl(final PersistenceService persistenceService,
 			final MulticastService multicastService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager,
-			final FeedbackMailFactory userQuotaRequestMailFactory, final SyncronizationService syncronizationService,
+			final MailFactory mailFactory, final SyncronizationService syncronizationService,
 			final ActionPostProcessmentsInitializer postProcessmentsControler) {
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
@@ -85,7 +89,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		this.authenticationManager = authenticationManager;
 		this.authorizationManager = authorizationManager;
 		this.sessionManager = sessionManager;
-		this.feedbackMailFactory = userQuotaRequestMailFactory;
+		this.mailFactory = mailFactory;
 		this.syncronizationService = syncronizationService;
 		this.postProcessmentsControler = postProcessmentsControler;
 	}
@@ -352,14 +356,14 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	@Override
 	public void sendProjectCreationQuotaRequestEmail() {
-		feedbackMailFactory.createUserQuotaRequestMail()
+		mailFactory.createUserQuotaRequestMail()
 				.currentUser(authenticationManager.getAuthenticatedUser().getEmail())
 				.send();
 	}
 
 	@Override
 	public void sendFeedbackEmail(final String feedbackMessage) {
-		feedbackMailFactory.createSendFeedbackMail()
+		mailFactory.createSendFeedbackMail()
 				.currentUser(authenticationManager.getAuthenticatedUser().getEmail())
 				.feedbackMessage(feedbackMessage)
 				.send();
@@ -417,4 +421,28 @@ class BusinessLogicImpl implements BusinessLogic {
 			throw new UnableToLoadProjectException(errorMessage);
 		}
 	}
+
+	@Override
+	public UUID createUser(final String userEmail) {
+		try {
+			final String generatedPassword = PasswordHash.generatePassword();
+			final User user = authenticationManager.createNewUser(userEmail, generatedPassword, DEFAULT_QUOTA, DEFAULT_QUOTA);
+			LOGGER.debug("Created New User '" + userEmail + "'.");
+
+			try {
+				mailFactory.createWelcomeMail().sendTo(userEmail, generatedPassword);
+			}
+			catch (final Exception e) {
+				LOGGER.error("It was not possible to send e-mail.", e);
+			}
+
+			return user.getId();
+		}
+		catch (final NoSuchAlgorithmException e) {
+			final String message = "It was not possible to create new user '" + userEmail + "': Password generation went wrong.";
+			LOGGER.error(message);
+			throw new RuntimeException(message, e);
+		}
+	}
+
 }
