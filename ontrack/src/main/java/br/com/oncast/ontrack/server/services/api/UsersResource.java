@@ -13,10 +13,28 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public class UsersResource {
 
 	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public String greet() {
+		System.out.println("greet()");
+		return "Hello";
+	}
+
+	@GET
+	@Path("hello")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String hello() {
+		System.out.println("hello()");
+		return "Hello";
+	}
+
+	@GET
 	@Path("create")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public UUID createUser(@QueryParam("email") final String email) {
-		return ServerServiceProvider.getInstance().getBusinessLogic().createUser(email);
+		System.out.println("createUser(" + email + ")");
+		final UUID createdUserId = ServerServiceProvider.getInstance().getBusinessLogic().createUser(email);
+		System.out.println(createdUserId);
+		return createdUserId;
 	}
 
 }

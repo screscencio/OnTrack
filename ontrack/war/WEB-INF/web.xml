@@ -113,20 +113,20 @@
 	
 	<!-- Jersey REST servlet configurations -->
 	<servlet>
-		<servlet-name>Jersey REST Service</servlet-name>
-	<servlet-class>
-		org.glassfish.jersey.servlet.ServletContainer
-	</servlet-class>
+		<servlet-name>JerseyRestService</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>
+<!-- 			<param-name>javax.ws.rs.Application</param-name> -->
+<!--             <param-value>br.com.oncast.ontrack.server.services.api.OnTrackApiResourceConfig</param-value> -->
 			<param-name>org.glassfish.jersey.config.property.packages</param-name>
 			<param-value>br.com.oncast.ontrack.server.services.api</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>Jersey REST Service</servlet-name>
-		<url-pattern>/api/*</url-pattern>
-	</servlet-mapping>     	
+		<servlet-name>JerseyRestService</servlet-name>
+		<url-pattern>/application/api/*</url-pattern>
+	</servlet-mapping>
 	
 	<!-- SESSION CONFIGURATION -->
 	<session-config>

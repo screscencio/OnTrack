@@ -82,11 +82,16 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javax.annotation-api-1.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javax.inject-1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javax.inject-2.1.88.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/javax.ws.rs-api-2.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/javax.ws.rs-api-2.0.jar" sourcepath="/home/guih/.m2/repository/javax/ws/rs/javax.ws.rs-api/2.0/javax.ws.rs-api-2.0-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-client-2.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-common-2.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-server-2.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/osgi-resource-locator-1.0.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-container-servlet-core-2.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-media-moxy-2.0.jar" sourcepath="/home/guih/.m2/repository/org/glassfish/jersey/media/jersey-media-moxy/2.0/jersey-media-moxy-2.0-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.eclipse.persistence.antlr-2.3.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.eclipse.persistence.asm-2.5.0-M13.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.eclipse.persistence.core-2.5.0-M13.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.eclipse.persistence.moxy-2.5.0-M13.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

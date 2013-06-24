@@ -2,9 +2,12 @@ package br.com.oncast.ontrack.shared.model.uuid;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.simpleframework.xml.Attribute;
 
 // TODO Test this class
+@XmlRootElement
 public class UUID implements Serializable {
 
 	private static final int CHECK_CHAR_INDEX = 14;

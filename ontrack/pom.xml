@@ -104,6 +104,11 @@
 			<artifactId>jersey-container-servlet-core</artifactId>
 			<version>2.0</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.glassfish.jersey.media</groupId>
+		    <artifactId>jersey-media-moxy</artifactId>
+		    <version>2.0</version>
+		</dependency>
 		            
 		<!-- Communication Related Dependencies. -->
        	<dependency>
