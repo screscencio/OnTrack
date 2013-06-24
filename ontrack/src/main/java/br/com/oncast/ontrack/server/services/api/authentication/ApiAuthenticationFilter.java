@@ -17,6 +17,7 @@ public class ApiAuthenticationFilter implements Filter {
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 		BasicRequestAuthenticator.authenticate((HttpServletRequest) request);
+		chain.doFilter(request, response);
 	}
 
 	@Override

@@ -12,7 +12,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class OnTrackApiResourceConfig extends ResourceConfig {
 
 	public OnTrackApiResourceConfig() {
-		System.out.println("Start");
 		packages("br.com.oncast.ontrack.server.services.api");
 		registerInstances(new JsonMoxyConfigurationContextResolver());
 	}
