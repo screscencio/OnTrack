@@ -89,7 +89,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			}
 			catch (final UserNotFoundException e) {
 				generatedPassword = PasswordHash.generatePassword();
-				user = authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0);
+				user = authenticationManager.createNewUser(userEmail, generatedPassword);
 				LOGGER.debug("Created New User '" + userEmail + "'.");
 
 				if (authenticationManager.isUserAuthenticated()) {

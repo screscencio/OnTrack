@@ -29,6 +29,10 @@ public class AuthenticationManager {
 
 	private static final String DEFAULT_NEW_USER_PASSWORD = "";
 
+	private static final int DEFAULT_INVITATION_QUOTA = 30;
+
+	private static final int DEFAULT_CREATION_QUOTA = 5;
+
 	private final PersistenceService persistenceService;
 
 	private final SessionManager sessionManager;
@@ -95,15 +99,15 @@ public class AuthenticationManager {
 		return false;
 	}
 
-	public User createNewUser(final String email, final String password, final int projectInvitationQuota, final int projectCreationQuota) {
-		return createNewUser(new UUID(), email, password, projectInvitationQuota, projectCreationQuota);
+	public User createNewUser(final String email, final String password) {
+		return createNewUser(new UUID(), email, password);
 	}
 
-	public User createNewUser(final UUID id, final String email, final String password, final int projectInvitationQuota, final int projectCreationQuota) {
+	public User createNewUser(final UUID id, final String email, final String password) {
 		final String formattedUserEmail = formatUserEmail(email);
 
 		try {
-			final User user = new User(id, formattedUserEmail, projectInvitationQuota, projectCreationQuota);
+			final User user = new User(id, formattedUserEmail, DEFAULT_CREATION_QUOTA, DEFAULT_INVITATION_QUOTA);
 			final User newUser = persistenceService.persistOrUpdateUser(user);
 			if (password != null && !password.isEmpty()) createPasswordForUser(newUser, password);
 			return newUser;

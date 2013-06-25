@@ -63,8 +63,6 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	private static final int PROJECT_SNAPSHOT_UPDATE_ACTION_LIMIT = 50;
 
-	private static final int DEFAULT_QUOTA = 1000;
-
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
 	private final PersistenceService persistenceService;
@@ -426,7 +424,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	public UUID createUser(final String userEmail) {
 		try {
 			final String generatedPassword = PasswordHash.generatePassword();
-			final User user = authenticationManager.createNewUser(userEmail, generatedPassword, DEFAULT_QUOTA, DEFAULT_QUOTA);
+			final User user = authenticationManager.createNewUser(userEmail, generatedPassword);
 			LOGGER.debug("Created New User '" + userEmail + "'.");
 
 			try {

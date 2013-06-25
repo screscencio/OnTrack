@@ -26,8 +26,8 @@ import org.mockito.Mockito;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
-import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMail;
 import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMail;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -101,12 +101,12 @@ public class AuthorizationManagerTest {
 		final String mail = "inexistent@mail.com";
 
 		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
-		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(UserTestUtils.createUser(mail));
+		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString())).thenReturn(UserTestUtils.createUser(mail));
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false);
 
 		final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-		verify(authenticationManager).createNewUser(captor.capture(), Mockito.anyString(), eq(0), eq(0));
+		verify(authenticationManager).createNewUser(captor.capture(), Mockito.anyString());
 
 		assertEquals(mail, captor.getValue());
 	}
@@ -137,7 +137,7 @@ public class AuthorizationManagerTest {
 
 		final User requestUser = UserTestUtils.createUser(mail);
 		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
-		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(requestUser);
+		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString())).thenReturn(requestUser);
 		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation());
 		authenticatedUser.setProjectInvitationQuota(0);
 
@@ -185,7 +185,7 @@ public class AuthorizationManagerTest {
 		final String mail = "user@mail.com";
 
 		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
-		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(UserTestUtils.createUser(mail));
+		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString())).thenReturn(UserTestUtils.createUser(mail));
 
 		Assert.assertEquals(1, authenticatedUser.getProjectInvitationQuota());
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false);
