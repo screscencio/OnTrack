@@ -12,27 +12,28 @@ import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationExce
 public class BasicRequestAuthenticator {
 
 	public static void authenticate(final HttpServletRequest request) {
+		authenticate(request, DefaultAuthenticationCredentials.USER_EMAIL, DefaultAuthenticationCredentials.USER_PASSWORD);
+	}
+
+	public static void authenticate(final HttpServletRequest request, final String user, final String password) {
 		final String auth = request.getHeader("Authorization");
 		if (auth == null) throw new AuthenticationException();
 
-		checkCredentials(parseCredentials(auth));
+		checkCredentials(parseCredentials(auth), user, password);
 	}
 
-	private static void checkCredentials(final String[] credentials) {
+	private static void checkCredentials(final String[] credentials, final String user, final String password) {
 		if (credentials.length < 2) throw new AuthenticationException("Password not informed.");
 
-		if (!verifyUser(credentials[0]) || !verifyPassword(credentials[1])) throw new AuthenticationException();
+		if (!verify(user, credentials[0]) || !verify(password, credentials[1])) throw new AuthenticationException();
 	}
 
 	private static String[] parseCredentials(final String auth) {
 		return StringUtils.split(new String(Base64.decodeBase64(auth.substring(auth.indexOf(' ')).getBytes()), Charset.forName("UTF-8")), ':');
 	}
 
-	private static boolean verifyUser(final String user) {
-		return user.equals(DefaultAuthenticationCredentials.USER_EMAIL);
+	private static boolean verify(final String expected, final String obtained) {
+		return obtained.equals(expected);
 	}
 
-	private static boolean verifyPassword(final String password) {
-		return password.equals(DefaultAuthenticationCredentials.USER_PASSWORD);
-	}
 }

@@ -22,13 +22,11 @@ public class WelcomeMail {
 
 	public void sendTo(final String userEmail, final String generatedPassword) {
 		try {
-			final String from = invitee == null ? MailConfigurationProvider.getMailUsername()
-					: invitee;
+			final String from = invitee == null ? MailConfigurationProvider.getMailUsername() : invitee;
 			final String mailContent = HtmlMailContent.forNewUserWelcome(userEmail, generatedPassword, from);
 
 			sender.subject(createAuthorizationSubject()).htmlContent(mailContent).sendTo(userEmail);
-		}
-		catch (final MessagingException e) {
+		} catch (final MessagingException e) {
 			throw new RuntimeException("Exception configuring mail service.", e);
 		}
 	}

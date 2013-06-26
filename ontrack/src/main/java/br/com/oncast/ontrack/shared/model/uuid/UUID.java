@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.uuid;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.simpleframework.xml.Attribute;
@@ -32,6 +33,7 @@ public class UUID implements Serializable {
 
 	public static final UUID INVALID_UUID = new UUID("0");
 
+	@XmlElement
 	@Attribute
 	private String id = "";
 

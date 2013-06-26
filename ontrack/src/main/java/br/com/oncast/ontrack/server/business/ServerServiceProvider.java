@@ -8,6 +8,8 @@ import br.com.oncast.ontrack.server.services.authorization.AuthorizationManagerI
 import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporterService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporterService;
+import br.com.oncast.ontrack.server.services.integration.BillingTrackIntegrationService;
+import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.metrics.ServerMetricsService;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
@@ -55,9 +57,12 @@ public class ServerServiceProvider {
 	private SyncronizationService syncronizationService;
 
 	private UsersStatusManager usersStatusManager;
+
 	private UserDataManager userDataManager;
 
 	private ServerMetricsService serverMetricsService;
+
+	private IntegrationService integrationService;
 
 	public static ServerServiceProvider getInstance() {
 		return INSTANCE;
@@ -69,9 +74,8 @@ public class ServerServiceProvider {
 		if (businessLogic != null) return businessLogic;
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
-			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getMulticastService(),
-					getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getMailFactory(),
-					getSyncronizationService(), getActionPostProcessmentsInitializer());
+			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getMulticastService(), getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(),
+					getSessionManager(), getMailFactory(), getSyncronizationService(), getActionPostProcessmentsInitializer());
 		}
 	}
 
@@ -79,8 +83,16 @@ public class ServerServiceProvider {
 		if (authorizationManager != null) return authorizationManager;
 		synchronized (this) {
 			if (authorizationManager != null) return authorizationManager;
-			return authorizationManager = new AuthorizationManagerImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(),
-					getMailFactory(), getClientManagerService());
+			return authorizationManager = new AuthorizationManagerImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(), getMailFactory(), getClientManagerService(),
+					getIntegrationService());
+		}
+	}
+
+	private IntegrationService getIntegrationService() {
+		if (integrationService != null) return integrationService;
+		synchronized (this) {
+			if (integrationService != null) return integrationService;
+			return integrationService = new BillingTrackIntegrationService();
 		}
 	}
 
@@ -176,8 +188,7 @@ public class ServerServiceProvider {
 		if (storageService != null) return storageService;
 		synchronized (this) {
 			if (storageService != null) return storageService;
-			return storageService = new LocalFileSystemStorageService(getAuthenticationManager(), getAuthorizationManager(), getPersistenceService(),
-					getBusinessLogic());
+			return storageService = new LocalFileSystemStorageService(getAuthenticationManager(), getAuthorizationManager(), getPersistenceService(), getBusinessLogic());
 		}
 	}
 
@@ -185,8 +196,7 @@ public class ServerServiceProvider {
 		if (postProcessmentsInitializer != null) return postProcessmentsInitializer;
 		synchronized (this) {
 			if (postProcessmentsInitializer != null) return postProcessmentsInitializer;
-			return postProcessmentsInitializer = new ActionPostProcessmentsInitializer(getActionPostProcessingService(), getPersistenceService(),
-					getMulticastService(), getNotificationServerService());
+			return postProcessmentsInitializer = new ActionPostProcessmentsInitializer(getActionPostProcessingService(), getPersistenceService(), getMulticastService(), getNotificationServerService());
 		}
 	}
 

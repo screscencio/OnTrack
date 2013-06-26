@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.server.configuration.Configurations;
 
 public class MailConfigurationProvider {
 
-	private static Configurations CONFIGURATIONS = Configurations.getInstance();
+	private static Configurations CONFIGURATIONS = Configurations.get();
 
 	static Properties configProperties() {
 		final Properties props = new Properties();

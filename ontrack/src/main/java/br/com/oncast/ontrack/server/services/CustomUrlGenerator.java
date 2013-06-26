@@ -13,7 +13,7 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
 public class CustomUrlGenerator {
 
 	public static String getApplicationUrl() {
-		return Configurations.getInstance().getApplicationBaseUrl();
+		return Configurations.get().getApplicationBaseUrl();
 	}
 
 	public static String forProject(final ProjectRepresentation project) {

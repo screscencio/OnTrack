@@ -29,7 +29,7 @@ public class FileUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(FileUploadServlet.class);
-	private static final String MAX_SIZE_LIMIT = FileUtils.byteCountToDisplaySize(Configurations.getInstance().getMaxFileSizeInBytes());
+	private static final String MAX_SIZE_LIMIT = FileUtils.byteCountToDisplaySize(Configurations.get().getMaxFileSizeInBytes());
 	private StorageService storageService;
 
 	@Override
@@ -78,14 +78,14 @@ public class FileUploadServlet extends HttpServlet {
 
 	private ServletFileUpload getServletFileUpload() {
 		final ServletFileUpload handler = new ServletFileUpload(new DiskFileItemFactory());
-		handler.setFileSizeMax(Configurations.getInstance().getMaxFileSizeInBytes());
+		handler.setFileSizeMax(Configurations.get().getMaxFileSizeInBytes());
 		return handler;
 	}
 
 	private StorageService getStorageService() {
 		if (storageService == null) {
 			storageService = ServerServiceProvider.getInstance().getStorageService()
-					.setBaseDirectory(new File(Configurations.getInstance().getStorageBaseDir()));
+					.setBaseDirectory(new File(Configurations.get().getStorageBaseDir()));
 		}
 		return storageService;
 	}

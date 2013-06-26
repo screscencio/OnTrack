@@ -24,7 +24,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>apiAuthenticationFilter</filter-name>
-		<url-pattern>/application/api/*</url-pattern>
+		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
 
 	<!-- LISTENERS -->
@@ -123,7 +123,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>JerseyRestService</servlet-name>
-		<url-pattern>/application/api/*</url-pattern>
+		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 	
 	<!-- SESSION CONFIGURATION -->

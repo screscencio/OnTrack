@@ -76,11 +76,9 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final SyncronizationService syncronizationService;
 	private final ActionPostProcessmentsInitializer postProcessmentsControler;
 
-	protected BusinessLogicImpl(final PersistenceService persistenceService,
-			final MulticastService multicastService, final ClientManager clientManager,
-			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager,
-			final MailFactory mailFactory, final SyncronizationService syncronizationService,
-			final ActionPostProcessmentsInitializer postProcessmentsControler) {
+	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService multicastService, final ClientManager clientManager,
+			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager, final MailFactory mailFactory,
+			final SyncronizationService syncronizationService, final ActionPostProcessmentsInitializer postProcessmentsControler) {
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
 		this.clientManager = clientManager;
@@ -94,8 +92,7 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	@Override
 	@PostProcessActions
-	public long handleIncomingActionSyncRequest(final ModelActionSyncRequest actionSyncRequest) throws UnableToHandleActionException,
-			AuthorizationException {
+	public long handleIncomingActionSyncRequest(final ModelActionSyncRequest actionSyncRequest) throws UnableToHandleActionException, AuthorizationException {
 		final long initialTime = getCurrentTime();
 		try {
 			final UUID projectId = actionSyncRequest.getProjectId();
@@ -114,16 +111,14 @@ class BusinessLogicImpl implements BusinessLogic {
 				validateIncomingActions(projectId, actionList, actionContext);
 				lastApplyedActionId = persistenceService.persistActions(projectId, actionList, authenticatedUser.getId(), timestamp);
 				modelActionSyncEvent = new ModelActionSyncEvent(projectId, actionList, actionContext, lastApplyedActionId);
-				LOGGER.debug("Handled incoming actions " + PrettyPrinter.getSimpleNamesListString(actionList) + " from user "
-						+ authenticatedUser
-						+ " in "
-						+ getTimeSpent(initialTime) + " ms.");
+				LOGGER.debug("Handled incoming actions " + PrettyPrinter.getSimpleNamesListString(actionList) + " from user " + authenticatedUser + " in " + getTimeSpent(initialTime) + " ms.");
 			}
-			if (actionSyncRequest.shouldReturnToSender()) multicastService.multicastToAllUsersInSpecificProject(modelActionSyncEvent, projectId);
-			else multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(modelActionSyncEvent, projectId);
+			if (actionSyncRequest.shouldReturnToSender())
+				multicastService.multicastToAllUsersInSpecificProject(modelActionSyncEvent, projectId);
+			else
+				multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(modelActionSyncEvent, projectId);
 			return lastApplyedActionId;
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToHandleActionException(errorMessage);
@@ -133,26 +128,22 @@ class BusinessLogicImpl implements BusinessLogic {
 	// TODO Report errors as feedback for development.
 	// TODO Re-think validation strategy as loading the project every time may be a performance bottleneck.
 	@PostProcessActions
-	private void validateIncomingActions(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext)
-			throws UnableToHandleActionException {
+	private void validateIncomingActions(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext) throws UnableToHandleActionException {
 		try {
 			final ProjectRevision projectVersion = loadProject(projectId);
 			final Project project = projectVersion.getProject();
 			final ProjectContext context = new ProjectContext(project);
 			for (final ModelAction action : actionList)
 				ActionExecuter.executeAction(context, actionContext, action);
-		}
-		catch (final UnableToCompleteActionException e) {
+		} catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "Unable to process action. The incoming action is invalid.";
 			LOGGER.error(errorMessage, e);
 			throw new InvalidIncomingAction(errorMessage);
-		}
-		catch (final UnableToLoadProjectException e) {
+		} catch (final UnableToLoadProjectException e) {
 			final String errorMessage = "The server could not handle the incoming action. The action could not be validated because the project could not be loaded.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToHandleActionException(errorMessage);
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			final String errorMessage = "Unable to process action. An unknown problem occured.";
 			LOGGER.error(errorMessage, e);
 			throw new InvalidIncomingAction(errorMessage);
@@ -167,8 +158,7 @@ class BusinessLogicImpl implements BusinessLogic {
 				final User user = persistenceService.retrieveUserById(action.getUserId());
 				final ActionContext actionContext = new ActionContext(user.getId(), action.getTimestamp());
 				ActionExecuter.executeAction(projectContext, actionContext, action.getModelAction());
-			}
-			catch (final Exception e) {
+			} catch (final Exception e) {
 				LOGGER.error("Unable to apply action to project", e);
 				throw new UnableToCompleteActionException(e);
 			}
@@ -178,19 +168,17 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public void removeAuthorization(final UUID userId, final UUID projectId) throws UnableToHandleActionException, UnableToRemoveAuthorizationException,
-			PersistenceException, AuthorizationException {
-		if (userId.equals(DefaultAuthenticationCredentials.USER_ID)) throw new UnableToRemoveAuthorizationException("Cannot remove Admin User");
-
+	public void removeAuthorization(final UUID userId, final UUID projectId) throws UnableToHandleActionException, UnableToRemoveAuthorizationException, PersistenceException, AuthorizationException {
 		handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, Arrays.asList(new ModelAction[] { new TeamRevogueInvitationAction(userId) })));
+
+		if (userId.equals(DefaultAuthenticationCredentials.USER_ID)) return;
 
 		authorizationManager.removeAuthorization(projectId, userId);
 		LOGGER.debug("Removed authorization for user '" + userId + "' from project '" + projectId.toString() + "'");
 	}
 
 	@Override
-	public void authorize(final String userEmail, final UUID projectId, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
-			UnableToHandleActionException,
+	public void authorize(final String userEmail, final UUID projectId, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException, UnableToHandleActionException,
 			AuthorizationException {
 		final UUID userId = authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
 		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toString() + "'");
@@ -203,8 +191,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		LOGGER.debug("Retrieving authorized project list for user '" + userId + "'.");
 		try {
 			return authorizationManager.listAuthorizedProjects(userId);
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			final String errorMessage = "Unable to retrieve the current user project list.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToRetrieveProjectListException(errorMessage);
@@ -213,24 +200,20 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	@Override
 	// TODO make this method transactional.
-	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation, PersistenceException,
-			AuthorizationException {
+	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation, PersistenceException, AuthorizationException {
 
 		LOGGER.debug("Creating new project '" + projectName + "'.");
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 		authorizationManager.validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 
 		try {
-			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(
-					projectName));
+			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(projectName));
 
 			authorize(authenticatedUser.getEmail(), persistedProjectRepresentation.getId(), false);
-			if (!authenticatedUser.getId().equals(DefaultAuthenticationCredentials.USER_ID)) authorizationManager
-					.authorizeAdmin(persistedProjectRepresentation);
+			if (!authenticatedUser.getId().equals(DefaultAuthenticationCredentials.USER_ID)) authorizationManager.authorizeAdmin(persistedProjectRepresentation);
 
 			return persistedProjectRepresentation;
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			final String errorMessage = "Unable to create project '" + projectName + "'.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToCreateProjectRepresentation(errorMessage);
@@ -238,8 +221,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public synchronized ProjectRevision loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
-			ProjectNotFoundException {
+	public synchronized ProjectRevision loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException, ProjectNotFoundException {
 		final long initialTime = getCurrentTime();
 
 		final ProjectRevision loadedProject = loadProject(projectContextRequest.getRequestedProjectId());
@@ -258,13 +240,11 @@ class BusinessLogicImpl implements BusinessLogic {
 			authorizationManager.assureProjectAccessAuthorization(projectId);
 
 			return doLoadProject(projectId);
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String errorMessage = "The server could not load the project: A persistence exception occured.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
-		}
-		catch (final AuthorizationException e) {
+		} catch (final AuthorizationException e) {
 			final String errorMessage = "Access denied to project '" + projectId + "'";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
@@ -287,23 +267,19 @@ class BusinessLogicImpl implements BusinessLogic {
 			}
 
 			return new ProjectRevision(project, lastAppliedActionId);
-		}
-		catch (final NoResultFoundException e) {
+		} catch (final NoResultFoundException e) {
 			final String errorMessage = "The project '" + projectId + "' is inexistent.";
 			LOGGER.error(errorMessage, e);
 			throw new ProjectNotFoundException(errorMessage);
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String errorMessage = "The server could not load the project: A persistence exception occured.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
-		}
-		catch (final UnableToCompleteActionException e) {
+		} catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "The project state could not be correctly restored.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			final String errorMessage = "The server could not load the project: Unknown error.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
@@ -314,8 +290,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		ProjectSnapshot snapshot;
 		try {
 			snapshot = persistenceService.retrieveProjectSnapshot(projectId);
-		}
-		catch (final NoResultFoundException e) {
+		} catch (final NoResultFoundException e) {
 			snapshot = createBlankProjectSnapshot(projectId);
 		}
 		return snapshot;
@@ -331,19 +306,16 @@ class BusinessLogicImpl implements BusinessLogic {
 			final Scope projectScope = new Scope(projectRepresentation.getName(), new UUID("0"), new UserRepresentation(authenticatedUserId), new Date(0));
 			final Release projectRelease = new Release(projectRepresentation.getName(), new UUID("release0"));
 
-			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectRepresentation, projectScope,
-					projectRelease), new Date());
+			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectRepresentation, projectScope, projectRelease), new Date());
 			return projectSnapshot;
-		}
-		catch (final IOException e) {
+		} catch (final IOException e) {
 			final String errorMessage = "It was not possible to create a blank project snapshot.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
 		}
 	}
 
-	private void updateProjectSnapshot(final ProjectSnapshot snapshot, final Project project, final long lastAppliedActionId) throws IOException,
-			PersistenceException {
+	private void updateProjectSnapshot(final ProjectSnapshot snapshot, final Project project, final long lastAppliedActionId) throws IOException, PersistenceException {
 
 		snapshot.setProject(project);
 		snapshot.setTimestamp(new Date());
@@ -354,17 +326,12 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	@Override
 	public void sendProjectCreationQuotaRequestEmail() {
-		mailFactory.createUserQuotaRequestMail()
-				.currentUser(authenticationManager.getAuthenticatedUser().getEmail())
-				.send();
+		mailFactory.createUserQuotaRequestMail().currentUser(authenticationManager.getAuthenticatedUser().getEmail()).send();
 	}
 
 	@Override
 	public void sendFeedbackEmail(final String feedbackMessage) {
-		mailFactory.createSendFeedbackMail()
-				.currentUser(authenticationManager.getAuthenticatedUser().getEmail())
-				.feedbackMessage(feedbackMessage)
-				.send();
+		mailFactory.createSendFeedbackMail().currentUser(authenticationManager.getAuthenticatedUser().getEmail()).feedbackMessage(feedbackMessage).send();
 
 	}
 
@@ -394,8 +361,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public ModelActionSyncEventRequestResponse loadProjectActions(final UUID projectId, final long lastSyncId) throws AuthorizationException,
-			UnableToLoadProjectException {
+	public ModelActionSyncEventRequestResponse loadProjectActions(final UUID projectId, final long lastSyncId) throws AuthorizationException, UnableToLoadProjectException {
 		try {
 			authorizationManager.assureProjectAccessAuthorization(projectId);
 
@@ -412,8 +378,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final ActionContext actionContext = new ActionContext(authenticationManager.getAuthenticatedUser().getId(), timestamp);
 
 			return new ModelActionSyncEventRequestResponse(new ModelActionSyncEvent(projectId, actionList, actionContext, lastUserActionId));
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String errorMessage = "The server could not resync the project: A persistence exception occured.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
@@ -422,21 +387,43 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	@Override
 	public UUID createUser(final String userEmail) {
+		User user = retrieveExistingUser(userEmail);
+		if (user != null) return user.getId();
+
+		final String generatedPassword = generatePasswordForNewUser(userEmail);
+		user = authenticationManager.createNewUser(userEmail, generatedPassword);
+		LOGGER.debug("Created New User '" + userEmail + "'.");
+		sendWelcomeMail(userEmail, generatedPassword);
+		return user.getId();
+
+	}
+
+	private void sendWelcomeMail(final String userEmail, final String generatedPassword) {
 		try {
-			final String generatedPassword = PasswordHash.generatePassword();
-			final User user = authenticationManager.createNewUser(userEmail, generatedPassword);
-			LOGGER.debug("Created New User '" + userEmail + "'.");
-
-			try {
-				mailFactory.createWelcomeMail().sendTo(userEmail, generatedPassword);
-			}
-			catch (final Exception e) {
-				LOGGER.error("It was not possible to send e-mail.", e);
-			}
-
-			return user.getId();
+			mailFactory.createWelcomeMail().sendTo(userEmail, generatedPassword);
+		} catch (final Exception e) {
+			final String message = "The user was created but welcome e-mail was not sent.";
+			LOGGER.error(message, e);
+			throw new RuntimeException(message, e);
 		}
-		catch (final NoSuchAlgorithmException e) {
+	}
+
+	private User retrieveExistingUser(final String userEmail) {
+		try {
+			return persistenceService.retrieveUserByEmail(userEmail);
+		} catch (final NoResultFoundException e) {
+			return null;
+		} catch (final PersistenceException e) {
+			final String message = "It was not possible to create new user '" + userEmail + "': check for existing user failed.";
+			LOGGER.error(message);
+			throw new RuntimeException(message, e);
+		}
+	}
+
+	private String generatePasswordForNewUser(final String userEmail) {
+		try {
+			return PasswordHash.generatePassword();
+		} catch (final NoSuchAlgorithmException e) {
 			final String message = "It was not possible to create new user '" + userEmail + "': Password generation went wrong.";
 			LOGGER.error(message);
 			throw new RuntimeException(message, e);

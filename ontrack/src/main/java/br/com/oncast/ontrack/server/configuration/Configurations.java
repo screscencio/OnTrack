@@ -11,13 +11,12 @@ public class Configurations {
 	private Configurations() {
 		try {
 			properties.load(Configurations.class.getResourceAsStream("/environment.properties"));
-		}
-		catch (final IOException e) {
+		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static Configurations getInstance() {
+	public static Configurations get() {
 		if (instance == null) instance = new Configurations();
 		return instance;
 	}
@@ -49,5 +48,17 @@ public class Configurations {
 
 	public String getAdminPassword() {
 		return properties.getProperty("admin.password");
+	}
+
+	public String getIntegrationApiUrl() {
+		return properties.getProperty("integration.base_url");
+	}
+
+	public String integrationUsername() {
+		return properties.getProperty("integration.user");
+	}
+
+	public String integrationPassword() {
+		return properties.getProperty("integration.password");
 	}
 }

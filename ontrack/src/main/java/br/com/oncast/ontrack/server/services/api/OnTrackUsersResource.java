@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @Path("/user")
-public class UsersResource {
+public class OnTrackUsersResource {
 
 	@GET
 	@Path("create")

@@ -7,13 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 
 public class KanbanFactoryTest {
-
-	private static final String DONE = ProgressState.DONE.getDescription();
-	private static final String NOT_STARTED = Progress.DEFAULT_NOT_STARTED_NAME;
 
 	@Before
 	public void setup() throws Exception {

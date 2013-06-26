@@ -38,8 +38,6 @@ public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanC
 
 	private static KanbanColumnWidgetUiBinder uiBinder = GWT.create(KanbanColumnWidgetUiBinder.class);
 
-	private static KanbanColumnWidgetMessages messages = GWT.create(KanbanColumnWidgetMessages.class);
-
 	interface KanbanColumnWidgetUiBinder extends UiBinder<Widget, KanbanColumnWidget> {}
 
 	public interface KanbanColumnWidgetStyle extends CssResource {
@@ -76,8 +74,8 @@ public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanC
 
 	private final Release release;
 
-	public KanbanColumnWidget(final Release release, final KanbanColumn column, final DragAndDropManager dragAndDropManager,
-			final ProgressPanelWidgetInteractionHandler interactionHandler, final KanbanScopeWidgetFactory modelWidgetFactory) {
+	public KanbanColumnWidget(final Release release, final KanbanColumn column, final DragAndDropManager dragAndDropManager, final ProgressPanelWidgetInteractionHandler interactionHandler,
+			final KanbanScopeWidgetFactory modelWidgetFactory) {
 		this.release = release;
 		this.column = column;
 		this.interactionHandler = interactionHandler;

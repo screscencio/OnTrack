@@ -23,8 +23,7 @@ public class HtmlMailContent {
 		return writeMailContent(createProjectAuthorizationContext(project, userEmail, currentUser), template);
 	}
 
-	public static String forNewUserProjectAuthorization(final String userEmail, final String generatedPassword, final ProjectRepresentation project,
-			final String currentUser) {
+	public static String forNewUserProjectAuthorization(final String userEmail, final String generatedPassword, final ProjectRepresentation project, final String currentUser) {
 		final Template template = getTemplate("/br/com/oncast/ontrack/server/services/email/authMailNewUser.html");
 		return writeMailContent(createProjectAuthorizationContextWithGeneratedPassword(project, userEmail, generatedPassword, currentUser), template);
 	}
@@ -55,6 +54,7 @@ public class HtmlMailContent {
 		context.put("projectLink", CustomUrlGenerator.getApplicationUrl());
 		context.put("userEmail", userEmail);
 		context.put("currentUser", inviter);
+		context.put("generatedPassword", generatedPassword);
 		return context;
 	}
 
@@ -74,8 +74,8 @@ public class HtmlMailContent {
 		return context;
 	}
 
-	private static VelocityContext createProjectAuthorizationContextWithGeneratedPassword(final ProjectRepresentation project, final String userEmail,
-			final String generatedPassword, final String currentUser) {
+	private static VelocityContext createProjectAuthorizationContextWithGeneratedPassword(final ProjectRepresentation project, final String userEmail, final String generatedPassword,
+			final String currentUser) {
 		final VelocityContext context = createProjectAuthorizationContext(project, userEmail, currentUser);
 		context.put("generatedPassword", generatedPassword);
 		return context;
@@ -99,8 +99,7 @@ public class HtmlMailContent {
 		Template template = null;
 		try {
 			template = engine.getTemplate(templatePath, "UTF-8");
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Error loading email template from velocity.");
 		}
@@ -118,8 +117,7 @@ public class HtmlMailContent {
 			p.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
 
 			engine.init(p);
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Error initializing velocity.");
 		}

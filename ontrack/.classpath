@@ -57,7 +57,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/org.moxieapps.gwt.highcharts-1.5.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/reflections-0.9.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/RequestDispatch-0.9.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/simple-xml-2.7.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/simple-xml-2.7.jar" sourcepath="/home/guih/.m2/repository/org/simpleframework/simple-xml/2.7/simple-xml-2.7-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.7.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/stax-1.2.0.jar"/>
