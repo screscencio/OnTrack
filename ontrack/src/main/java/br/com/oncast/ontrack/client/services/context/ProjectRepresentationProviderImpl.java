@@ -43,8 +43,8 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	private ProjectRepresentation currentProjectRepresentation;
 	private ClientErrorMessages messages;
 
-	public ProjectRepresentationProviderImpl(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
-			final AuthenticationService authenticationService, final ClientAlertingService alertingService, final ClientErrorMessages messages) {
+	public ProjectRepresentationProviderImpl(final DispatchService dispatchService, final ServerPushClientService serverPushClientService, final AuthenticationService authenticationService,
+			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 
 		this.dispatchService = dispatchService;
 		this.alertingService = alertingService;
@@ -126,8 +126,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			@Override
 			public void onUntreatedFailure(final Throwable caught) {
 				// TODO +++Treat fatal error. Could not load project list...
-				alertingService
-						.showWarning(messages.projectListUnavailable());
+				alertingService.showWarning(messages.projectListUnavailable());
 			}
 
 		});
@@ -171,22 +170,21 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	}
 
 	@Override
-	public void authorizeUser(final String mail, final ProjectAuthorizationCallback callback) {
-		dispatchService.dispatch(new ProjectAuthorizationRequest(currentProjectRepresentation.getId(), mail),
-				new DispatchCallback<ProjectAuthorizationResponse>() {
-					@Override
-					public void onSuccess(final ProjectAuthorizationResponse result) {
-						callback.onSuccess();
-					}
+	public void authorizeUser(final String mail, final boolean superUser, final ProjectAuthorizationCallback callback) {
+		dispatchService.dispatch(new ProjectAuthorizationRequest(currentProjectRepresentation.getId(), mail, superUser), new DispatchCallback<ProjectAuthorizationResponse>() {
+			@Override
+			public void onSuccess(final ProjectAuthorizationResponse result) {
+				callback.onSuccess();
+			}
 
-					@Override
-					public void onTreatedFailure(final Throwable caught) {}
+			@Override
+			public void onTreatedFailure(final Throwable caught) {}
 
-					@Override
-					public void onUntreatedFailure(final Throwable caught) {
-						callback.onFailure(caught);
-					}
-				});
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				callback.onFailure(caught);
+			}
+		});
 	}
 
 	@Override
@@ -246,21 +244,20 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 	@Override
 	public void unauthorizeUser(final UserRepresentation user, final ProjectAuthorizationCallback callback) {
-		dispatchService.dispatch(new RemoveProjectAuthorizationRequest(currentProjectRepresentation.getId(), user.getId()),
-				new DispatchCallback<RemoveProjectAuthorizationResponse>() {
-					@Override
-					public void onSuccess(final RemoveProjectAuthorizationResponse result) {
-						callback.onSuccess();
-					}
+		dispatchService.dispatch(new RemoveProjectAuthorizationRequest(currentProjectRepresentation.getId(), user.getId()), new DispatchCallback<RemoveProjectAuthorizationResponse>() {
+			@Override
+			public void onSuccess(final RemoveProjectAuthorizationResponse result) {
+				callback.onSuccess();
+			}
 
-					@Override
-					public void onTreatedFailure(final Throwable caught) {}
+			@Override
+			public void onTreatedFailure(final Throwable caught) {}
 
-					@Override
-					public void onUntreatedFailure(final Throwable caught) {
-						callback.onFailure(caught);
-					}
-				});
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				callback.onFailure(caught);
+			}
+		});
 	}
 
 }

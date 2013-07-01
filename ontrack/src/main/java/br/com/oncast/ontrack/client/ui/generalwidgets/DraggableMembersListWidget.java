@@ -1,13 +1,8 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.services.user.UsersStatusService;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.MembersWidget;
@@ -25,8 +20,16 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,7 +53,10 @@ public class DraggableMembersListWidget extends Composite {
 	interface DraggableMembersListWidgetUiBinder extends UiBinder<Widget, DraggableMembersListWidget> {}
 
 	interface DraggableMemnbersListWidgetStyle extends CssResource {
+
 		String hiddenButtons();
+
+		String canInvite();
 	}
 
 	@UiField
@@ -84,33 +90,31 @@ public class DraggableMembersListWidget extends Composite {
 
 	@Override
 	protected void onLoad() {
+		if (!handlerRegistrations.isEmpty()) return;
+
+		setupUserInformationChangeListener();
 		setupUsersStatusChangeListener();
 		setupActionExecutionListener();
 	}
 
 	@Override
 	protected void onUnload() {
-		for (final HandlerRegistration reg : handlerRegistrations) {
+		for (final HandlerRegistration reg : new HashSet<HandlerRegistration>(handlerRegistrations)) {
 			reg.removeHandler();
 		}
+		handlerRegistrations.clear();
 	}
 
 	@UiHandler("addMember")
 	protected void onAddMemberClick(final ClickEvent e) {
-		PopupConfig.configPopup().popup(new MembersWidget())
-				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(this, HorizontalAlignment.LEFT))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(this, VerticalAlignment.BOTTOM))
-				.setAnimationDuration(SlideAnimation.DURATION_SHORT)
-				.pop();
+		PopupConfig.configPopup().popup(new MembersWidget()).alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(this, HorizontalAlignment.LEFT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(this, VerticalAlignment.BOTTOM)).setAnimationDuration(SlideAnimation.DURATION_SHORT).pop();
 	}
 
 	@UiHandler("removeMember")
 	protected void onRemoveMemberClick(final ClickEvent e) {
-		PopupConfig.configPopup().popup(new RemoveMembersWidget())
-				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(this, HorizontalAlignment.LEFT))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(this, VerticalAlignment.BOTTOM))
-				.setAnimationDuration(SlideAnimation.DURATION_SHORT)
-				.pop();
+		PopupConfig.configPopup().popup(new RemoveMembersWidget()).alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(this, HorizontalAlignment.LEFT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(this, VerticalAlignment.BOTTOM)).setAnimationDuration(SlideAnimation.DURATION_SHORT).pop();
 	}
 
 	@UiHandler("right")
@@ -152,11 +156,20 @@ public class DraggableMembersListWidget extends Composite {
 		this.users.update(userModels);
 	}
 
+	private void setupUserInformationChangeListener() {
+		final UUID currentUser = ClientServices.getCurrentUser();
+		handlerRegistrations.add(ClientServices.get().userData().registerListenerForSpecificUser(currentUser, new UserSpecificInformationChangeListener() {
+			@Override
+			public void onInformationChange(final User user) {
+				root.setStyleName(style.canInvite(), user.isSuperUser());
+			}
+		}));
+	}
+
 	private void setupActionExecutionListener() {
 		handlerRegistrations.add(ClientServices.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
 				if (action instanceof TeamAction) {
 					update();

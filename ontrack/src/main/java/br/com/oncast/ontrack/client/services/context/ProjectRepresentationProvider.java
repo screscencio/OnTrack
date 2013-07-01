@@ -18,7 +18,7 @@ public interface ProjectRepresentationProvider {
 
 	void unregisterProjectListChangeListener(ProjectListChangeListener projectListChangeListener);
 
-	void authorizeUser(String mail, ProjectAuthorizationCallback callback);
+	void authorizeUser(String mail, boolean superUser, ProjectAuthorizationCallback callback);
 
 	ProjectRepresentation getProjectRepresentation(UUID projectReference);
 

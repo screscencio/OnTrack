@@ -27,11 +27,8 @@ public class UserEntity {
 	@Column(name = "userPictureId", unique = true, nullable = true)
 	private String userPictureId;
 
-	@Column(name = "projectInvitationQuota", nullable = false)
-	private int projectInvitationQuota;
-
-	@Column(name = "projectCreationQuota", nullable = false)
-	private int projectCreationQuota;
+	@Column(name = "superUser", nullable = false)
+	private boolean superUser;
 
 	public String getId() {
 		return id;
@@ -49,22 +46,6 @@ public class UserEntity {
 		this.email = email;
 	}
 
-	public int getProjectInvitationQuota() {
-		return projectInvitationQuota;
-	}
-
-	public void setProjectInvitationQuota(final int projectInvitationQuota) {
-		this.projectInvitationQuota = projectInvitationQuota;
-	}
-
-	public int getProjectCreationQuota() {
-		return projectCreationQuota;
-	}
-
-	public void setProjectCreationQuota(final int projectCreationQuota) {
-		this.projectCreationQuota = projectCreationQuota;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -79,6 +60,14 @@ public class UserEntity {
 
 	public void setUserPictureId(final String userPictureId) {
 		this.userPictureId = userPictureId;
+	}
+
+	public boolean isSuperUser() {
+		return superUser;
+	}
+
+	public void setSuperUser(boolean superUser) {
+		this.superUser = superUser;
 	}
 
 }

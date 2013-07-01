@@ -57,8 +57,9 @@ public class UUID implements Serializable {
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof UUID)) return false;
-		return this.id.equals(obj.toString());
+		if (obj instanceof UUID) return this.id.equals(obj.toString());
+		if (obj instanceof HasUUID) return ((HasUUID) obj).getId().equals(this);
+		return false;
 	}
 
 	private String generatedId() {

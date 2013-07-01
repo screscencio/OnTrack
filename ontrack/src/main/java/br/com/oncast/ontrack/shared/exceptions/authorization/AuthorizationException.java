@@ -15,6 +15,10 @@ public class AuthorizationException extends Exception {
 		super(message);
 	}
 
+	public AuthorizationException(final String message, final Throwable e) {
+		super(message, e);
+	}
+
 	public UUID getProjectId() {
 		return projectId;
 	}

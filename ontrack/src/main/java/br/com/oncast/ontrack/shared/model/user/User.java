@@ -1,16 +1,16 @@
 package br.com.oncast.ontrack.shared.model.user;
 
-import java.io.Serializable;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.UserEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.io.Serializable;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
 @Root(name = "userData")
 @ConvertTo(UserEntity.class)
@@ -31,22 +31,18 @@ public class User implements Serializable, Comparable<User>, HasUUID {
 	private UUID userPictureId;
 
 	@Attribute
-	private int projectInvitationQuota;
-
-	@Attribute
-	private int projectCreationQuota;
+	private boolean superUser;
 
 	User() {}
 
-	public User(final UUID id, final String email, final int projectInvitationQuota, final int projectCreationQuota) {
+	public User(final UUID id, final String email, final boolean superUser) {
 		this.id = id;
 		this.email = email;
-		this.projectCreationQuota = projectCreationQuota;
-		this.projectInvitationQuota = projectInvitationQuota;
+		this.superUser = superUser;
 	}
 
 	public User(final UUID id, final String email) {
-		this(id, email, 0, 0);
+		this(id, email, true);
 	}
 
 	@Override
@@ -62,20 +58,12 @@ public class User implements Serializable, Comparable<User>, HasUUID {
 		this.email = email;
 	}
 
-	public int getProjectInvitationQuota() {
-		return projectInvitationQuota;
+	public boolean isSuperUser() {
+		return superUser;
 	}
 
-	public void setProjectInvitationQuota(final int projectInvitationQuota) {
-		this.projectInvitationQuota = projectInvitationQuota;
-	}
-
-	public int getProjectCreationQuota() {
-		return projectCreationQuota;
-	}
-
-	public void setProjectCreationQuota(final int projectCreationQuota) {
-		this.projectCreationQuota = projectCreationQuota;
+	public void setSuperUser(final boolean isSuperUser) {
+		this.superUser = isSuperUser;
 	}
 
 	public String getName() {

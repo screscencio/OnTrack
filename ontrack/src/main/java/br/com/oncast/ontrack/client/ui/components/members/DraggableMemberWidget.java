@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.members;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
@@ -52,6 +53,7 @@ public class DraggableMemberWidget extends Composite implements ModelWidget<User
 
 	public DraggableMemberWidget(final UserRepresentation user) {
 		this.user = user;
+		SpeedTracerConsole.log("DraggableMemberWidget");
 		this.userWidget = new UserWidget(user);
 		initWidget(uiBinder.createAndBindUi(this));
 		removeBtn.setVisible(false);
@@ -85,8 +87,7 @@ public class DraggableMemberWidget extends Composite implements ModelWidget<User
 
 	@UiHandler("removeBtn")
 	protected void onRemoveClick(final ClickEvent event) {
-		ClientServices.get().actionExecution()
-				.onUserActionExecutionRequest(new ScopeRemoveAssociatedUserAction(association.getId(), user.getId()));
+		ClientServices.get().actionExecution().onUserActionExecutionRequest(new ScopeRemoveAssociatedUserAction(association.getId(), user.getId()));
 	}
 
 	public void setAssociation(final Scope scope) {

@@ -13,6 +13,6 @@ public class DefaultUserExistenceAssurer {
 	private static final UUID DEFAULT_ID = DefaultAuthenticationCredentials.USER_ID;
 
 	public static void verify() {
-		if (!AUTHENTICATION_MANAGER.hasUser(DEFAULT_USER)) AUTHENTICATION_MANAGER.createNewUser(DEFAULT_ID, DEFAULT_USER, DEFAULT_PASSWORD);
+		if (!AUTHENTICATION_MANAGER.hasUser(DEFAULT_USER)) AUTHENTICATION_MANAGER.createNewUser(DEFAULT_ID, DEFAULT_USER, DEFAULT_PASSWORD, true);
 	}
 }

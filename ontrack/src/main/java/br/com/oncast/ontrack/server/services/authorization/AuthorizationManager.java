@@ -1,26 +1,25 @@
 package br.com.oncast.ontrack.server.services.authorization;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.PermissionDeniedException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.List;
 
 public interface AuthorizationManager {
 
-	UUID authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage)
-			throws UnableToAuthorizeUserException;
+	UUID authorize(final UUID projectId, final String userEmail, final boolean isSuperUser, boolean shouldSendMailMessage) throws UnableToAuthorizeUserException, PermissionDeniedException;
 
 	void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException;
 
-	void assureProjectAccessAuthorization(final UUID projectId) throws PersistenceException, AuthorizationException;
+	void assureProjectAccessAuthorization(final UUID projectId) throws AuthorizationException;
 
-	void validateAndUpdateUserProjectCreationQuota(User requestingUser) throws PersistenceException, AuthorizationException;
+	void validateSuperUser(UUID userId) throws PermissionDeniedException;
 
 	List<ProjectRepresentation> listAuthorizedProjects(UUID userId) throws PersistenceException, NoResultFoundException;
 

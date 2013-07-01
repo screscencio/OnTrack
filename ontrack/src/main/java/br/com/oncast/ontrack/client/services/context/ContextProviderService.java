@@ -8,6 +8,8 @@ public interface ContextProviderService {
 
 	public ProjectContext getProjectContext(UUID projectId);
 
+	public boolean isContextAvailable();
+
 	public boolean isContextAvailable(UUID projectId);
 
 	public void loadProjectContext(UUID requestedProjectId, ProjectContextLoadCallback projectContextLoadCallback);
@@ -19,4 +21,5 @@ public interface ContextProviderService {
 	public void unloadProjectContext();
 
 	public void revertContext(ProjectContext context);
+
 }

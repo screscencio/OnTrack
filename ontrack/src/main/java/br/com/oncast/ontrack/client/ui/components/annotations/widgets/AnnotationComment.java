@@ -137,8 +137,7 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 	}
 
 	private String getDeprecationText() {
-		final User user = ClientServices.get().userData()
-				.getRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
+		final User user = ClientServices.get().userData().getRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
 		final String formattedDate = HumanDateFormatter.get().formatDateRelativeToNow(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 
 		return MESSAGES.deprecationDetails(user.getName(), formattedDate);

@@ -7,7 +7,8 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-	<ui:style>
+	<ui:style src="../../style/default.css">
+	
 		.rootPanel {
 			position: absolute;
 			top: 0px;
@@ -29,6 +30,18 @@
 			margin-bottom: 2px;
 			z-index: 1;
 		}
+		
+		.logoutLabel {
+			color: COLOR_ERROR_SECONDARY;
+			margin-top: 8px;
+			text-align: right;
+			cursor: pointer;
+		}
+		
+		.logoutLabel:HOVER {
+			text-decoration: underline;
+		}
+		
 	</ui:style>
 
 	<g:FocusPanel debugId="projectSelectionPlace" ui:field="rootPanel" styleName="{style.rootPanel}">
@@ -38,6 +51,9 @@
             		<ui:msg description="project selection label">Choose a Project</ui:msg>
             	</g:Label>
                 <misc:ProjectSelectionWidget ui:field="selectionProject" closeOnEscape="false"/>
+                <g:Label ui:field="logoutLabel" styleName="{style.logoutLabel}">
+                	<ui:msg description="Logout label">Logout</ui:msg>
+                </g:Label>
             </g:HTMLPanel>
 	   </layout:ApplicationWidgetContainer>
 	</g:FocusPanel>

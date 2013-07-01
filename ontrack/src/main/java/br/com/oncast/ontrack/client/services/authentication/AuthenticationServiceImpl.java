@@ -37,12 +37,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private UUID currentUserId;
 
-	private int projectCreationQuota;
+	private boolean isSuperUser;
 
-	private int projectInvitationQuota;
-
-	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController,
-			final ServerPushClientService serverPushClientService) {
+	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController, final ServerPushClientService serverPushClientService) {
 		this.dispatchService = dispatchService;
 		this.applicationPlaceController = applicationPlaceController;
 		userAuthenticatedListeners = new HashSet<UserAuthenticationListener>();
@@ -171,8 +168,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			public void onUntreatedFailure(final Throwable caught) {
 				if (caught instanceof InvalidAuthenticationCredentialsException) {
 					callback.onIncorrectUserPasswordFailure();
-				}
-				else callback.onUnexpectedFailure(caught);
+				} else callback.onUnexpectedFailure(caught);
 			}
 		});
 	}
@@ -222,15 +218,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			public void onFailure(final Throwable caught) {}
 		});
 
-		projectCreationQuota = event.getProjectCreationQuota();
-		projectInvitationQuota = event.getProjectInvitationQuota();
+		isSuperUser = event.isSuperUser();
 	}
 
 	private void updateCurrentUser(final User user) {
 		ClientServices.get().metrics().onUserLogin(user);
 		currentUserId = user.getId();
-		projectCreationQuota = user.getProjectCreationQuota();
-		projectInvitationQuota = user.getProjectInvitationQuota();
+		isSuperUser = user.isSuperUser();
 	}
 
 	@Override
@@ -250,8 +244,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private void resetCurrentUsetAndGoTo(final Place destinationPlace) {
 		currentUserId = null;
-		projectCreationQuota = 0;
-		projectInvitationQuota = 0;
+		isSuperUser = false;
 		ClientServices.get().metrics().onUserLogout();
 
 		notifyLogoutToUserAuthenticationListeners();
@@ -259,12 +252,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public int getProjectCreationQuota() {
-		return projectCreationQuota;
+	public boolean isCurrentUserSuperUser() {
+		return isSuperUser;
 	}
 
-	@Override
-	public int getProjectInvitationQuota() {
-		return projectInvitationQuota;
-	}
 }

@@ -29,9 +29,7 @@ public interface AuthenticationService {
 
 	void onUserLoginRequired(Place destinationPlace);
 
-	int getProjectCreationQuota();
-
-	int getProjectInvitationQuota();
+	boolean isCurrentUserSuperUser();
 
 	void resetPasswordFor(String username, ResetPasswordCallback resetPasswordCallback);
 }

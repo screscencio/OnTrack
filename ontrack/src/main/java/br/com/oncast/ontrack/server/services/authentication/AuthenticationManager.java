@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
-import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -21,6 +14,15 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.PasswordValidator;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+
+import com.google.gwt.core.shared.GWT;
+
 // TODO ++++Increment password strength validation, reflecting it on the UI as well so the user can create it without getting bored/angry.
 // TODO ++++Review this class method separation.
 public class AuthenticationManager {
@@ -28,10 +30,6 @@ public class AuthenticationManager {
 	private static final Logger LOGGER = Logger.getLogger(AuthenticationManager.class);
 
 	private static final String DEFAULT_NEW_USER_PASSWORD = "";
-
-	private static final int DEFAULT_INVITATION_QUOTA = 30;
-
-	private static final int DEFAULT_CREATION_QUOTA = 5;
 
 	private final PersistenceService persistenceService;
 
@@ -54,9 +52,7 @@ public class AuthenticationManager {
 			final List<Password> passwordsForUser = findPasswordForUserOrCreateANewOne(user);
 
 			final Password validUserPassword = getValidUserPassword(password, passwordsForUser);
-			if (validUserPassword == null) throw new InvalidAuthenticationCredentialsException(
-					"Incorrect password for user with e-mail "
-							+ formattedUserEmail);
+			if (validUserPassword == null) throw new InvalidAuthenticationCredentialsException("Incorrect password for user with e-mail " + formattedUserEmail);
 
 			for (final Password passw : passwordsForUser)
 				if (validUserPassword != passw) persistenceService.remove(passw);
@@ -64,11 +60,9 @@ public class AuthenticationManager {
 			sessionManager.getCurrentSession().setAuthenticatedUser(user);
 			notifyUserLoggedIn(user);
 			return user;
-		}
-		catch (final UserNotFoundException e) {
+		} catch (final UserNotFoundException e) {
 			throw new InvalidAuthenticationCredentialsException(e);
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String message = "Could not remove unused user passwords for '" + formattedUserEmail + "'";
 			LOGGER.error(message, e);
 			throw new RuntimeException();
@@ -94,25 +88,23 @@ public class AuthenticationManager {
 	public boolean hasUser(final String email) {
 		try {
 			if (findUserByEmail(email) != null) return true;
-		}
-		catch (final UserNotFoundException e) {}
+		} catch (final UserNotFoundException e) {}
 		return false;
 	}
 
-	public User createNewUser(final String email, final String password) {
-		return createNewUser(new UUID(), email, password);
+	public User createNewUser(final String email, final String password, final boolean isSuperUser) {
+		return createNewUser(new UUID(), email, password, isSuperUser);
 	}
 
-	public User createNewUser(final UUID id, final String email, final String password) {
+	public User createNewUser(final UUID id, final String email, final String password, final boolean isSuperUser) {
 		final String formattedUserEmail = formatUserEmail(email);
 
 		try {
-			final User user = new User(id, formattedUserEmail, DEFAULT_CREATION_QUOTA, DEFAULT_INVITATION_QUOTA);
+			final User user = new User(id, formattedUserEmail, isSuperUser);
 			final User newUser = persistenceService.persistOrUpdateUser(user);
 			if (password != null && !password.isEmpty()) createPasswordForUser(newUser, password);
 			return newUser;
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String message = "Could not create a new user with e-mail '" + formattedUserEmail + "'";
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
@@ -129,19 +121,15 @@ public class AuthenticationManager {
 			final List<Password> userPasswords = findPasswordForUser(user);
 
 			final Password userPassword = getValidUserPassword(currentPassword, userPasswords);
-			if (userPassword == null) throw new InvalidAuthenticationCredentialsException(
-					"Could not change the password for the user " + username
-							+ ", because the current password is incorrect.");
+			if (userPassword == null) throw new InvalidAuthenticationCredentialsException("Could not change the password for the user " + username + ", because the current password is incorrect.");
 
 			userPassword.setPassword(newPassword);
 			persistenceService.persistOrUpdatePassword(userPassword);
-		}
-		catch (final UserNotFoundException e) {
+		} catch (final UserNotFoundException e) {
 			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String message = "Unable to update the user '" + username + "'s password: it was not possible to persist it.";
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
@@ -167,11 +155,9 @@ public class AuthenticationManager {
 
 		try {
 			user = persistenceService.retrieveUserByEmail(email);
-		}
-		catch (final NoResultFoundException e) {
+		} catch (final NoResultFoundException e) {
 			throw new UserNotFoundException("No user found with e-mail '" + email + "'.");
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String message = "Unable to find user by email '" + email + "'.";
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
@@ -181,11 +167,11 @@ public class AuthenticationManager {
 
 	private Password createPasswordForUser(final User user, final String password) {
 		try {
-			final Password newPassword = new Password(user.getId(), password);
+			// TODO+++ remove this verification and replace it by Guice injection for DevMode password generator;
+			final Password newPassword = new Password(user.getId(), GWT.isProdMode() ? password : "");
 			persistenceService.persistOrUpdatePassword(newPassword);
 			return newPassword;
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String message = "Could not create a password for the user with e-mail " + user.getEmail();
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
@@ -195,8 +181,7 @@ public class AuthenticationManager {
 	private List<Password> findPasswordForUser(final User user) {
 		try {
 			return persistenceService.retrievePasswordsForUser(user.getId());
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			LOGGER.error("Unable to find the password for user " + user.getEmail(), e);
 			throw new AuthenticationException();
 		}
@@ -211,8 +196,7 @@ public class AuthenticationManager {
 				passwordsForUser.add(createPasswordForUser(user, DEFAULT_NEW_USER_PASSWORD));
 			}
 			return passwordsForUser;
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			LOGGER.error("Unable to find passowrd for user.", e);
 			throw new AuthenticationException();
 		}
@@ -242,13 +226,11 @@ public class AuthenticationManager {
 			final String newPassword = PasswordHash.generatePassword();
 			createPasswordForUser(user, newPassword);
 			mailFactory.createPasswordResetMail().send(username, newPassword);
-		}
-		catch (final UserNotFoundException e) {
+		} catch (final UserNotFoundException e) {
 			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
 			LOGGER.error(message, e);
 			throw new InvalidAuthenticationCredentialsException(message);
-		}
-		catch (final NoSuchAlgorithmException e) {
+		} catch (final NoSuchAlgorithmException e) {
 			final String message = "Unable to update the user '" + username + "'s password: new password could not be created.";
 			LOGGER.error(message, e);
 			throw new UnableToResetPasswordException(message);

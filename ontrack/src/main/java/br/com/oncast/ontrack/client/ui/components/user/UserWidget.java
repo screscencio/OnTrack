@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.user;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.user.ColorProviderService;
@@ -22,9 +19,15 @@ import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
@@ -55,8 +58,6 @@ public class UserWidget extends Composite {
 
 		String online();
 
-		String showActiveColor();
-
 		String removed();
 
 		String userImageContainerMedium();
@@ -83,45 +84,63 @@ public class UserWidget extends Composite {
 	@UiField
 	Image userImage;
 
-	private PopupConfig userCardPopUp;
-
-	private final UserInformationCard userCard;
+	private final Set<HandlerRegistration> registrationListener;
 
 	private final UserRepresentation userRepresentation;
 
-	private final Set<HandlerRegistration> registrationListener;
+	private User user;
 
-	private final boolean showActiveColor;
+	private UserUpdateListener updateListener;
 
-	private final UserUpdateListener updateListener;
+	private PopupConfig userCardPopUp;
+
+	private UserInformationCard userCard;
+
+	public UserWidget(final UUID userId) {
+		this(findUserOrCreateFakeOne(userId));
+	}
 
 	public UserWidget(final UserRepresentation userRepresentation) {
-		this(userRepresentation, null);
-	}
-
-	public UserWidget(final UserRepresentation userRepresentation, final boolean showActiveColor) {
-		this(userRepresentation, null, showActiveColor);
-	}
-
-	public UserWidget(final UserRepresentation userRepresentation, final UserUpdateListener updateListener) {
-		this(userRepresentation, updateListener, true);
-	}
-
-	public UserWidget(final UserRepresentation userRepresentation, final UserUpdateListener updateListener, final boolean showActiveColor) {
-		this.showActiveColor = showActiveColor;
-		this.registrationListener = new HashSet<HandlerRegistration>();
 		this.userRepresentation = userRepresentation;
-		this.updateListener = updateListener;
-		userCard = new UserInformationCard();
+		this.registrationListener = new HashSet<HandlerRegistration>();
 		initWidget(uiBinder.createAndBindUi(this));
-		setMediumSize();
+
 		showLabel();
-
-		createUserInformationCard();
-
-		addHandlers();
-
 		updateRemoved();
+	}
+
+	public UserWidget setUpdateListener(final UserUpdateListener updateListener) {
+		this.updateListener = updateListener;
+		if (user != null) updateListener.onUserUpdate(user);
+		return this;
+	}
+
+	public UserWidget showUserStatus(final boolean visible) {
+		activeIndicator.setVisible(visible);
+		return this;
+	}
+
+	public UserWidget setMediumSize() {
+		userImageContainer.setStyleName(style.userImageContainerMedium());
+		return this;
+	}
+
+	public UserWidget setSmallSize() {
+		userImageContainer.setStyleName(style.userImageContainerSmall());
+		return this;
+	}
+
+	public Widget getDraggableAnchor() {
+		return mask;
+	}
+
+	public Widget getDraggableItem() {
+		return userImageContainer;
+	}
+
+	@UiHandler("mask")
+	public void onAuthorClick(final ClickEvent event) {
+		getUserCardPopUp().pop();
 	}
 
 	private void showLabel() {
@@ -130,6 +149,16 @@ public class UserWidget extends Composite {
 
 	private void showImage() {
 		userImageContainer.showWidget(0);
+	}
+
+	@Override
+	protected void onLoad() {
+		addHandlers();
+	}
+
+	@Override
+	protected void onUnload() {
+		removeHandlers();
 	}
 
 	private void addHandlers() {
@@ -152,25 +181,12 @@ public class UserWidget extends Composite {
 
 		registrationListener.add(ClientServices.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
 				if (action instanceof TeamAction && action.getReferenceId().equals(userRepresentation.getId())) updateRemoved();
 			}
 
 		}));
-	}
-
-	@Override
-	protected void onLoad() {
-		super.onLoad();
-		addHandlers();
-	}
-
-	@Override
-	protected void onUnload() {
-		removeHandlers();
-		super.onUnload();
 	}
 
 	private void removeHandlers() {
@@ -185,6 +201,7 @@ public class UserWidget extends Composite {
 	}
 
 	private void updateInfo(final User user) {
+		this.user = user;
 		final ClientServices provider = ClientServices.get();
 		userWithoutImage.setText(user.getName().substring(0, 1));
 
@@ -198,9 +215,8 @@ public class UserWidget extends Composite {
 		});
 		userImage.setUrl(provider.userData().getAvatarUrl(user));
 		userImageContainer.setTitle(user.getName());
-		activeIndicator.setStyleName(style.showActiveColor(), showActiveColor);
 
-		userCard.updateUser(user);
+		getUserCard().updateUser(user);
 		if (updateListener != null) updateListener.onUserUpdate(user);
 	}
 
@@ -208,49 +224,43 @@ public class UserWidget extends Composite {
 		userImageContainer.setStyleName(style.offline(), status == UserStatus.OFFLINE);
 		userImageContainer.setStyleName(style.online(), status != UserStatus.OFFLINE);
 
-		if (showActiveColor && status == UserStatus.ACTIVE) showColor();
+		updateUserActiveColor(status);
 	}
 
-	private void showColor() {
-		activeIndicator.getElement().getStyle()
-				.setBackgroundColor(COLOR_PROVIDER.getSelectionColorFor(userRepresentation).toCssRepresentation());
+	private void updateUserActiveColor(final UserStatus status) {
+		final Style s = activeIndicator.getElement().getStyle();
+		if (status == UserStatus.ACTIVE) s.setBackgroundColor(COLOR_PROVIDER.getSelectionColorFor(userRepresentation).toCssRepresentation());
+		else s.clearBackgroundColor();
 	}
 
-	@UiHandler("mask")
-	public void onAuthorClick(final ClickEvent event) {
-		userCardPopUp.pop();
+	private UserInformationCard getUserCard() {
+		return userCard == null ? userCard = new UserInformationCard() : userCard;
 	}
 
-	private void createUserInformationCard() {
-		userCardPopUp = PopupConfig.configPopup()
-				.popup(userCard)
-				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userImageContainer.asWidget(), HorizontalAlignment.RIGHT, 10))
-				.alignVertical(VerticalAlignment.MIDDLE, new AlignmentReference(userImageContainer.asWidget(), VerticalAlignment.BOTTOM, 15));
+	private PopupConfig getUserCardPopUp() {
+		if (userCardPopUp == null) {
+			userCardPopUp = PopupConfig.configPopup().popup(getUserCard())
+					.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userImageContainer.asWidget(), HorizontalAlignment.RIGHT, 10))
+					.alignVertical(VerticalAlignment.MIDDLE, new AlignmentReference(userImageContainer.asWidget(), VerticalAlignment.BOTTOM, 15));
+		}
 
+		return userCardPopUp;
 	}
 
-	public void setMediumSize() {
-		userImageContainer.setStyleName(style.userImageContainerSmall(), false);
-		userImageContainer.setStyleName(style.userImageContainerMedium(), true);
-	}
-
-	public void setSmallSize() {
-		userImageContainer.setStyleName(style.userImageContainerMedium(), false);
-		userImageContainer.setStyleName(style.userImageContainerSmall(), true);
+	// TODO++ Refactor this to remove the need of creating fake UserRepresentation
+	private static UserRepresentation findUserOrCreateFakeOne(final UUID userId) {
+		try {
+			if (ClientServices.get().contextProvider().isContextAvailable()) return ClientServices.getCurrentProjectContext().findUser(userId);
+		} catch (final UserNotFoundException e) {
+			GWT.log("User was not found in the project context, Maybe it represents model inconcistency", e);
+		}
+		return new UserRepresentation(userId);
 	}
 
 	public interface UserUpdateListener {
 
 		void onUserUpdate(User user);
 
-	}
-
-	public Widget getDraggableAnchor() {
-		return mask;
-	}
-
-	public Widget getDraggableItem() {
-		return userImageContainer;
 	}
 
 }

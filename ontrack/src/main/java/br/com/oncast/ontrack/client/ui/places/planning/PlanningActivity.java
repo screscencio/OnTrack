@@ -99,8 +99,7 @@ public class PlanningActivity extends AbstractActivity {
 		SERVICE_PROVIDER.applicationState().restore(place.getSelectedScopeId());
 		SERVICE_PROVIDER.applicationState().startRecording();
 
-		mouseHelper.register(eventBus, actionExecutionService, view.getScopeTree().getScopeTreeInternalActionHandler(), projectContext, view.getScopeTree()
-				.getSelected());
+		mouseHelper.register(eventBus, actionExecutionService, view.getScopeTree().getScopeTreeInternalActionHandler(), projectContext, view.getScopeTree().getSelected());
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
@@ -159,17 +158,22 @@ public class PlanningActivity extends AbstractActivity {
 
 				final Scope scope = event.getTargetScope().getStory();
 				final Release release = scope.getRelease();
-				if (release == null) return;
+				if (release == null || release.isRoot()) return;
 
-				final ReleaseWidget releaseWidget = view.getReleasePanel().getWidgetFor(release);
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					@Override
+					public void execute() {
+						final ReleaseWidget releaseWidget = view.getReleasePanel().getWidgetFor(release);
 
-				selectedScope = releaseWidget.getScopeContainer().getWidgetFor(scope);
-				selectedScope.setAssociationHighlight(true);
+						selectedScope = releaseWidget.getScopeContainer().getWidgetFor(scope);
+						selectedScope.setAssociationHighlight(true);
 
-				if (event.getSource() instanceof ReleaseTag || event.getSource() instanceof ScopeTreeShortcutMappings) {
-					releaseWidget.setHierarchicalContainerState(true);
-					view.ensureWidgetIsVisible(selectedScope);
-				}
+						if (event.getSource() instanceof ReleaseTag || event.getSource() instanceof ScopeTreeShortcutMappings) {
+							releaseWidget.setHierarchicalContainerState(true);
+							view.ensureWidgetIsVisible(selectedScope);
+						}
+					}
+				});
 			}
 		});
 	}
@@ -197,12 +201,10 @@ public class PlanningActivity extends AbstractActivity {
 		final PlanningActivity other = (PlanningActivity) obj;
 		if (place.getRequestedProjectId() == null) {
 			if (other.place.getRequestedProjectId() != null) return false;
-		}
-		else if (!place.getRequestedProjectId().equals(other.place.getRequestedProjectId())) return false;
+		} else if (!place.getRequestedProjectId().equals(other.place.getRequestedProjectId())) return false;
 		if (place.getSelectedScopeId() == null) {
 			if (other.place.getSelectedScopeId() != null) return false;
-		}
-		else if (!place.getSelectedScopeId().equals(other.place.getSelectedScopeId())) return false;
+		} else if (!place.getSelectedScopeId().equals(other.place.getSelectedScopeId())) return false;
 		return true;
 	}
 

@@ -1,19 +1,23 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
+import br.com.oncast.ontrack.shared.services.notification.Notification;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
-import br.com.oncast.ontrack.shared.services.notification.Notification;
-
 @Root
 public class OntrackXML {
 
 	@Attribute
 	private String version;
+
+	@Attribute(required = false)
+	private Date timestamp;
 
 	@ElementList
 	private List<UserXMLNode> users;
@@ -65,5 +69,13 @@ public class OntrackXML {
 
 	public List<Notification> getNotifications() {
 		return notifications;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(final Date timestamp) {
+		this.timestamp = timestamp;
 	}
 }

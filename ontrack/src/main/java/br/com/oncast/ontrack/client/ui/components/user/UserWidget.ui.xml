@@ -10,7 +10,6 @@
 	<ui:image field="invalidImg" src="banned.png"/>
 	<ui:style type="br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserWidgetStyle">
 	
-	
 		.container {
 			position: relative;
 			cursor: pointer;
@@ -22,6 +21,7 @@
 			left: 0px;
 			width: 4px;
 			bottom: 0px;
+			background: #888;
 		}
 		
 		.mask {
@@ -65,10 +65,6 @@
 			opacity: 0.8;
 		}
 		
-		.showActiveColor {
-			background: #888;
-		}
-		
 		.userImageContainerMedium {
 			width: 40px;
 			height: 40px;
@@ -84,7 +80,7 @@
 			font-weight: bold;
 		}
 		
-		.userImageContainer {
+		.userImageContainerMedium, .userImageContainerSmall {
 			background-color: #1E3669;
 			overflow: hidden;
 		}
@@ -93,7 +89,7 @@
 	
 	<g:FocusPanel>
 		<g:HTMLPanel styleName="{style.container}">
-			<g:DeckPanel ui:field="userImageContainer" styleName="{style.userImageContainer}">
+			<g:DeckPanel ui:field="userImageContainer" styleName="{style.userImageContainerMedium}">
 				<g:Image ui:field="userImage" styleName="{style.userImage}" resource="{avatar}" />
 				<g:Label ui:field="userWithoutImage" styleName="{style.userLabel}"/>
 			</g:DeckPanel>

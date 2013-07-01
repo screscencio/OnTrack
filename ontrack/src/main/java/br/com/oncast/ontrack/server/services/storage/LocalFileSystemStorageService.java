@@ -1,15 +1,5 @@
 package br.com.oncast.ontrack.server.services.storage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.Properties;
-
-import org.apache.log4j.Logger;
-
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
@@ -21,6 +11,16 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationExcept
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
 
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
@@ -46,8 +46,8 @@ public class LocalFileSystemStorageService implements StorageService {
 
 	private final Properties properties;
 
-	public LocalFileSystemStorageService(final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager,
-			final PersistenceService persistenceService, final BusinessLogic businessLogic) {
+	public LocalFileSystemStorageService(final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final PersistenceService persistenceService,
+			final BusinessLogic businessLogic) {
 		this.authenticationService = authenticationManager;
 		this.authorizationManager = authorizationManager;
 		this.persistenceService = persistenceService;
@@ -56,9 +56,7 @@ public class LocalFileSystemStorageService implements StorageService {
 	}
 
 	@Override
-	public FileRepresentation store(final UUID fileId, final UUID projectId, final File file) throws IOException, PersistenceException,
-			UnableToHandleActionException,
-			AuthorizationException {
+	public FileRepresentation store(final UUID fileId, final UUID projectId, final File file) throws IOException, PersistenceException, UnableToHandleActionException, AuthorizationException {
 		LOGGER.debug("Persisting file '" + file.getName() + "'");
 		final String fileHash = generateContentHash(file);
 
@@ -100,8 +98,7 @@ public class LocalFileSystemStorageService implements StorageService {
 
 			LOGGER.debug("The file '" + fileId + "' retrieved successfully.");
 			return createFile(fileRepresentation);
-		}
-		catch (final NoResultFoundException e) {
+		} catch (final NoResultFoundException e) {
 			throw new FileNotFoundException("The requested file was not found or the current user has no authorization to access it");
 		}
 	}
@@ -111,8 +108,7 @@ public class LocalFileSystemStorageService implements StorageService {
 		final File file = new File(Files.createTempDir(), representation.getFileName());
 		try {
 			Files.copy(actualFile, file);
-		}
-		catch (final IOException e) {
+		} catch (final IOException e) {
 			LOGGER.error("File copy failed.", e);
 		}
 		return file;

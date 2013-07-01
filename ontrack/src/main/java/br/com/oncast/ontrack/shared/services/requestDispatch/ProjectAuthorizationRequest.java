@@ -7,13 +7,15 @@ public class ProjectAuthorizationRequest implements DispatchRequest<ProjectAutho
 
 	private String userEmail;
 	private UUID projectId;
+	private boolean superUser;
 
 	// IMPORTANT The default constructor is used by GWT. Do not remove this.
 	protected ProjectAuthorizationRequest() {}
 
-	public ProjectAuthorizationRequest(final UUID projectId, final String email) {
+	public ProjectAuthorizationRequest(final UUID projectId, final String email, final boolean superUser) {
 		this.projectId = projectId;
 		this.userEmail = email;
+		this.superUser = superUser;
 	}
 
 	public String getUserEmail() {
@@ -22,6 +24,10 @@ public class ProjectAuthorizationRequest implements DispatchRequest<ProjectAutho
 
 	public UUID getProjectId() {
 		return projectId;
+	}
+
+	public boolean isSuperUser() {
+		return superUser;
 	}
 
 }

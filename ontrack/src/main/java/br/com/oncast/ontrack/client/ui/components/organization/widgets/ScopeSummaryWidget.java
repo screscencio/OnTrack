@@ -49,7 +49,6 @@ public class ScopeSummaryWidget extends Composite implements ScopeWidget {
 	private final Scope scope;
 
 	// FIXME Mats fix the exception when this event is fired
-	@SuppressWarnings("unused")
 	private final UUID projectId;
 
 	public ScopeSummaryWidget(final Scope scope, final UUID projectId) {

@@ -1,10 +1,8 @@
 package br.com.oncast.ontrack.client.services.context;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
@@ -17,6 +15,9 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private final ProjectRepresentationProviderImpl projectRepresentationProvider;
@@ -27,8 +28,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	private final List<ContextChangeListener> contextLoadListeners;
 	private final ClientMetricsService metrics;
 
-	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider,
-			final DispatchService requestDispatchService,
+	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider, final DispatchService requestDispatchService,
 			final AuthenticationService authenticationService, final ClientMetricsService metrics) {
 		this.metrics = metrics;
 		this.contextLoadListeners = new ArrayList<ContextChangeListener>();
@@ -39,7 +39,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 			@Override
 			public void onUserLoggedOut() {
-				setProjectContext(null);
+				unloadProjectContext();
 			}
 
 			@Override
@@ -70,7 +70,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	private boolean sameContext(final ProjectContext otherContext) {
 		if (this.projectContext == otherContext) return true;
 
-		return this.projectContext != null && this.projectContext.equals(otherContext);
+		return isContextAvailable() && this.projectContext.equals(otherContext);
 	}
 
 	private void notifyProjectChange() {
@@ -83,38 +83,42 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	@Override
 	public boolean isContextAvailable(final UUID projectId) {
-		return (projectContext != null) && (projectContext.equals(projectId));
+		return isContextAvailable() && (projectContext.equals(projectId));
+	}
+
+	@Override
+	public boolean isContextAvailable() {
+		return (projectContext != null);
 	}
 
 	@Override
 	public void loadProjectContext(final UUID requestedProjectId, final ProjectContextLoadCallback projectContextLoadCallback) {
 		final TimeTrackingEvent tracking = metrics.startTimeTracking(MetricsCategories.CONTEXT_LOAD, requestedProjectId.toString());
-		requestDispatchService.dispatch(new ProjectContextRequest(requestedProjectId),
-				new DispatchCallback<ProjectContextResponse>() {
-					@Override
-					public void onSuccess(final ProjectContextResponse response) {
-						tracking.end();
-						final ProjectRevision projectRevision = response.getProjectRevision();
-						loadProjectRevision = projectRevision.getRevision();
-						setProjectContext(new ProjectContext(projectRevision.getProject()));
-						projectContextLoadCallback.onProjectContextLoaded();
-					}
+		requestDispatchService.dispatch(new ProjectContextRequest(requestedProjectId), new DispatchCallback<ProjectContextResponse>() {
+			@Override
+			public void onSuccess(final ProjectContextResponse response) {
+				tracking.end();
+				final ProjectRevision projectRevision = response.getProjectRevision();
+				loadProjectRevision = projectRevision.getRevision();
+				setProjectContext(new ProjectContext(projectRevision.getProject()));
+				projectContextLoadCallback.onProjectContextLoaded();
+			}
 
-					@Override
-					public void onTreatedFailure(final Throwable caught) {}
+			@Override
+			public void onTreatedFailure(final Throwable caught) {}
 
-					@Override
-					public void onUntreatedFailure(final Throwable caught) {
-						// TODO +++Treat communication failure.
-						if (caught instanceof ProjectNotFoundException) projectContextLoadCallback.onProjectNotFound();
-						else projectContextLoadCallback.onUnexpectedFailure(caught);
-					}
-				});
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				// TODO +++Treat communication failure.
+				if (caught instanceof ProjectNotFoundException) projectContextLoadCallback.onProjectNotFound();
+				else projectContextLoadCallback.onUnexpectedFailure(caught);
+			}
+		});
 	}
 
 	@Override
 	public ProjectContext getCurrent() {
-		if (projectContext == null) throw new RuntimeException("There is no project context avaliable.");
+		if (!isContextAvailable()) throw new RuntimeException("There is no project context avaliable.");
 		return projectContext;
 	}
 
@@ -126,7 +130,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	}
 
 	private UUID getCurrentProjectId() {
-		if (projectContext == null) return null;
+		if (!isContextAvailable()) return null;
 
 		return getCurrent().getProjectRepresentation().getId();
 	}
@@ -137,6 +141,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	@Override
 	public void unloadProjectContext() {
+		loadProjectRevision = null;
 		setProjectContext(null);
 	}
 

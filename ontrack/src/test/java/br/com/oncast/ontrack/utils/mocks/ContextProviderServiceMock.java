@@ -16,13 +16,13 @@ public class ContextProviderServiceMock implements ContextProviderService {
 
 	@Override
 	public ProjectContext getProjectContext(final UUID projectId) {
-		if (projectContext != null) return projectContext;
+		if (isContextAvailable()) return projectContext;
 		throw new RuntimeException();
 	}
 
 	@Override
 	public boolean isContextAvailable(final UUID projectId) {
-		return (projectContext != null);
+		return isContextAvailable() && projectContext.equals(projectId);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class ContextProviderServiceMock implements ContextProviderService {
 
 	@Override
 	public ProjectContext getCurrent() {
-		if (projectContext != null) return projectContext;
+		if (isContextAvailable()) return projectContext;
 		throw new RuntimeException();
 	}
 
@@ -44,4 +44,9 @@ public class ContextProviderServiceMock implements ContextProviderService {
 
 	@Override
 	public void revertContext(final ProjectContext context) {}
+
+	@Override
+	public boolean isContextAvailable() {
+		return projectContext != null;
+	}
 }

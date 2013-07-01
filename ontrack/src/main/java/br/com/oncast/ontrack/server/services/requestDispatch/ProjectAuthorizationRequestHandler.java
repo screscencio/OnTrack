@@ -10,7 +10,7 @@ public class ProjectAuthorizationRequestHandler implements RequestHandler<Projec
 
 	@Override
 	public ProjectAuthorizationResponse handle(final ProjectAuthorizationRequest request) throws Exception {
-		getBusinessLogic().authorize(request.getUserEmail(), request.getProjectId(), true);
+		getBusinessLogic().authorize(request.getUserEmail(), request.getProjectId(), request.isSuperUser(), true);
 		return new ProjectAuthorizationResponse();
 	}
 

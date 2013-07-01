@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.description.DescriptionRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -11,6 +8,9 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(DescriptionRemoveActionEntity.class)
 public class DescriptionRemoveAction implements DescriptionAction {
@@ -26,10 +26,6 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	@Attribute
 	private Boolean userAction;
 
-	@Element(required = false)
-	// FIXME Remove this and create migration
-	private String description;
-
 	protected DescriptionRemoveAction() {}
 
 	public DescriptionRemoveAction(final UUID subjectId, final UUID descriptionId, final boolean isUserAction) {
@@ -41,9 +37,7 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Description description = ActionHelper.findDescription(subjectId, context);
-		this.description = description.getDescription();
-		if (userAction && !description.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(
-				ActionExecutionErrorMessageCode.DESCRIPTION_REMOVE);
+		if (userAction && !description.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.DESCRIPTION_REMOVE);
 
 		context.removeDescriptionFor(subjectId);
 

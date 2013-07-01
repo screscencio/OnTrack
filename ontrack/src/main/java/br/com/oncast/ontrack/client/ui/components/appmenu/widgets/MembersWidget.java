@@ -1,12 +1,11 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectAuthorizationCallback;
 import br.com.oncast.ontrack.client.services.validation.EmailValidator;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.shared.exceptions.authorization.PermissionDeniedException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 
 import com.google.gwt.core.client.GWT;
@@ -20,9 +19,12 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 
 public class MembersWidget extends Composite implements HasCloseHandlers<MembersWidget>, PopupAware {
 
@@ -38,7 +40,7 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 	protected DefaultTextedTextBox invitationTextBox;
 
 	@UiField
-	protected Label countdownLabel;
+	protected CheckBox superUserCheck;
 
 	public MembersWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -63,13 +65,6 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 	public void show() {
 		focus();
 		setDefaultText();
-		validateCountdown();
-	}
-
-	private void validateCountdown() {
-		final int invitationQuota = ClientServices.get().authentication().getProjectInvitationQuota();
-
-		countdownLabel.setText(messages.inivitationQuota(invitationQuota));
 	}
 
 	private void setDefaultText() {
@@ -95,22 +90,20 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 			protected void executeImpl(final MembersWidget widget) {
 				final String mail = widget.invitationTextBox.getText();
 				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
-
 				widget.hide();
 				ClientServices.get().alerting().showInfo(messages.processingYourInvitation());
-				PROVIDER.projectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
+				PROVIDER.projectRepresentationProvider().authorizeUser(mail, widget.superUserCheck.getValue(), new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {
-						ClientServices.get().alerting()
-								.showSuccess(messages.userInvited(mail));
+						ClientServices.get().alerting().showSuccess(messages.userInvited(mail));
 					}
 
 					@Override
 					public void onFailure(final Throwable caught) {
-						if (caught instanceof UnableToAuthorizeUserException) ClientServices.get().alerting()
-								.showWarning(messages.userAlreadyInvited(mail));
+						if (caught instanceof UnableToAuthorizeUserException) ClientServices.get().alerting().showWarning(messages.userAlreadyInvited(mail));
+						if (caught instanceof PermissionDeniedException) ClientServices.get().alerting().showWarning(messages.permissionDenied());
 						else {
-							ClientServices.get().alerting().showWarning(caught.getMessage());
+							ClientServices.get().alerting().showError(caught.getMessage());
 						}
 					}
 				});

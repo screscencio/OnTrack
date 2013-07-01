@@ -42,7 +42,6 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 
 			@Override
 			public void uncaughtExeption(final Throwable cause) {
-				// FIXME merge check this
 				SERVICE_PROVIDER.serverPush().removeConnectionListener(this);
 				treatUnexpectedFailure(cause, messages.couldNotConnectToServer());
 			}

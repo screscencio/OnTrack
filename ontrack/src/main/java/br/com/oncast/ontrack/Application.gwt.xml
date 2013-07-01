@@ -33,9 +33,6 @@
 	
 	<set-configuration-property name="locale.useragent" value="Y"/>
 
-<!-- 	 For fast compilation comment the line above and uncomment the line bellow -->
-<!-- 	<set-property name="user.agent" value="safari"/> -->
-
 	<!-- Specify the paths for translatable code -->
 	<source path='client' excludes="**/*Test.java" />
 	<source path='shared' excludes="**/*Test.java" />

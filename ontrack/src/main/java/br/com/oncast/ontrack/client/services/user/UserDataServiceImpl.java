@@ -47,8 +47,7 @@ public class UserDataServiceImpl implements UserDataService {
 
 	private final ContextProviderService contextProvider;
 
-	public UserDataServiceImpl(final DispatchService dispatchService, final ContextProviderService contextProvider,
-			final ServerPushClientService serverPushClientService) {
+	public UserDataServiceImpl(final DispatchService dispatchService, final ContextProviderService contextProvider, final ServerPushClientService serverPushClientService) {
 
 		this.dispatchService = dispatchService;
 		this.contextProvider = contextProvider;
@@ -59,8 +58,10 @@ public class UserDataServiceImpl implements UserDataService {
 		contextProvider.addContextLoadListener(new ContextChangeListener() {
 			@Override
 			public void onProjectChanged(final UUID projectId, final Long leadedProjectRevision) {
-				if (projectId == null) clearCachedUsers();
-				else updateUserDataFor(projectId);
+				if (projectId == null)
+					clearCachedUsers();
+				else
+					updateUserDataFor(projectId);
 			}
 		});
 
@@ -90,8 +91,7 @@ public class UserDataServiceImpl implements UserDataService {
 					callback.onResponseReceived(false);
 				}
 			});
-		}
-		catch (final RequestException e) {
+		} catch (final RequestException e) {
 			callback.onResponseReceived(false);
 		}
 	}
@@ -123,8 +123,7 @@ public class UserDataServiceImpl implements UserDataService {
 			final BigInteger hash = new BigInteger(1, MessageDigest.getInstance("MD5").digest(email.trim().toLowerCase().getBytes()));
 			final String md5 = hash.toString(16);
 			return md5;
-		}
-		catch (final NoSuchAlgorithmException e) {
+		} catch (final NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 		return "";
@@ -240,7 +239,7 @@ public class UserDataServiceImpl implements UserDataService {
 	@Override
 	public HandlerRegistration registerListenerForSpecificUser(final UUID userId, final UserSpecificInformationChangeListener listener) {
 		userSpecificListeners.put(userId, listener);
-		if (cachedUsers.contains(new UserRepresentation(userId))) listener.onInformationChange(retrieveRealUser(userId));
+		if (cachedUsers.contains(userId)) listener.onInformationChange(retrieveRealUser(userId));
 
 		return new HandlerRegistration() {
 			@Override

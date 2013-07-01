@@ -14,6 +14,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.filter.HttpBasicAuthFilter;
 import org.glassfish.jersey.filter.LoggingFilter;
@@ -25,6 +26,8 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class BillingTrackIntegrationService implements IntegrationService {
+
+	private static final Logger LOGGER = Logger.getLogger(BillingTrackIntegrationService.class);
 
 	private final URI baseUri;
 
@@ -44,9 +47,22 @@ public class BillingTrackIntegrationService implements IntegrationService {
 		final Client client = ClientBuilder.newClient(config);
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/user/invited");
 		final UserInvitedNotificationRequest userInvitedNotification = new UserInvitedNotificationRequest(projectId, invitor.getId(), invitedUser.getId(), invitedUser.getEmail());
-		final Response response = client.target(uriBuilder).request(MediaType.TEXT_HTML).post(Entity.entity(userInvitedNotification, MediaType.APPLICATION_JSON));
-		if (!response.getStatusInfo().getFamily().equals(Status.Family.SUCCESSFUL))
-			throw new RuntimeException("Could not notify integration server: onUserInvited(" + projectId + ", " + invitor + ", " + invitedUser + ")");
+		try {
+			final Response response = client.target(uriBuilder).request(MediaType.TEXT_HTML).post(Entity.entity(userInvitedNotification, MediaType.APPLICATION_JSON));
+			checkErrors(response);
+		} catch (final Exception e) {
+			LOGGER.error("Could not notify integration server: onUserInvited(" + projectId + ", " + invitor + ", " + invitedUser + ")", e);
+		}
+	}
+
+	private void checkErrors(final Response response) {
+		if (response.getStatusInfo().getFamily().equals(Status.Family.SUCCESSFUL)) return;
+
+		final Object entity = response.getEntity();
+		if (entity instanceof Throwable)
+			throw new RuntimeException((Throwable) entity);
+		else
+			throw new RuntimeException(entity.toString());
 	}
 
 	@Provider

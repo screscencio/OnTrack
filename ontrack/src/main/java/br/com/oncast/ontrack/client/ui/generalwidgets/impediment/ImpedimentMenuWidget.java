@@ -71,7 +71,7 @@ public class ImpedimentMenuWidget extends Composite implements HasClickHandlers,
 	public ImpedimentMenuWidget(final UUID subjectId, final Annotation impediment) {
 		this.subjectId = subjectId;
 		this.impediment = impediment;
-		userWidget = new UserWidget(impediment.getAuthor(), this);
+		userWidget = new UserWidget(impediment.getAuthor()).setUpdateListener(this);
 		initWidget(uiBinder.createAndBindUi(this));
 		update();
 	}
@@ -79,10 +79,7 @@ public class ImpedimentMenuWidget extends Composite implements HasClickHandlers,
 	@UiHandler("check")
 	void onCheckClick(final ClickEvent e) {
 		if (impediment.isDeprecated()) return;
-		final ImpedimentAction action =
-				impediment.getType() == OPEN_IMPEDIMENT ?
-						new ImpedimentSolveAction(subjectId, impediment.getId()) :
-						new ImpedimentCreateAction(subjectId, impediment.getId());
+		final ImpedimentAction action = impediment.getType() == OPEN_IMPEDIMENT ? new ImpedimentSolveAction(subjectId, impediment.getId()) : new ImpedimentCreateAction(subjectId, impediment.getId());
 
 		ClientServices.get().actionExecution().onUserActionExecutionRequest(action);
 	}

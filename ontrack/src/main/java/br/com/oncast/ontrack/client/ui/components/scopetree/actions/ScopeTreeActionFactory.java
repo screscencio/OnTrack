@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareDueDateAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
@@ -30,6 +31,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
@@ -38,8 +40,7 @@ public class ScopeTreeActionFactory {
 
 	private static final ScopeTreeAction IGNORE_ACTION = new ScopeTreeAction() {
 		@Override
-		public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction)
-				throws ModelBeanNotFoundException {}
+		public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {}
 	};
 
 	private final ScopeTreeWidget tree;
@@ -67,13 +68,14 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ScopeDeclareValueAction) return new ScopeTreeUpdateAction(tree, action);
 		else if (action instanceof ReleaseRenameAction) return new ScopeTreeReleaseUpdateAction(tree, (ReleaseAction) action);
 		else if (action instanceof KanbanAction) return new ScopeTreeUpdateProgressAction(tree, (KanbanAction) action);
-		else if (action instanceof ScopeAddTagAssociationAction || action instanceof ScopeRemoveTagAssociationAction) return new ScopeTreeTagAssociationAction(
-				tree, action);
+		else if (action instanceof ScopeAddTagAssociationAction || action instanceof ScopeRemoveTagAssociationAction) return new ScopeTreeTagAssociationAction(tree, action);
 		else if (action instanceof TagRemoveAction) return new ScopeTreeTagRemoveUpdateAction(tree, (TagRemoveAction) action);
 		else if (action instanceof TagCreateAction) return new ScopeTreeTagUpdateAction(tree, action);
 		else if (action instanceof AnnotationCreateAction) return new ScopeTreeUpdateAction(tree, action, true);
+		else if (action instanceof ScopeBindHumanIdAction) return IGNORE_ACTION;
 		else if (action instanceof ScopeDeclareDueDateAction) return IGNORE_ACTION;
+		else if (action instanceof TeamAction) return IGNORE_ACTION;
 
-		throw new RuntimeException("It was not possible to find the desired action.");
+		throw new RuntimeException("It was not possible to find the equivalent action for " + action + ".");
 	}
 }

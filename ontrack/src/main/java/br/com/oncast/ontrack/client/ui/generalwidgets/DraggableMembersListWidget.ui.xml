@@ -45,6 +45,12 @@
 		width: 20px;
 		
 		overflow: hidden;
+		
+		display: none;
+	}
+	
+	.canInvite .buttonContainer {
+		display: block;
 	}
 	
 	.addMember, .removeMember {
@@ -68,10 +74,14 @@
 		position: absolute;
 		top: 0px;
 		bottom: 0px;
-		left: 32px;
+		left: 12px;
 		right: 12px;
 		
 		overflow: hidden;
+	}
+	
+	.canInvite .container {
+		left: 32px;
 	}
 	
 	.hiddenButtons .container {

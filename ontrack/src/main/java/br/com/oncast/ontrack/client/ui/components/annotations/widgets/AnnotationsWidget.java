@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -19,7 +18,6 @@ import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
@@ -64,7 +62,7 @@ public class AnnotationsWidget extends Composite {
 
 	@UiFactory
 	protected UserWidget createUserWidget() {
-		return new UserWidget(new UserRepresentation(ClientServices.getCurrentUser()));
+		return new UserWidget(ClientServices.getCurrentUser());
 	}
 
 	@UiField
@@ -193,8 +191,8 @@ public class AnnotationsWidget extends Composite {
 		return actionsListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext, final boolean isUserAction) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
+					final boolean isUserAction) {
 				if (action instanceof AnnotationAction && action.getReferenceId().equals(subjectId)) update();
 				if (action instanceof ImpedimentAction && action.getReferenceId().equals(subjectId)) update();
 			}

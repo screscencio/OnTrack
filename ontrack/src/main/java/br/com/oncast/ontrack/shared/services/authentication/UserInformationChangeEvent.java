@@ -10,28 +10,21 @@ public class UserInformationChangeEvent implements ServerPushEvent {
 
 	private UUID id;
 
-	private int projectInvitationQuota;
-
-	private int projectCreationQuota;
+	private boolean isSuperUser;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected UserInformationChangeEvent() {}
 
 	public UserInformationChangeEvent(final User user) {
 		id = user.getId();
-		projectCreationQuota = user.getProjectCreationQuota();
-		projectInvitationQuota = user.getProjectInvitationQuota();
+		isSuperUser = user.isSuperUser();
 	}
 
 	public UUID getUserId() {
 		return id;
 	}
 
-	public int getProjectInvitationQuota() {
-		return projectInvitationQuota;
-	}
-
-	public int getProjectCreationQuota() {
-		return projectCreationQuota;
+	public boolean isSuperUser() {
+		return isSuperUser;
 	}
 }

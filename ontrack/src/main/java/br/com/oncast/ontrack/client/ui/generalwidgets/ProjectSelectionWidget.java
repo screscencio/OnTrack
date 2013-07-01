@@ -91,15 +91,12 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private static FiltrableCommandMenu createDefaultFiltrableCommandMenu() {
-		return configureFiltrableMenu(new FiltrableCommandMenu(createCustomItemFactory(), FILTRABLE_MENU_MAX_WIDTH, FILTRABLE_MENU_MAX_HEIGHT)
-				.setCloseOnEscape(false));
+		return configureFiltrableMenu(new FiltrableCommandMenu(createCustomItemFactory(), FILTRABLE_MENU_MAX_WIDTH, FILTRABLE_MENU_MAX_HEIGHT).setCloseOnEscape(false));
 
 	}
 
 	private static FiltrableCommandMenu configureFiltrableMenu(final FiltrableCommandMenu filtrableMenu) {
-		return filtrableMenu.setAlwaysShowMenu(false)
-				.setHelpText(messages.selectionHelpText())
-				.setLargePadding();
+		return filtrableMenu.setAlwaysShowMenu(false).setHelpText(messages.selectionHelpText()).setLargePadding();
 	}
 
 	private static CustomCommandMenuItemFactory createCustomItemFactory() {
@@ -108,19 +105,17 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 			@Override
 			public CommandMenuItem createCustomItem(final String inputText) {
-				final int projectCreationQuota = SERVICE_PROVIDER.authentication().getProjectCreationQuota();
-				if (projectCreationQuota > 0) return createProjectCreationItem(inputText, projectCreationQuota);
+				if (SERVICE_PROVIDER.authentication().isCurrentUserSuperUser()) return createProjectCreationItem(inputText);
 				else return getProjectCreationQuotaRequisitionItem();
 			}
 
-			private CommandMenuItem createProjectCreationItem(final String inputText, final int projectCreationQuota) {
-				return new SimpleCommandMenuItem(messages.createNewProject(inputText, projectCreationQuota), inputText,
-						new Command() {
-							@Override
-							public void execute() {
-								createNewProject(inputText);
-							}
-						}).setGrowAnimation(false);
+			private CommandMenuItem createProjectCreationItem(final String inputText) {
+				return new SimpleCommandMenuItem(messages.createNewProject(inputText), inputText, new Command() {
+					@Override
+					public void execute() {
+						createNewProject(inputText);
+					}
+				}).setGrowAnimation(false);
 			}
 
 			private CommandMenuItem getProjectCreationQuotaRequisitionItem() {
@@ -128,13 +123,12 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 			}
 
 			private CommandMenuItem createProjectCreationQuotaRequisitionItem() {
-				return new TextAndImageCommandMenuItem("icon-ban-circle", messages.askForMoreProjects(),
-						new Command() {
-							@Override
-							public void execute() {
-								requestProjectCreationQuota();
-							}
-						}).setGrowAnimation(false);
+				return new TextAndImageCommandMenuItem("icon-ban-circle", messages.askForMoreProjects(), new Command() {
+					@Override
+					public void execute() {
+						requestProjectCreationQuota();
+					}
+				}).setGrowAnimation(false);
 			}
 
 			@Override
@@ -259,11 +253,11 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	protected static void requestProjectCreationQuota() {
-		SERVICE_PROVIDER.alerting().showInfo(messages.processingProjectQuotaRequest());
+		SERVICE_PROVIDER.alerting().showInfo(messages.processingProjectCreationRequest());
 		ClientServices.get().feedback().requestProjectCreationQuota(new ProjectCreationQuotaRequisitionCallback() {
 			@Override
 			public void onRequestSentSucessfully() {
-				SERVICE_PROVIDER.alerting().showSuccess(messages.projectQuotaRequestSent());
+				SERVICE_PROVIDER.alerting().showSuccess(messages.projectCreationRequestSent());
 			}
 
 			@Override

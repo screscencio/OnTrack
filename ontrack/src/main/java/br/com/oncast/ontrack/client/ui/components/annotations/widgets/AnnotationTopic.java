@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuWidget;
@@ -101,7 +100,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		this.annotation = annotation;
 
 		commentsPanel = new CommentsWidget(annotation.getId());
-		author = new UserWidget(annotation.getAuthor(), false);
+		author = new UserWidget(annotation.getAuthor()).showUserStatus(false);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		deckPanel.showWidget(annotation.isDeprecated() ? 1 : 0);
@@ -121,9 +120,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final ActionExecutionContext executionContext,
-			final boolean isUserAction) {
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
 		if (action instanceof AnnotationAction && action.getReferenceId().equals(annotation.getId())) update();
 	}
 
@@ -159,8 +156,8 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 		if (currentType == null || currentType != annotation.getType()) {
 			createCustomMenu();
-		}
-		else menu.update();
+		} else
+			menu.update();
 		return false;
 	}
 
@@ -225,19 +222,18 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	private void updateDeprecationLabel() {
 		final String formattedDate = HumanDateFormatter.get().formatDateRelativeToNow(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 		deprecatedLabel.setText(messages.deprecationDetails("user", formattedDate));
-		ClientServices.get().userData()
-				.loadRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED).getId(), new AsyncCallback<User>() {
+		ClientServices.get().userData().loadRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED).getId(), new AsyncCallback<User>() {
 
-					@Override
-					public void onSuccess(final User result) {
-						deprecatedLabel.setText(messages.deprecationDetails(result.getName(), formattedDate));
-					}
+			@Override
+			public void onSuccess(final User result) {
+				deprecatedLabel.setText(messages.deprecationDetails(result.getName(), formattedDate));
+			}
 
-					@Override
-					public void onFailure(final Throwable caught) {
+			@Override
+			public void onFailure(final Throwable caught) {
 
-					}
-				});
+			}
+		});
 	}
 
 	@Override
