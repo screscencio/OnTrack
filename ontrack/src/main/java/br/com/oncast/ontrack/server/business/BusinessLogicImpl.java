@@ -158,7 +158,7 @@ class BusinessLogicImpl implements BusinessLogic {
 				ActionExecuter.executeAction(projectContext, actionContext, action.getModelAction());
 			} catch (final Exception e) {
 				LOGGER.error("Unable to apply action to project", e);
-				throw new UnableToCompleteActionException(e);
+				throw new UnableToCompleteActionException(action.getModelAction(), e);
 			}
 		}
 

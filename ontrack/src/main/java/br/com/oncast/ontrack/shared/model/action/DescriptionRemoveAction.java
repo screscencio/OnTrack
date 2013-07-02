@@ -36,8 +36,8 @@ public class DescriptionRemoveAction implements DescriptionAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Description description = ActionHelper.findDescription(subjectId, context);
-		if (userAction && !description.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.DESCRIPTION_REMOVE);
+		final Description description = ActionHelper.findDescription(subjectId, context, this);
+		if (userAction && !description.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.DESCRIPTION_REMOVE);
 
 		context.removeDescriptionFor(subjectId);
 

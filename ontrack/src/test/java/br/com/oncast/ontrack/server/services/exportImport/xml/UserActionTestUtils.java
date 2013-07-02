@@ -1,13 +1,5 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import static br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils.set;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
@@ -75,6 +67,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.TeamDeclareReadOnlyAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.color.Color;
@@ -84,6 +77,14 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import static br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils.set;
 
 public class UserActionTestUtils {
 
@@ -187,7 +188,12 @@ public class UserActionTestUtils {
 		userActions.add(createScopeDeclareTimeSpentAction());
 		userActions.add(createScopeDeclareDueDateAction());
 		userActions.add(createKanbanLockAction());
+		userActions.add(createTeamDeclareReadOnlyAction());
 		return userActions;
+	}
+
+	private static UserAction createTeamDeclareReadOnlyAction() throws Exception {
+		return createUserAction(new TeamDeclareReadOnlyAction(new UUID(), true));
 	}
 
 	private static UserAction createKanbanLockAction() throws Exception {
@@ -380,32 +386,27 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createScopeMoveRightAction() throws Exception {
-		final ScopeMoveRightAction scopeMoveRight = new
-				ScopeMoveRightAction(new UUID(), 1, new ArrayList<ModelAction>());
+		final ScopeMoveRightAction scopeMoveRight = new ScopeMoveRightAction(new UUID(), 1, new ArrayList<ModelAction>());
 		return createUserAction(scopeMoveRight);
 	}
 
 	public static UserAction createScopeMoveLeftAction() throws Exception {
-		final ScopeMoveLeftAction scopeMoveLeft = new
-				ScopeMoveLeftAction(new UUID(), new ArrayList<ModelAction>());
+		final ScopeMoveLeftAction scopeMoveLeft = new ScopeMoveLeftAction(new UUID(), new ArrayList<ModelAction>());
 		return createUserAction(scopeMoveLeft);
 	}
 
 	public static UserAction createScopeInsertSiblingUpAction() throws Exception {
-		final ScopeInsertSiblingUpAction scopeInsertSibling = new
-				ScopeInsertSiblingUpAction(new UUID(), new UUID(), "pattern");
+		final ScopeInsertSiblingUpAction scopeInsertSibling = new ScopeInsertSiblingUpAction(new UUID(), new UUID(), "pattern");
 		return createUserAction(scopeInsertSibling);
 	}
 
 	public static UserAction createScopeInsertSiblingDownAction() throws Exception {
-		final ScopeInsertSiblingDownAction scopeInsertSibling = new
-				ScopeInsertSiblingDownAction(new UUID(), new UUID(), "pattern");
+		final ScopeInsertSiblingDownAction scopeInsertSibling = new ScopeInsertSiblingDownAction(new UUID(), new UUID(), "pattern");
 		return createUserAction(scopeInsertSibling);
 	}
 
 	public static UserAction createScopeRemoveRollbackAction() throws Exception {
-		final ScopeRemoveRollbackAction scopeRemoveRollback = new
-				ScopeRemoveRollbackAction(new UUID(), new UUID(), "text", 1, new ArrayList<ModelAction>(), new ArrayList<ScopeRemoveRollbackAction>());
+		final ScopeRemoveRollbackAction scopeRemoveRollback = new ScopeRemoveRollbackAction(new UUID(), new UUID(), "text", 1, new ArrayList<ModelAction>(), new ArrayList<ScopeRemoveRollbackAction>());
 		return createUserAction(scopeRemoveRollback);
 	}
 
@@ -425,22 +426,17 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createScopeInsertSiblingUpRollbackAction() throws Exception {
-		final ScopeInsertSiblingUpRollbackAction insertSiblingRollback = new ScopeInsertSiblingUpRollbackAction(new UUID(),
-				new ScopeUpdateAction(
-						new UUID(), "descricao @release %d #3"));
+		final ScopeInsertSiblingUpRollbackAction insertSiblingRollback = new ScopeInsertSiblingUpRollbackAction(new UUID(), new ScopeUpdateAction(new UUID(), "descricao @release %d #3"));
 		return createUserAction(insertSiblingRollback);
 	}
 
 	public static UserAction createScopeInsertSiblingDownRollbackAction() throws Exception {
-		final ScopeInsertSiblingDownRollbackAction insertSiblingRollback = new ScopeInsertSiblingDownRollbackAction(new UUID(),
-				new ScopeUpdateAction(
-						new UUID(), "descricao @release %d #3"));
+		final ScopeInsertSiblingDownRollbackAction insertSiblingRollback = new ScopeInsertSiblingDownRollbackAction(new UUID(), new ScopeUpdateAction(new UUID(), "descricao @release %d #3"));
 		return createUserAction(insertSiblingRollback);
 	}
 
 	public static UserAction createScopeInsertParentRollbackAction() throws Exception {
-		final ScopeInsertParentRollbackAction insertParentRollback = new ScopeInsertParentRollbackAction(new UUID(), new UUID(), new ScopeUpdateAction(
-				new UUID(), "descricao @release %d #3"));
+		final ScopeInsertParentRollbackAction insertParentRollback = new ScopeInsertParentRollbackAction(new UUID(), new UUID(), new ScopeUpdateAction(new UUID(), "descricao @release %d #3"));
 		return createUserAction(insertParentRollback);
 	}
 
@@ -465,8 +461,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createReleaseRemoveRollbackAction() throws Exception {
-		final ReleaseRemoveRollbackAction releaseRemoveRollbackAction = new ReleaseRemoveRollbackAction(new UUID(), new UUID(), "", 1,
-				new ArrayList<ReleaseRemoveRollbackAction>(),
+		final ReleaseRemoveRollbackAction releaseRemoveRollbackAction = new ReleaseRemoveRollbackAction(new UUID(), new UUID(), "", 1, new ArrayList<ReleaseRemoveRollbackAction>(),
 				new ArrayList<ModelAction>());
 		return createUserAction(releaseRemoveRollbackAction);
 	}

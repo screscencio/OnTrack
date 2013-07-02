@@ -44,10 +44,10 @@ public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_ROOT_SIBLING);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CREATE_ROOT_SIBLING);
 
-		final Scope newScope = new Scope("", newScopeId, ActionHelper.findUserFrom(actionContext, context), actionContext.getTimestamp());
+		final Scope newScope = new Scope("", newScopeId, ActionHelper.findUserFrom(actionContext, context, this), actionContext.getTimestamp());
 
 		final Scope parent = selectedScope.getParent();
 		parent.add(parent.getChildIndex(selectedScope) + 1, newScope);

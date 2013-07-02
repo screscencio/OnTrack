@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -34,7 +33,6 @@ public class DefaultUserExistenceAssurerTest {
 	}
 
 	@Test
-	@Ignore("Ignored because the password is always empty in dev mode and can't mock GWT.isProdMode()")
 	public void assertCreatedUserHaveDefinedPassword() {
 		DefaultUserExistenceAssurer.verify();
 		final User user = findUser(DEFAULT_EMAIL);

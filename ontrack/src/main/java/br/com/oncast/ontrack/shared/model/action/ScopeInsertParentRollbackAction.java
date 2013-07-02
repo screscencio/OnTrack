@@ -41,9 +41,9 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope newScope = ActionHelper.findScope(newScopeId, context);
-		if (newScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_ROOT_NODE);
-		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.ROLLBACK_INCONSITENCY);
+		final Scope newScope = ActionHelper.findScope(newScopeId, context, this);
+		if (newScope.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.REMOVE_ROOT_NODE);
+		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.ROLLBACK_INCONSITENCY);
 
 		final String pattern = new ScopeRepresentationBuilder(newScope).includeEverything().toString();
 

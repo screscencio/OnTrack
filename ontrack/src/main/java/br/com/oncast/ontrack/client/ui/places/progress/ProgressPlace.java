@@ -42,8 +42,7 @@ public class ProgressPlace extends ProjectDependentPlace implements RestorablePl
 			try {
 				projectId = new UUID(parameters[0]);
 				releaseId = new UUID(parameters[1]);
-			}
-			catch (final Exception e) {
+			} catch (final Exception e) {
 				projectId = UUID.INVALID_UUID;
 				releaseId = UUID.INVALID_UUID;
 			}
@@ -58,6 +57,11 @@ public class ProgressPlace extends ProjectDependentPlace implements RestorablePl
 
 	public UUID getRequestedReleaseId() {
 		return releaseId;
+	}
+
+	@Override
+	public String toString() {
+		return "ProgressPlace [projectId=" + projectId + ", releaseId=" + releaseId + "]";
 	}
 
 }

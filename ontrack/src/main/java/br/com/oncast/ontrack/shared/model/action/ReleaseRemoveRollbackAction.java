@@ -59,7 +59,7 @@ public class ReleaseRemoveRollbackAction implements ReleaseAction {
 
 	@Override
 	public ReleaseRemoveAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Release parentRelease = ActionHelper.findRelease(parentReleaseId, context);
+		final Release parentRelease = ActionHelper.findRelease(parentReleaseId, context, this);
 
 		final Release newRelease = new Release(description, newReleaseId);
 		parentRelease.addChild(index, newRelease);

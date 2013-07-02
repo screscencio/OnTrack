@@ -71,7 +71,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	// TODO Reference a release by its ID, not by its description. (Think about the consequences).
 	@Override
 	public ScopeBindReleaseAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
 
 		final Release oldRelease = selectedScope.getRelease();
 		final int oldScopePriority = (oldRelease != null) ? oldRelease.removeScope(selectedScope) : -1;
@@ -82,7 +82,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 			final ModelAction releaseRemoveAction = assureNewReleaseExistence(context, actionContext);
 			if (releaseRemoveAction != null) newRollbackSubActions.add(0, releaseRemoveAction);
 
-			final Release newRelease = ActionHelper.findRelease(newReleaseDescription, context);
+			final Release newRelease = ActionHelper.findRelease(newReleaseDescription, context, this);
 			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
 			else newRelease.addScope(selectedScope, scopePriority);
 

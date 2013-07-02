@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnMoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -15,6 +8,13 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(KanbanColumnMoveActionEntity.class)
 public class KanbanColumnMoveAction implements KanbanAction {
@@ -48,18 +48,16 @@ public class KanbanColumnMoveAction implements KanbanAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Kanban kanban = context.getKanban(ActionHelper.findRelease(releaseId, context));
+		final Kanban kanban = context.getKanban(ActionHelper.findRelease(releaseId, context, this));
 		try {
-			if (kanban.getColumn(columnDescription) == null) return new KanbanColumnCreateAction(releaseId, columnDescription, true, desiredIndex).execute(
-					context, actionContext);
+			if (kanban.getColumn(columnDescription) == null) return new KanbanColumnCreateAction(releaseId, columnDescription, true, desiredIndex).execute(context, actionContext);
 			final int previousIndex = kanban.indexOf(columnDescription);
 			kanban.moveColumn(columnDescription, desiredIndex);
 			if (subActions.isEmpty() && !kanban.isLocked()) subActions.add(new KanbanLockAction(releaseId));
 			ActionHelper.executeSubActions(subActions, context, actionContext);
 			return new KanbanColumnMoveAction(releaseId, columnDescription, previousIndex);
-		}
-		catch (final RuntimeException e) {
-			throw new UnableToCompleteActionException(e);
+		} catch (final RuntimeException e) {
+			throw new UnableToCompleteActionException(this, e);
 		}
 	}
 

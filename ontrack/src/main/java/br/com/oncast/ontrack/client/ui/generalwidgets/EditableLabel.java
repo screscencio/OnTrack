@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
@@ -29,6 +26,10 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 
 public class EditableLabel extends Composite implements HasValueChangeHandlers<String>, HasValue<String>, HasDoubleClickHandlers {
 
@@ -131,8 +132,7 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 		if (isEnterOrTab || event.getNativeKeyCode() == KEY_ESCAPE) {
 			event.preventDefault();
 			switchToVisualization(isEnterOrTab);
-		}
-		else return;
+		} else return;
 	}
 
 	public void switchToEdit() {
@@ -158,8 +158,7 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 
 		if (!shouldTryToUpdateChanges) {
 			editionBox.setText(visualizationLabel.getText());
-		}
-		else if (!getValue().equals(editionBox.getText()) || editionBox.getText().isEmpty()) {
+		} else if (!getValue().equals(editionBox.getText()) || editionBox.getText().isEmpty()) {
 			if (editionHandler.onEditionRequest(editionBox.getText())) setValue(editionBox.getText(), true);
 			else editionBox.setText(getValue());
 		}

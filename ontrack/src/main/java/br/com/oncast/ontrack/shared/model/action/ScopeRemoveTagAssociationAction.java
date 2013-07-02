@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag.ScopeRemoveTagAssociationActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -12,6 +10,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeRemoveTagAssociationActionEntity.class)
 public class ScopeRemoveTagAssociationAction implements ScopeAction, TagAction {
@@ -33,8 +33,8 @@ public class ScopeRemoveTagAssociationAction implements ScopeAction, TagAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope scope = ActionHelper.findScope(scopeId, context);
-		final Tag tag = ActionHelper.findTag(tagId, context);
+		final Scope scope = ActionHelper.findScope(scopeId, context, this);
+		final Tag tag = ActionHelper.findTag(tagId, context, this);
 		for (final TagAssociationMetadata metadata : context.<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType())) {
 			if (!tag.equals(metadata.getTag())) continue;
 
@@ -42,7 +42,7 @@ public class ScopeRemoveTagAssociationAction implements ScopeAction, TagAction {
 			return new ScopeAddTagAssociationAction(metadata);
 		}
 
-		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_INEXISTENT);
+		throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.REMOVE_INEXISTENT);
 	}
 
 	@Override

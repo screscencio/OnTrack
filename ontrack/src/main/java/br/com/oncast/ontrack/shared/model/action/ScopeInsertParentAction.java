@@ -44,14 +44,14 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 
 	@Override
 	public ScopeInsertParentRollbackAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_ROOT_PARENT);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CREATE_ROOT_PARENT);
 
 		final Scope parent = selectedScope.getParent();
 		final int index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
 
-		final Scope newScope = new Scope("", newScopeId, ActionHelper.findUserFrom(actionContext, context), actionContext.getTimestamp());
+		final Scope newScope = new Scope("", newScopeId, ActionHelper.findUserFrom(actionContext, context, this), actionContext.getTimestamp());
 
 		parent.add(index, newScope);
 		newScope.add(selectedScope);

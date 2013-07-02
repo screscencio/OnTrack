@@ -1,16 +1,9 @@
 package br.com.oncast.ontrack.shared.model.action.release;
 
-import static junit.framework.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseUpdatePriorityActionEntity;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
@@ -23,6 +16,12 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static junit.framework.Assert.assertEquals;
 
 public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 
@@ -41,31 +40,31 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotUpdatePriorityOfARootRelease() throws UnableToCompleteActionException, ReleaseNotFoundException {
-		new ReleaseUpdatePriorityAction(rootRelease.getId(), 1).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(rootRelease.getId(), 1).execute(context, actionContext);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotUpdatePriorityWhenTheTargetPositionDoesNotExists() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0).getChild(1);
-		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildren().size()).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildren().size()).execute(context, actionContext);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotUpdatePriorityWhenTheTargetPositionDoesNotExists2() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0).getChild(1);
-		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildren().size() + 1).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildren().size() + 1).execute(context, actionContext);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotUpdatePriorityWhenTheTargetPositionIsNegative() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0).getChild(1);
-		new ReleaseUpdatePriorityAction(release.getId(), -1).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(release.getId(), -1).execute(context, actionContext);
 	}
 
 	@Test
 	public void shouldIncreaseReleasePriority() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0).getChild(1);
-		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) - 1).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) - 1).execute(context, actionContext);
 
 		assertEquals(0, rootRelease.getChild(0).getChildIndex(release));
 		assertEquals(rootRelease.getChild(0).getChild(0), release);
@@ -74,7 +73,7 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 	@Test
 	public void shouldDecreaseReleasePriority() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0).getChild(1);
-		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) + 1).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) + 1).execute(context, actionContext);
 
 		assertEquals(2, rootRelease.getChild(0).getChildIndex(release));
 		assertEquals(rootRelease.getChild(0).getChild(2), release);
@@ -83,7 +82,7 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 	@Test
 	public void shouldChangeReleasePriorityToAnyGivenAllowedPosition() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0);
-		new ReleaseUpdatePriorityAction(release.getId(), 2).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(release.getId(), 2).execute(context, actionContext);
 
 		assertEquals(2, rootRelease.getChildIndex(release));
 	}
@@ -91,13 +90,13 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotIncreasePriorityWhenTheReleaseAlreadyHaveTheHighestPossiblePriority() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0).getChild(0);
-		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) - 1).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) - 1).execute(context, actionContext);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotDecreasePriorityWhenTheReleaseAlreadyHaveTheLowestPossiblePriority() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0).getChild(2);
-		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) + 1).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) + 1).execute(context, actionContext);
 	}
 
 	@Test
@@ -107,7 +106,7 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 		final Release childRelease1 = release.getChild(1);
 		final Release childRelease2 = release.getChild(2);
 
-		new ReleaseUpdatePriorityAction(release.getId(), 1).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseUpdatePriorityAction(release.getId(), 1).execute(context, actionContext);
 
 		assertEquals(1, rootRelease.getChildIndex(release));
 		assertEquals(rootRelease.getChild(1), release);
@@ -119,12 +118,12 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 	@Test
 	public void rollbackShouldChangeReleasePriorityToItsOldPriority() throws UnableToCompleteActionException {
 		final Release release = rootRelease.getChild(0);
-		final ModelAction rollbackAction = new ReleaseUpdatePriorityAction(release.getId(), 1).execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = new ReleaseUpdatePriorityAction(release.getId(), 1).execute(context, actionContext);
 
 		assertEquals(1, rootRelease.getChildIndex(release));
 		assertEquals(rootRelease.getChild(1), release);
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertEquals(0, rootRelease.getChildIndex(release));
 		assertEquals(rootRelease.getChild(0), release);
@@ -133,12 +132,12 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 	@Test
 	public void rollbackShouldChangeReleasePriorityToItsOldPriority2() throws UnableToCompleteActionException {
 		final Release release = rootRelease.getChild(0);
-		final ModelAction rollbackAction = new ReleaseUpdatePriorityAction(release.getId(), 2).execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = new ReleaseUpdatePriorityAction(release.getId(), 2).execute(context, actionContext);
 
 		assertEquals(2, rootRelease.getChildIndex(release));
 		assertEquals(rootRelease.getChild(2), release);
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertEquals(0, rootRelease.getChildIndex(release));
 		assertEquals(rootRelease.getChild(0), release);
@@ -149,18 +148,18 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 		final Release release = rootRelease.getChild(0);
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ReleaseUpdatePriorityAction(release.getId(), 1), context, Mockito.mock(ActionContext.class));
+		actionExecutionManager.doUserAction(new ReleaseUpdatePriorityAction(release.getId(), 1), context, actionContext);
 
 		assertEquals(1, rootRelease.getChildIndex(release));
 		assertEquals(rootRelease.getChild(1), release);
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
+			actionExecutionManager.undoUserAction(context, actionContext);
 
 			assertEquals(0, rootRelease.getChildIndex(release));
 			assertEquals(rootRelease.getChild(0), release);
 
-			actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
+			actionExecutionManager.redoUserAction(context, actionContext);
 
 			assertEquals(1, rootRelease.getChildIndex(release));
 			assertEquals(rootRelease.getChild(1), release);

@@ -47,9 +47,9 @@ public class ScopeBindHumanIdAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope scope = ActionHelper.findScope(scopeId, context);
+		final Scope scope = ActionHelper.findScope(scopeId, context, this);
 		final List<HumanIdMetadata> metadataList = context.getMetadataList(scope, MetadataType.HUMAN_ID);
-		if (!metadataList.isEmpty()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);
+		if (!metadataList.isEmpty()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CREATE_EXISTENT);
 
 		final HumanIdMetadata metadata = MetadataFactory.createHumanIdMetadata(metadataId, scope, humanId);
 		context.addMetadata(metadata);

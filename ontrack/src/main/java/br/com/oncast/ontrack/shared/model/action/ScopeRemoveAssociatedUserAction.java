@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.List;
-
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveAssociatedUserActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -14,6 +10,10 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.List;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeRemoveAssociatedUserActionEntity.class)
 public class ScopeRemoveAssociatedUserAction implements ScopeAction {
@@ -35,8 +35,8 @@ public class ScopeRemoveAssociatedUserAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope scope = ActionHelper.findScope(scopeId, context);
-		final UserRepresentation user = ActionHelper.findUser(userId, context);
+		final Scope scope = ActionHelper.findScope(scopeId, context, this);
+		final UserRepresentation user = ActionHelper.findUser(userId, context, this);
 
 		final List<UserAssociationMetadata> metadataList = context.getMetadataList(scope, UserAssociationMetadata.getType());
 
@@ -47,7 +47,7 @@ public class ScopeRemoveAssociatedUserAction implements ScopeAction {
 			}
 		}
 
-		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_INEXISTENT);
+		throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.REMOVE_INEXISTENT);
 	}
 
 	@Override

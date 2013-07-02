@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.notification.NotificationClientUtils;
 import br.com.oncast.ontrack.client.services.notification.NotificationListChangeListener;
@@ -9,6 +7,8 @@ import br.com.oncast.ontrack.client.services.notification.NotificationReadStateC
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -38,8 +38,7 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 
 		private void calculateUnreadNotifications() {
 			final List<Notification> unreadNotificationsForCurrentUser = NotificationClientUtils.getUnreadNotificationsForCurrentUser(notifications);
-			setSuffix("" + unreadNotificationsForCurrentUser.size());
-			notificationMenuItemHeader.setHasUnread(!unreadNotificationsForCurrentUser.isEmpty());
+			setSuffix(unreadNotificationsForCurrentUser.isEmpty() ? "" : ("" + unreadNotificationsForCurrentUser.size()));
 		}
 
 		@Override

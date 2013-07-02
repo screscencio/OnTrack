@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.client.services.actionExecution;
 
-import java.util.EmptyStackException;
-import java.util.Stack;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+
+import java.util.EmptyStackException;
+import java.util.Stack;
 
 public class ActionExecutionManager {
 
@@ -22,53 +22,43 @@ public class ActionExecutionManager {
 		redoStack = new Stack<ModelAction>();
 	}
 
-	public void doNonUserAction(final ModelAction action, final ProjectContext context, final ActionContext actionContext)
-			throws UnableToCompleteActionException {
+	public void doNonUserAction(final ModelAction action, final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, actionContext, action);
 		executionListener.onActionExecution(action, context, actionContext, executionContext, false);
 	}
 
 	public void doUserAction(final ModelAction action, final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, actionContext, action);
-		executionListener.onActionExecution(action, context, actionContext, executionContext, true);
-
-		final ModelAction undoAction = executionContext.getReverseAction();
-		undoStack.push(undoAction);
+		undoStack.push(executeUserAction(action, context, actionContext));
 		redoStack.clear();
 	}
 
 	public void undoUserAction(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		try {
-			final ModelAction undoAction = undoStack.pop();
-			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, actionContext, undoAction);
-			executionListener.onActionExecution(undoAction, context, actionContext, executionContext, true);
-			final ModelAction redoAction = executionContext.getReverseAction();
-			redoStack.push(redoAction);
-		}
-		catch (final UnableToCompleteActionException e) {
+			redoStack.push(executeUserAction(undoStack.pop(), context, actionContext));
+		} catch (final UnableToCompleteActionException e) {
 			undoStack.clear();
 			throw e;
-		}
-		catch (final EmptyStackException e) {
+		} catch (final EmptyStackException e) {
 			// Purposefully ignoring exception
 		}
 	}
 
 	public void redoUserAction(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		try {
-			final ModelAction redoAction = redoStack.pop();
-			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, actionContext, redoAction);
-			executionListener.onActionExecution(redoAction, context, actionContext, executionContext, true);
-			final ModelAction undoAction = executionContext.getReverseAction();
-			undoStack.push(undoAction);
-		}
-		catch (final UnableToCompleteActionException e) {
+			undoStack.push(executeUserAction(redoStack.pop(), context, actionContext));
+		} catch (final UnableToCompleteActionException e) {
 			redoStack.clear();
 			throw e;
-		}
-		catch (final EmptyStackException e) {
+		} catch (final EmptyStackException e) {
 			// Purposefully ignoring exception
 		}
+	}
+
+	public ModelAction executeUserAction(final ModelAction action, final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+		ActionExecuter.verifyPermissions(action, context, actionContext);
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, actionContext, action);
+		executionListener.onActionExecution(action, context, actionContext, executionContext, true);
+		return executionContext.getReverseAction();
 	}
 
 	public void cleanActionExecutionHistory() {

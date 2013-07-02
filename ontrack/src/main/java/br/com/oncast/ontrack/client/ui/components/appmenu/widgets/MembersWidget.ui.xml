@@ -29,16 +29,6 @@
 			text-align: center;
 		}
 		
-		.superUserCheck {
-			cursor: pointer;
-		}
-		
-		.superUserCheck > input {
-			top: 2px;
-			position: relative;
-			margin-right: 5px;
-		}
-
 	</ui:style>
 
 	<layout:ApplicationPopupBoxContainer ui:field="rootPanel" styleName="{style.rootPanel}">
@@ -46,7 +36,7 @@
 			<ui:msg description="invitee label">Invitee:</ui:msg>
 		</g:Label>
 		<misc:DefaultTextedTextBox ui:field="invitationTextBox" defaultText="email@domain.com"/>
-		<g:CheckBox ui:field="superUserCheck" checked="true" text="Can invite new members *" title="Inviting new members can add costs for you or your company" styleName="{style.superUserCheck}">
+		<g:CheckBox ui:field="superUserCheck" checked="true" text="Can invite new members *" title="Inviting new members can add costs for you or your company">
 			<ui:attribute name="text" description="Super user checkbox label" />
 			<ui:attribute name="title" description="Super user checkbox title" />
 		</g:CheckBox>

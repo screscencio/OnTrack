@@ -18,9 +18,8 @@ class InternalActionHelper {
 	static UserRepresentation findCurrentUser() throws UnableToCompleteActionException {
 		try {
 			return ClientServices.getCurrentProjectContext().findUser(ClientServices.getCurrentUser());
-		}
-		catch (final UserNotFoundException e) {
-			throw new UnableToCompleteActionException(e);
+		} catch (final UserNotFoundException e) {
+			throw new UnableToCompleteActionException(null, e);
 		}
 	}
 }

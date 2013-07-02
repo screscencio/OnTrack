@@ -32,11 +32,11 @@ public class AnnotationVoteRemoveAction implements AnnotationAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context);
-		final UserRepresentation user = ActionHelper.findUser(actionContext.getUserId(), context);
-		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.VOTE_REMOVE_FROM_DEPRECATED_ANNOTATION);
+		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context, this);
+		final UserRepresentation user = ActionHelper.findUser(actionContext.getUserId(), context, this);
+		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.VOTE_REMOVE_FROM_DEPRECATED_ANNOTATION);
 
-		if (!annotation.hasVoted(user)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_UNGIVEN_VOTE);
+		if (!annotation.hasVoted(user)) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.REMOVE_UNGIVEN_VOTE);
 		annotation.removeVote(user);
 		return new AnnotationVoteAction(annotationId, annotatedObjectId);
 	}

@@ -59,10 +59,10 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
-		selectedScope.getProgress().setDescription(newProgressDescription, ActionHelper.findUserFrom(actionContext, context), actionContext.getTimestamp());
+		selectedScope.getProgress().setDescription(newProgressDescription, ActionHelper.findUserFrom(actionContext, context, this), actionContext.getTimestamp());
 		final List<ModelAction> rollbackActions = processSubActions(context, actionContext, selectedScope);
 
 		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollbackActions);

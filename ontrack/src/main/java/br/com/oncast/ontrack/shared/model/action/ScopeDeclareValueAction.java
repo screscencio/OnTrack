@@ -40,7 +40,7 @@ public class ScopeDeclareValueAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
 
 		final boolean oldHasDeclared = selectedScope.getValue().hasDeclared();
 		final float oldDeclaredValue = selectedScope.getValue().getDeclared();

@@ -1,21 +1,36 @@
 package br.com.oncast.ontrack.client.ui.components.user;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.services.user.UserHasGravatarCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.TeamAction;
+import br.com.oncast.ontrack.shared.model.action.TeamDeclareReadOnlyAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -61,9 +76,22 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 	@UiField
 	Label userWithoutImage;
 
+	@UiField
+	CheckBox canMakeChangesCheckBox;
+
 	private User user;
 
-	public UserInformationCard() {
+	private boolean isCurrentUserSuperUser;
+
+	private final UserRepresentation userRepresentation;
+
+	private Set<HandlerRegistration> registrations;
+
+	public UserInformationCard(final UserRepresentation userRepresentation) {
+		this.userRepresentation = userRepresentation;
+		this.registrations = new HashSet<HandlerRegistration>();
+		isCurrentUserSuperUser = false;
+
 		userName = new EditableLabel(new EditableLabelEditionHandler() {
 
 			@Override
@@ -99,13 +127,21 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 	}
 
 	@Override
-	public void show() {}
+	public void show() {
+		addListeners();
+	}
 
 	@Override
 	public void hide() {
 		if (!this.isVisible()) return;
 
+		removeListeners();
 		CloseEvent.fire(this, this);
+	}
+
+	@UiHandler("canMakeChangesCheckBox")
+	void onCanMakeChangesValueChange(final ValueChangeEvent<Boolean> e) {
+		ClientServices.get().actionExecution().onUserActionExecutionRequest(new TeamDeclareReadOnlyAction(userRepresentation.getId(), !e.getValue()));
 	}
 
 	@Override
@@ -115,8 +151,19 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 
 	public void updateUser(final User user) {
 		this.user = user;
-		userName.setReadOnly(!user.equals(ClientServices.getCurrentUser()));
+		final boolean isOtherUser = isOtherUser();
+		userName.setReadOnly(isOtherUser);
+		canMakeChangesCheckBox.setEnabled(isOtherUser && isCurrentUserSuperUser);
+		updateCanMakeChanges();
 		updateView();
+	}
+
+	private boolean isOtherUser() {
+		return !user.equals(ClientServices.getCurrentUser());
+	}
+
+	private void updateCanMakeChanges() {
+		canMakeChangesCheckBox.setValue(!userRepresentation.isReadOnly(), false);
 	}
 
 	private void showLabel() {
@@ -138,7 +185,6 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 		author.setUrl(SERVICE_PROVIDER.userData().getAvatarUrl(user));
 
 		SERVICE_PROVIDER.userData().hasAvatarInGravatar(user, new UserHasGravatarCallback() {
-
 			@Override
 			public void onResponseReceived(final boolean hasGravatarAvatar) {
 				if (hasGravatarAvatar) showImage();
@@ -148,4 +194,35 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 
 		userImageContainer.showWidget(1);
 	}
+
+	private void addListeners() {
+		if (!registrations.isEmpty()) return;
+
+		registrations.add(ClientServices.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
+					final boolean isUserAction) {
+				if (action instanceof TeamAction && action.getReferenceId().equals(userRepresentation.getId())) updateCanMakeChanges();
+			}
+
+		}));
+
+		registrations.add(ClientServices.get().userData().registerListenerForSpecificUser(ClientServices.getCurrentUser(), new UserSpecificInformationChangeListener() {
+			@Override
+			public void onInformationChange(final User user) {
+				isCurrentUserSuperUser = user.isSuperUser();
+				canMakeChangesCheckBox.setEnabled(isOtherUser() && isCurrentUserSuperUser);
+			}
+		}));
+	}
+
+	private void removeListeners() {
+		final HashSet<HandlerRegistration> currentRegistrations = new HashSet<HandlerRegistration>(registrations);
+		for (final HandlerRegistration reg : currentRegistrations) {
+			reg.removeHandler();
+		}
+
+		registrations.removeAll(currentRegistrations);
+	}
+
 }

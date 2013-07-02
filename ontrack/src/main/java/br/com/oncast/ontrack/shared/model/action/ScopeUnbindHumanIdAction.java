@@ -32,8 +32,8 @@ public class ScopeUnbindHumanIdAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final HasMetadata subject = ActionHelper.findScope(scopeId, context);
-		final HumanIdMetadata metadata = ActionHelper.findMetadata(subject, MetadataType.HUMAN_ID, metadataId, context);
+		final HasMetadata subject = ActionHelper.findScope(scopeId, context, this);
+		final HumanIdMetadata metadata = ActionHelper.findMetadata(subject, MetadataType.HUMAN_ID, metadataId, context, this);
 		context.removeMetadata(metadata);
 		return new ScopeBindHumanIdAction(metadata);
 	}

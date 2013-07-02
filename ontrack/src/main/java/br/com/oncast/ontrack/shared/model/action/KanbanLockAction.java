@@ -41,9 +41,9 @@ public class KanbanLockAction implements KanbanAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Release release = ActionHelper.findRelease(releaseId, context);
+		final Release release = ActionHelper.findRelease(releaseId, context, this);
 		final Kanban kanban = context.getKanban(release);
-		if (kanban.isLocked()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CONFLICTED);
+		if (kanban.isLocked()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CONFLICTED);
 		kanban.setLocked(true);
 		for (final KanbanColumn column : kanban.getColumns()) {
 			if (column.getId() == null) column.setId(getId(column.getDescription()));

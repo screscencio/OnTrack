@@ -43,7 +43,7 @@ public class DescriptionCreateAction implements DescriptionAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if (description == null || description.isEmpty()) throw new UnableToCompleteActionException(
-				ActionExecutionErrorMessageCode.DESCRIPTION_WITH_EMPTY_MESSAGE);
+				this, ActionExecutionErrorMessageCode.DESCRIPTION_WITH_EMPTY_MESSAGE);
 
 		context.addDescription(getDescription(context, actionContext), subjectId);
 
@@ -51,7 +51,7 @@ public class DescriptionCreateAction implements DescriptionAction {
 	}
 
 	private Description getDescription(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final UserRepresentation author = ActionHelper.findUser(actionContext.getUserId(), context);
+		final UserRepresentation author = ActionHelper.findUser(actionContext.getUserId(), context, this);
 
 		return new Description(descriptionId, author, actionContext.getTimestamp(), description);
 	}

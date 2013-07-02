@@ -35,8 +35,8 @@ public class ScopeMoveToAction implements ScopeMoveAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope movingScope = ActionHelper.findScope(movingScopeId, context);
-		final Scope parent = ActionHelper.findScope(desiredParentId, context);
+		final Scope movingScope = ActionHelper.findScope(movingScopeId, context, this);
+		final Scope parent = ActionHelper.findScope(desiredParentId, context, this);
 
 		final Scope previousParent = movingScope.getParent();
 		int previousIndex = previousParent.getChildIndex(movingScope);

@@ -52,7 +52,7 @@ public class ChecklistAddItemAction implements ChecklistItemAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Checklist list = ActionHelper.findChecklist(subjectId, checklistId, context);
+		final Checklist list = ActionHelper.findChecklist(subjectId, checklistId, context, this);
 		final ChecklistItem item = new ChecklistItem(itemId, itemDescription);
 		item.setChecked(checked);
 		list.addItem(item);

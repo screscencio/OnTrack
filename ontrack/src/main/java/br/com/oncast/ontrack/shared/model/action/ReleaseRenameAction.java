@@ -35,13 +35,13 @@ public class ReleaseRenameAction implements ReleaseAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Release release = ActionHelper.findRelease(referenceId, context);
+		final Release release = ActionHelper.findRelease(referenceId, context, this);
 		final String oldDescription = release.getDescription();
 		try {
 			release.setDescription(newReleaseDescription);
 		}
 		catch (final Exception e) {
-			throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.INVALID_RELEASE_DESCRIPTION);
+			throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.INVALID_RELEASE_DESCRIPTION);
 		}
 		return new ReleaseRenameAction(referenceId, oldDescription);
 	}

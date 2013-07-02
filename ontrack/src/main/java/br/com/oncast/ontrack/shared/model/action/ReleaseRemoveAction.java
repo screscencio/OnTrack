@@ -37,8 +37,8 @@ public class ReleaseRemoveAction implements ReleaseAction {
 
 	@Override
 	public ReleaseRemoveRollbackAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Release selectedRelease = ActionHelper.findRelease(referenceId, context);
-		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_ROOT_NODE);
+		final Release selectedRelease = ActionHelper.findRelease(referenceId, context, this);
+		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.REMOVE_ROOT_NODE);
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 		final List<ReleaseRemoveRollbackAction> childActionRollbackList = removeDescendantsReleases(context, actionContext, selectedRelease);

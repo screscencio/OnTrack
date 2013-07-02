@@ -37,14 +37,14 @@ public class ReleaseUpdatePriorityAction implements ReleaseAction {
 
 	@Override
 	public ReleaseUpdatePriorityAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		if (targetIndex < 0) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.ALREADY_THE_LEAST_PRIORITARY);
+		if (targetIndex < 0) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.ALREADY_THE_LEAST_PRIORITARY);
 
-		final Release selectedRelease = ActionHelper.findRelease(releaseId, context);
-		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CHANGE_ROOT_RELEASE_PRIORITY);
+		final Release selectedRelease = ActionHelper.findRelease(releaseId, context, this);
+		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CHANGE_ROOT_RELEASE_PRIORITY);
 
 		final Release parentRelease = selectedRelease.getParent();
 		if (targetIndex >= parentRelease.getChildren().size()) throw new UnableToCompleteActionException(
-				ActionExecutionErrorMessageCode.ALREADY_THE_MOST_PRIORITARY);
+				this, ActionExecutionErrorMessageCode.ALREADY_THE_MOST_PRIORITARY);
 
 		final int currentIndex = parentRelease.getChildIndex(selectedRelease);
 		parentRelease.removeChild(selectedRelease);

@@ -44,11 +44,11 @@ public class ScopeAddAssociatedUserAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope scope = ActionHelper.findScope(scopeId, context);
-		final UserRepresentation user = ActionHelper.findUser(userId, context);
+		final Scope scope = ActionHelper.findScope(scopeId, context, this);
+		final UserRepresentation user = ActionHelper.findUser(userId, context, this);
 
 		for (final UserAssociationMetadata metadata : context.<UserAssociationMetadata> getMetadataList(scope, UserAssociationMetadata.getType())) {
-			if (user.equals(metadata.getUser())) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);
+			if (user.equals(metadata.getUser())) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CREATE_EXISTENT);
 		}
 
 		context.addMetadata(MetadataFactory.createUserMetadata(metadataId, scope, user));

@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.services.actionExecution;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
@@ -24,6 +18,12 @@ import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngi
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class ScopeActionExecuter implements ModelActionExecuter {
 
 	private static final List<InferenceOverScopeEngine> inferenceEngines = new ArrayList<InferenceOverScopeEngine>();
@@ -39,13 +39,12 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 	}
 
 	@Override
-	public ActionExecutionContext executeAction(final ProjectContext context, final ActionContext actionContext, final ModelAction action)
-			throws UnableToCompleteActionException {
+	public ActionExecutionContext executeAction(final ProjectContext context, final ActionContext actionContext, final ModelAction action) throws UnableToCompleteActionException {
 		final Scope scope = getInferenceBaseScope(context, action);
 
 		final ModelAction reverseAction = action.execute(context, actionContext);
-		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action, scope,
-				ActionHelper.findUser(actionContext.getUserId(), context), actionContext.getTimestamp());
+		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action, scope, ActionHelper.findUser(actionContext.getUserId(), context, action),
+				actionContext.getTimestamp());
 
 		return new ActionExecutionContext(reverseAction, inferenceInfluencedScopeSet);
 	}
@@ -58,12 +57,9 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 	}
 
 	protected static Scope getInferenceBaseScope(final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
-		final Scope scope = ActionHelper.findScope(action.getReferenceId(), context);
-		if (!scope.isRoot() &&
-				action instanceof ScopeRemoveAction ||
-				action instanceof ScopeInsertSiblingDownRollbackAction ||
-				action instanceof ScopeInsertSiblingUpRollbackAction ||
-				action instanceof ScopeInsertChildRollbackAction) return scope.getParent();
+		final Scope scope = ActionHelper.findScope(action.getReferenceId(), context, action);
+		if (!scope.isRoot() && action instanceof ScopeRemoveAction || action instanceof ScopeInsertSiblingDownRollbackAction || action instanceof ScopeInsertSiblingUpRollbackAction
+				|| action instanceof ScopeInsertChildRollbackAction) return scope.getParent();
 		return scope;
 	}
 }

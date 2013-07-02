@@ -32,8 +32,8 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		findScope(scopeId, context);
-		final UUID currentUserId = findUserFrom(actionContext, context).getId();
+		findScope(scopeId, context, this);
+		final UUID currentUserId = findUserFrom(actionContext, context, this).getId();
 
 		final Float previousTimespent = context.getDeclaredTimeSpent(scopeId, currentUserId);
 		context.declareTimeSpent(scopeId, currentUserId, timeSpent);

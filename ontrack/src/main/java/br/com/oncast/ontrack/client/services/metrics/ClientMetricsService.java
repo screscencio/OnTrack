@@ -18,7 +18,7 @@ public interface ClientMetricsService {
 
 	TimeTrackingEvent startTimeTracking(MetricsCategories category, String eventName);
 
-	void onException(Exception e);
+	void onException(String message);
 
 	void onUserLogin(User user);
 

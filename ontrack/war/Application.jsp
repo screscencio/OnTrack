@@ -15,7 +15,7 @@
 	</script>
 
     <link rel="stylesheet" href="resources/style/Application.css">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,400italic' rel='stylesheet' type='text/css'>
 
     <script type="text/javascript" language="javascript" src="application/application.nocache.js"></script>

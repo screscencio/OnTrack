@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.services.metrics;
 
-import static br.com.oncast.ontrack.shared.metrics.MetricsCategories.PLACE_LOAD;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.services.places.OpenInNewWindowPlace;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
@@ -15,6 +15,8 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServ
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import static br.com.oncast.ontrack.shared.metrics.MetricsCategories.PLACE_LOAD;
 
 public class ClientMetricsServiceImpl implements ClientMetricsService {
 
@@ -83,8 +85,8 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	}
 
 	@Override
-	public void onException(final Exception e) {
-		GoogleAnalytics.sendException(trackerPrefix, e.toString());
+	public void onException(final String message) {
+		GoogleAnalytics.sendException(trackerPrefix, message);
 	}
 
 	@Override

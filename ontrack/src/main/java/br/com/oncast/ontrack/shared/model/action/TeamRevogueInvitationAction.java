@@ -30,7 +30,7 @@ public class TeamRevogueInvitationAction implements TeamAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		ActionHelper.findUser(userId, context).setValid(false);
+		ActionHelper.findUser(userId, context, this).setValid(false);
 
 		return new TeamInviteAction(userId);
 	}

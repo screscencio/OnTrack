@@ -1,13 +1,22 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.IgnoreByConversion;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.metadata.Metadata;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
+import br.com.oncast.ontrack.utils.actions.ModelActionEntityFieldAnnotationsTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -29,24 +38,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.IgnoreByConversion;
-import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.metadata.Metadata;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
-import br.com.oncast.ontrack.utils.actions.ModelActionEntityFieldAnnotationsTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
-
 import com.google.gwt.dev.util.collect.HashSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public abstract class ModelActionTest {
 
@@ -56,14 +58,25 @@ public abstract class ModelActionTest {
 	@Mock
 	protected ActionContext actionContext;
 
+	private UserRepresentation actionAuthor;
+
 	@Before
 	public void initContextMocks() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		final UUID userId = UserTestUtils.getAdmin().getId();
-		when(actionContext.getUserId()).thenReturn(userId);
-		when(context.findUser(userId)).thenReturn(UserRepresentationTestUtils.getAdmin());
+		setActionAuthor(UserRepresentationTestUtils.getAdmin());
 		when(actionContext.getTimestamp()).thenReturn(new Date(0));
+	}
+
+	protected void setActionAuthor(final UserRepresentation user) throws UserNotFoundException {
+		actionAuthor = user;
+		final UUID userId = actionAuthor.getId();
+		when(actionContext.getUserId()).thenReturn(userId);
+		when(context.findUser(userId)).thenReturn(actionAuthor);
+	}
+
+	protected UserRepresentation getActionAuthor() {
+		return actionAuthor;
 	}
 
 	protected ModelAction executeAction() throws UnableToCompleteActionException {
@@ -100,8 +113,7 @@ public abstract class ModelActionTest {
 	public void actionShouldHaveAConstructorWithNoArguments() throws Exception {
 		try {
 			getActionType().getDeclaredConstructor();
-		}
-		catch (final NoSuchMethodException e) {
+		} catch (final NoSuchMethodException e) {
 			fail(getActionName() + " should have a constructor with no arguments.");
 		}
 	}
@@ -167,8 +179,7 @@ public abstract class ModelActionTest {
 				type.getDeclaredMethod((isBooleanType(field) ? "is" : "get") + methodSuffix);
 				type.getDeclaredMethod("set" + methodSuffix, field.getType());
 			}
-		}
-		catch (final NoSuchMethodException e) {
+		} catch (final NoSuchMethodException e) {
 			fail(getEntityType().getSimpleName() + " should have getters and setters for its fields");
 		}
 	}
@@ -226,8 +237,7 @@ public abstract class ModelActionTest {
 
 	@Test
 	public void actionShouldNotImplementModelActionInterfaceDirectly() throws Exception {
-		assertFalse(getActionType()
-				+ " should not implement ModelAction directly, please implement one of it's subTypes or create a new subType for the action",
+		assertFalse(getActionType() + " should not implement ModelAction directly, please implement one of it's subTypes or create a new subType for the action",
 				Arrays.asList(getActionType().getInterfaces()).contains(ModelAction.class));
 	}
 
@@ -235,11 +245,9 @@ public abstract class ModelActionTest {
 	public void actionShouldBeMappedOnActionExecuter() throws Exception {
 		try {
 			ActionExecuter.executeAction(mock(ProjectContext.class), Mockito.mock(ActionContext.class), getNewInstance());
-		}
-		catch (final UnableToCompleteActionException e) {
+		} catch (final UnableToCompleteActionException e) {
 			assertFalse(e.getMessage(), e.getMessage().contains("There is no mapped action executer"));
-		}
-		catch (final Exception e) {}
+		} catch (final Exception e) {}
 	}
 
 	@Test
@@ -275,15 +283,12 @@ public abstract class ModelActionTest {
 	}
 
 	private void assertHasAnnotation(final Class<?> type, final Class<? extends Annotation> annotation) {
-		assertNotNull(type.getSimpleName() + " should be annotated with " + annotation.getSimpleName() + ".",
-				type.getAnnotation(annotation));
+		assertNotNull(type.getSimpleName() + " should be annotated with " + annotation.getSimpleName() + ".", type.getAnnotation(annotation));
 	}
 
 	private void assertConvertTo(final Class<?> source, final Class<?> target) {
 		final ConvertTo annotation = source.getAnnotation(ConvertTo.class);
-		assertEquals("ConvertTo annotation should have " + target.getSimpleName() + " as value.",
-				target,
-				annotation.value());
+		assertEquals("ConvertTo annotation should have " + target.getSimpleName() + " as value.", target, annotation.value());
 	}
 
 	private void assertDontHaveNonStaticFinalFields(final Class<?> type) {
@@ -291,8 +296,7 @@ public abstract class ModelActionTest {
 			final int modifiers = field.getModifiers();
 			if (Modifier.isStatic(modifiers)) continue;
 
-			assertFalse("The non static field '" + field.getName() + "' can't be final.",
-					Modifier.isFinal(modifiers));
+			assertFalse("The non static field '" + field.getName() + "' can't be final.", Modifier.isFinal(modifiers));
 		}
 	}
 
@@ -302,8 +306,7 @@ public abstract class ModelActionTest {
 
 			final String aliasName = getAliasName(field);
 
-			assertNotNull("The field with name '" + aliasName + "' or the field annotated with @ConversionAlias('" + aliasName + "') was not found on "
-					+ target.getSimpleName(),
+			assertNotNull("The field with name '" + aliasName + "' or the field annotated with @ConversionAlias('" + aliasName + "') was not found on " + target.getSimpleName(),
 					getMatchingAliasField(aliasName, target));
 		}
 	}

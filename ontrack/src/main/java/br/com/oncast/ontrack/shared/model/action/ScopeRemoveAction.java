@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -18,6 +13,11 @@ import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeRemoveActionEntity.class)
 public class ScopeRemoveAction implements ScopeAction {
@@ -37,8 +37,8 @@ public class ScopeRemoveAction implements ScopeAction {
 
 	@Override
 	public ScopeRemoveRollbackAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_ROOT_NODE);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.REMOVE_ROOT_NODE);
 
 		final Scope parent = selectedScope.getParent();
 		final UUID parentScopeId = parent.getId();
@@ -54,8 +54,7 @@ public class ScopeRemoveAction implements ScopeAction {
 		return new ScopeRemoveRollbackAction(parentScopeId, referenceId, description, index, subActionRollbackList, childActionRollbackList);
 	}
 
-	private List<ScopeRemoveRollbackAction> executeChildActions(final ProjectContext context, final ActionContext actionContext, final Scope selectedScope)
-			throws UnableToCompleteActionException {
+	private List<ScopeRemoveRollbackAction> executeChildActions(final ProjectContext context, final ActionContext actionContext, final Scope selectedScope) throws UnableToCompleteActionException {
 		final List<ScopeRemoveRollbackAction> childActionRollbackList = new ArrayList<ScopeRemoveRollbackAction>();
 		for (final Scope child : selectedScope.getChildren())
 			childActionRollbackList.add(new ScopeRemoveAction(child.getId()).execute(context, actionContext));
@@ -63,8 +62,7 @@ public class ScopeRemoveAction implements ScopeAction {
 		return childActionRollbackList;
 	}
 
-	private List<ModelAction> executeSubActions(final ProjectContext context, final ActionContext actionContext, final Scope selectedScope)
-			throws UnableToCompleteActionException {
+	private List<ModelAction> executeSubActions(final ProjectContext context, final ActionContext actionContext, final Scope selectedScope) throws UnableToCompleteActionException {
 		final List<ModelAction> subActionList = new ArrayList<ModelAction>();
 
 		for (final UserAssociationMetadata metadata : context.<UserAssociationMetadata> getMetadataList(selectedScope, UserAssociationMetadata.getType())) {

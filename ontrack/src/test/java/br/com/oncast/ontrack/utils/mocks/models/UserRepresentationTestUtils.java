@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.utils.mocks.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserRepresentationTestUtils {
 
@@ -46,4 +46,9 @@ public class UserRepresentationTestUtils {
 		return new UserRepresentation(user.getId());
 	}
 
+	public static UserRepresentation createUser(final boolean isReadOnly) {
+		final UserRepresentation user = createUser();
+		user.setReadOnly(isReadOnly);
+		return user;
+	}
 }

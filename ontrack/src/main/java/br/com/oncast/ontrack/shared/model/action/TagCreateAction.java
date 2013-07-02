@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag.TagCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -15,6 +9,12 @@ import br.com.oncast.ontrack.shared.model.color.ColorPack;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(TagCreateActionEntity.class)
 public class TagCreateAction implements TagAction {
@@ -65,7 +65,7 @@ public class TagCreateAction implements TagAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		if (context.hasTag(description)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);
+		if (context.hasTag(description)) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CREATE_EXISTENT);
 		context.addTag(new Tag(tagId, description, new ColorPack(textColor, backgroundColor)));
 
 		for (final ModelAction action : subActionList) {

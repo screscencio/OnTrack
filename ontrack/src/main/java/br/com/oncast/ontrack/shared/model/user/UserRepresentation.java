@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.shared.model.user;
 
-import java.io.Serializable;
-
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.io.Serializable;
 
 public class UserRepresentation implements HasUUID, Serializable, Comparable<UserRepresentation> {
 
@@ -13,6 +13,8 @@ public class UserRepresentation implements HasUUID, Serializable, Comparable<Use
 	private UUID id;
 
 	private boolean valid = true;
+
+	private boolean readOnly = false;
 
 	public UserRepresentation() {}
 
@@ -55,5 +57,13 @@ public class UserRepresentation implements HasUUID, Serializable, Comparable<Use
 	@Override
 	public String toString() {
 		return id.toString();
+	}
+
+	public void setReadOnly(final boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
 	}
 }

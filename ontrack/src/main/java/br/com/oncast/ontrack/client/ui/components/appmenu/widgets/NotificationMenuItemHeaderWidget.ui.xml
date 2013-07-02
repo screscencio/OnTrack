@@ -3,15 +3,10 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
 	<ui:image field="bg" src="notification-bg.png"/>
-	<ui:image field="unreadBg" src="notification-bg-pink.png"/>
-	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationMenuItemHeaderWidget.NotificationMenuItemHeaderWidgetStyle">
+	<ui:style src="../../../style/default.css">
 	
 		@sprite .read {
 			gwt-image: 'bg';
-		}
-		
-		@sprite .unread {
-			gwt-image: 'unreadBg';
 		}
 		
 		.countIndicator {

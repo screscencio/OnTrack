@@ -56,12 +56,12 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Release release = ActionHelper.findRelease(referenceId, context);
+		final Release release = ActionHelper.findRelease(referenceId, context, this);
 		final Kanban kanban = context.getKanban(release);
 
 		if (!kanban.hasColumn(columnDescription)) return new KanbanColumnCreateAction(referenceId, columnDescription, shouldLockKanban, 0,
 				new ArrayList<ModelAction>());
-		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_STATIC_KANBAN_COLUMN);
+		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.REMOVE_STATIC_KANBAN_COLUMN);
 
 		final List<ModelAction> rollbackActions = moveColumnScopes(columnDescription, kanban.getColumnPredeceding(columnDescription).getDescription(), release,
 				context, actionContext);

@@ -26,7 +26,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 	@Override
 	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		try {
-			final UserRepresentation author = ActionHelper.findUser(actionContext.getUserId(), context);
+			final UserRepresentation author = ActionHelper.findUser(actionContext.getUserId(), context, action);
 			final ScopeTreeItem treeItem = tree.findScopeTreeItem(new Scope("", action.getReferenceId(), author, actionContext.getTimestamp()));
 
 			final ScopeTreeItem parentItem = treeItem.getParentItem();
@@ -37,15 +37,11 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 			parentItem.getScopeTreeItemWidget().updateDisplay();
 
 			if (isUserInteraction) {
-				tree.setSelectedItem(((parentItem.getChildCount() > 0) ? parentItem.getChild((parentItem.getChildCount() - 1 < childIndex) ? parentItem
-						.getChildCount() - 1
-						: childIndex)
-						: parentItem), true);
+				tree.setSelectedItem(
+						((parentItem.getChildCount() > 0) ? parentItem.getChild((parentItem.getChildCount() - 1 < childIndex) ? parentItem.getChildCount() - 1 : childIndex) : parentItem), true);
 			}
-		}
-		catch (final UnableToCompleteActionException e) {
-			throw new UserNotFoundException(ClientServices.get().errorMessages()
-					.userNotFound(actionContext.getUserId().toString()));
+		} catch (final UnableToCompleteActionException e) {
+			throw new UserNotFoundException(ClientServices.get().errorMessages().userNotFound(actionContext.getUserId().toString()));
 		}
 	}
 }

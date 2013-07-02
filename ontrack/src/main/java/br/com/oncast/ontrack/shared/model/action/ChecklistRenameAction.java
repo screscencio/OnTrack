@@ -35,7 +35,7 @@ public class ChecklistRenameAction implements ChecklistAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Checklist checklist = ActionHelper.findChecklist(subjectId, checklistId, context);
+		final Checklist checklist = ActionHelper.findChecklist(subjectId, checklistId, context, this);
 		final String oldTitle = checklist.getTitle();
 		checklist.setTitle(newTitle);
 		return new ChecklistRenameAction(subjectId, checklistId, oldTitle);

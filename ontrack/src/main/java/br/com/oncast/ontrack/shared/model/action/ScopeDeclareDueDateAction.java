@@ -33,7 +33,7 @@ public class ScopeDeclareDueDateAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope scope = ActionHelper.findScope(scopeId, context);
+		final Scope scope = ActionHelper.findScope(scopeId, context, this);
 		final Date previousDueDate = scope.getDueDate();
 		scope.setDueDate(dueDate);
 		return new ScopeDeclareDueDateAction(scopeId, previousDueDate);

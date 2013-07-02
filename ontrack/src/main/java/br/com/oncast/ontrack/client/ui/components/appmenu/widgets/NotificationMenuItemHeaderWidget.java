@@ -4,7 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -17,15 +16,6 @@ public class NotificationMenuItemHeaderWidget extends Composite implements HasTe
 	private static NotificationMenuItemHeaderWidgetUiBinder uiBinder = GWT.create(NotificationMenuItemHeaderWidgetUiBinder.class);
 
 	interface NotificationMenuItemHeaderWidgetUiBinder extends UiBinder<Widget, NotificationMenuItemHeaderWidget> {}
-
-	interface NotificationMenuItemHeaderWidgetStyle extends CssResource {
-		String read();
-
-		String unread();
-	}
-
-	@UiField
-	NotificationMenuItemHeaderWidgetStyle style;
 
 	@UiField
 	Label countIndicator;
@@ -45,10 +35,6 @@ public class NotificationMenuItemHeaderWidget extends Composite implements HasTe
 
 	@Override
 	public void setText(final String text) {}
-
-	public void setHasUnread(final boolean hasUnread) {
-		countIndicator.setStyleName(style.unread(), hasUnread);
-	}
 
 	@Override
 	public HandlerRegistration addClickHandler(final ClickHandler handler) {

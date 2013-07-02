@@ -35,12 +35,12 @@ public class ImpedimentSolveAction implements ImpedimentAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final UserRepresentation author = ActionHelper.findUser(actionContext.getUserId(), context);
+		final UserRepresentation author = ActionHelper.findUser(actionContext.getUserId(), context, this);
 		final Date timestamp = actionContext.getTimestamp();
 
-		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
-		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.OPERATION_OVER_DEPRECATED_ANNOTATION);
-		if (!annotation.isImpeded()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.SOLVE_NOT_IMPEDED_ANNOTATION);
+		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context, this);
+		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.OPERATION_OVER_DEPRECATED_ANNOTATION);
+		if (!annotation.isImpeded()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.SOLVE_NOT_IMPEDED_ANNOTATION);
 
 		annotation.setType(AnnotationType.SOLVED_IMPEDIMENT, author, timestamp);
 		return new ImpedimentCreateAction(subjectId, annotationId);

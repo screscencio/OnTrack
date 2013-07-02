@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveLeftActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -15,6 +9,12 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(ScopeMoveLeftActionEntity.class)
 public class ScopeMoveLeftAction implements ScopeMoveAction {
@@ -45,9 +45,9 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.MOVE_ROOT_NODE);
-		if (selectedScope.getParent().isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.MOVE_LEFT_ROOT_NODE_SON);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.MOVE_ROOT_NODE);
+		if (selectedScope.getParent().isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.MOVE_LEFT_ROOT_NODE_SON);
 
 		final Scope parent = selectedScope.getParent();
 		final Scope grandParent = parent.getParent();

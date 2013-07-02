@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
@@ -30,6 +26,10 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -83,10 +83,9 @@ public class ProgressActivity extends AbstractActivity {
 					updateCustomApplicationMenus();
 				}
 			}, ClientServices.get().errorMessages());
-		}
-		catch (final ReleaseNotFoundException e) {
+		} catch (final ReleaseNotFoundException e) {
 			tracking.end();
-			ClientServices.get().metrics().onException(e);
+			ClientServices.get().metrics().onException("ProgressActivity(" + this.place + "): Release not found");
 		}
 	}
 
@@ -117,8 +116,7 @@ public class ProgressActivity extends AbstractActivity {
 
 		registrations.add(SERVICE_PROVIDER.actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
 				if (action instanceof ScopeRemoveAction && currSelectedScope.getId().equals(action.getReferenceId())) {
 					deselectCurrentScopeWidget();
@@ -127,14 +125,13 @@ public class ProgressActivity extends AbstractActivity {
 			}
 		}));
 
-		registrations.add(ClientServices.get().eventBus()
-				.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
-					@Override
-					public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
-						deselectCurrentScopeWidget();
-						selectScopeWidget(event.getTargetScope(), event.getSource());
-					}
-				}));
+		registrations.add(ClientServices.get().eventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+			@Override
+			public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
+				deselectCurrentScopeWidget();
+				selectScopeWidget(event.getTargetScope(), event.getSource());
+			}
+		}));
 		tracking.end();
 	}
 
@@ -218,12 +215,10 @@ public class ProgressActivity extends AbstractActivity {
 		final ProgressActivity other = (ProgressActivity) obj;
 		if (place.getRequestedProjectId() == null) {
 			if (other.place.getRequestedProjectId() != null) return false;
-		}
-		else if (!place.getRequestedProjectId().equals(other.place.getRequestedProjectId())) return false;
+		} else if (!place.getRequestedProjectId().equals(other.place.getRequestedProjectId())) return false;
 		if (place.getRequestedReleaseId() == null) {
 			if (other.place.getRequestedReleaseId() != null) return false;
-		}
-		else if (!place.getRequestedReleaseId().equals(other.place.getRequestedReleaseId())) return false;
+		} else if (!place.getRequestedReleaseId().equals(other.place.getRequestedReleaseId())) return false;
 		return true;
 	}
 

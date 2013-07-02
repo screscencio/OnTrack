@@ -113,23 +113,23 @@ public interface ActionExecutionErrorMessages extends BaseMessages {
 	String moveRightFirstNode();
 
 	@Description("caused when tries move left the root node's son")
-	@DefaultMessage("It is not possible to move left when the parent is the root node.")
+	@DefaultMessage("It''s not possible to move left when the parent is the root node.")
 	String moveLeftRootNodeSon();
 
 	@Description("caused when rollback failed due to inconsistencies")
-	@DefaultMessage("It is not possible to rollback this action due to inconsistencies.")
+	@DefaultMessage("It''s not possible to rollback this action due to inconsistencies.")
 	String rollbackInconsistency();
 
 	@Description("caused when tries to create a parent node for the root node")
-	@DefaultMessage("It is not possible to create a parent node for the root node.")
+	@DefaultMessage("It''s not possible to create a parent node for the root node.")
 	String createRootParent();
 
 	@Description("caused when there is no mapped action executer for the given class")
-	@DefaultMessage("There is no mapped action executer for {0}.")
+	@DefaultMessage("There''s no mapped action executer for {0}.")
 	String noMappedExecutor(String className);
 
 	@Description("caused when tries to create a description with empty message")
-	@DefaultMessage("A description should have a message")
+	@DefaultMessage("The description message should not be empty")
 	String descriptionWithEmptyMessage();
 
 	@Description("caused when tries to remove a description created by other user.")
@@ -137,19 +137,31 @@ public interface ActionExecutionErrorMessages extends BaseMessages {
 	String descriptionRemoveAction();
 
 	@Description("caused when tries to create something with already used Id.")
-	@DefaultMessage("Creation failed: Duplicated object.")
+	@DefaultMessage("Can''t create a object that already exists.")
 	String createDuplicated();
 
 	@Description("caused when tries to remove something that does not exists.")
-	@DefaultMessage("Remotion failed: Object not found.")
+	@DefaultMessage("Can''t remove a object that doesn''t exist.")
 	String removeInexitent();
 
 	@Description("caused when tries to update something without any new values.")
-	@DefaultMessage("Update failed: the object is exactly the same.")
+	@DefaultMessage("You need to make any changes before updating the object.")
 	String updateWithoutChanges();
 
 	@Description("caused when the action conflicts.")
-	@DefaultMessage("Sorry, some of your latest actioins conflicted, please try again.")
+	@DefaultMessage("Some of your latest actions conflicted, please reload and try again.")
 	String conflicted();
+
+	@Description("caused when the requested user was not found in the context.")
+	@DefaultMessage("Sorry, the action author was not found in the project, maybe the project is out of sync, try reloading the application.")
+	String actionAuthorNotFound();
+
+	@Description("caused when the action author is read only user.")
+	@DefaultMessage("You don''t have the permission to make changes in this project.")
+	String readOnlyUser();
+
+	@Description("caused when the action author is read only user.")
+	@DefaultMessage("You can''t change your own permission.")
+	String cantChangeYourOwnPermission();
 
 }

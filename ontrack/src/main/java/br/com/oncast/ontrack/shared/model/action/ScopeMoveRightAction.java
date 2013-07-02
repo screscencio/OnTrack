@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveRightActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -16,6 +9,13 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(ScopeMoveRightActionEntity.class)
 public class ScopeMoveRightAction implements ScopeMoveAction {
@@ -58,12 +58,11 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.MOVE_ROOT_NODE);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.MOVE_ROOT_NODE);
 
 		final Scope parent = selectedScope.getParent();
-		if (isFirstNode(parent.getChildIndex(selectedScope))) throw new UnableToCompleteActionException(
-				ActionExecutionErrorMessageCode.MOVE_RIGHT_FIRST_NODE);
+		if (isFirstNode(parent.getChildIndex(selectedScope))) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.MOVE_RIGHT_FIRST_NODE);
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 
@@ -77,8 +76,7 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 		return new ScopeMoveLeftAction(referenceId, subActionRollbackList);
 	}
 
-	private ModelAction removeDeclaredProgress(final Scope scope, final ProjectContext context, final ActionContext actionContext)
-			throws UnableToCompleteActionException {
+	private ModelAction removeDeclaredProgress(final Scope scope, final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final ScopeDeclareProgressAction removeProgressAction = new ScopeDeclareProgressAction(scope.getId(), "");
 		subActionList.add(removeProgressAction);
 

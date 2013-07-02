@@ -41,9 +41,9 @@ public class ChecklistEditItemDescriptionAction implements ChecklistAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Checklist checklist = ActionHelper.findChecklist(subjectId, checklistId, context);
+		final Checklist checklist = ActionHelper.findChecklist(subjectId, checklistId, context, this);
 		final ChecklistItem item = checklist.getItem(itemId);
-		if (item == null) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CHECKLIST_ITEM_NOT_FOUND);
+		if (item == null) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CHECKLIST_ITEM_NOT_FOUND);
 		final String oldDescription = item.getDescription();
 		item.setDescription(newDescription);
 		return new ChecklistEditItemDescriptionAction(subjectId, checklistId, itemId, oldDescription);

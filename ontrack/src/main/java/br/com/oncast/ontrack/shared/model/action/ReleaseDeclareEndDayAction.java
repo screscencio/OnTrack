@@ -36,7 +36,7 @@ public class ReleaseDeclareEndDayAction implements ReleaseAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Release release = ActionHelper.findRelease(referenceId, context);
+		final Release release = ActionHelper.findRelease(referenceId, context, this);
 
 		Date previousDeclaration = null;
 		if (release.hasDeclaredEndDay() && release.getEndDay() != null) previousDeclaration = release.getEndDay().getJavaDate();

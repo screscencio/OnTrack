@@ -21,8 +21,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.google.gwt.core.shared.GWT;
-
 // TODO ++++Increment password strength validation, reflecting it on the UI as well so the user can create it without getting bored/angry.
 // TODO ++++Review this class method separation.
 public class AuthenticationManager {
@@ -167,8 +165,7 @@ public class AuthenticationManager {
 
 	private Password createPasswordForUser(final User user, final String password) {
 		try {
-			// TODO+++ remove this verification and replace it by Guice injection for DevMode password generator;
-			final Password newPassword = new Password(user.getId(), GWT.isProdMode() ? password : "");
+			final Password newPassword = new Password(user.getId(), password);
 			persistenceService.persistOrUpdatePassword(newPassword);
 			return newPassword;
 		} catch (final PersistenceException e) {

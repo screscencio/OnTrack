@@ -44,11 +44,11 @@ public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope scope = ActionHelper.findScope(scopeId, context);
-		final Tag tag = ActionHelper.findTag(tagId, context);
+		final Scope scope = ActionHelper.findScope(scopeId, context, this);
+		final Tag tag = ActionHelper.findTag(tagId, context, this);
 
 		for (final TagAssociationMetadata metadata : context.<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType())) {
-			if (tag.equals(metadata.getTag())) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);
+			if (tag.equals(metadata.getTag())) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CREATE_EXISTENT);
 		}
 
 		context.addMetadata(MetadataFactory.createTagMetadata(metadataId, scope, tag));

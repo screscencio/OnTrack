@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
-import java.util.Stack;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
@@ -18,6 +12,12 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestU
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
+
+import java.util.Stack;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 public class EffortInferenceEngineFlow4Test {
 
@@ -117,15 +117,14 @@ public class EffortInferenceEngineFlow4Test {
 		while (!rollbackActions.isEmpty()) {
 			final ModelAction rollbackAction = rollbackActions.pop();
 			rollbackAction.execute(projectContext, Mockito.mock(ActionContext.class));
-			ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(ActionExecuterTestUtils.getInferenceBaseScopeForTestingPurposes(
-					projectContext, rollbackAction));
+			ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(ActionExecuterTestUtils.getInferenceBaseScopeForTestingPurposes(projectContext, rollbackAction));
 		}
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX), rootScope);
 	}
 
 	private ModelAction executeAction(final ModelAction action) throws UnableToCompleteActionException {
 		final ModelAction rollbackAction = action.execute(projectContext, Mockito.mock(ActionContext.class));
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(ActionHelper.findScope(action.getReferenceId(), projectContext));
+		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(ActionHelper.findScope(action.getReferenceId(), projectContext, action));
 		return rollbackAction;
 	}
 

@@ -63,10 +63,13 @@ public class TimesheetPlace extends ProjectDependentPlace {
 
 		@Override
 		public String getToken(final TimesheetPlace place) {
-			return new PlaceTokenBuilder()
-					.add(PlaceTokenType.PROJECT, place.getRequestedProjectId())
-					.add(PlaceTokenType.RELEASE, place.getReleaseId())
-					.getToken();
+			return new PlaceTokenBuilder().add(PlaceTokenType.PROJECT, place.getRequestedProjectId()).add(PlaceTokenType.RELEASE, place.getReleaseId()).getToken();
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "TimesheetPlace [projectId=" + projectId + ", releaseId=" + releaseId + ", destinationPlace=" + destinationPlace + ", hasLoadedPlace=" + hasLoadedPlace + "]";
+	}
+
 }

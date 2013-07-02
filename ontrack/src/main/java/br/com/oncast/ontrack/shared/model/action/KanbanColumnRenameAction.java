@@ -52,16 +52,16 @@ public class KanbanColumnRenameAction implements KanbanAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final String trimmedDescription = newDescription.trim();
-		if (trimmedDescription.isEmpty()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.EMPTY_DESCRIPTION);
+		if (trimmedDescription.isEmpty()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.EMPTY_DESCRIPTION);
 
-		final Release release = ActionHelper.findRelease(releaseId, context);
+		final Release release = ActionHelper.findRelease(releaseId, context, this);
 		final Kanban kanban = context.getKanban(release);
 
 		try {
 			kanban.renameColumn(columnDescription, newDescription);
 		}
 		catch (final RuntimeException e) {
-			throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.KANBAN_COLUMN_ALREADY_SET);
+			throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.KANBAN_COLUMN_ALREADY_SET);
 		}
 		for (final Scope scope : release.getScopeList()) {
 			if (scope.getProgress().getDescription().equals(columnDescription)) new ScopeDeclareProgressAction(scope.getId(), newDescription).execute(context,

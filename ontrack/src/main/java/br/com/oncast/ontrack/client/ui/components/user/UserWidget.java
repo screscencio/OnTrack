@@ -63,7 +63,6 @@ public class UserWidget extends Composite {
 		String userImageContainerMedium();
 
 		String userImageContainerSmall();
-
 	}
 
 	@UiField
@@ -234,7 +233,7 @@ public class UserWidget extends Composite {
 	}
 
 	private UserInformationCard getUserCard() {
-		return userCard == null ? userCard = new UserInformationCard() : userCard;
+		return userCard == null ? userCard = new UserInformationCard(userRepresentation) : userCard;
 	}
 
 	private PopupConfig getUserCardPopUp() {
@@ -252,8 +251,9 @@ public class UserWidget extends Composite {
 		try {
 			if (ClientServices.get().contextProvider().isContextAvailable()) return ClientServices.getCurrentProjectContext().findUser(userId);
 		} catch (final UserNotFoundException e) {
-			GWT.log("User was not found in the project context, Maybe it represents model inconcistency", e);
+			ClientServices.get().metrics().onException("findUserOrCreateFakeOne(" + userId + "): User not found in the context");
 		}
+		ClientServices.get().metrics().onException("findUserOrCreateFakeOne(" + userId + "): Context unavailable");
 		return new UserRepresentation(userId);
 	}
 

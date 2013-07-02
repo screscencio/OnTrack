@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertSiblingUpRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -12,6 +10,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeInsertSiblingUpRollbackActionEntity.class)
 public class ScopeInsertSiblingUpRollbackAction implements ScopeAction {
@@ -36,8 +36,8 @@ public class ScopeInsertSiblingUpRollbackAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_ROOT_NODE);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.REMOVE_ROOT_NODE);
 
 		final Scope parent = selectedScope.getParent();
 		final String pattern = new ScopeRepresentationBuilder(selectedScope).includeEverything().toString();

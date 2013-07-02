@@ -36,7 +36,7 @@ public class ReleaseDeclareStartDayAction implements ReleaseAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Release release = ActionHelper.findRelease(referenceId, context);
+		final Release release = ActionHelper.findRelease(referenceId, context, this);
 		final Date previousDate = release.hasDeclaredStartDay() ? release.getStartDay().getJavaDate() : null;
 
 		release.declareStartDay(date == null ? null : WorkingDayFactory.create(date));

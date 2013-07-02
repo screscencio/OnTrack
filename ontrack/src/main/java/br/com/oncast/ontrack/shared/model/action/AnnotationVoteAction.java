@@ -31,10 +31,10 @@ public class AnnotationVoteAction implements AnnotationAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context);
-		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.OPERATION_OVER_DEPRECATED_ANNOTATION);
+		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context, this);
+		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.OPERATION_OVER_DEPRECATED_ANNOTATION);
 
-		annotation.vote(ActionHelper.findUser(actionContext.getUserId(), context));
+		annotation.vote(ActionHelper.findUser(actionContext.getUserId(), context, this));
 		return new AnnotationVoteRemoveAction(annotationId, annotatedObjectId);
 	}
 

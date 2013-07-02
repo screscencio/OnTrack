@@ -224,6 +224,24 @@ public enum ActionExecutionErrorMessageCode implements BaseMessageCode<ActionExe
 		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
 			return messages.conflicted();
 		}
+	},
+	ACTION_AUTHOR_NOT_FOUND {
+		@Override
+		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
+			return messages.actionAuthorNotFound();
+		}
+	},
+	READY_ONLY_USER {
+		@Override
+		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
+			return messages.readOnlyUser();
+		}
+	},
+	CANT_CHANGE_YOUR_OWN_PERMISSION {
+		@Override
+		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
+			return messages.cantChangeYourOwnPermission();
+		}
 	};
 
 	@Override

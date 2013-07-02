@@ -36,7 +36,7 @@ public class TagRemoveAction implements TagAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Tag tag = ActionHelper.findTag(tagId, context);
+		final Tag tag = ActionHelper.findTag(tagId, context, this);
 
 		final List<ModelAction> rollbackActions = removeAssociations(context, actionContext);
 		context.removeTag(tag);

@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -9,6 +7,8 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.Date;
 
 public class InsertSiblingDownInternalAction implements TwoStepInternalAction {
 
@@ -23,7 +23,7 @@ public class InsertSiblingDownInternalAction implements TwoStepInternalAction {
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		treeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
-		if (treeItem.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_ROOT_SIBLING);
+		if (treeItem.isRoot()) throw new UnableToCompleteActionException(null, ActionExecutionErrorMessageCode.CREATE_ROOT_SIBLING);
 		newTreeItem = new ScopeTreeItem(new Scope("", InternalActionHelper.findCurrentUser(), new Date()));
 
 		final ScopeTreeItem parentItem = treeItem.getParentItem();
