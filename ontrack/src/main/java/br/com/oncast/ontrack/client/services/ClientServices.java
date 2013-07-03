@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.services;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchServiceDefault;
 import br.com.drycode.api.web.gwt.dispatchService.client.RequestBuilderConfigurator;
+
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
@@ -65,13 +66,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * The {@link ClientServices} is programmed in such a way that only business services are publicly available.
- * Both infrastructure and "glue" services should be private.
+ * The {@link ClientServices} is programmed in such a way that only business services are publicly available. Both infrastructure and "glue" services should be private.
  * 
- * "DEPENDENCY INJECTION vs LOCALIZATION" POLICY
- * - Services should be injected when in other services, in order to favor testing;
- * - Services should be located through the singleton usage when needed at the UI, if only used carefully, so that DI cascading is evicted.
- * DI cascading produces a lot of "dirty code" with "delegators" and also has implies in the need of lots of custom factories in UIBinder objects.
+ * "DEPENDENCY INJECTION vs LOCALIZATION" POLICY - Services should be injected when in other services, in order to favor testing; - Services should be located through the singleton usage when needed
+ * at the UI, if only used carefully, so that DI cascading is evicted. DI cascading produces a lot of "dirty code" with "delegators" and also has implies in the need of lots of custom factories in
+ * UIBinder objects.
  */
 public class ClientServices {
 
@@ -121,26 +120,25 @@ public class ClientServices {
 	private ClientServices() {}
 
 	/**
-	 * Configures the necessary services for application full usage.
-	 * - Initiates the {@link AuthenticationService}, which register a communication failure handler for {@link NotAuthenticatedException};
-	 * - Initiates the {@link AuthenticationService}, which register a communication failure handler for {@link AuthorizationException};
-	 * - Initiates the {@link ActionSyncService}, which starts a server-push connection with the server;
-	 * - Initiates the {@link ApplicationPlaceController} setting the default place and panel in which the application navigation will occur.
+	 * Configures the necessary services for application full usage. - Initiates the {@link AuthenticationService}, which register a communication failure handler for {@link NotAuthenticatedException}
+	 * ; - Initiates the {@link AuthenticationService}, which register a communication failure handler for {@link AuthorizationException}; - Initiates the {@link ActionSyncService}, which starts a
+	 * server-push connection with the server; - Initiates the {@link ApplicationPlaceController} setting the default place and panel in which the application navigation will occur.
 	 * 
-	 * @param panel the panel that will be used by the application "navigation" through the {@link ApplicationPlaceController}.
-	 * @param defaultAppPlace the default place used by the {@link ApplicationPlaceController} "navigation".
+	 * @param panel
+	 *            the panel that will be used by the application "navigation" through the {@link ApplicationPlaceController}.
+	 * @param defaultAppPlace
+	 *            the default place used by the {@link ApplicationPlaceController} "navigation".
 	 */
 	public void configure(final AcceptsOneWidget panel, final Place defaultAppPlace) {
 		authentication().registerAuthenticationExceptionGlobalHandler();
 		authorization().registerAuthorizationExceptionGlobalHandler();
 		actionSync();
-		placeController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
-				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), storage(), metrics());
+		placeController().configure(panel, defaultAppPlace, new AppActivityMapper(this), (PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), storage(), metrics());
 		colorProvider();
 		networkMonitor();
 	}
 
-	private NetworkMonitoringService networkMonitor() {
+	public NetworkMonitoringService networkMonitor() {
 		if (networkMonitoringService != null) return networkMonitoringService;
 		return networkMonitoringService = new NetworkMonitoringService(request(), serverPush(), alerting(), errorMessages());
 	}
@@ -152,8 +150,7 @@ public class ClientServices {
 
 	public AuthenticationService authentication() {
 		if (authenticationService != null) return authenticationService;
-		return authenticationService = new AuthenticationServiceImpl(request(), placeController(),
-				serverPush());
+		return authenticationService = new AuthenticationServiceImpl(request(), placeController(), serverPush());
 	}
 
 	public ApplicationPlaceController placeController() {
@@ -163,8 +160,7 @@ public class ClientServices {
 
 	public ProjectRepresentationProvider projectRepresentationProvider() {
 		if (projectRepresentationProvider != null) return projectRepresentationProvider;
-		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(request(), serverPush(),
-				authentication(), alerting(), errorMessages());
+		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(request(), serverPush(), authentication(), alerting(), errorMessages());
 	}
 
 	public ClientAlertingService alerting() {
@@ -174,14 +170,12 @@ public class ClientServices {
 
 	public ActionExecutionService actionExecution() {
 		if (actionExecutionService != null) return actionExecutionService;
-		return actionExecutionService = new ActionExecutionServiceImpl(contextProvider(), alerting(),
-				projectRepresentationProvider(), placeController(), authentication());
+		return actionExecutionService = new ActionExecutionServiceImpl(contextProvider(), alerting(), projectRepresentationProvider(), placeController(), authentication());
 	}
 
 	public ContextProviderService contextProvider() {
 		if (contextProviderService != null) return contextProviderService;
-		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) projectRepresentationProvider(),
-				request(), authentication(), metrics());
+		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) projectRepresentationProvider(), request(), authentication(), metrics());
 	}
 
 	public FeedbackService feedback() {
@@ -195,16 +189,15 @@ public class ClientServices {
 			@Override
 			public void configureRequestBuilder(final RequestBuilder requestBuilder) {
 				final String connectionID = serverPush().getConnectionID();
-				if (connectionID != null)
-				requestBuilder.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME, connectionID);
+				if (connectionID != null) requestBuilder.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME, connectionID);
 			}
 		});
 	}
 
 	private ActionSyncService actionSync() {
 		if (actionSyncService != null) return actionSyncService;
-		return actionSyncService = new ActionSyncService(request(), serverPush(), actionExecution(),
-				projectRepresentationProvider(), alerting(), errorMessages(), networkMonitor(), contextProvider());
+		return actionSyncService = new ActionSyncService(request(), serverPush(), actionExecution(), projectRepresentationProvider(), alerting(), errorMessages(), networkMonitor(), contextProvider(),
+				eventBus());
 	}
 
 	public ServerPushClientService serverPush() {
@@ -218,25 +211,22 @@ public class ClientServices {
 	}
 
 	public ClientApplicationStateService applicationState() {
-		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(eventBus(),
-				contextProvider(), storage(), alerting(), errorMessages()) : clientApplicationStateService;
+		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(eventBus(), contextProvider(), storage(), alerting(), errorMessages())
+				: clientApplicationStateService;
 	}
 
 	public ClientStorageService storage() {
-		if (clientStorageService == null) clientStorageService = new Html5StorageClientStorageService(authentication(),
-				projectRepresentationProvider());
+		if (clientStorageService == null) clientStorageService = new Html5StorageClientStorageService(authentication(), projectRepresentationProvider());
 		return clientStorageService;
 	}
 
 	public DetailService details() {
 		if (annotationService != null) return annotationService;
-		return annotationService = new DetailServiceImpl(actionExecution(), contextProvider(),
-				placeController(), eventBus());
+		return annotationService = new DetailServiceImpl(actionExecution(), contextProvider(), placeController(), eventBus());
 	}
 
 	public UserDataService userData() {
-		if (userDataService == null) userDataService = new UserDataServiceImpl(request(), contextProvider(),
-				serverPush());
+		if (userDataService == null) userDataService = new UserDataServiceImpl(request(), contextProvider(), serverPush());
 		return userDataService;
 	}
 
@@ -246,20 +236,18 @@ public class ClientServices {
 	}
 
 	public NotificationService notifications() {
-		if (notificationService == null) notificationService = new NotificationService(request(), serverPush(),
-				projectRepresentationProvider(), alerting());
+		if (notificationService == null) notificationService = new NotificationService(request(), serverPush(), projectRepresentationProvider(), alerting());
 		return notificationService;
 	}
 
 	public UsersStatusService usersStatus() {
-		if (usersStatusService == null) usersStatusService = new UsersStatusServiceImpl(request(), contextProvider(),
-				serverPush(), eventBus());
+		if (usersStatusService == null) usersStatusService = new UsersStatusServiceImpl(request(), contextProvider(), serverPush(), eventBus());
 		return usersStatusService;
 	}
 
 	public ColorProviderService colorProvider() {
-		if (colorProviderService == null) colorProviderService = new ColorProviderServiceImpl(request(),
-				contextProvider(), scopeEstimator(), serverPush(), eventBus(), usersStatus(), new ColorPicker(), new ColorPackPicker());
+		if (colorProviderService == null)
+			colorProviderService = new ColorProviderServiceImpl(request(), contextProvider(), scopeEstimator(), serverPush(), eventBus(), usersStatus(), new ColorPicker(), new ColorPackPicker());
 		return colorProviderService;
 	}
 
@@ -272,13 +260,11 @@ public class ClientServices {
 	}
 
 	public UserAssociationService userAssociation() {
-		return userAssociationService == null ? userAssociationService = new UserAssociationServiceImpl(actionExecution(),
-				contextProvider()) : userAssociationService;
+		return userAssociationService == null ? userAssociationService = new UserAssociationServiceImpl(actionExecution(), contextProvider()) : userAssociationService;
 	}
 
 	public ReleaseEstimatorProvider releaseEstimator() {
-		return releaseEstimatorProvider == null ? releaseEstimatorProvider = new ReleaseEstimatorProvider(contextProvider())
-				: releaseEstimatorProvider;
+		return releaseEstimatorProvider == null ? releaseEstimatorProvider = new ReleaseEstimatorProvider(contextProvider()) : releaseEstimatorProvider;
 	}
 
 	public static ProjectContext getCurrentProjectContext() {

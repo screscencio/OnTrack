@@ -1,15 +1,8 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchListener;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchRequestServiceTestImplementation;
@@ -21,6 +14,17 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+
+import com.google.web.bindery.event.shared.EventBus;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ActionQueuedDispatcherTest {
 
@@ -34,13 +38,14 @@ public class ActionQueuedDispatcherTest {
 	@Mock
 	private ClientErrorMessages messages;
 
+	@Mock
+	private EventBus eventBus;
+
 	@Before
 	public void setUp() {
 		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
-		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock,
-				getProjectRepresentationProviderMock(),
-				alertingService, messages);
+		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock, getProjectRepresentationProviderMock(), eventBus, alertingService, messages);
 	}
 
 	@Test
@@ -50,8 +55,7 @@ public class ActionQueuedDispatcherTest {
 
 			@Override
 			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
-				if (callbackHolder.getValue() != null) Assert.fail(ActionQueuedDispatcher.class.getSimpleName()
-						+ " should only make one call at a time to the request dispatch service.");
+				if (callbackHolder.getValue() != null) Assert.fail(ActionQueuedDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
 				callbackHolder.setValue(callback);
 			}
 		});
@@ -66,8 +70,7 @@ public class ActionQueuedDispatcherTest {
 
 			@Override
 			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
-				if (callbackHolder.getValue() != null) Assert.fail(ActionQueuedDispatcher.class.getSimpleName()
-						+ " should only make one call at a time to the request dispatch service.");
+				if (callbackHolder.getValue() != null) Assert.fail(ActionQueuedDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
 				callbackHolder.setValue(callback);
 			}
 		});
@@ -97,8 +100,7 @@ public class ActionQueuedDispatcherTest {
 
 			@Override
 			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
-				if (callbackHolder.getValue() != null) Assert.fail(ActionQueuedDispatcher.class.getSimpleName()
-						+ " should only make one call at a time to the request dispatch service.");
+				if (callbackHolder.getValue() != null) Assert.fail(ActionQueuedDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
 				callbackHolder.setValue(callback);
 				request.setValue(modelActionSyncRequest);
 			}

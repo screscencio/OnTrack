@@ -1,14 +1,13 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
+import br.com.oncast.ontrack.client.ui.events.PendingActionsCountChangeEvent;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -16,8 +15,12 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionCont
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequestResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.user.client.Window;
+import com.google.web.bindery.event.shared.EventBus;
 
 class ActionQueuedDispatcher {
 
@@ -32,11 +35,13 @@ class ActionQueuedDispatcher {
 	private final List<ActionQueuedDispatchCallback> callbacks = new ArrayList<ActionQueuedDispatchCallback>();
 	private boolean paused = false;
 
-	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider,
-			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
+	private final EventBus eventBus;
 
+	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider, final EventBus eventBus,
+			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.requestDispatchService = requestDispatchService;
+		this.eventBus = eventBus;
 		this.alertingService = alertingService;
 		this.messages = messages;
 
@@ -48,6 +53,7 @@ class ActionQueuedDispatcher {
 	public void dispatch(final ModelAction action, final ActionExecutionContext executionContext) {
 		actionList.add(action);
 		reverseActionList.add(executionContext.getReverseAction());
+		firePendingActionsCountChangeEvent();
 		tryExchange();
 	}
 
@@ -63,18 +69,18 @@ class ActionQueuedDispatcher {
 		waitingServerAnswerActionList = new ArrayList<ModelAction>(actionList);
 		final ArrayList<ModelAction> waitingServerAnsuerReverseActionList = new ArrayList<ModelAction>(reverseActionList);
 		actionList.removeAll(waitingServerAnswerActionList);
+		firePendingActionsCountChangeEvent();
 		reverseActionList.removeAll(waitingServerAnsuerReverseActionList);
 
 		// TODO Display 'loading' UI indicator.
-		requestDispatchService.dispatch(
-				new ModelActionSyncRequest(projectRepresentationProvider.getCurrent(), waitingServerAnswerActionList)
-						.setShouldReturnToSender(returnActionsToSender),
+		requestDispatchService.dispatch(new ModelActionSyncRequest(projectRepresentationProvider.getCurrent(), waitingServerAnswerActionList).setShouldReturnToSender(returnActionsToSender),
 				new DispatchCallback<ModelActionSyncRequestResponse>() {
 
 					@Override
 					public void onSuccess(final ModelActionSyncRequestResponse response) {
 						// TODO Hide 'loading' UI indicator.
 						waitingServerAnswerActionList.clear();
+						firePendingActionsCountChangeEvent();
 						notifyCallbacks(response);
 						tryExchange();
 					}
@@ -90,17 +96,13 @@ class ActionQueuedDispatcher {
 						// TODO When "Broswer-Reload" is removed, this method should fix "sync lists" according to the error returned.
 						// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
 						if (caught instanceof InvalidIncomingAction || caught instanceof UnableToHandleActionException) {
-							alertingService
-									.showErrorWithConfirmation(
-											messages.projectOutOfSync(),
-											new AlertConfirmationListener() {
-												@Override
-												public void onConfirmation() {
-													Window.Location.reload();
-												}
-											});
-						}
-						else {
+							alertingService.showErrorWithConfirmation(messages.projectOutOfSync(), new AlertConfirmationListener() {
+								@Override
+								public void onConfirmation() {
+									Window.Location.reload();
+								}
+							});
+						} else {
 							resetPendingActions(waitingServerAnsuerReverseActionList);
 						}
 					}
@@ -114,8 +116,13 @@ class ActionQueuedDispatcher {
 							actionList.add(0, pendingAction);
 						}
 						waitingServerAnswerActionList.clear();
+						firePendingActionsCountChangeEvent();
 					}
 				});
+	}
+
+	private void firePendingActionsCountChangeEvent() {
+		eventBus.fireEvent(new PendingActionsCountChangeEvent(actionList.size(), waitingServerAnswerActionList.size()));
 	}
 
 	protected void notifyCallbacks(final ModelActionSyncRequestResponse response) {

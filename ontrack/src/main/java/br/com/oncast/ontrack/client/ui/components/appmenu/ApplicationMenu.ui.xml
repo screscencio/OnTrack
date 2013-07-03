@@ -118,6 +118,7 @@
 		    <aw:ApplicationMenuItem ui:field="assignedToMeMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" contentStyle="{style.icon} icon-tasks icon-2x" title="Related to me">
 				<ui:attribute name="title" description="related to me menu item title" />
 			</aw:ApplicationMenuItem>
+			<aw:ActionSyncStateMenuItem ui:field="actionMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}"/>
 		</g:HTMLPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

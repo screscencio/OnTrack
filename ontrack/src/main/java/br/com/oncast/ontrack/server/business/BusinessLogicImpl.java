@@ -131,8 +131,10 @@ class BusinessLogicImpl implements BusinessLogic {
 			final ProjectRevision projectVersion = loadProject(projectId);
 			final Project project = projectVersion.getProject();
 			final ProjectContext context = new ProjectContext(project);
-			for (final ModelAction action : actionList)
+			for (final ModelAction action : actionList) {
+				ActionExecuter.verifyPermissions(action, context, actionContext);
 				ActionExecuter.executeAction(context, actionContext, action);
+			}
 		} catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "Unable to process action. The incoming action is invalid.";
 			LOGGER.error(errorMessage, e);

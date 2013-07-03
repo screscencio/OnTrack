@@ -149,17 +149,13 @@ public class ApplicationMenu extends Composite {
 	private void registerUserDataUpdateListener() {
 		if (registration != null) return;
 
-		registration = ClientServices
-				.get()
-				.userData()
-				.registerListenerForSpecificUser(ClientServices.get().authentication().getCurrentUserId(),
-						new UserSpecificInformationChangeListener() {
-							@Override
-							public void onInformationChange(final User user) {
-								if (userLogoutMenuItem != null) userLogoutMenuItem.setText(messages.logout(user.getName()));
-								else unregisterUserDataUpdateListener();
-							}
-						});
+		registration = ClientServices.get().userData().registerListenerForSpecificUser(ClientServices.get().authentication().getCurrentUserId(), new UserSpecificInformationChangeListener() {
+			@Override
+			public void onInformationChange(final User user) {
+				if (userLogoutMenuItem != null) userLogoutMenuItem.setText(messages.logout(user.getName()));
+				else unregisterUserDataUpdateListener();
+			}
+		});
 	}
 
 	@Override
@@ -185,8 +181,7 @@ public class ApplicationMenu extends Composite {
 
 	public ApplicationMenu addCustomMenuItem(final ApplicationMenuItem menuItem, final Widget widgetToPopup) {
 		itemContainer.add(menuItem);
-		menuItem.setPopupConfig(PopupConfig.configPopup().popup(widgetToPopup)
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
+		menuItem.setPopupConfig(PopupConfig.configPopup().popup(widgetToPopup).alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(menuItem, HorizontalAlignment.CENTER)));
 		return this;
 	}
@@ -220,10 +215,8 @@ public class ApplicationMenu extends Composite {
 
 		final PopupConfig popupPassChange = PopupConfig.configPopup().popup(new PasswordChangeWidget())
 				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM))
-				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userMenuItem, HorizontalAlignment.LEFT))
-				.setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
-		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu)
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM))
+				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userMenuItem, HorizontalAlignment.LEFT)).setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
+		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu).alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM))
 				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userMenuItem, HorizontalAlignment.LEFT));
 
 		userMenu.addItem(messages.changePassword(), new Command() {
@@ -246,8 +239,7 @@ public class ApplicationMenu extends Composite {
 	}
 
 	private void createAssignedToMeMenu() {
-		final PopupConfig config = PopupConfig.configPopup()
-				.popup(new AssignedToMeWidget())
+		final PopupConfig config = PopupConfig.configPopup().popup(new AssignedToMeWidget())
 				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(assignedToMeMenuItem, HorizontalAlignment.RIGHT));
 		assignedToMeMenuItem.setPopupConfig(config);

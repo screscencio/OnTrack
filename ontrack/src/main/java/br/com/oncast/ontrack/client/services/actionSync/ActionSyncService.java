@@ -1,9 +1,8 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import java.util.List;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -26,7 +25,10 @@ import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEventHan
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequestResponse;
 
+import java.util.List;
+
 import com.google.gwt.user.client.Window;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class ActionSyncService {
 
@@ -48,17 +50,16 @@ public class ActionSyncService {
 
 	private final ContextProviderService contextProviderService;
 
-	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
-			final ActionExecutionService actionExecutionService, final ProjectRepresentationProvider projectRepresentationProvider,
-			final ClientAlertingService alertingService, final ClientErrorMessages messages, final NetworkMonitoringService networkMonitoringService,
-			final ContextProviderService contextProviderService) {
+	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService, final ActionExecutionService actionExecutionService,
+			final ProjectRepresentationProvider projectRepresentationProvider, final ClientAlertingService alertingService, final ClientErrorMessages messages,
+			final NetworkMonitoringService networkMonitoringService, final ContextProviderService contextProviderService, final EventBus eventBus) {
 		this.requestDispatchService = requestDispatchService;
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.actionExecutionService = actionExecutionService;
 		this.alertingService = alertingService;
 		this.messages = messages;
 		this.contextProviderService = contextProviderService;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, alertingService, messages);
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, eventBus, alertingService, messages);
 
 		serverPushClientService.registerServerEventHandler(ModelActionSyncEvent.class, new ServerActionSyncEventHandler() {
 
@@ -69,8 +70,7 @@ public class ActionSyncService {
 		});
 		this.actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
 				handleActionExecution(action, executionContext, isUserAction);
 			}
@@ -110,8 +110,7 @@ public class ActionSyncService {
 				actionExecutionService.onNonUserActionRequest(modelAction, actionContext);
 			}
 			updateLastSyncId(event.getLastActionId());
-		}
-		catch (final UnableToCompleteActionException e) {
+		} catch (final UnableToCompleteActionException e) {
 			showFatalError(messages.someChangesConflicted());
 		}
 	}
@@ -124,9 +123,8 @@ public class ActionSyncService {
 	private void checkIfRequestIsPertinentToCurrentProject(final ModelActionSyncEvent event) {
 		final UUID requestedProjectId = event.getProjectId();
 		final UUID currentProjectId = projectRepresentationProvider.getCurrent().getId();
-		if (!requestedProjectId.equals(currentProjectId)) throw new RuntimeException(
-				"This client received an action for project '" + requestedProjectId + "' but it is currently on project '" + currentProjectId
-						+ "'. Please notify OnTrack team.");
+		if (!requestedProjectId.equals(currentProjectId))
+			throw new RuntimeException("This client received an action for project '" + requestedProjectId + "' but it is currently on project '" + currentProjectId + "'. Please notify OnTrack team.");
 	}
 
 	private void updateLastSyncId(final Long applyedActionSyncId) {
@@ -141,24 +139,23 @@ public class ActionSyncService {
 		}
 
 		revertToPeviousServerState();
-		requestDispatchService.dispatch(new ModelActionSyncEventRequest(projectRepresentationProvider.getCurrent().getId(), lastSyncId),
-				new DispatchCallback<ModelActionSyncEventRequestResponse>() {
-					@Override
-					public void onSuccess(final ModelActionSyncEventRequestResponse result) {
-						processServerActionSyncEvent(result.getModelActionSyncEvent());
-						actionQueuedDispatcher.tryExchange(true);
-						alertingService.showSuccess(messages.resyncSuccess());
-					}
+		requestDispatchService.dispatch(new ModelActionSyncEventRequest(projectRepresentationProvider.getCurrent().getId(), lastSyncId), new DispatchCallback<ModelActionSyncEventRequestResponse>() {
+			@Override
+			public void onSuccess(final ModelActionSyncEventRequestResponse result) {
+				processServerActionSyncEvent(result.getModelActionSyncEvent());
+				actionQueuedDispatcher.tryExchange(true);
+				alertingService.showSuccess(messages.resyncSuccess());
+			}
 
-					@Override
-					public void onTreatedFailure(final Throwable caught) {}
+			@Override
+			public void onTreatedFailure(final Throwable caught) {}
 
-					@Override
-					public void onUntreatedFailure(final Throwable caught) {
-						showFatalError(messages.connectionLost());
-					}
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				showFatalError(messages.connectionLost());
+			}
 
-				});
+		});
 	}
 
 	private void revertToPeviousServerState() {
@@ -170,8 +167,7 @@ public class ActionSyncService {
 				actionExecutionService.onNonUserActionRequest(pendingAction);
 			}
 			if (lastContext != null) contextProviderService.revertContext(lastContext);
-		}
-		catch (final UnableToCompleteActionException e) {
+		} catch (final UnableToCompleteActionException e) {
 			showFatalError(messages.someChangesConflicted());
 		}
 	}
