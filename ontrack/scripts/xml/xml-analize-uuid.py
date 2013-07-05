@@ -1,104 +1,328 @@
-import os, sys, getopt, re, time
+import os, sys, getopt, re, codecs
+import xml.etree.ElementTree as ET
+from datetime import datetime
+from dateutil import tz
 
-ATTRIBUTE_END = "\""
-VERSION_TAG = "<ontrackXML version=\""
-PROJECT_TAG = "<projectRepresentation name=\""
-ACTION_TAG = "</userAction>"
-PROJECT_AUTH_USER_TAG = "<projectAuthorization userId=\""
-PROJECT_AUTH_PROJ_TAG = " projectId=\""
-USER_ID_TAG = "<user id=\""
-USER_EMAIL_TAG = " email=\""
-ACTION_TIMESTAMP_TAG = "<userAction timestamp=\""
+INDENTATION = '    '
+MAX_DEPTH = 10
+IGNORED_INVITORS = ['admin@ontrack.com', 'ontrack@oncast.com.br', 'samuel.crescencio@oncast.com.br']
 
-def checkFileEnd(xmlText, fileName) :
-	if xmlText.find("</ontrackXML>") == -1 :
-		raise Exception("The specified file is not a ontrackXML file or the file is incomplete")
+data = None
 
-	printInfo("The file %s is complete" % fileName)
+class Company :
 
-def getAttribute(xmlText, attributeTag, afterIndex = 0) :
-	startIndex = xmlText.find(attributeTag, afterIndex)
-	if (startIndex == -1) :
-		return "", -1
+	def __init__(self, domain) :
+		self.name = domain[:domain.find('.')]
+		self.domain = domain
+		self.users = []
 
-	startIndex += len(attributeTag)
-	endIndex = xmlText.find(ATTRIBUTE_END, startIndex)
-	return xmlText[startIndex : endIndex], endIndex + len(ATTRIBUTE_END)
+	def addUser(self, user) :
+		if(user not in self.users) :
+			self.users.append(user);
 
-def printProjectName(xmlText) :
-	print "[PROJECT NAME]", getAttribute(xmlText, PROJECT_TAG)[0]
+	def getRootUsers(self) :
+		rootUsers = []
+		for user in self.users :
+			if self.dontHasParentInThisCompany(user) :
+				rootUsers.append(user)
+		return rootUsers
 
-def printVersion(xmlText) :
-	print "[XML VERSION]", getAttribute(xmlText, VERSION_TAG)[0]
+	def dontHasParentInThisCompany(self, user) :
+		if not user.parent :
+			return True
+		parent = user.parent[0]
+		company = data.getCompany(parent.email)
+		return company != self
 
-def printNumberOfActions(xmlText) :
-	actionsCount = 0
-	currentIndex = xmlText.find(ACTION_TAG)
+	def __eq__(self, other) :
+		return self.domain == other.domain
 
-	while currentIndex >= 0:
-		actionsCount += 1
-		currentIndex = xmlText.find(ACTION_TAG, currentIndex + len(ACTION_TAG))
+	def __hash__(self) :
+		return hash(self.domain)
 
-	print "[ACTIONS COUNT]", actionsCount
+	def printReport(self, indentation = '') :
+		printl( "%s%s (%i):" % (indentation, self.domain, len(self.users)) )
+		for user in self.getRootUsers() :
+			user.printReport(indentation + INDENTATION)
 
-def printLastActionTimestamp(xmlText) :
-	index = 0
-	while True :
-		timestamp, index = getAttribute(xmlText, ACTION_TIMESTAMP_TAG, index)
-		if index == -1:
-			break
-		lastTimestamp = timestamp
-	print "[LAST_ACTION_TIMESTAMP]", lastTimestamp
+class Project :
 
-def getUser(xmlText, userId) :
-	currentUserId, index = getAttribute(xmlText, USER_ID_TAG)
-	while int(currentUserId) != userId :
-		currentUserId, index = getAttribute(xmlText, USER_ID_TAG, index)
+	def __init__(self, id, name) :
+		self.id = id
+		self.name = name
+		self.users = {}
+		self.lastActionTimestamp = None
+		self.creator = None
+		self.creationTimestamp = None
 
-	return getAttribute(xmlText, USER_EMAIL_TAG, index)[0]
+	def setProjectCreator(self, invitedUser) :
+		if self.creator :
+			return
+		self.creator = invitedUser
 
-def printAuthorizedUsers(xmlText, projectId = None) :
-	currentIndex = 0
+	def setCreationTimestamp(self, timestamp) :
+		if not self.creationTimestamp or self.creationTimestamp > timestamp :
+			self.creationTimestamp = timestamp
 
-	for _ in range(100) :
-		currentUserId, userIndex = getAttribute(xmlText, PROJECT_AUTH_USER_TAG, currentIndex)
-		if (userIndex == -1) :
-			break
-		currentProjectId, currentIndex = getAttribute(xmlText, PROJECT_AUTH_PROJ_TAG, userIndex)
+	def setLastActionTimestamp(self, timestamp) :
+		if not self.lastActionTimestamp or self.lastActionTimestamp < timestamp :
+			self.lastActionTimestamp = timestamp
 
-		if not projectId or int(currentProjectId) == projectId :
-			print "[AUTHORIZED USER]", getUser(xmlText, int(currentUserId))
+	def addUser(self, user) :
+		if user not in self.users :
+			self.users[user] = None
+
+	def updateUserInvitationTimestamp(self, user, timestamp) :
+		if user in self.users and not self.users[user]:
+			self.users[user] = timestamp
+
+	def getFirstUser(self) :
+		firstUser = None
+		firstTimestamp = datetime.utcnow()
+		for user, timestamp in self.users.items() :
+			if timestamp and firstTimestamp > timestamp :
+				firstTimestamp = timestamp
+				firstUser = user
+		return firstUser if firstUser else self.creator
+
+	def __eq__(self, other) :
+		return self.id == other.id
+
+	def __hash__(self) :
+		return hash(self.id)
+
+	def printReport(self, indentation = ''):
+		ind = indentation + INDENTATION
+		printl( "%s%s" % (indentation, self.name) )
+		printl( "%sID: %s" % (ind, self.id) )
+		printl( "%sCreated by %s%s" % (ind, self.creator.email, formatTime(self.creationTimestamp)) )
+		printl( "%sLast update%s" % (ind, formatTime(self.lastActionTimestamp)) )
+		printl( "%sTotal of %d users" % (ind, len(self.users)) )
+		printl( "%sProbable company: %s" % (ind, data.getCompany(self.getFirstUser().email).domain))
+		printl( "%sMain users" % ind )
+		self.creator.printForProject(self, ind + INDENTATION)
+
+class User :
+	
+	def __init__(self, id, email) :
+		self.name = email[:email.find('@')];
+		self.email = email
+		self.id = id
+		self.lastActionTimestamp = None
+		self.parent = None
+		self.childrem = {}
+		self.projects = []
+		self.creationTimestamp = None
+
+	def addProject(self, project) :
+		if project not in self.projects :
+			self.projects.append(project)
+
+	def setCreationTimestamp(self, timestamp) :
+		if not self.creationTimestamp or self.creationTimestamp > timestamp :
+			self.creationTimestamp = timestamp
+
+	def setLastActionTimestamp(self, timestamp) :
+		if not self.lastActionTimestamp or self.lastActionTimestamp < timestamp :
+			self.lastActionTimestamp = timestamp
+
+	def addChild(self, child, timestamp) :
+		if child not in self.childrem :
+			self.childrem[child] = timestamp
+
+	def removeChild(self, child) :
+		if child in self.childrem :
+			del self.childrem[child]
+
+	def setParent(self, newParent, timestamp) :
+		if self.verifyHasDescendants(newParent, timestamp) :
+			return
+				
+		if not self.parent or self.parent[1] > timestamp :
+			if self.parent :
+				self.parent[0].removeChild(self)
+			self.parent = (newParent, timestamp)
+			newParent.addChild(self, timestamp)
+
+	def verifyHasDescendants(self, descendant, timestamp) :
+		for child, t in self.childrem.items() :
+			if child == descendant :
+				if t < timestamp :
+					return True
+				else :
+					self.removeChild(descendant)
+					descendant.parent = None
+					return False
+			else :
+				child.verifyHasDescendants(descendant, timestamp)
+
+	def __eq__(self, other) :
+		return self.id == other.id
+
+	def __hash__(self) :
+		return hash(self.id)
+
+	def printForProject(self, project, indentation = '') :
+		ind = indentation
+		if project in self.projects :
+			printl( indentation + self.email )
+			ind = indentation + INDENTATION
+
+		for child in self.childrem.keys() :
+			child.printForProject(project, ind)
+
+	def printReport(self, indentation = '') :
+		if checkMaxIndentation(indentation) :
+			return
+
+		projectsCountStr = " {%i}" % len(self.projects) if self.projects else ''
+		timeStr = formatTime(self.lastActionTimestamp)
+		childremStr = ':' if self.childrem else ''
+		printl( indentation + self.name + projectsCountStr + timeStr + childremStr )
+		for child in self.childrem.keys() :
+			child.printReport(indentation + INDENTATION)
+
+class OnTrackData :
+
+	def __init__(self):
+		self.users = {}
+		self.companies = {}
+		self.projects = {}
+
+	def getProject(self, projectId, projectName = None) :
+		if projectId not in self.projects :
+			if projectName == None :
+				raise Exception('Project not Found, Inconsistency!')
+			self.projects[projectId] = Project(projectId, projectName)
+		return self.projects[projectId]
+
+	def getUser(self, id, email = None) :
+		if id not in self.users :
+			if email == None :
+				raise Exception('User not Found, Inconsistency!')
+			self.users[id] = User(id, email)
+		return self.users[id]
+
+	def getCompany(self, email) :
+		return self.getCompanyByDomain(extractDomainFromEmail(email))
+
+	def getCompanyByDomain(self, domain) :
+		if domain not in self.companies :
+			self.companies[domain] = Company(domain)
+		return self.companies[domain]
+
+	def printReport(self, indentation = ''):
+		printl( indentation + "COMPANIES (%d):" % len(self.companies) )
+		for company in self.companies.values() :
+			company.printReport(indentation + INDENTATION)
+
+		printl( indentation + "PROJECTS (%d):" % len(self.projects) )
+		for project in self.projects.values() :
+			project.printReport(indentation + INDENTATION)
+
+def extractDomainFromEmail(email) :
+	return email[email.find('@') + 1:]
+
+def printl(message) :
+	outFile.write(message + '\n')
+	print message
+
+def checkMaxIndentation(indentation) :
+	result = len(indentation) > MAX_DEPTH * len(INDENTATION)
+	if result :
+		printl( indentation + '...' )
+	return result
+
+def createUserMap(root):
+	for user in root.iter('userData'):
+		email = user.get('email')
+		company = data.getCompany(email)
+		company.addUser(data.getUser(user.find('id').get('id'), email))
+
+def toDatetime(dateStr) :
+	return datetime.strptime(dateStr, '%Y-%m-%d %H:%M:%S.%f %Z')
+
+def formatTime(d) :
+	if not d :
+		return ''
+
+	diff = datetime.utcnow() - d
+	differenceInMonths = diff.days / 30
+	differenceStr = "%i months ago" % differenceInMonths if differenceInMonths > 1 else d.strftime('%Y-%m-%d')
+	return " [%s]" % differenceStr
+
+def processTeamInvite(project, action, user, timestamp) :
+	invitedUserId = action.find('userId').get('id')
+	invitedUser = data.getUser(invitedUserId)
+	invitedUser.setCreationTimestamp(timestamp)
+	project.setCreationTimestamp(timestamp)
+	project.setProjectCreator(invitedUser)
+	project.updateUserInvitationTimestamp(invitedUser, timestamp)
+	if user != invitedUser :
+		invitedUser.setParent(user, timestamp)
+
+def handleUserActions(root) :
+	for project in root.iter('project') :
+		representation = project.find('projectRepresentation')
+		project = data.getProject(representation.find('id').get('id'), representation.get('name'))
+
+		for userAction in root.iter('userAction') :
+			timestamp = toDatetime(userAction.get('timestamp'))
+			project.setLastActionTimestamp(timestamp)
+
+			userId = userAction.find('userId').get('id')
+			user = data.getUser(userId);
+			user.setLastActionTimestamp(timestamp)
+			
+			action = userAction.find('action')
+			actionClass = action.get('class')
+			if 'TeamInviteAction' in actionClass :
+				processTeamInvite(project, action, user, timestamp)
+
+def updateUserAuthorizations(root) :
+	for representation in root.iter('projectRepresentation') :
+		data.getProject(representation.find('id').get('id'), representation.get('name'))
+
+	for auth in root.iter('projectAuthorization') :
+		userId = auth.find('userId').get('id')
+		projectId = auth.find('projectId').get('id')
+		user = data.getUser(userId)
+		project = data.getProject(projectId)
+		project.addUser(user)
+		user.addProject(project)
+
+def analyze(root) :
+	createUserMap(root)
+	updateUserAuthorizations(root)
+	handleUserActions(root)
 
 def execute(path) :
-	if os.path.isdir(path) :
+	expression = re.compile(r"^ontrack_[A-Z\-0-9]+\.xml$")
 
-		expression = re.compile(r"^ontrack_[A-Z\-0-9]+\.xml$")
+	if os.path.isdir(path) :
 		for entry in os.listdir(path) :
 			if expression.match(entry) :
-				xmlText = open(os.path.join(path, entry)).read();
+				execute(os.path.join(path, entry))
 
-				try :
-					checkFileEnd(xmlText, entry)
-					printProjectName(xmlText)
-					#printVersion(xmlText)
-					printNumberOfActions(xmlText)
-					printLastActionTimestamp(xmlText)
-					#printAuthorizedUsers(xmlText)
-
-				except Exception as error :
-					print "[ERROR]", str(error)
-
-
-def printInfo(infoText) :
-	print "[INFO]", infoText
+	else :
+		tree = ET.parse(path)
+		analyze(tree.getroot())
 
 def main():
+	global data, outFile
 	try:
+		initialTime = datetime.now()
+		outFile = codecs.open('ontrack_status.txt', 'w', 'utf-8')
 		_, arg = getopt.getopt(sys.argv[1:], "", [])
+		data = OnTrackData()
 		execute(arg[0])
+		data.printReport();
+		outFile.close()
+		print "[INFO] Finished in %s" % str(datetime.now() - initialTime)
 		sys.exit()
 	except getopt.error, msg:
 		print str(msg)
+		outFile.close()
 		sys.exit(2)
 
 if __name__ == "__main__":

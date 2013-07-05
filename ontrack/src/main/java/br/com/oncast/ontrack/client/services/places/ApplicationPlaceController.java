@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.client.services.places;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.ui.places.AppActivityManager;
 import br.com.oncast.ontrack.client.ui.places.RestorablePlace;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
@@ -52,8 +52,8 @@ public class ApplicationPlaceController {
 		placeController.goTo(place);
 	}
 
-	public void configure(final AcceptsOneWidget container, final Place defaultAppPlace, final ActivityMapper activityMapper,
-			final PlaceHistoryMapper placeHistoryMapper, final ClientStorageService clientStorageService, final ClientMetricsService metricsService) {
+	public void configure(final AcceptsOneWidget container, final Place defaultAppPlace, final ActivityMapper activityMapper, final PlaceHistoryMapper placeHistoryMapper,
+			final ClientStorageService clientStorageService, final ClientMetricsService metricsService) {
 
 		this.placeHistoryMapper = placeHistoryMapper;
 		this.clientStorageService = clientStorageService;
@@ -71,7 +71,6 @@ public class ApplicationPlaceController {
 		historyHandler.handleCurrentHistory();
 
 		eventBus.addHandler(PlaceChangeRequestEvent.TYPE, new PlaceChangeRequestEvent.Handler() {
-
 			@Override
 			public void onPlaceChangeRequest(final PlaceChangeRequestEvent event) {
 				notifyPlaceChangeListeners(event.getNewPlace());
