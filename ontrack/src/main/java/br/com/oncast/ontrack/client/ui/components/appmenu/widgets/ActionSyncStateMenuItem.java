@@ -8,12 +8,15 @@ import br.com.oncast.ontrack.client.ui.events.PendingActionsCountChangeEventHand
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class ActionSyncStateMenuItem extends Composite implements IsWidget, PendingActionsCountChangeEventHandler, ConnectionListener {
+
+	private static final ActionSyncStateMenuItemMessages MESSAGES = GWT.create(ActionSyncStateMenuItemMessages.class);
 
 	private ActionSyncStateMenuItemHeaderWidget headerWidget;
 
@@ -61,13 +64,18 @@ public class ActionSyncStateMenuItem extends Composite implements IsWidget, Pend
 
 	private void updateHeader() {
 		String styleName = connected ? "icon-ok" : "icon-remove";
+		String connectionStateDescription = connected ? MESSAGES.connected() : MESSAGES.noConnection();
 		int count = notSent + waiting;
 
 		if (waiting > 0) {
 			styleName = "icon-refresh icon-spin";
+			connectionStateDescription = MESSAGES.syncing();
 			count = waiting;
 		}
 
+		final String actionsCountText = count > 0 ? (count + " " + (count == 1 ? MESSAGES.singleModificationNeedToBeSent() : MESSAGES.multipleModificationsNeedsToBeSent())) : MESSAGES.upToDate();
+
+		headerWidget.setTitle(connectionStateDescription + ": " + actionsCountText);
 		headerWidget.setIcon(styleName);
 		setPendingActionsCount(count);
 		headerWidget.setConnected(connected);

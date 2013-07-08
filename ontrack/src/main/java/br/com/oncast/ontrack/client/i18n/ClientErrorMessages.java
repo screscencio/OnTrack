@@ -82,4 +82,8 @@ public interface ClientErrorMessages extends BaseMessages {
 	@DefaultMessage("Watch out, the internet is down! You are alone from now on")
 	String offilineMode();
 
+	@Description("message shown when there are pending actions and the user tryies to close the window")
+	@DefaultMessage("There are {0} unsaved modifications! If you leave now, you may lose these modifications.")
+	String thereArePedingActionsWannaLeaveAnyway(final String nOfUnsavedModifications);
+
 }

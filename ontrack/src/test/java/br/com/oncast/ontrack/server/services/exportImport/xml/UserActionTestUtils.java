@@ -67,6 +67,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.TeamDeclareCanInviteAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareReadOnlyAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
@@ -189,7 +190,12 @@ public class UserActionTestUtils {
 		userActions.add(createScopeDeclareDueDateAction());
 		userActions.add(createKanbanLockAction());
 		userActions.add(createTeamDeclareReadOnlyAction());
+		userActions.add(createTeamDeclareCanInviteAction());
 		return userActions;
+	}
+
+	private static UserAction createTeamDeclareCanInviteAction() throws Exception {
+		return createUserAction(new TeamDeclareCanInviteAction(new UUID(), true));
 	}
 
 	private static UserAction createTeamDeclareReadOnlyAction() throws Exception {
@@ -330,7 +336,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createTeamInviteAction() throws Exception {
-		return createUserAction(new TeamInviteAction(new UUID()));
+		return createUserAction(new TeamInviteAction(new UUID(), true, false));
 	}
 
 	public static UserAction createImpedimentCreateAction() throws Exception {

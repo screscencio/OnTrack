@@ -38,7 +38,7 @@ public class ActionTestUtils {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 
 		for (final User user : requiredUsers) {
-			if (user != null) actions.add(new TeamInviteAction(user.getId()));
+			if (user != null) actions.add(new TeamInviteAction(user.getId(), true, false));
 		}
 
 		final UUID rootScope = ProjectTestUtils.createProject().getProjectScope().getId();
@@ -101,7 +101,7 @@ public class ActionTestUtils {
 
 	public static List<ModelAction> createOneValidAction() {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
-		actions.add(new TeamInviteAction(DefaultAuthenticationCredentials.USER_ID));
+		actions.add(new TeamInviteAction(DefaultAuthenticationCredentials.USER_ID, true, false));
 		return actions;
 	}
 

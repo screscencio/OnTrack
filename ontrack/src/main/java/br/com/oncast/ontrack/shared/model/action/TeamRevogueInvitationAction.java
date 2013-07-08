@@ -1,14 +1,15 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.team.TeamRevogueInvitationActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(TeamRevogueInvitationActionEntity.class)
 public class TeamRevogueInvitationAction implements TeamAction {
@@ -30,9 +31,10 @@ public class TeamRevogueInvitationAction implements TeamAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		ActionHelper.findUser(userId, context, this).setValid(false);
+		final UserRepresentation user = ActionHelper.findUser(userId, context, this);
+		user.setValid(false);
 
-		return new TeamInviteAction(userId);
+		return new TeamInviteAction(user);
 	}
 
 	@Override

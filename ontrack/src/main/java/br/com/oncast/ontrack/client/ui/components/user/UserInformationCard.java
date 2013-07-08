@@ -10,10 +10,12 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
+import br.com.oncast.ontrack.shared.model.action.TeamDeclareCanInviteAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareReadOnlyAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import java.util.HashSet;
@@ -77,7 +79,10 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 	Label userWithoutImage;
 
 	@UiField
-	CheckBox canMakeChangesCheckBox;
+	CheckBox readOnlyCheckBox;
+
+	@UiField
+	CheckBox canInviteCheckBox;
 
 	private User user;
 
@@ -129,6 +134,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 	@Override
 	public void show() {
 		addListeners();
+		updateCheckBoxes();
 	}
 
 	@Override
@@ -139,9 +145,17 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 		CloseEvent.fire(this, this);
 	}
 
-	@UiHandler("canMakeChangesCheckBox")
+	@UiHandler("readOnlyCheckBox")
 	void onCanMakeChangesValueChange(final ValueChangeEvent<Boolean> e) {
-		ClientServices.get().actionExecution().onUserActionExecutionRequest(new TeamDeclareReadOnlyAction(userRepresentation.getId(), !e.getValue()));
+		ClientServices.get().actionExecution().onUserActionExecutionRequest(new TeamDeclareReadOnlyAction(userRepresentation.getId(), e.getValue()));
+	}
+
+	@UiHandler("canInviteCheckBox")
+	void onCanInviteValueChange(final ValueChangeEvent<Boolean> e) {
+		if (e.getValue() && userRepresentation.isReadOnly()) {
+			ClientServices.get().actionExecution().onUserActionExecutionRequest(new TeamDeclareReadOnlyAction(userRepresentation.getId(), false));
+		}
+		ClientServices.get().actionExecution().onUserActionExecutionRequest(new TeamDeclareCanInviteAction(userRepresentation.getId(), e.getValue()));
 	}
 
 	@Override
@@ -151,19 +165,36 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 
 	public void updateUser(final User user) {
 		this.user = user;
-		final boolean isOtherUser = isOtherUser();
-		userName.setReadOnly(isOtherUser);
-		canMakeChangesCheckBox.setEnabled(isOtherUser && isCurrentUserSuperUser);
-		updateCanMakeChanges();
-		updateView();
+		userName.setReadOnly(isOtherUser());
+		updateCheckBoxes();
+		updateInformationValues();
+	}
+
+	private void updateCheckBoxes() {
+		updateCheckBoxesUpdeateability();
+		updateCheckBoxesValues();
+	}
+
+	private void updateCheckBoxesUpdeateability() {
+		try {
+			final UserRepresentation currentUser = ClientServices.getCurrentProjectContext().findUser(ClientServices.getCurrentUser());
+			final boolean isOtherUser = isOtherUser();
+			final boolean canMakeChanges = isOtherUser && isCurrentUserSuperUser && !currentUser.isReadOnly();
+			readOnlyCheckBox.setEnabled(canMakeChanges);
+			canInviteCheckBox.setEnabled(canMakeChanges && currentUser.canInvite());
+		} catch (final UserNotFoundException e) {
+			readOnlyCheckBox.setEnabled(false);
+			canInviteCheckBox.setEnabled(false);
+		}
 	}
 
 	private boolean isOtherUser() {
 		return !user.equals(ClientServices.getCurrentUser());
 	}
 
-	private void updateCanMakeChanges() {
-		canMakeChangesCheckBox.setValue(!userRepresentation.isReadOnly(), false);
+	private void updateCheckBoxesValues() {
+		readOnlyCheckBox.setValue(userRepresentation.isReadOnly(), false);
+		canInviteCheckBox.setValue(!userRepresentation.isReadOnly() && userRepresentation.canInvite(), false);
 	}
 
 	private void showLabel() {
@@ -178,7 +209,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 		userImageContainer.showWidget(0);
 	}
 
-	private void updateView() {
+	private void updateInformationValues() {
 		userEmail.setText(user.getEmail());
 		userName.setValue(user.getName());
 		userWithoutImage.setText(user.getName().substring(0, 1));
@@ -202,7 +233,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
-				if (action instanceof TeamAction && action.getReferenceId().equals(userRepresentation.getId())) updateCanMakeChanges();
+				if (action instanceof TeamAction && action.getReferenceId().equals(userRepresentation.getId())) updateCheckBoxesValues();
 			}
 
 		}));
@@ -211,7 +242,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 			@Override
 			public void onInformationChange(final User user) {
 				isCurrentUserSuperUser = user.isSuperUser();
-				canMakeChangesCheckBox.setEnabled(isOtherUser() && isCurrentUserSuperUser);
+				updateCheckBoxesUpdeateability();
 			}
 		}));
 	}

@@ -13,7 +13,6 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
-import br.com.oncast.ontrack.shared.exceptions.authorization.PermissionDeniedException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -143,31 +142,6 @@ public class AuthorizationManagerTest {
 		authorizeUser(user, projectId);
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, user.getEmail(), true, false);
-	}
-
-	@Test(expected = PermissionDeniedException.class)
-	public void shouldNotAuthorizeAnExistingUserInvitationWhenTheUserIsNotASuperUser() throws Exception {
-		final String mail = "user@mail.com";
-
-		final User requestUser = UserTestUtils.createUser(mail);
-		when(authenticationManager.findUserByEmail(mail)).thenReturn(requestUser);
-		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation());
-		authenticatedUser.setSuperUser(false);
-
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, true, false);
-	}
-
-	@Test(expected = PermissionDeniedException.class)
-	public void shouldNotAuthorizeNewUserInvitationWhenTheUserIsNotSuperUser() throws Exception {
-		final String mail = "user@mail.com";
-
-		final User requestUser = UserTestUtils.createUser(mail);
-		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
-		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(false))).thenReturn(requestUser);
-		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation());
-		authenticatedUser.setSuperUser(false);
-
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false, true);
 	}
 
 	@Test

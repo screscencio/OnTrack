@@ -171,7 +171,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	public void removeAuthorization(final UUID userId, final UUID projectId) throws UnableToHandleActionException, UnableToRemoveAuthorizationException, AuthorizationException {
 		authorizationManager.assureProjectAccessAuthorization(projectId);
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-		if (!authenticatedUser.equals(userId)) authorizationManager.validateSuperUser(authenticatedUser.getId());
+		if (!authenticatedUser.equals(userId)) authorizationManager.validateCanCreateProject(authenticatedUser.getId());
 		handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamRevogueInvitationAction(userId)));
 
 		if (userId.equals(DefaultAuthenticationCredentials.USER_ID)) return;
@@ -183,9 +183,20 @@ class BusinessLogicImpl implements BusinessLogic {
 	@Override
 	public void authorize(final String userEmail, final UUID projectId, final boolean isSuperUser, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
 			UnableToHandleActionException, AuthorizationException {
-		final UUID userId = authorizationManager.authorize(projectId, userEmail, isSuperUser, wasRequestedByTheUser);
-		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toString() + "'");
-		handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamInviteAction(userId)));
+		final UUID userId = authorizationManager.authorize(projectId, userEmail.toLowerCase().trim(), isSuperUser, wasRequestedByTheUser);
+		try {
+			handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamInviteAction(userId, isSuperUser, false)));
+			LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toString() + "'");
+		} catch (final UnableToHandleActionException e) {
+			try {
+				authorizationManager.removeAuthorization(projectId, userId);
+				LOGGER.error("Failed to authorize user '" + userEmail + "' to project '" + projectId.toString() + "'", e);
+				throw e;
+			} catch (final UnableToRemoveAuthorizationException e1) {
+				LOGGER.error("Failed to rollback created authorization for user '" + userEmail + "' to project '" + projectId.toString() + "'", e1);
+				throw new UnableToAuthorizeUserException("It was not possible to authorize user nor to roll it back", e1);
+			}
+		}
 	}
 
 	@Override
@@ -208,7 +219,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 
 		try {
-			authorizationManager.validateSuperUser(authenticatedUser.getId());
+			authorizationManager.validateCanCreateProject(authenticatedUser.getId());
 			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(projectName));
 
 			authorize(authenticatedUser.getEmail(), persistedProjectRepresentation.getId(), authenticatedUser.isSuperUser(), false);

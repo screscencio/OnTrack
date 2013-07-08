@@ -19,7 +19,7 @@ public interface AuthorizationManager {
 
 	void assureProjectAccessAuthorization(final UUID projectId) throws AuthorizationException;
 
-	void validateSuperUser(UUID userId) throws PermissionDeniedException;
+	void validateCanCreateProject(UUID userId) throws PermissionDeniedException;
 
 	List<ProjectRepresentation> listAuthorizedProjects(UUID userId) throws PersistenceException, NoResultFoundException;
 

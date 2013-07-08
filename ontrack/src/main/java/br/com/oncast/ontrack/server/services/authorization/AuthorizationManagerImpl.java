@@ -36,7 +36,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	private final MulticastService multicastService;
 	private final MailFactory mailFactory;
 	private final ClientManager clientManager;
-	private final IntegrationService integrationMock;
+	private final IntegrationService integrationService;
 
 	public AuthorizationManagerImpl(final AuthenticationManager authenticationManager, final PersistenceService persistenceService, final MulticastService multicastService,
 			final MailFactory mailFactory, final ClientManager clientManager, final IntegrationService integrationMock) {
@@ -45,7 +45,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		this.multicastService = multicastService;
 		this.mailFactory = mailFactory;
 		this.clientManager = clientManager;
-		this.integrationMock = integrationMock;
+		this.integrationService = integrationMock;
 	}
 
 	@Override
@@ -84,7 +84,6 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 		try {
 			final User authenticatedUser = getAuthenticatedUserOrAdmin();
-			validateSuperUser(authenticatedUser.getId());
 			String generatedPassword = null;
 
 			try {
@@ -102,7 +101,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			persistenceService.authorize(userEmail, projectId);
 			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
 			multicastService.multicastToUser(new ProjectAddedEvent(projectRepresentation), user);
-			integrationMock.onUserInvited(projectId, authenticatedUser, user);
+			integrationService.onUserInvited(projectId, authenticatedUser, user);
 			if (shouldSendMailMessage) sendMailMessage(projectId, userEmail, generatedPassword, authenticatedUser);
 
 		} catch (final PersistenceException e) {
@@ -132,7 +131,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public void validateSuperUser(final UUID userId) throws PermissionDeniedException {
+	public void validateCanCreateProject(final UUID userId) throws PermissionDeniedException {
 		String message = "Authorized!";
 		try {
 			final User user = persistenceService.retrieveUserById(userId);

@@ -242,6 +242,12 @@ public enum ActionExecutionErrorMessageCode implements BaseMessageCode<ActionExe
 		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
 			return messages.cantChangeYourOwnPermission();
 		}
+	},
+	PERMISSION_DENIED {
+		@Override
+		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
+			return messages.permissionDenied();
+		}
 	};
 
 	@Override

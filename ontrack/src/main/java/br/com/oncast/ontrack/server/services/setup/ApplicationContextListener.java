@@ -1,10 +1,8 @@
 package br.com.oncast.ontrack.server.services.setup;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
 import br.com.drycode.api.web.gwt.dispatchService.server.DispatchServiceServlet;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchServiceException;
+
 import br.com.oncast.ontrack.client.services.feedback.SendFeedbackRequest;
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
@@ -54,6 +52,9 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.UserScopeSelectionM
 import br.com.oncast.ontrack.shared.services.requestDispatch.UsersStatusRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerMetricsRequest;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
 public class ApplicationContextListener implements ServletContextListener {
 
 	private static final ServerServiceProvider SERVICE_PROVIDER = ServerServiceProvider.getInstance();
@@ -100,10 +101,7 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(RemoveProjectAuthorizationRequest.class, new RemoveProjectAuthorizationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(OnTrackServerMetricsRequest.class, new OnTrackServerMetricsRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ModelActionSyncEventRequest.class, new ModelActionSyncEventRequestHandler());
-			// FIXME merge check this
-			// DispatchServiceServlet.registerRequestHandler(OnTrackServerStatisticsRequest.class, new OnTrackServerStatisticsRequestHandler());
-		}
-		catch (final DispatchServiceException e) {
+		} catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);
 		}
 	}
@@ -112,11 +110,11 @@ public class ApplicationContextListener implements ServletContextListener {
 	public void contextDestroyed(final ServletContextEvent event) {}
 
 	/**
-	 * Sets up the business logic and - with it - all direct server services.
-	 * Needed to give a chance to services like {@link ServerPushServerService} to register their listeners on the necessary application input classes (Servlets
-	 * for instance).
+	 * Sets up the business logic and - with it - all direct server services. Needed to give a chance to services like {@link ServerPushServerService} to register their listeners on the necessary
+	 * application input classes (Servlets for instance).
 	 * 
-	 * @param event the servlet context event.
+	 * @param event
+	 *            the servlet context event.
 	 */
 	private void setupBusinessLogic(final ServletContextEvent event) {
 		SERVICE_PROVIDER.getBusinessLogic();

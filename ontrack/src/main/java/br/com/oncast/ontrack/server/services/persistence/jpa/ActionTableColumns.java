@@ -18,6 +18,7 @@ public interface ActionTableColumns {
 	public static final String STRING_4 = "string_4";
 
 	public static final String BOOLEAN_1 = "boleano";
+	public static final String BOOLEAN_2 = "boolean_2";
 
 	public static final String INT_1 = "pos";
 

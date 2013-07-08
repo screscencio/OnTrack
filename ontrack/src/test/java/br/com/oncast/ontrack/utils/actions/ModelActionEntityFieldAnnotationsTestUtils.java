@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.utils.actions;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -13,9 +16,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-
-import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 
 public class ModelActionEntityFieldAnnotationsTestUtils {
 
@@ -43,8 +43,8 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
 
-				if (column.length() != ActionTableColumns.DESCRIPTION_TEXT_LENGTH) error("The field '" + field.getName()
-						+ "' should have ActionTableColumns.DESCRIPTION_TEXT_LENGTH as length value of @Column annotation");
+				if (column.length() != ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
+					error("The field '" + field.getName() + "' should have ActionTableColumns.DESCRIPTION_TEXT_LENGTH as length value of @Column annotation");
 			}
 
 			@Override
@@ -60,12 +60,8 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
 
-				ensureColumnName(column,
-						"The field " + field.getName() + " shoud have one of ActionTableColumns.STRING_[X] as name attribute of annotation @Column",
-						ActionTableColumns.STRING_1,
-						ActionTableColumns.STRING_2,
-						ActionTableColumns.STRING_3,
-						ActionTableColumns.STRING_4);
+				ensureColumnName(column, "The field " + field.getName() + " shoud have one of ActionTableColumns.STRING_[X] as name attribute of annotation @Column", ActionTableColumns.STRING_1,
+						ActionTableColumns.STRING_2, ActionTableColumns.STRING_3, ActionTableColumns.STRING_4);
 			}
 
 			@Override
@@ -79,9 +75,8 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			@Override
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
-				ensureColumnName(column,
-						"The field " + field.getName() + " shoud have ActionTableColumns.BOOLEAN_1 as name attribute of annotation @Column",
-						ActionTableColumns.BOOLEAN_1);
+				ensureColumnName(column, "The field " + field.getName() + " shoud have one of ActionTableColumns.BOOLEAN_[X] as name attribute of annotation @Column", ActionTableColumns.BOOLEAN_1,
+						ActionTableColumns.BOOLEAN_2);
 
 			}
 
@@ -97,9 +92,7 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			@Override
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
-				ensureColumnName(column,
-						"The field " + field.getName() + " shoud have ActionTableColumns.INT_1 as name attribute of annotation @Column",
-						ActionTableColumns.INT_1);
+				ensureColumnName(column, "The field " + field.getName() + " shoud have ActionTableColumns.INT_1 as name attribute of annotation @Column", ActionTableColumns.INT_1);
 			}
 
 			@Override
@@ -114,9 +107,7 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			@Override
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
-				ensureColumnName(column,
-						"The field " + field.getName() + " shoud have ActionTableColumns.FLOAT_1 as name attribute of annotation @Column",
-						ActionTableColumns.FLOAT_1);
+				ensureColumnName(column, "The field " + field.getName() + " shoud have ActionTableColumns.FLOAT_1 as name attribute of annotation @Column", ActionTableColumns.FLOAT_1);
 			}
 
 			@Override
@@ -131,9 +122,7 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			@Override
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
-				ensureColumnName(column,
-						"The field " + field.getName() + " shoud have ActionTableColumns.LONG_1 as name attribute of annotation @Column",
-						ActionTableColumns.LONG_1);
+				ensureColumnName(column, "The field " + field.getName() + " shoud have ActionTableColumns.LONG_1 as name attribute of annotation @Column", ActionTableColumns.LONG_1);
 			}
 
 			@Override
@@ -148,9 +137,7 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			@Override
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
-				ensureColumnName(column,
-						"The field " + field.getName() + " shoud have ActionTableColumns.DATE_1 as name attribute of annotation @Column",
-						ActionTableColumns.DATE_1);
+				ensureColumnName(column, "The field " + field.getName() + " shoud have ActionTableColumns.DATE_1 as name attribute of annotation @Column", ActionTableColumns.DATE_1);
 			}
 
 			@Override
@@ -165,16 +152,12 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			@Override
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
-				ensureColumnName(column,
-						"The field " + field.getName() + " shoud have ActionTableColumns.ACTION_LIST as name attribute of annotation @Column",
-						ActionTableColumns.ACTION_LIST);
+				ensureColumnName(column, "The field " + field.getName() + " shoud have ActionTableColumns.ACTION_LIST as name attribute of annotation @Column", ActionTableColumns.ACTION_LIST);
 				final OneToMany oneToMany = getAnnotation(field, OneToMany.class);
-				if (!Arrays.asList(oneToMany.cascade()).contains(CascadeType.ALL)) error("The field " + field.getName()
-						+ " shoud have CascadeType.ALL as cascade attribute of annotation @OneToMany");
+				if (!Arrays.asList(oneToMany.cascade()).contains(CascadeType.ALL)) error("The field " + field.getName() + " shoud have CascadeType.ALL as cascade attribute of annotation @OneToMany");
 				final JoinTable joinTable = getAnnotation(field, JoinTable.class);
-				if (!Pattern.matches("^" + actionName + "(Action)?_" + field.getName() + "$", joinTable.name())) error("The field " + field.getName()
-						+ " should have the name '"
-						+ actionName + "_" + field.getName() + "' or '" + actionName + "Action_" + field.getName() + "'");
+				if (!Pattern.matches("^" + actionName + "(Action)?_" + field.getName() + "$", joinTable.name()))
+					error("The field " + field.getName() + " should have the name '" + actionName + "_" + field.getName() + "' or '" + actionName + "Action_" + field.getName() + "'");
 			}
 
 			@Override
@@ -202,9 +185,7 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			@Override
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
-				ensureColumnName(column,
-						"The field " + field.getName() + " shoud have ActionTableColumns.STRING_LIST_[X] as name attribute of annotation @Column",
-						ActionTableColumns.STRING_LIST_1,
+				ensureColumnName(column, "The field " + field.getName() + " shoud have ActionTableColumns.STRING_LIST_[X] as name attribute of annotation @Column", ActionTableColumns.STRING_LIST_1,
 						ActionTableColumns.STRING_LIST_2);
 				getAnnotation(field, ElementCollection.class);
 			}

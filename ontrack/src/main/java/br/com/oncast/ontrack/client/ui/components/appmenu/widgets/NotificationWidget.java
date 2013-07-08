@@ -5,7 +5,6 @@ import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserUpdateListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
-import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
@@ -65,7 +64,6 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	public NotificationWidget(final Notification modelBean) {
 		this.notification = modelBean;
-		SpeedTracerConsole.log("NotificationWidget");
 		userWidget = new UserWidget(notification.getAuthorId());
 		initWidget(uiBinder.createAndBindUi(this));
 

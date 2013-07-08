@@ -20,13 +20,17 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.gwt.test.GwtModule;
+import com.googlecode.gwt.test.GwtTest;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ActionQueuedDispatcherTest {
+@GwtModule("br.com.oncast.ontrack.Application")
+public class ActionQueuedDispatcherTest extends GwtTest {
 
 	private ActionQueuedDispatcherTestUtils actionSyncServiceTestUtils;
 	private DispatchRequestServiceTestImplementation requestDispatchServiceMock;
@@ -43,6 +47,7 @@ public class ActionQueuedDispatcherTest {
 
 	@Before
 	public void setUp() {
+		MockitoAnnotations.initMocks(this);
 		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
 		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock, getProjectRepresentationProviderMock(), eventBus, alertingService, messages);

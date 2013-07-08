@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
-import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.services.user.UsersStatusService;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.MembersWidget;
@@ -20,9 +19,8 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import java.util.ArrayList;
@@ -40,7 +38,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -71,9 +68,6 @@ public class DraggableMembersListWidget extends Composite {
 	@UiField
 	HTMLPanel scroll;
 
-	@UiField
-	FocusPanel addMember;
-
 	private final HorizontalScrollMover mover;
 
 	private final DragAndDropManager userDragAndDropManager;
@@ -86,13 +80,13 @@ public class DraggableMembersListWidget extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		mover = new HorizontalScrollMover(scroll.getElement());
+		updateCanInvite();
 	}
 
 	@Override
 	protected void onLoad() {
 		if (!handlerRegistrations.isEmpty()) return;
 
-		setupUserInformationChangeListener();
 		setupUsersStatusChangeListener();
 		setupActionExecutionListener();
 	}
@@ -140,6 +134,16 @@ public class DraggableMembersListWidget extends Composite {
 	public void update() {
 		final UsersStatusService usersStatusService = ClientServices.get().usersStatus();
 		updateMembersList(usersStatusService.getActiveUsers(), usersStatusService.getOnlineUsers());
+		updateCanInvite();
+	}
+
+	private void updateCanInvite() {
+		try {
+			final UserRepresentation currentUser = ClientServices.getCurrentProjectContext().findUser(ClientServices.getCurrentUser());
+			root.setStyleName(style.canInvite(), currentUser.canInvite() && !currentUser.isReadOnly());
+		} catch (final UserNotFoundException e) {
+			root.setStyleName(style.canInvite(), false);
+		}
 	}
 
 	private void updateMembersList(final SortedSet<UserRepresentation> activeUsers, final SortedSet<UserRepresentation> onlineUsers) {
@@ -154,16 +158,6 @@ public class DraggableMembersListWidget extends Composite {
 		}
 
 		this.users.update(userModels);
-	}
-
-	private void setupUserInformationChangeListener() {
-		final UUID currentUser = ClientServices.getCurrentUser();
-		handlerRegistrations.add(ClientServices.get().userData().registerListenerForSpecificUser(currentUser, new UserSpecificInformationChangeListener() {
-			@Override
-			public void onInformationChange(final User user) {
-				root.setStyleName(style.canInvite(), user.isSuperUser());
-			}
-		}));
 	}
 
 	private void setupActionExecutionListener() {

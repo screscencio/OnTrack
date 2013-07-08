@@ -16,10 +16,18 @@ public class UserRepresentation implements HasUUID, Serializable, Comparable<Use
 
 	private boolean readOnly = false;
 
+	private boolean canInvite = true;
+
 	public UserRepresentation() {}
 
 	public UserRepresentation(final UUID id) {
 		this.setId(id);
+	}
+
+	public UserRepresentation(final UUID userId, final boolean canInvite, final boolean readOnly) {
+		this.setId(userId);
+		this.setCanInvite(canInvite);
+		this.setReadOnly(readOnly);
 	}
 
 	public void setValid(final boolean isValid) {
@@ -65,5 +73,13 @@ public class UserRepresentation implements HasUUID, Serializable, Comparable<Use
 
 	public boolean isReadOnly() {
 		return readOnly;
+	}
+
+	public boolean canInvite() {
+		return canInvite;
+	}
+
+	public void setCanInvite(final boolean canInvite) {
+		this.canInvite = canInvite;
 	}
 }

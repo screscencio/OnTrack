@@ -164,4 +164,8 @@ public interface ActionExecutionErrorMessages extends BaseMessages {
 	@DefaultMessage("You can''t change your own permission.")
 	String cantChangeYourOwnPermission();
 
+	@Description("caused when the action author does not have the permission to do this operation.")
+	@DefaultMessage("Sorry, permission denied.")
+	String permissionDenied();
+
 }

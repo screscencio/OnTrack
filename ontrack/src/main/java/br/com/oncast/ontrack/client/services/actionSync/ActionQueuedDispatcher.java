@@ -20,6 +20,8 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.web.bindery.event.shared.EventBus;
 
 class ActionQueuedDispatcher {
@@ -48,6 +50,13 @@ class ActionQueuedDispatcher {
 		actionList = new ArrayList<ModelAction>();
 		reverseActionList = new ArrayList<ModelAction>();
 		waitingServerAnswerActionList = new ArrayList<ModelAction>();
+		Window.addWindowClosingHandler(new ClosingHandler() {
+			@Override
+			public void onWindowClosing(final ClosingEvent event) {
+				final int nOfPendingActions = actionList.size() + waitingServerAnswerActionList.size();
+				if (nOfPendingActions > 0) event.setMessage(messages.thereArePedingActionsWannaLeaveAnyway("" + nOfPendingActions));
+			}
+		});
 	}
 
 	public void dispatch(final ModelAction action, final ActionExecutionContext executionContext) {
