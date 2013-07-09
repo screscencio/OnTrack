@@ -1,15 +1,15 @@
 package br.com.oncast.ontrack.server.services.api.bean;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UserCreationRequest {
 
-	@XmlElement
 	private String email;
 
-	@XmlElement
 	private boolean isSuperUser;
 
 	UserCreationRequest() {}
