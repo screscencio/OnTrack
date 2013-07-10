@@ -2,11 +2,10 @@ package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.dom4j.Element;
-
-import com.google.gwt.dev.util.collect.HashMap;
 
 /**
  * Changes:

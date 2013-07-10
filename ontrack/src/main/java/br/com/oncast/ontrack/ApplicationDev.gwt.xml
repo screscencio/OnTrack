@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="application">
+
 	<inherits name="br.com.oncast.ontrack.Application"/>
+	
+	<!-- Only Chrome and Safari support for faster compilation time -->
 	<set-property name="user.agent" value="safari"/>
 	
-	<!-- enable source maps -->
+	<!-- Chrome, Safari and Firefox support -->
+	<!-- <set-property name="user.agent" value="safari, gecko1_8"/> -->
+	
+	<!-- enable source maps for better browser debbug and super dev mode support -->
 	<set-property name="compiler.useSourceMaps" value="true" />
+	
 </module>
