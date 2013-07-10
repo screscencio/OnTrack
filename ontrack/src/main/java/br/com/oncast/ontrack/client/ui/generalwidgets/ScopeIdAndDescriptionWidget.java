@@ -40,7 +40,7 @@ public class ScopeIdAndDescriptionWidget extends Composite {
 	 */
 	private boolean updateHumanId() {
 		final String humanId = ClientServices.getCurrentProjectContext().getHumanId(scope);
-		humanIdLabel.setInnerHTML(humanId);
+		humanIdLabel.setInnerText(humanId);
 		if (humanId.isEmpty()) humanIdLabel.getStyle().setDisplay(Display.NONE);
 		else humanIdLabel.getStyle().clearDisplay();
 		return true;
@@ -50,7 +50,7 @@ public class ScopeIdAndDescriptionWidget extends Composite {
 	 * @return if the description was updated.
 	 */
 	private boolean updateDescription() {
-		descriptionLabel.setInnerHTML(scope.getDescription());
+		descriptionLabel.setInnerText(scope.getDescription());
 
 		return true;
 	}

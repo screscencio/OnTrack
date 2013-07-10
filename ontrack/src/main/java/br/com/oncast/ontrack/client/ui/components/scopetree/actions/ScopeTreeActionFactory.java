@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWid
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
+import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
@@ -73,6 +74,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof TagCreateAction) return new ScopeTreeTagUpdateAction(tree, action);
 		else if (action instanceof AnnotationCreateAction) return new ScopeTreeUpdateAction(tree, action, true);
 		else if (action instanceof ScopeBindHumanIdAction) return IGNORE_ACTION;
+		else if (action instanceof FileUploadAction) return IGNORE_ACTION;
 		else if (action instanceof ScopeDeclareDueDateAction) return IGNORE_ACTION;
 		else if (action instanceof TeamAction) return IGNORE_ACTION;
 

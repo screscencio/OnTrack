@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scope;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
@@ -43,6 +40,9 @@ import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -236,7 +236,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 	 */
 	private boolean updateHumanId() {
 		final String humanId = ClientServices.getCurrentProjectContext().getHumanId(scope.getStory());
-		humanIdLabel.setInnerHTML(humanId);
+		humanIdLabel.setInnerText(humanId);
 		ElementUtils.setVisible(humanIdLabel, !humanId.isEmpty());
 		return true;
 	}
@@ -249,7 +249,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 		if (description.equals(currentScopeDescription)) return false;
 		currentScopeDescription = description;
 
-		descriptionLabel.setInnerHTML(currentScopeDescription);
+		descriptionLabel.setInnerText(currentScopeDescription);
 
 		return true;
 	}
@@ -329,18 +329,14 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				PopupConfig.configPopup()
-						.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.RIGHT))
-						.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.BOTTOM))
-						.popup(finalPopupWidget)
-						.onClose(new PopupCloseListener() {
+				PopupConfig.configPopup().alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.RIGHT))
+						.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.BOTTOM)).popup(finalPopupWidget).onClose(new PopupCloseListener() {
 							@Override
 							public void onHasClosed() {
 								if (!skipScopeSelectionEventOnPopupClose) fireScopeSelectionEvent(); // Return focus to scopeTree;
 								else skipScopeSelectionEventOnPopupClose = false;
 							}
-						})
-						.pop();
+						}).pop();
 			}
 		});
 	}
@@ -356,8 +352,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 	}
 
 	private void declareProgress(final String progressDescription) {
-		SERVICE_PROVIDER.actionExecution()
-				.onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), progressDescription));
+		SERVICE_PROVIDER.actionExecution().onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), progressDescription));
 	}
 
 	private CustomCommandMenuItemFactory getProgressCommandMenuItemFactory() {
@@ -459,9 +454,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final ActionExecutionContext executionContext,
-			final boolean isUserAction) {
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
 		if (action instanceof ScopeAction && action.getReferenceId().equals(scope.getId())) update();
 	}
 

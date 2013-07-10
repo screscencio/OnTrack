@@ -32,7 +32,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
@@ -72,7 +71,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	DeckPanel deckPanel;
 
 	@UiField
-	HTMLPanel messageBody;
+	HorizontalPanel messageBody;
 
 	@UiField
 	AnnotationMenuWidget menu;
@@ -141,6 +140,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		if (attachmentFile != null) {
 			final AttachmentFileWidget attachedFileWidget = new AttachmentFileWidget(attachmentFile);
 			messageBody.add(attachedFileWidget);
+			messageBody.setCellHorizontalAlignment(attachedFileWidget, HorizontalPanel.ALIGN_CENTER);
 		}
 
 		final InlineHTML richText = new InlineHTML();
@@ -156,8 +156,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 		if (currentType == null || currentType != annotation.getType()) {
 			createCustomMenu();
-		} else
-			menu.update();
+		} else menu.update();
 		return false;
 	}
 

@@ -1,26 +1,41 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
-	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
-	ui:generateLocales="default">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
 	<ui:style>
 		
 		.container {
-			padding-bottom: 10px;
+			padding-right: 18px;
+			position: relative;
 		}
 		
-		.inline {
-			display: inline-block;
+		.downloadLink {
+			text-align: center;
+		}
+		
+		.previewImage {
+			max-width: 360px;
+			max-height: 198px;
+			cusor: pointer;
+		}
+		
+		.previewContainer, .downloadLink {
+			display: block;
+		}
+		
+		.previewObject {
+			background: #fafafa;
 		}
 		
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.container}">
-		<g:Label styleName="{style.inline}">
-			<ui:msg description="attachment label">Attachment:</ui:msg>
-		</g:Label>
-		<g:Anchor ui:field="downloadLink" styleName="{style.inline}"/>
+		<div class="{style.previewContainer}">
+			<g:Image ui:field="previewImage" styleName="{style.previewImage}"></g:Image>
+			<object ui:field="previewObject" width="360" height="198" class="{style.previewObject}">
+				<i class="icon-file-alt icon-4x"></i>
+			</object>
+		</div>
+		<g:Anchor ui:field="downloadLink" styleName="{style.downloadLink}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 
