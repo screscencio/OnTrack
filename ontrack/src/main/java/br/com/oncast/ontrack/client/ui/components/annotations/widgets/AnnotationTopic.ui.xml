@@ -19,7 +19,6 @@
 		
 		.messageBody {
 			position: relative;
-			display: inline-block;
 			width: 100%;
 			height: 100%;
 			
@@ -34,6 +33,7 @@
 			border: none;
 	
 			min-height: 30px;
+			color: #444;
 		}
 		
 		.detailContainer {
@@ -99,7 +99,7 @@
 								<ui:msg description="deprecated simple label">[Deprecated]</ui:msg>
 							</g:Label>
 							<g:cell height="100%">
-								<g:HorizontalPanel ui:field="messageBody" styleName="{style.messageBody}" />
+								<g:HorizontalPanel ui:field="messageBody" width="100%" styleName="{style.messageBody}" />
 							</g:cell>
 							<menu:AnnotationMenuWidget ui:field="menu" styleName="{style.detailContainer}"/>
 						</g:VerticalPanel>

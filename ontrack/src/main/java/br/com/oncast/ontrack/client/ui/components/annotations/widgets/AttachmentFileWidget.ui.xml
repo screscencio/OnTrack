@@ -6,7 +6,6 @@
 		
 		.container {
 			padding-right: 18px;
-			position: relative;
 		}
 		
 		.downloadLink {
@@ -16,7 +15,7 @@
 		.previewImage {
 			max-width: 360px;
 			max-height: 198px;
-			cusor: pointer;
+			cursor: pointer;
 		}
 		
 		.previewContainer, .downloadLink {

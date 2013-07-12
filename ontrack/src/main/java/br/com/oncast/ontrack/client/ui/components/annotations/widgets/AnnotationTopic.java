@@ -143,10 +143,13 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 			messageBody.setCellHorizontalAlignment(attachedFileWidget, HorizontalPanel.ALIGN_CENTER);
 		}
 
+		if (this.annotation.getMessage().trim().isEmpty()) return;
+
 		final InlineHTML richText = new InlineHTML();
 		richText.setHTML(this.annotation.getMessage());
 		richText.setStyleName(style.richTextArea());
 		messageBody.add(richText);
+		messageBody.setCellWidth(richText, "100%");
 	}
 
 	@Override

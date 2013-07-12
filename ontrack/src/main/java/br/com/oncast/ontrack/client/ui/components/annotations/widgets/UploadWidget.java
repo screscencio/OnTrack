@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -19,6 +16,9 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionCont
 import br.com.oncast.ontrack.shared.services.storage.BeanFactory;
 import br.com.oncast.ontrack.shared.services.storage.FileUploadFieldNames;
 import br.com.oncast.ontrack.shared.services.storage.UploadResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -232,8 +232,7 @@ public class UploadWidget extends Composite {
 					final UploadResponse response = AutoBeanCodex.decode(factory, UploadResponse.class, ResponseParser.getPlainTextResult(event)).as();
 					if (response.getStatus().equals("error")) {
 						getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
-						ClientServices.get().alerting()
-								.showError(response.getMessage().selectMessage(messages, response.getMaxSize()));
+						ClientServices.get().alerting().showError(response.getMessage().selectMessage(messages, response.getMaxSize()));
 					} // success handled with actionExecutionListener
 				}
 			});
@@ -248,8 +247,8 @@ public class UploadWidget extends Composite {
 	private ActionExecutionListener getActionExecutionListener(final UUID uuid, final UploadWidgetListener listener) {
 		return actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext, final boolean isUserAction) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
+					final boolean isUserAction) {
 				if (action instanceof FileUploadAction && action.getReferenceId().equals(uuid)) {
 					getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
 					ClientServices.get().alerting().showSuccess(messages.uploadCompleted());

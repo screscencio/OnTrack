@@ -11,7 +11,6 @@ import java.net.URLEncoder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +22,7 @@ import com.google.common.io.Files;
 public class FileDownloadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
 	private static final Logger LOGGER = Logger.getLogger(FileDownloadServlet.class);
 
 	@Override
@@ -33,7 +33,12 @@ public class FileDownloadServlet extends HttpServlet {
 
 			final File file = ServerServiceProvider.getInstance().getStorageService().retrieve(new UUID(fileId));
 
-			doDownload(request, response, file);
+			final ServletContext context = getServletConfig().getServletContext();
+			String mimetype = context.getMimeType(file.getAbsolutePath());
+			mimetype = (mimetype != null) ? mimetype : "application/octet-stream";
+
+			if (acceptMimetype(mimetype, request)) doDownload(request, response, file, mimetype);
+			else response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
 
 			LOGGER.debug("File download succeded.");
 		} catch (final Exception e) {
@@ -42,18 +47,22 @@ public class FileDownloadServlet extends HttpServlet {
 		}
 	}
 
-	private void doDownload(final HttpServletRequest request, final HttpServletResponse response, final File file) throws IOException {
+	private boolean acceptMimetype(final String mimetype, final HttpServletRequest request) {
+		final String acceptedTypes = request.getParameter(FileUploadFieldNames.ACCEPT);
+		if (acceptedTypes == null || acceptedTypes.trim().isEmpty()) return true;
 
-		final ServletContext context = getServletConfig().getServletContext();
-		final String mimetype = context.getMimeType(file.getAbsolutePath());
+		for (final String type : acceptedTypes.trim().toLowerCase().split(",")) {
+			if (!type.trim().isEmpty() && mimetype.contains(type)) return true;
+		}
+		return false;
+	}
 
-		response.setContentType((mimetype != null) ? mimetype : "application/octet-stream");
+	private void doDownload(final HttpServletRequest request, final HttpServletResponse response, final File file, final String mimetype) throws IOException {
+		response.setContentType(mimetype);
 		response.setContentLength((int) file.length());
 		response.setHeader("Content-Disposition", "inline; filename=\"" + encodeFileName(file.getName()) + "\"");
 
-		final ServletOutputStream out = response.getOutputStream();
-
-		Files.copy(file, out);
+		Files.copy(file, response.getOutputStream());
 	}
 
 	private String encodeFileName(final String fileName) throws UnsupportedEncodingException {

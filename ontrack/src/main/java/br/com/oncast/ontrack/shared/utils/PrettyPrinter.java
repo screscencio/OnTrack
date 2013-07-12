@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.utils;
+package br.com.oncast.ontrack.shared.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,11 +8,19 @@ import com.google.common.base.Joiner;
 
 public class PrettyPrinter {
 
+	public static String getSimpleName(final Object object) {
+		return getSimpleName(object.getClass());
+	}
+
+	public static String getSimpleName(final Class<?> clazz) {
+		return clazz.getName().replaceAll(".*\\.", "");
+	}
+
 	public static String getSimpleNamesListString(final Collection<?> collection) {
 		return mountListString(collection, new StringGetter() {
 			@Override
 			public String getString(final Object object) {
-				return object.getClass().getSimpleName();
+				return getSimpleName(object);
 			}
 		});
 	}
@@ -36,6 +44,11 @@ public class PrettyPrinter {
 
 	private interface StringGetter {
 		String getString(Object object);
+	}
+
+	public static String getToStringListString(final Object... objects) {
+		if (objects.length < 1) return "";
+		return "[" + Joiner.on(',').join(objects) + "]";
 	}
 
 }
