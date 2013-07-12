@@ -1,8 +1,11 @@
 package br.com.oncast.ontrack.shared.model.action.exceptions;
 
 import br.com.oncast.ontrack.client.i18n.ActionExecutionErrorMessageTranslator;
+import br.com.oncast.ontrack.server.utils.PrettyPrinter;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+
+import java.util.Arrays;
 
 import com.google.gwt.core.shared.GWT;
 
@@ -31,17 +34,21 @@ public class UnableToCompleteActionException extends Exception {
 	public String getLocalizedMessage() {
 		if (GWT.isClient()) return ActionExecutionErrorMessageTranslator.translate(this.code, errorMessageArgs);
 
-		return getClassSimpleName() + "[" + code.name() + ", " + errorMessageArgs + "]: " + action;
+		return toString();
 	}
 
 	@Override
 	public String toString() {
-		final String s = getClassSimpleName();
-		final String message = getMessage();
-		return (message != null) ? (s + ": " + message) : s;
+		final String causeString = super.getCause() == null ? "" : "\nCaused by " + getClassSimpleName(super.getCause().getClass()) + ": " + super.getCause().getMessage();
+		final String errorArgStr = errorMessageArgs == null ? "" : ", args=" + PrettyPrinter.getToStringListString(Arrays.asList(errorMessageArgs));
+		return getClassSimpleName() + "[" + code.name() + errorArgStr + "]: " + action + causeString;
 	}
 
 	private String getClassSimpleName() {
-		return getClass().getName().replaceAll(".*\\.", "");
+		return getClassSimpleName(getClass());
+	}
+
+	private String getClassSimpleName(final Class<?> clazz) {
+		return clazz.getName().replaceAll(".*\\.", "");
 	}
 }

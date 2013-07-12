@@ -64,4 +64,9 @@ public class TeamInviteAction implements TeamAction {
 		return userId;
 	}
 
+	@Override
+	public String toString() {
+		return "TeamInviteAction [userId=" + userId + ", canInvite=" + canInvite + ", readOnly=" + readOnly + "]";
+	}
+
 }
