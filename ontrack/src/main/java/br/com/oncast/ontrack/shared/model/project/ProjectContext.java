@@ -1,15 +1,5 @@
 package br.com.oncast.ontrack.shared.model.project;
 
-import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_IMPEDIMENT;
-import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.SOLVED_IMPEDIMENT;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
@@ -47,6 +37,16 @@ import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
+import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_IMPEDIMENT;
+import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.SOLVED_IMPEDIMENT;
 
 public class ProjectContext implements HasUUID {
 
@@ -129,8 +129,7 @@ public class ProjectContext implements HasUUID {
 
 	private String removeProjectReleaseDescription(final String releaseDescription) {
 		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(releaseDescription);
-		final String releaseLoadQuery = !parser.getHeadRelease().equals(project.getProjectRelease().getDescription()) ? releaseDescription : parser
-				.getTailReleases();
+		final String releaseLoadQuery = !parser.getHeadRelease().equals(project.getProjectRelease().getDescription()) ? releaseDescription : parser.getTailReleases();
 		return releaseLoadQuery;
 	}
 
@@ -181,8 +180,7 @@ public class ProjectContext implements HasUUID {
 
 	public Annotation findAnnotation(final UUID subjectId, final UUID annotationId) throws AnnotationNotFoundException {
 		final Annotation annotation = project.getAnnotation(subjectId, annotationId);
-		if (annotation == null) throw new AnnotationNotFoundException("The Object with id '" + subjectId + "' does not have the annotations with id '"
-				+ annotationId + "'");
+		if (annotation == null) throw new AnnotationNotFoundException("The Object with id '" + subjectId + "' does not have the annotations with id '" + annotationId + "'");
 
 		return annotation;
 	}
@@ -232,8 +230,8 @@ public class ProjectContext implements HasUUID {
 
 	public Checklist findChecklist(final UUID subjectId, final UUID checklistId) throws ChecklistNotFoundException {
 		final Checklist checklist = project.findChecklist(subjectId, checklistId);
-		if (checklist == null) throw new ChecklistNotFoundException("The checklist with id '" + checklistId.toString()
-				+ "' and associated with the subject with id '" + subjectId.toString() + "' was not found.");
+		if (checklist == null)
+			throw new ChecklistNotFoundException("The checklist with id '" + checklistId.toString() + "' and associated with the subject with id '" + subjectId.toString() + "' was not found.");
 		return checklist;
 	}
 
@@ -272,8 +270,7 @@ public class ProjectContext implements HasUUID {
 		return project.hasMetadata(subject, metadataType);
 	}
 
-	public <T extends Metadata> T findMetadata(final HasMetadata subject, final MetadataType metadataType, final UUID metadataId)
-			throws MetadataNotFoundException {
+	public <T extends Metadata> T findMetadata(final HasMetadata subject, final MetadataType metadataType, final UUID metadataId) throws MetadataNotFoundException {
 		final T metadata = project.findMetadata(subject, metadataType, metadataId);
 		if (metadata == null) throw new MetadataNotFoundException("The metadata was not found");
 
@@ -360,8 +357,7 @@ public class ProjectContext implements HasUUID {
 
 	public ArrayList<Tag> getTagsFor(final Scope scope) {
 		final ArrayList<Tag> tags = new ArrayList<Tag>();
-		for (final TagAssociationMetadata metadata : ClientServices.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope,
-				TagAssociationMetadata.getType())) {
+		for (final TagAssociationMetadata metadata : ClientServices.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType())) {
 			tags.add(metadata.getTag());
 		}
 		return tags;

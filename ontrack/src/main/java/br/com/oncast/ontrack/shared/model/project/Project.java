@@ -21,10 +21,10 @@ import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
-import br.com.oncast.ontrack.shared.model.timesheet.UuidAssociation;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.model.uuid.UuidAssociation;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import com.google.common.collect.ArrayListMultimap;

@@ -6,15 +6,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class UserCreationRequest {
+public class UserCreationApiRequest {
 
 	private String email;
 
 	private boolean isSuperUser;
 
-	UserCreationRequest() {}
+	UserCreationApiRequest() {}
 
-	public UserCreationRequest(final String email, final boolean isSuperUser) {
+	public UserCreationApiRequest(final String email, final boolean isSuperUser) {
 		this.email = email;
 		this.isSuperUser = isSuperUser;
 	}

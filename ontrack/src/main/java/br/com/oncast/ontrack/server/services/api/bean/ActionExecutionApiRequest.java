@@ -8,23 +8,25 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ActionSendRequest implements Serializable {
+public class ActionExecutionApiRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@XmlElement(name = "modelAction")
+	@XmlElementWrapper(name = "actionList")
+	@XmlAnyElement
 	private List<ModelAction> actionList;
 
 	private UUID projectId;
 
-	ActionSendRequest() {}
+	ActionExecutionApiRequest() {}
 
-	public ActionSendRequest(final UUID projectId, final List<ModelAction> actionList) {
+	public ActionExecutionApiRequest(final UUID projectId, final List<ModelAction> actionList) {
 		this.projectId = projectId;
 		this.actionList = actionList;
 	}

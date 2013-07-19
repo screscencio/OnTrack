@@ -1,8 +1,7 @@
-package br.com.oncast.ontrack.shared.model.timesheet;
+package br.com.oncast.ontrack.shared.model.uuid;
 
 import java.io.Serializable;
 
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class UuidAssociation implements Serializable {
 

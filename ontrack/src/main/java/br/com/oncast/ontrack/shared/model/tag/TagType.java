@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.tags;
+package br.com.oncast.ontrack.shared.model.tag;
 
 import java.io.Serializable;
 
