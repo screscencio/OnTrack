@@ -159,11 +159,11 @@ public class ProjectContext implements HasUUID {
 		return previousRelease == null ? KanbanFactory.create() : project.getKanban(previousRelease);
 	}
 
-	public Set<Release> getAllReleasesWithDirectScopes() {
+	public Set<Release> getAllLeafReleases() {
 		final HashSet<Release> releases = new HashSet<Release>();
 
 		for (final Release release : getProjectRelease().getDescendantReleases()) {
-			if (release.hasDirectScopes()) {
+			if (release.isLeaf()) {
 				releases.add(release);
 			}
 		}

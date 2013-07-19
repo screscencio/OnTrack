@@ -1,20 +1,14 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOWN;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
-import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
-import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -35,6 +29,12 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOWN;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
+
 // TODO++++ refactor this class and SearchScopeFiltableCommandMenu to extract duplicated code
 // TODO++++ refactor this class and ProjectMenuWidget to extract duplicated code
 // TODO++++ merge this class with FilterEngine
@@ -45,6 +45,8 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	interface FiltrableCommandMenuUiBinder extends UiBinder<Widget, FiltrableCommandMenu> {}
 
 	private static FiltrableCommandMenuUiBinder uiBinder = GWT.create(FiltrableCommandMenuUiBinder.class);
+
+	private static FiltrableCommandMenuMessages MESSAGES = GWT.create(FiltrableCommandMenuMessages.class);
 
 	@UiField
 	protected ScrollPanel scrollPanel;
@@ -78,9 +80,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		this(customItemFactory, width, maxHeight, false);
 	}
 
-	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory,
-			final int width,
-			final int maxHeight, final boolean forProjectSwitchingMenu) {
+	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int width, final int maxHeight, final boolean forProjectSwitchingMenu) {
 		this.forProjectSwitchingMenu = forProjectSwitchingMenu;
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -139,11 +139,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 				filterArea.setText("");
 				filterMenuItems();
 			}
-		}
-		else if (event.getNativeKeyCode() == KEY_ENTER) {
+		} else if (event.getNativeKeyCode() == KEY_ENTER) {
 			if (executeSelectedItemCommand()) hide();
-		}
-		else if (!KEY_DOWN_HANDLED_KEYS.contains(event.getNativeKeyCode())) {
+		} else if (!KEY_DOWN_HANDLED_KEYS.contains(event.getNativeKeyCode())) {
 			filterMenuItems();
 		}
 
@@ -308,12 +306,12 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	}
 
 	private void setMenuItems(final List<CommandMenuItem> items) {
-		if (items.isEmpty() && customItemFactory.getNoItemText() != null) menu.setItem(getNoItemsItem());
+		if (items.isEmpty() && (customItemFactory == null || customItemFactory.getNoItemText() != null)) menu.setItem(getNoItemsItem());
 		else menu.setItems(items);
 	}
 
 	private SimpleCommandMenuItem getNoItemsItem() {
-		return noItemsItem == null ? noItemsItem = new SimpleCommandMenuItem(customItemFactory.getNoItemText(), "", null) : noItemsItem;
+		return noItemsItem == null ? noItemsItem = new SimpleCommandMenuItem(customItemFactory == null ? MESSAGES.defaultNoItemText() : customItemFactory.getNoItemText(), "", null) : noItemsItem;
 	}
 
 	public void setSelected(final CommandMenuItem item) {

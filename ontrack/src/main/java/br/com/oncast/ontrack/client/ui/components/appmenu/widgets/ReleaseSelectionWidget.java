@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
@@ -12,6 +8,10 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -92,7 +92,7 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private Set<Release> getReleases() {
-		return SERVICE_PROVIDER.contextProvider().getProjectContext(projectId).getAllReleasesWithDirectScopes();
+		return SERVICE_PROVIDER.contextProvider().getProjectContext(projectId).getAllLeafReleases();
 	}
 
 	@Override
