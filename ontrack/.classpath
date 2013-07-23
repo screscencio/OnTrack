@@ -16,7 +16,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-jbossweb-1.1.0.RC1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat-1.1.0.RC1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat7-1.1.0.RC1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-client-1.1.0.RC1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-client-1.1.0.RC1.jar" sourcepath="/home/guih/.m2/repository/org/atmosphere/atmosphere-gwt-client/1.1.0.RC1/atmosphere-gwt-client-1.1.0.RC1-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-common-1.1.0.RC1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-server-1.1.0.RC1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-runtime-1.1.0.RC1.jar"/>

@@ -7,14 +7,12 @@
 		@url bgUrl background;
 		
 		.root {
-			position: absolute;
-			top: 0px;
-			right: 0px;
-			bottom: 0px;
-			left: 0px;
+			position: relative;
+			width: 100%;
+			height: 100%;
 			margin: 0px auto;
 			padding: 0px;
-			display: block;
+			display: inline-block;
 			
 			background: COLOR_BACKGROUND_PRIMARY;
 			background-image: bgUrl;
