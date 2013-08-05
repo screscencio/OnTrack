@@ -1,5 +1,10 @@
 package br.com.oncast.ontrack.server.services.integration;
 
+import br.com.oncast.ontrack.server.configuration.Configurations;
+import br.com.oncast.ontrack.server.services.integration.bean.UserInvitedNotificationRequest;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,11 +25,6 @@ import org.glassfish.jersey.client.filter.HttpBasicAuthFilter;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.moxy.json.MoxyJsonConfig;
 
-import br.com.oncast.ontrack.server.configuration.Configurations;
-import br.com.oncast.ontrack.server.services.integration.bean.UserInvitedNotificationRequest;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
 public class BillingTrackIntegrationService implements IntegrationService {
 
 	private static final Logger LOGGER = Logger.getLogger(BillingTrackIntegrationService.class);
@@ -43,10 +43,10 @@ public class BillingTrackIntegrationService implements IntegrationService {
 	}
 
 	@Override
-	public void onUserInvited(final UUID projectId, final User invitor, final User invitedUser) {
+	public void onUserInvited(final UUID projectId, final User invitor, final User invitedUser, final boolean isSuperUser) {
 		final Client client = ClientBuilder.newClient(config);
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/user/invited");
-		final UserInvitedNotificationRequest userInvitedNotification = new UserInvitedNotificationRequest(projectId, invitor.getId(), invitedUser.getId(), invitedUser.getEmail());
+		final UserInvitedNotificationRequest userInvitedNotification = new UserInvitedNotificationRequest(projectId, invitor.getId(), invitedUser.getId(), invitedUser.getEmail(), isSuperUser);
 		try {
 			final Response response = client.target(uriBuilder).request(MediaType.TEXT_HTML).post(Entity.entity(userInvitedNotification, MediaType.APPLICATION_JSON));
 			checkErrors(response);
@@ -59,10 +59,8 @@ public class BillingTrackIntegrationService implements IntegrationService {
 		if (response.getStatusInfo().getFamily().equals(Status.Family.SUCCESSFUL)) return;
 
 		final Object entity = response.getEntity();
-		if (entity instanceof Throwable)
-			throw new RuntimeException((Throwable) entity);
-		else
-			throw new RuntimeException(entity.toString());
+		if (entity instanceof Throwable) throw new RuntimeException((Throwable) entity);
+		else throw new RuntimeException(entity.toString());
 	}
 
 	@Provider

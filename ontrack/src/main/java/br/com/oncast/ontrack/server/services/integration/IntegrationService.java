@@ -5,6 +5,6 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface IntegrationService {
 
-	void onUserInvited(UUID projectId, User invitor, User invitedUser);
+	void onUserInvited(UUID projectId, User invitor, User invitedUser, boolean isSuperUser);
 
 }

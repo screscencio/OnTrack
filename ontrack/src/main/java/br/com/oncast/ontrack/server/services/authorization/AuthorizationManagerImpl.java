@@ -101,7 +101,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			persistenceService.authorize(userEmail, projectId);
 			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
 			multicastService.multicastToUser(new ProjectAddedEvent(projectRepresentation), user);
-			integrationService.onUserInvited(projectId, authenticatedUser, user);
+			integrationService.onUserInvited(projectId, authenticatedUser, user, isSuperUser);
 			if (shouldSendMailMessage) sendMailMessage(projectId, userEmail, generatedPassword, authenticatedUser);
 
 		} catch (final PersistenceException e) {

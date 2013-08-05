@@ -121,7 +121,7 @@ public class AuthorizationManagerTest {
 		final User createdUser = createUser();
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, integration).authorize(projectId, createdUser.getEmail(), true, false);
-		verify(integration).onUserInvited(projectId, authenticatedUser, createdUser);
+		verify(integration).onUserInvited(projectId, authenticatedUser, createdUser, true);
 	}
 
 	@Test
