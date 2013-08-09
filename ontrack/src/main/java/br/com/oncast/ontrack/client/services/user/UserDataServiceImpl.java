@@ -1,14 +1,8 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -21,6 +15,13 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataRequestResp
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataUpdateRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataUpdateRequestResponse;
 import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -58,10 +59,8 @@ public class UserDataServiceImpl implements UserDataService {
 		contextProvider.addContextLoadListener(new ContextChangeListener() {
 			@Override
 			public void onProjectChanged(final UUID projectId, final Long leadedProjectRevision) {
-				if (projectId == null)
-					clearCachedUsers();
-				else
-					updateUserDataFor(projectId);
+				if (projectId == null) clearCachedUsers();
+				else updateUserDataFor(projectId);
 			}
 		});
 
@@ -118,15 +117,26 @@ public class UserDataServiceImpl implements UserDataService {
 		};
 	}
 
+	// TODO+++++ find a good way of generating MD5
 	private String getMd5Hex(final String email) {
 		try {
-			final BigInteger hash = new BigInteger(1, MessageDigest.getInstance("MD5").digest(email.trim().toLowerCase().getBytes()));
-			final String md5 = hash.toString(16);
-			return md5;
+			final String normalizedEmail = email.trim().toLowerCase();
+			final byte[] digest = MessageDigest.getInstance("MD5").digest(normalizedEmail.getBytes());
+
+			final BigInteger bigInteger = new BigInteger(1, digest); // This can remove trailling 0s;
+			return toStringWithTraillingZeros(bigInteger, 32); // Add possibly removed 0s
 		} catch (final NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	private String toStringWithTraillingZeros(final BigInteger integer, final int length) {
+		String md5 = integer.toString(16);
+		for (int i = md5.length(); i < length; i++) {
+			md5 = "0" + md5;
+		}
+		return md5;
 	}
 
 	@Override
