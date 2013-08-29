@@ -123,8 +123,8 @@ public class UserDataServiceImpl implements UserDataService {
 			final String normalizedEmail = email.trim().toLowerCase();
 			final byte[] digest = MessageDigest.getInstance("MD5").digest(normalizedEmail.getBytes());
 
-			final BigInteger bigInteger = new BigInteger(1, digest); // This can remove trailling 0s;
-			return toStringWithTraillingZeros(bigInteger, 32); // Add possibly removed 0s
+			final BigInteger bigInteger = new BigInteger(1, digest); // This can remove heading 0s;
+			return toStringWithTraillingZeros(bigInteger, 32); // Add possibly removed heading 0s
 		} catch (final NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}

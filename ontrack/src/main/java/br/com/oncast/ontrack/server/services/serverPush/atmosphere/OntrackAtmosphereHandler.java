@@ -29,8 +29,7 @@ public class OntrackAtmosphereHandler extends AtmosphereGwtHandler {
 		if (session != null) {
 			LOGGER.debug("Got session with id: " + session.getId());
 			LOGGER.debug("Time attribute: " + session.getAttribute("time"));
-		}
-		else {
+		} else {
 			LOGGER.warn("No session");
 		}
 		connectionListener.connected(resource);
@@ -45,17 +44,16 @@ public class OntrackAtmosphereHandler extends AtmosphereGwtHandler {
 
 	/**
 	 * Is not used?
+	 * 
 	 * @see org.atmosphere.gwt.server.AtmosphereGwtHandler#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.List,
 	 *      org.atmosphere.gwt.server.GwtAtmosphereResource)
 	 */
 	@Override
-	public void doPost(final HttpServletRequest postRequest, final HttpServletResponse postResponse,
-			final List<?> messages, final GwtAtmosphereResource cometResource) {
+	public void doPost(final HttpServletRequest postRequest, final HttpServletResponse postResponse, final List<?> messages, final GwtAtmosphereResource cometResource) {
 		final HttpSession session = postRequest.getSession(false);
 		if (session != null) {
 			LOGGER.info("Post has session with id: " + session.getId());
-		}
-		else {
+		} else {
 			LOGGER.info("Post has no session");
 		}
 		super.doPost(postRequest, postResponse, messages, cometResource);

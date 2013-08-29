@@ -18,8 +18,8 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat7-1.1.0.RC1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-client-1.1.0.RC1.jar" sourcepath="/home/guih/.m2/repository/org/atmosphere/atmosphere-gwt-client/1.1.0.RC1/atmosphere-gwt-client-1.1.0.RC1-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-common-1.1.0.RC1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-server-1.1.0.RC1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-runtime-1.1.0.RC1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-server-1.1.0.RC1.jar" sourcepath="/home/guih/.m2/repository/org/atmosphere/atmosphere-gwt-server/1.1.0.RC1/atmosphere-gwt-server-1.1.0.RC1-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-runtime-1.1.0.RC1.jar" sourcepath="/home/guih/.m2/repository/org/atmosphere/atmosphere-runtime/1.1.0.RC1/atmosphere-runtime-1.1.0.RC1-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cglib-2.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-beanutils-1.8.3.jar"/>

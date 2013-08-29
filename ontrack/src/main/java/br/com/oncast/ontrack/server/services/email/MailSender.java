@@ -21,8 +21,7 @@ public class MailSender {
 		message = new MimeMessage(session);
 		try {
 			message.setFrom(new InternetAddress(MailConfigurationProvider.getMailUsername()));
-		}
-		catch (final AddressException e) {
+		} catch (final AddressException e) {
 			throw new RuntimeException("Invalid sender e-mail.", e);
 		}
 	}
@@ -30,8 +29,7 @@ public class MailSender {
 	public static MailSender createInstance() {
 		try {
 			return new MailSender();
-		}
-		catch (final MessagingException e) {
+		} catch (final MessagingException e) {
 			throw new RuntimeException("Exception configuring mail service.", e);
 		}
 	}
@@ -49,7 +47,7 @@ public class MailSender {
 	public MailSender htmlContent(final String htmlContent) throws MessagingException {
 		final Multipart multipart = new MimeMultipart();
 		final MimeBodyPart html = new MimeBodyPart();
-		html.setContent(htmlContent, "text/html");
+		html.setContent(htmlContent, "text/html; charset=UTF-8");
 		multipart.addBodyPart(html);
 		message.setContent(multipart);
 		return this;
@@ -59,11 +57,9 @@ public class MailSender {
 		try {
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 			Transport.send(message);
-		}
-		catch (final AddressException e) {
+		} catch (final AddressException e) {
 			throw new RuntimeException(String.format("User has an invalid e-mail: %s.", email), e);
-		}
-		catch (final MessagingException e) {
+		} catch (final MessagingException e) {
 			throw new RuntimeException("Error sending e-mail.", e);
 		}
 	}
