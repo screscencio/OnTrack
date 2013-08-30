@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProc
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -120,6 +121,9 @@ public class BusinessLogicTest {
 	@Mock
 	private ActionPostProcessmentsInitializer postProcessmentsInitializer;
 
+	@Mock
+	private IntegrationService integration;
+
 	private EntityManager entityManager;
 	private ProjectRepresentation projectRepresentation;
 	private BusinessLogic business;
@@ -197,7 +201,7 @@ public class BusinessLogicTest {
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
 		business = new BusinessLogicImpl(persistence, multicast, clientManager, authenticationManager, authorizationManager, sessionManager, mock(MailFactory.class), new SyncronizationService(),
-				postProcessmentsInitializer);
+				postProcessmentsInitializer, integration);
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(UUID.INVALID_UUID));

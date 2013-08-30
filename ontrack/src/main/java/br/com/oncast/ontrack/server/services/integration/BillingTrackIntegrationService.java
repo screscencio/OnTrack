@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.server.services.integration;
 
 import br.com.oncast.ontrack.server.configuration.Configurations;
+import br.com.oncast.ontrack.server.services.integration.bean.ProjectCreationNotificationRequest;
 import br.com.oncast.ontrack.server.services.integration.bean.UserInvitedNotificationRequest;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -45,13 +47,26 @@ public class BillingTrackIntegrationService implements IntegrationService {
 	@Override
 	public void onUserInvited(final UUID projectId, final User invitor, final User invitedUser, final boolean isSuperUser) {
 		final Client client = ClientBuilder.newClient(config);
-		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/user/invited");
+		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/notify/userInvite");
 		final UserInvitedNotificationRequest userInvitedNotification = new UserInvitedNotificationRequest(projectId, invitor.getId(), invitedUser.getId(), invitedUser.getEmail(), isSuperUser);
 		try {
 			final Response response = client.target(uriBuilder).request(MediaType.TEXT_HTML).post(Entity.entity(userInvitedNotification, MediaType.APPLICATION_JSON));
 			checkErrors(response);
 		} catch (final Exception e) {
 			LOGGER.error("Could not notify integration server: onUserInvited(" + projectId + ", " + invitor + ", " + invitedUser + ")", e);
+		}
+	}
+
+	@Override
+	public void onProjectCreated(final ProjectRepresentation project, final User creator) {
+		final Client client = ClientBuilder.newClient(config);
+		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/notify/projectCreation");
+		final ProjectCreationNotificationRequest request = new ProjectCreationNotificationRequest(project.getId(), project.getName(), creator.getId());
+		try {
+			final Response response = client.target(uriBuilder).request(MediaType.TEXT_HTML).post(Entity.entity(request, MediaType.APPLICATION_JSON));
+			checkErrors(response);
+		} catch (final Exception e) {
+			LOGGER.error("Could not notify integration server: onProjectCreated(" + project + ", " + creator + ")", e);
 		}
 	}
 

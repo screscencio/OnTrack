@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticatio
 import br.com.oncast.ontrack.server.services.authentication.PasswordHash;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -72,13 +73,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final SessionManager sessionManager;
 	private final AuthorizationManager authorizationManager;
 	private final MailFactory mailFactory;
+	private final IntegrationService integrationService;
 
 	private final SyncronizationService syncronizationService;
 	private final ActionPostProcessmentsInitializer postProcessmentsControler;
 
 	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService multicastService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager, final MailFactory mailFactory,
-			final SyncronizationService syncronizationService, final ActionPostProcessmentsInitializer postProcessmentsControler) {
+			final SyncronizationService syncronizationService, final ActionPostProcessmentsInitializer postProcessmentsControler, final IntegrationService integrationService) {
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
 		this.clientManager = clientManager;
@@ -88,6 +90,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		this.mailFactory = mailFactory;
 		this.syncronizationService = syncronizationService;
 		this.postProcessmentsControler = postProcessmentsControler;
+		this.integrationService = integrationService;
 	}
 
 	@Override
@@ -221,6 +224,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		try {
 			authorizationManager.validateCanCreateProject(authenticatedUser.getId());
 			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(projectName));
+			integrationService.onProjectCreated(persistedProjectRepresentation, authenticatedUser);
 
 			authorize(authenticatedUser.getEmail(), persistedProjectRepresentation.getId(), authenticatedUser.isSuperUser(), false);
 			if (!authenticatedUser.getId().equals(DefaultAuthenticationCredentials.USER_ID)) authorizationManager.authorizeAdmin(persistedProjectRepresentation);
