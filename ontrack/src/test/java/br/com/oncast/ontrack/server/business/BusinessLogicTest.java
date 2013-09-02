@@ -27,6 +27,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToRemoveProjectRepresentationException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -449,13 +450,42 @@ public class BusinessLogicTest {
 
 	@Test
 	public void createProjectShouldFailIfUsersProjectCreationQuotaValidationFails() throws Exception {
-		doThrow(new PermissionDeniedException("")).when(authorizationManager).validateCanCreateProject(authenticatedUser.getId());
+		doThrow(new PermissionDeniedException("")).when(authorizationManager).validateSuperUser(authenticatedUser.getId());
 		try {
 			BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager).createProject("");
 			Assert.fail("An authorization exception should have been thrown.");
 		} catch (final Exception e) {} finally {
 			verify(persistence, times(0)).persistOrUpdateProjectRepresentation(Mockito.any(ProjectRepresentation.class));
 		}
+	}
+
+	@Test
+	public void removeProjectShouldSetProjectRepresentationsRemovedAttributeToTrue() throws Exception {
+		business = BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager);
+		final ProjectRepresentation project = ProjectTestUtils.createRepresentation();
+		when(persistence.retrieveProjectRepresentation(project.getId())).thenReturn(project);
+
+		business.removeProject(project.getId());
+
+		verify(persistence).persistOrUpdateProjectRepresentation(project);
+		assertEquals(true, project.removed());
+	}
+
+	@Test(expected = UnableToRemoveProjectRepresentationException.class)
+	public void shouldNotBeAbleToRemoveTheProjectWhenTheAuthenticatedUserDoesNotHaveAuthorizationForTheProject() throws Exception {
+		business = BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager);
+		final UUID projectId = new UUID();
+		doThrow(new AuthorizationException()).when(authorizationManager).assureActiveProjectAccessAuthorization(projectId);
+
+		business.removeProject(projectId);
+	}
+
+	@Test(expected = UnableToRemoveProjectRepresentationException.class)
+	public void shouldNotBeAbleToRemoveTheProjectWhenTheAuthenticatedUserIsntSuperUser() throws Exception {
+		business = BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager);
+		doThrow(new PermissionDeniedException()).when(authorizationManager).validateSuperUser(authenticatedUser.getId());
+
+		business.removeProject(new UUID());
 	}
 
 	@Test
@@ -511,7 +541,7 @@ public class BusinessLogicTest {
 	public void notAuthorizedUserCannotExecuteActions() throws Exception {
 		business = BusinessLogicTestFactory.create(persistence, authorizationManager);
 		final ModelActionSyncRequest request = ModelActionSyncTestUtils.createModelActionSyncRequest();
-		doThrow(new AuthorizationException()).when(authorizationManager).assureProjectAccessAuthorization(request.getProjectId());
+		doThrow(new AuthorizationException()).when(authorizationManager).assureActiveProjectAccessAuthorization(request.getProjectId());
 
 		business.handleIncomingActionSyncRequest(request);
 	}
@@ -523,7 +553,7 @@ public class BusinessLogicTest {
 
 		business.handleIncomingActionSyncRequest(request);
 
-		verify(authorizationManager, atLeastOnce()).assureProjectAccessAuthorization(request.getProjectId());
+		verify(authorizationManager, atLeastOnce()).assureActiveProjectAccessAuthorization(request.getProjectId());
 		verify(persistence).persistActions(eq(request.getProjectId()), eq(request.getActionList()), eq(authenticatedUser.getId()), any(Date.class));
 	}
 
@@ -532,6 +562,22 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager);
 		business.retrieveCurrentUserProjectList();
 		verify(authorizationManager).listAuthorizedProjects(authenticatedUser.getId());
+	}
+
+	@Test
+	public void onlyNotRemovedAuthorizedProjectsAreReturnedToUser() throws Exception {
+		business = BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager);
+		final List<ProjectRepresentation> projectsList = new ArrayList<ProjectRepresentation>();
+		final ProjectRepresentation project1 = ProjectTestUtils.createRepresentation();
+		final ProjectRepresentation project2 = ProjectTestUtils.createRepresentation();
+		projectsList.add(project1);
+		projectsList.add(project2);
+		projectsList.add(ProjectTestUtils.createRepresentation(true));
+		when(authorizationManager.listAuthorizedProjects(authenticatedUser.getId())).thenReturn(projectsList);
+		final List<ProjectRepresentation> retrievedList = business.retrieveCurrentUserProjectList();
+		assertEquals(2, retrievedList.size());
+		assertTrue(retrievedList.contains(project1));
+		assertTrue(retrievedList.contains(project2));
 	}
 
 	@Test
@@ -545,7 +591,7 @@ public class BusinessLogicTest {
 
 		business.loadProjectForClient(request).getProject();
 
-		verify(authorizationManager, atLeastOnce()).assureProjectAccessAuthorization(request.getRequestedProjectId());
+		verify(authorizationManager, atLeastOnce()).assureActiveProjectAccessAuthorization(request.getRequestedProjectId());
 	}
 
 	@Test(expected = UnableToLoadProjectException.class)
@@ -553,7 +599,7 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager);
 
 		final ProjectContextRequest request = ModelActionSyncTestUtils.createProjectContextRequest();
-		doThrow(new AuthorizationException()).when(authorizationManager).assureProjectAccessAuthorization(request.getRequestedProjectId());
+		doThrow(new AuthorizationException()).when(authorizationManager).assureActiveProjectAccessAuthorization(request.getRequestedProjectId());
 
 		business.loadProjectForClient(request);
 	}
@@ -609,9 +655,9 @@ public class BusinessLogicTest {
 	public void unauthorizedUserCanNotRemoveOtherUsersAuthorizations() throws Exception {
 		business = BusinessLogicTestFactory.create(businessLogic().with(authenticationManager).with(authorizationManager));
 		final UUID projectId = new UUID();
-		Mockito.doThrow(new AuthorizationException()).when(authorizationManager).assureProjectAccessAuthorization(projectId);
+		Mockito.doThrow(new AuthorizationException()).when(authorizationManager).assureActiveProjectAccessAuthorization(projectId);
 		business.removeAuthorization(new UUID(), projectId);
-		verify(authorizationManager).assureProjectAccessAuthorization(projectId);
+		verify(authorizationManager).assureActiveProjectAccessAuthorization(projectId);
 	}
 
 	@Test
@@ -637,7 +683,7 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestFactory.create(businessLogic().with(authenticationManager).with(authorizationManager));
 		final UUID userId = new UUID();
 		final UUID projectId = new UUID();
-		Mockito.doThrow(new PermissionDeniedException()).when(authorizationManager).validateCanCreateProject(authenticatedUser.getId());
+		Mockito.doThrow(new PermissionDeniedException()).when(authorizationManager).validateSuperUser(authenticatedUser.getId());
 		business.removeAuthorization(userId, projectId);
 	}
 

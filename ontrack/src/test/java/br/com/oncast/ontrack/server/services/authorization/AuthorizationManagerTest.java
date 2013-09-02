@@ -183,14 +183,14 @@ public class AuthorizationManagerTest {
 	@Test(expected = AuthorizationException.class)
 	public void assureProjectAccessAuthorizationShouldFailWhenUserIsNotAuthorized() throws Exception {
 		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), projectId)).thenReturn(null);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureProjectAccessAuthorization(projectId);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureActiveProjectAccessAuthorization(projectId);
 		verify(persistence).retrieveProjectAuthorization(authenticatedUser.getId(), projectId);
 	}
 
 	@Test
 	public void assureProjectAccessAuthorizationShouldSucceedWhenUserIsAuthorized() throws Exception {
 		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), projectId)).thenReturn(new ProjectAuthorization(authenticatedUser.getId(), new UUID()));
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureProjectAccessAuthorization(projectId);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureActiveProjectAccessAuthorization(projectId);
 		verify(persistence).retrieveProjectAuthorization(authenticatedUser.getId(), projectId);
 	}
 

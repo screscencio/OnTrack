@@ -1,15 +1,15 @@
 package br.com.oncast.ontrack.shared.model.project;
 
-import java.io.Serializable;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.io.Serializable;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ProjectRepresentationEntity.class)
 public class ProjectRepresentation implements Serializable, HasUUID, Comparable<ProjectRepresentation> {
@@ -25,6 +25,9 @@ public class ProjectRepresentation implements Serializable, HasUUID, Comparable<
 	@Attribute
 	private Long humanIdCounter;
 
+	@Attribute(required = false)
+	private boolean removed;
+
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected ProjectRepresentation() {}
 
@@ -32,6 +35,7 @@ public class ProjectRepresentation implements Serializable, HasUUID, Comparable<
 		this.id = id;
 		this.name = name;
 		this.humanIdCounter = 0L;
+		this.removed = false;
 	}
 
 	public ProjectRepresentation(final String name) {
@@ -77,6 +81,14 @@ public class ProjectRepresentation implements Serializable, HasUUID, Comparable<
 
 	public void setName(final String description) {
 		name = description;
+	}
+
+	public boolean removed() {
+		return removed;
+	}
+
+	public void setRemoved(final boolean removed) {
+		this.removed = removed;
 	}
 
 }

@@ -17,9 +17,11 @@ public interface AuthorizationManager {
 
 	void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException;
 
-	void assureProjectAccessAuthorization(final UUID projectId) throws AuthorizationException;
+	void assureActiveProjectAccessAuthorization(final UUID projectId) throws AuthorizationException;
 
-	void validateCanCreateProject(UUID userId) throws PermissionDeniedException;
+	void assureProjectAccessAuthorizationEvenRemovedOnes(UUID projectId) throws AuthorizationException;
+
+	void validateSuperUser(UUID userId) throws PermissionDeniedException;
 
 	List<ProjectRepresentation> listAuthorizedProjects(UUID userId) throws PersistenceException, NoResultFoundException;
 

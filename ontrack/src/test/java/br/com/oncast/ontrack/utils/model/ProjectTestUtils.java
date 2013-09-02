@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.utils.model;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -15,6 +10,11 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ProjectTestUtils {
 
@@ -28,8 +28,7 @@ public class ProjectTestUtils {
 		return createProject(getDefaultRepresentation(), scope, release);
 	}
 
-	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release,
-			final Set<UserRepresentation> userList) {
+	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release, final Set<UserRepresentation> userList) {
 		final Project project = new Project(projectRepresentation, scope, release);
 		project.setUserList(userList);
 		return project;
@@ -59,6 +58,12 @@ public class ProjectTestUtils {
 
 	public static ProjectRepresentation createRepresentation() {
 		return getDefaultRepresentation();
+	}
+
+	public static ProjectRepresentation createRepresentation(final boolean removedProject) {
+		final ProjectRepresentation rep = getDefaultRepresentation();
+		rep.setRemoved(removedProject);
+		return rep;
 	}
 
 	public static ProjectRepresentation createRepresentation(final UUID projectId) {

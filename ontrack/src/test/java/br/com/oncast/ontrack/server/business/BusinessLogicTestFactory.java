@@ -262,7 +262,7 @@ public class BusinessLogicTestFactory {
 		try {
 			final AuthorizationManager authorizationMock = mock(AuthorizationManager.class);
 			when(authorizationMock.authorize(any(UUID.class), anyString(), anyBoolean(), anyBoolean())).thenReturn(new UUID());
-			Mockito.doNothing().when(authorizationMock).assureProjectAccessAuthorization(Mockito.any(UUID.class));
+			Mockito.doNothing().when(authorizationMock).assureActiveProjectAccessAuthorization(Mockito.any(UUID.class));
 			return authorizationMock;
 		} catch (final Exception e) {
 			throw new RuntimeException();

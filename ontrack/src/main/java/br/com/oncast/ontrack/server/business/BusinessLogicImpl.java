@@ -24,9 +24,10 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUs
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToRemoveProjectRepresentationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
@@ -99,7 +100,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		final long initialTime = getCurrentTime();
 		try {
 			final UUID projectId = actionSyncRequest.getProjectId();
-			authorizationManager.assureProjectAccessAuthorization(projectId);
+			authorizationManager.assureActiveProjectAccessAuthorization(projectId);
 
 			ModelActionSyncEvent modelActionSyncEvent = null;
 
@@ -172,9 +173,10 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	@Override
 	public void removeAuthorization(final UUID userId, final UUID projectId) throws UnableToHandleActionException, UnableToRemoveAuthorizationException, AuthorizationException {
-		authorizationManager.assureProjectAccessAuthorization(projectId);
+		authorizationManager.assureActiveProjectAccessAuthorization(projectId);
+
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-		if (!authenticatedUser.equals(userId)) authorizationManager.validateCanCreateProject(authenticatedUser.getId());
+		if (!authenticatedUser.equals(userId)) authorizationManager.validateSuperUser(authenticatedUser.getId());
 		handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamRevogueInvitationAction(userId)));
 
 		if (userId.equals(DefaultAuthenticationCredentials.USER_ID)) return;
@@ -207,7 +209,11 @@ class BusinessLogicImpl implements BusinessLogic {
 		final UUID userId = authenticationManager.getAuthenticatedUser().getId();
 		LOGGER.debug("Retrieving authorized project list for user '" + userId + "'.");
 		try {
-			return authorizationManager.listAuthorizedProjects(userId);
+			final List<ProjectRepresentation> authorizedProjects = authorizationManager.listAuthorizedProjects(userId);
+			for (final ProjectRepresentation project : new ArrayList<ProjectRepresentation>(authorizedProjects)) {
+				if (project.removed()) authorizedProjects.remove(project);
+			}
+			return authorizedProjects;
 		} catch (final Exception e) {
 			final String errorMessage = "Unable to retrieve the current user project list.";
 			LOGGER.error(errorMessage, e);
@@ -217,12 +223,12 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	@Override
 	// TODO make this method transactional.
-	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation {
+	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentationException {
 		LOGGER.debug("Creating new project '" + projectName + "'.");
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 
 		try {
-			authorizationManager.validateCanCreateProject(authenticatedUser.getId());
+			authorizationManager.validateSuperUser(authenticatedUser.getId());
 			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(projectName));
 			integrationService.onProjectCreated(persistedProjectRepresentation, authenticatedUser);
 
@@ -233,7 +239,22 @@ class BusinessLogicImpl implements BusinessLogic {
 		} catch (final Exception e) {
 			final String errorMessage = "Unable to create project '" + projectName + "'.";
 			LOGGER.error(errorMessage, e);
-			throw new UnableToCreateProjectRepresentation(errorMessage);
+			throw new UnableToCreateProjectRepresentationException(errorMessage);
+		}
+	}
+
+	@Override
+	public ProjectRepresentation removeProject(final UUID projectId) throws UnableToRemoveProjectRepresentationException {
+		try {
+			authorizationManager.assureActiveProjectAccessAuthorization(projectId);
+			final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(projectId);
+			project.setRemoved(true);
+			persistenceService.persistOrUpdateProjectRepresentation(project);
+			return project;
+		} catch (final Exception e) {
+			final String errorMessage = "Unable to remove project with id '" + projectId + "'.";
+			LOGGER.error(errorMessage, e);
+			throw new UnableToRemoveProjectRepresentationException(errorMessage);
 		}
 	}
 
@@ -254,7 +275,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	@DontPostProcessActions
 	public ProjectRevision loadProject(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
 		try {
-			authorizationManager.assureProjectAccessAuthorization(projectId);
+			authorizationManager.assureActiveProjectAccessAuthorization(projectId);
 			return doLoadProject(projectId);
 		} catch (final AuthorizationException e) {
 			final String errorMessage = "Access denied to project '" + projectId + "'";
@@ -375,7 +396,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	@Override
 	public ModelActionSyncEventRequestResponse loadProjectActions(final UUID projectId, final long lastSyncId) throws AuthorizationException, UnableToLoadProjectException {
 		try {
-			authorizationManager.assureProjectAccessAuthorization(projectId);
+			authorizationManager.assureActiveProjectAccessAuthorization(projectId);
 
 			final Session currentSession = sessionManager.getCurrentSession();
 			clientManager.bindClientToProject(currentSession.getThreadLocalClientId(), projectId);

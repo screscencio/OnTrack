@@ -5,9 +5,10 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationExcept
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToRemoveProjectRepresentationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -26,7 +27,9 @@ public interface BusinessLogic {
 
 	ProjectRevision loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException, ProjectNotFoundException;
 
-	ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation;
+	ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentationException;
+
+	ProjectRepresentation removeProject(final UUID projectId) throws UnableToRemoveProjectRepresentationException;
 
 	List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException;
 

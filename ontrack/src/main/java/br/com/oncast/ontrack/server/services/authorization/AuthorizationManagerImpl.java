@@ -49,16 +49,32 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public void assureProjectAccessAuthorization(final UUID projectId) throws AuthorizationException {
-		final UUID currentUserId = getAuthenticatedUserOrAdmin().getId();
-		ProjectAuthorization retrieveProjectAuthorization;
+	public void assureActiveProjectAccessAuthorization(final UUID projectId) throws AuthorizationException {
 		try {
-			retrieveProjectAuthorization = persistenceService.retrieveProjectAuthorization(currentUserId, projectId);
-			if (retrieveProjectAuthorization == null) throw new AuthorizationException("Not authorized to access project '" + projectId + "'.").setProjectId(projectId);
+			assureProjectAccessAuthorizationEvenRemovedOnes(projectId);
+			if (persistenceService.retrieveProjectRepresentation(projectId).removed()) throw new AuthorizationException("The requested project was removed!");
 		} catch (final PersistenceException e) {
-			throw new AuthorizationException("Could not check project authorization for project '" + projectId + "': Persistence error.", e).setProjectId(projectId);
+			handleAuthorizationCheckError(projectId, "Persistence error", e);
+		} catch (final NoResultFoundException e) {
+			handleAuthorizationCheckError(projectId, "ProjectRepresentation was not found", e);
 		}
+	}
 
+	@Override
+	public void assureProjectAccessAuthorizationEvenRemovedOnes(final UUID projectId) throws AuthorizationException {
+		try {
+			final UUID currentUserId = getAuthenticatedUserOrAdmin().getId();
+			final ProjectAuthorization authorization = persistenceService.retrieveProjectAuthorization(currentUserId, projectId);
+			if (authorization == null) throw new AuthorizationException("Not authorized to access project '" + projectId + "'.").setProjectId(projectId);
+		} catch (final PersistenceException e) {
+			handleAuthorizationCheckError(projectId, "Persistence error", e);
+		}
+	}
+
+	private void handleAuthorizationCheckError(final UUID projectId, final String errorMessage, final Throwable error) throws AuthorizationException {
+		final String finalErrorMessage = "Could not check project authorization for project '" + projectId + "': " + errorMessage + ".";
+		LOGGER.error(finalErrorMessage, error);
+		throw new AuthorizationException(finalErrorMessage, error).setProjectId(projectId);
 	}
 
 	@Override
@@ -131,7 +147,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public void validateCanCreateProject(final UUID userId) throws PermissionDeniedException {
+	public void validateSuperUser(final UUID userId) throws PermissionDeniedException {
 		String message = "Authorized!";
 		try {
 			final User user = persistenceService.retrieveUserById(userId);

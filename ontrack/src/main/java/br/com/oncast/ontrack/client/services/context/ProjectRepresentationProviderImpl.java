@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.client.services.authentication.AuthenticationServic
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -163,7 +163,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 			@Override
 			public void onUntreatedFailure(final Throwable caught) {
-				if (caught instanceof UnableToCreateProjectRepresentation) projectCreationListener.onProjectCreationFailure();
+				if (caught instanceof UnableToCreateProjectRepresentationException) projectCreationListener.onProjectCreationFailure();
 				else projectCreationListener.onUnexpectedFailure();
 			}
 		});

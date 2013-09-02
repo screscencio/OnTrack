@@ -271,8 +271,8 @@ public class StorageServiceTest {
 
 	private void setCurrentProject(final UUID projectId) throws PersistenceException, AuthorizationException {
 		this.projectId = projectId;
-		doThrow(new AuthorizationException()).when(authenticationManager).assureProjectAccessAuthorization(Mockito.any(UUID.class));
-		doNothing().when(authenticationManager).assureProjectAccessAuthorization(projectId);
+		doThrow(new AuthorizationException()).when(authenticationManager).assureActiveProjectAccessAuthorization(Mockito.any(UUID.class));
+		doNothing().when(authenticationManager).assureActiveProjectAccessAuthorization(projectId);
 	}
 
 	private StorageService getNewInstance() {

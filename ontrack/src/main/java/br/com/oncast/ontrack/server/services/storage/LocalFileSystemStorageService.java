@@ -94,7 +94,7 @@ public class LocalFileSystemStorageService implements StorageService {
 
 		try {
 			final FileRepresentation fileRepresentation = persistenceService.retrieveFileRepresentationById(fileId);
-			authorizationManager.assureProjectAccessAuthorization(fileRepresentation.getProjectId());
+			authorizationManager.assureActiveProjectAccessAuthorization(fileRepresentation.getProjectId());
 
 			LOGGER.debug("The file '" + fileId + "' retrieved successfully.");
 			return createFile(fileRepresentation);

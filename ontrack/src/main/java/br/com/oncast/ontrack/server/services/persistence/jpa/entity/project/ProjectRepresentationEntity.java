@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.project;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity(name = "ProjectRepresentation")
 @ConvertTo(ProjectRepresentation.class)
@@ -22,6 +22,9 @@ public class ProjectRepresentationEntity {
 
 	@Column(name = "humanIdCounter", unique = false, nullable = false)
 	private Long humanIdCounter;
+
+	@Column(name = "removed", unique = false, nullable = true, updatable = true)
+	private boolean removed;
 
 	public String getId() {
 		return id;
@@ -43,7 +46,15 @@ public class ProjectRepresentationEntity {
 		return humanIdCounter;
 	}
 
-	public void setHumanIdCounter(Long humanIdCounter) {
+	public void setHumanIdCounter(final Long humanIdCounter) {
 		this.humanIdCounter = humanIdCounter;
+	}
+
+	public boolean isRemoved() {
+		return removed;
+	}
+
+	public void setRemoved(final boolean removed) {
+		this.removed = removed;
 	}
 }
