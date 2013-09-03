@@ -27,7 +27,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToRemoveProjectRepresentationException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToRemoveProjectException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
@@ -244,7 +244,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public ProjectRepresentation removeProject(final UUID projectId) throws UnableToRemoveProjectRepresentationException {
+	public ProjectRepresentation removeProject(final UUID projectId) throws UnableToRemoveProjectException {
 		try {
 			authorizationManager.assureActiveProjectAccessAuthorization(projectId);
 			final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(projectId);
@@ -254,7 +254,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		} catch (final Exception e) {
 			final String errorMessage = "Unable to remove project with id '" + projectId + "'.";
 			LOGGER.error(errorMessage, e);
-			throw new UnableToRemoveProjectRepresentationException(errorMessage);
+			throw new UnableToRemoveProjectException(errorMessage);
 		}
 	}
 

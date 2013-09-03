@@ -1,14 +1,10 @@
 package br.com.oncast.ontrack.server.services.api;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
-import br.com.oncast.ontrack.server.services.api.bean.ProjectContextApiRequest;
-import br.com.oncast.ontrack.server.services.api.bean.ProjectContextApiResponse;
-import br.com.oncast.ontrack.server.services.api.bean.ProjectsListApiResponse;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.project.ProjectRevision;
-
-import java.util.List;
+import br.com.oncast.ontrack.server.services.api.bean.ProjectsRemoveApiRequest;
+import br.com.oncast.ontrack.server.services.api.bean.ProjectsRemoveApiResponse;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToRemoveProjectException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -23,33 +19,48 @@ public class OnTrackProjectResource {
 
 	private static final Logger LOGGER = Logger.getLogger(OnTrackProjectResource.class);
 
-	@POST
-	@Path("get")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public ProjectContextApiResponse getProjectContext(final ProjectContextApiRequest request) {
-		try {
-			System.out.println("getProjectContext");
-			System.out.println(request.getProjectId());
-			final ProjectRevision revision = ServerServiceProvider.getInstance().getBusinessLogic().loadProject(request.getProjectId());
-			System.out.println(revision.getRevision());
-			return new ProjectContextApiResponse(new ProjectContext(revision.getProject()), revision.getRevision());
-		} catch (final Exception e) {
-			LOGGER.error("Error trying to retrieve the context for project '" + request.getProjectId() + "'", e);
-			return new ProjectContextApiResponse(e);
-		}
-	}
+	// @POST
+	// @Path("get")
+	// @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	// @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	// public ProjectContextApiResponse getProjectContext(final ProjectContextApiRequest request) {
+	// try {
+	// final ProjectRevision revision = ServerServiceProvider.getInstance().getBusinessLogic().loadProject(request.getProjectId());
+	// return new ProjectContextApiResponse(new ProjectContext(revision.getProject()), revision.getRevision());
+	// } catch (final Exception e) {
+	// LOGGER.error("Error trying to retrieve the context for project '" + request.getProjectId() + "'", e);
+	// return new ProjectContextApiResponse(e);
+	// }
+	// }
+	//
+	// @POST
+	// @Path("list")
+	// @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	// public ProjectsListApiResponse listProjects() {
+	// try {
+	// final List<ProjectRepresentation> projectList = ServerServiceProvider.getInstance().getBusinessLogic().retrieveCurrentUserProjectList();
+	// return new ProjectsListApiResponse(projectList);
+	// } catch (final Exception e) {
+	// LOGGER.error("Error trying to retrieve the projects list", e);
+	// return new ProjectsListApiResponse(e);
+	// }
+	// }
 
 	@POST
-	@Path("list")
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public ProjectsListApiResponse listProjects() {
-		try {
-			final List<ProjectRepresentation> projectList = ServerServiceProvider.getInstance().getBusinessLogic().retrieveCurrentUserProjectList();
-			return new ProjectsListApiResponse(projectList);
-		} catch (final Exception e) {
-			LOGGER.error("Error trying to retrieve the projects list", e);
-			return new ProjectsListApiResponse(e);
+	@Path("remove")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON })
+	public ProjectsRemoveApiResponse removeProject(final ProjectsRemoveApiRequest request) {
+		final ProjectsRemoveApiResponse response = new ProjectsRemoveApiResponse();
+		for (final UUID projectId : request) {
+			try {
+				ServerServiceProvider.getInstance().getBusinessLogic().removeProject(projectId);
+				response.removedSuccessfully(projectId);
+			} catch (final UnableToRemoveProjectException e) {
+				LOGGER.error("Error trying to remove the project '" + projectId + "'", e);
+				response.failedToRemove(projectId, e);
+			}
 		}
+		return response;
 	}
 }

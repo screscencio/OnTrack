@@ -27,7 +27,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToRemoveProjectRepresentationException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToRemoveProjectException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -471,7 +471,7 @@ public class BusinessLogicTest {
 		assertEquals(true, project.removed());
 	}
 
-	@Test(expected = UnableToRemoveProjectRepresentationException.class)
+	@Test(expected = UnableToRemoveProjectException.class)
 	public void shouldNotBeAbleToRemoveTheProjectWhenTheAuthenticatedUserDoesNotHaveAuthorizationForTheProject() throws Exception {
 		business = BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager);
 		final UUID projectId = new UUID();
@@ -480,7 +480,7 @@ public class BusinessLogicTest {
 		business.removeProject(projectId);
 	}
 
-	@Test(expected = UnableToRemoveProjectRepresentationException.class)
+	@Test(expected = UnableToRemoveProjectException.class)
 	public void shouldNotBeAbleToRemoveTheProjectWhenTheAuthenticatedUserIsntSuperUser() throws Exception {
 		business = BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager);
 		doThrow(new PermissionDeniedException()).when(authorizationManager).validateSuperUser(authenticatedUser.getId());

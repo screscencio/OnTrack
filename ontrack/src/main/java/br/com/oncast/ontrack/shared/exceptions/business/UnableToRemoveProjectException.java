@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.shared.exceptions.business;
 
-public class UnableToRemoveProjectRepresentationException extends BusinessException {
+public class UnableToRemoveProjectException extends BusinessException {
 
 	private static final long serialVersionUID = 1L;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected UnableToRemoveProjectRepresentationException() {}
+	protected UnableToRemoveProjectException() {}
 
-	public UnableToRemoveProjectRepresentationException(final String message) {
+	public UnableToRemoveProjectException(final String message) {
 		super(message);
 	}
 
