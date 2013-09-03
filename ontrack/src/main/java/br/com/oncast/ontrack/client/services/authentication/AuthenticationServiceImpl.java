@@ -224,7 +224,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private void updateCurrentUser(final User user) {
 		ClientServices.get().metrics().onUserLogin(user);
 		currentUserId = user.getId();
-		isSuperUser = user.isSuperUser();
+		isSuperUser = user.isProjectManager();
 	}
 
 	@Override

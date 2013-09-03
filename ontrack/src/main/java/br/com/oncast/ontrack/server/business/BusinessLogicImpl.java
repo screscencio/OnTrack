@@ -42,6 +42,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRevision;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -186,11 +187,11 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public void authorize(final String userEmail, final UUID projectId, final boolean isSuperUser, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
+	public void authorize(final String userEmail, final UUID projectId, final Profile profile, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
 			UnableToHandleActionException, AuthorizationException {
-		final UUID userId = authorizationManager.authorize(projectId, userEmail.toLowerCase().trim(), isSuperUser, wasRequestedByTheUser);
+		final UUID userId = authorizationManager.authorize(projectId, userEmail.toLowerCase().trim(), profile, wasRequestedByTheUser);
 		try {
-			handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamInviteAction(userId, isSuperUser, false)));
+			handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamInviteAction(userId, profile)));
 			LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toString() + "'");
 		} catch (final UnableToHandleActionException e) {
 			try {
@@ -232,7 +233,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(projectName));
 			integrationService.onProjectCreated(persistedProjectRepresentation, authenticatedUser);
 
-			authorize(authenticatedUser.getEmail(), persistedProjectRepresentation.getId(), authenticatedUser.isSuperUser(), false);
+			authorize(authenticatedUser.getEmail(), persistedProjectRepresentation.getId(), authenticatedUser.getGlobalProfile(), false);
 			if (!authenticatedUser.getId().equals(DefaultAuthenticationCredentials.USER_ID)) authorizationManager.authorizeAdmin(persistedProjectRepresentation);
 
 			return persistedProjectRepresentation;
@@ -419,12 +420,12 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public UUID createUser(final String userEmail, final boolean isSuperUser) {
+	public UUID createUser(final String userEmail, final Profile profile) {
 		User user = retrieveExistingUser(userEmail);
 		if (user != null) return user.getId();
 
 		final String generatedPassword = generatePasswordForNewUser(userEmail);
-		user = authenticationManager.createNewUser(userEmail, generatedPassword, isSuperUser);
+		user = authenticationManager.createNewUser(userEmail, generatedPassword, profile);
 		LOGGER.debug("Created New User '" + userEmail + "'.");
 		sendWelcomeMail(userEmail, generatedPassword);
 		return user.getId();

@@ -6,11 +6,11 @@ import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 @ConvertTo(TeamInviteActionEntity.class)
@@ -21,22 +21,18 @@ public class TeamInviteAction implements TeamAction {
 	@Element
 	private UUID userId;
 
-	@Attribute
-	private boolean canInvite;
-
-	@Attribute
-	private boolean readOnly;
+	@Element
+	private Profile projectProfile;
 
 	protected TeamInviteAction() {}
 
-	public TeamInviteAction(final UUID userId, final boolean canInvite, final boolean readOnly) {
+	public TeamInviteAction(final UUID userId, final Profile projectProfile) {
 		this.userId = userId;
-		this.canInvite = canInvite;
-		this.readOnly = readOnly;
+		this.projectProfile = projectProfile;
 	}
 
 	public TeamInviteAction(final UserRepresentation user) {
-		this(user.getId(), user.canInvite(), user.isReadOnly());
+		this(user.getId(), user.getProjectProfile());
 	}
 
 	@Override
@@ -46,7 +42,7 @@ public class TeamInviteAction implements TeamAction {
 		try {
 			context.findUser(userId).setValid(true);
 		} catch (final UserNotFoundException e) {
-			context.addUser(new UserRepresentation(userId, canInvite, readOnly));
+			context.addUser(new UserRepresentation(userId, projectProfile));
 		}
 
 		return new TeamRevogueInvitationAction(userId);
@@ -66,7 +62,7 @@ public class TeamInviteAction implements TeamAction {
 
 	@Override
 	public String toString() {
-		return "TeamInviteAction [userId=" + userId + ", canInvite=" + canInvite + ", readOnly=" + readOnly + "]";
+		return "TeamInviteAction [userId=" + userId + ", profile=" + projectProfile + "]";
 	}
 
 }

@@ -7,13 +7,14 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.PermissionDeniedExc
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import java.util.List;
 
 public interface AuthorizationManager {
 
-	UUID authorize(final UUID projectId, final String userEmail, final boolean isSuperUser, boolean shouldSendMailMessage) throws UnableToAuthorizeUserException, PermissionDeniedException;
+	UUID authorize(final UUID projectId, final String userEmail, final Profile profile, boolean shouldSendMailMessage) throws UnableToAuthorizeUserException, PermissionDeniedException;
 
 	void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException;
 

@@ -241,7 +241,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 		registrations.add(ClientServices.get().userData().registerListenerForSpecificUser(ClientServices.getCurrentUser(), new UserSpecificInformationChangeListener() {
 			@Override
 			public void onInformationChange(final User user) {
-				isCurrentUserSuperUser = user.isSuperUser();
+				isCurrentUserSuperUser = user.isProjectManager();
 				updateCheckBoxesUpdeateability();
 			}
 		}));

@@ -13,9 +13,13 @@ import java.util.regex.Pattern;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import static org.junit.Assert.assertEquals;
 
 public class ModelActionEntityFieldAnnotationsTestUtils {
 
@@ -55,7 +59,7 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 
 		},
 
-		STRING(String.class) {
+		STRING(String.class, Enum.class) {
 			@Override
 			public void validade(final String actionName, final Field field) {
 				final Column column = getAnnotation(field, Column.class);
@@ -67,6 +71,21 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			@Override
 			protected boolean accepts(final Field field) {
 				return !DESCRIPTION_TEXT.accepts(field);
+			}
+		},
+
+		ENUM(Enum.class) {
+			@Override
+			public void validade(final String actionName, final Field field) {
+				final Enumerated enumerated = getAnnotation(field, Enumerated.class);
+
+				assertEquals("The field " + field.getName() + " should have EnumType.STRING as value of @Enumerated annotation", EnumType.STRING, enumerated.value());
+				STRING.validade(actionName, field);
+			}
+
+			@Override
+			protected boolean accepts(final Field field) {
+				return true;
 			}
 		},
 
@@ -206,8 +225,9 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 		}
 
 		public boolean handlesType(final Field field) {
-			for (final Class<?> type : handledTypes) {
-				if (field.getType().isAssignableFrom(type)) return accepts(field);
+			final Class<?> fieldType = field.getType();
+			for (final Class<?> handledType : handledTypes) {
+				if (handledType.isAssignableFrom(fieldType)) return accepts(field);
 			}
 
 			return false;

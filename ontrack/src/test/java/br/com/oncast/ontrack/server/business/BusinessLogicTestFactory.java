@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.server.services.threadSync.SyncronizationService;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
@@ -261,7 +262,7 @@ public class BusinessLogicTestFactory {
 	private AuthorizationManager getAuthorizationMock() {
 		try {
 			final AuthorizationManager authorizationMock = mock(AuthorizationManager.class);
-			when(authorizationMock.authorize(any(UUID.class), anyString(), anyBoolean(), anyBoolean())).thenReturn(new UUID());
+			when(authorizationMock.authorize(any(UUID.class), anyString(), any(Profile.class), anyBoolean())).thenReturn(new UUID());
 			Mockito.doNothing().when(authorizationMock).assureActiveProjectAccessAuthorization(Mockito.any(UUID.class));
 			return authorizationMock;
 		} catch (final Exception e) {

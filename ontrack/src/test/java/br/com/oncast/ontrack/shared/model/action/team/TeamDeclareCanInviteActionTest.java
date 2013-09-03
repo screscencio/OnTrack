@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareCanInviteAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
@@ -29,7 +30,7 @@ public class TeamDeclareCanInviteActionTest extends ModelActionTest {
 		user = UserRepresentationTestUtils.createUser();
 		canInvite = false;
 		Mockito.when(context.findUser(user.getId())).thenReturn(user);
-		getActionAuthor().setCanInvite(true);
+		getActionAuthor().setProjectProfile(Profile.PEOPLE_MANAGER);
 	}
 
 	@Test
@@ -53,7 +54,7 @@ public class TeamDeclareCanInviteActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotbeAbleToDeclareCanInviteIfTheAuthorCantInvite() throws Exception {
-		getActionAuthor().setCanInvite(false);
+		getActionAuthor().setProjectProfile(Profile.CONTRIBUTOR);
 		executeAction();
 	}
 

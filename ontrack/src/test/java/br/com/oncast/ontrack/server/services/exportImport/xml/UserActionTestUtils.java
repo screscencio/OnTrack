@@ -73,6 +73,7 @@ import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
@@ -336,7 +337,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createTeamInviteAction() throws Exception {
-		return createUserAction(new TeamInviteAction(new UUID(), true, false));
+		return createUserAction(new TeamInviteAction(new UUID(), Profile.PROJECT_MANAGER));
 	}
 
 	public static UserAction createImpedimentCreateAction() throws Exception {

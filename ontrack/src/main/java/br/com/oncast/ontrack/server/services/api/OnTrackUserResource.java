@@ -18,7 +18,7 @@ public class OnTrackUserResource {
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public UUID createUser(final UserCreationApiRequest request) {
-		return ServerServiceProvider.getInstance().getBusinessLogic().createUser(request.getEmail(), request.isSuperUser());
+		return ServerServiceProvider.getInstance().getBusinessLogic().createUser(request.getEmail(), request.getGlobalProfile());
 	}
 
 }

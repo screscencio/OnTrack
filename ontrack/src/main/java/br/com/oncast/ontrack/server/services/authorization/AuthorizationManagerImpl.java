@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.PermissionDeniedExc
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
@@ -94,8 +95,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public UUID authorize(final UUID projectId, final String userEmail, final boolean isSuperUser, final boolean shouldSendMailMessage) throws UnableToAuthorizeUserException,
-			PermissionDeniedException {
+	public UUID authorize(final UUID projectId, final String userEmail, final Profile profile, final boolean shouldSendMailMessage) throws UnableToAuthorizeUserException, PermissionDeniedException {
 		User user = null;
 
 		try {
@@ -110,14 +110,14 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 				}
 			} catch (final UserNotFoundException e) {
 				generatedPassword = PasswordHash.generatePassword();
-				user = authenticationManager.createNewUser(userEmail, generatedPassword, isSuperUser);
+				user = authenticationManager.createNewUser(userEmail, generatedPassword, profile);
 				LOGGER.debug("Created New User '" + userEmail + "'.");
 			}
 
 			persistenceService.authorize(userEmail, projectId);
 			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
 			multicastService.multicastToUser(new ProjectAddedEvent(projectRepresentation), user);
-			integrationService.onUserInvited(projectId, authenticatedUser, user, isSuperUser);
+			integrationService.onUserInvited(projectId, authenticatedUser, user, profile);
 			if (shouldSendMailMessage) sendMailMessage(projectId, userEmail, generatedPassword, authenticatedUser);
 
 		} catch (final PersistenceException e) {
@@ -151,7 +151,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		String message = "Authorized!";
 		try {
 			final User user = persistenceService.retrieveUserById(userId);
-			if (user.isSuperUser()) return;
+			if (user.isProjectManager()) return;
 
 			message = "The current user don't have the permission to do this operation.";
 		} catch (final Exception e) {

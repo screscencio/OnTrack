@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
@@ -62,7 +63,7 @@ public class TeamInviteActionTest extends ModelActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void canInviteWhenTheActionAuthorDoesNotHavePermissionToDoSo() throws Exception {
 		final UserRepresentation user = UserRepresentationTestUtils.createUser();
-		user.setCanInvite(false);
+		user.setProjectProfile(Profile.CONTRIBUTOR);
 		setActionAuthor(user);
 		executeAction();
 	}
@@ -72,14 +73,14 @@ public class TeamInviteActionTest extends ModelActionTest {
 		when(context.getUsers()).thenReturn(new ArrayList<UserRepresentation>());
 		when(context.findUser(invitee.getId())).thenThrow(new UserNotFoundException(""));
 		final UserRepresentation user = UserRepresentationTestUtils.createUser();
-		user.setCanInvite(false);
+		user.setProjectProfile(Profile.CONTRIBUTOR);
 		setActionAuthor(user);
 		executeAction();
 	}
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new TeamInviteAction(invitee.getId(), true, false);
+		return new TeamInviteAction(invitee.getId(), Profile.PROJECT_MANAGER);
 	}
 
 	@Override

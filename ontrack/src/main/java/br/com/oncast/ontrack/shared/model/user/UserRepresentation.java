@@ -14,20 +14,17 @@ public class UserRepresentation implements HasUUID, Serializable, Comparable<Use
 
 	private boolean valid = true;
 
-	private boolean readOnly = false;
-
-	private boolean canInvite = true;
+	private Profile projectProfile;
 
 	public UserRepresentation() {}
 
 	public UserRepresentation(final UUID id) {
-		this.setId(id);
+		this(id, Profile.getDefaultProfile());
 	}
 
-	public UserRepresentation(final UUID userId, final boolean canInvite, final boolean readOnly) {
-		this.setId(userId);
-		this.setCanInvite(canInvite);
-		this.setReadOnly(readOnly);
+	public UserRepresentation(final UUID userId, final Profile projectProfile) {
+		this.id = userId;
+		this.projectProfile = projectProfile;
 	}
 
 	public void setValid(final boolean isValid) {
@@ -41,10 +38,6 @@ public class UserRepresentation implements HasUUID, Serializable, Comparable<Use
 	@Override
 	public UUID getId() {
 		return id;
-	}
-
-	public void setId(final UUID id) {
-		this.id = id;
 	}
 
 	@Override
@@ -67,19 +60,20 @@ public class UserRepresentation implements HasUUID, Serializable, Comparable<Use
 		return id.toString();
 	}
 
-	public void setReadOnly(final boolean readOnly) {
-		this.readOnly = readOnly;
+	public void setProjectProfile(final Profile projectProfile) {
+		this.projectProfile = projectProfile;
 	}
 
 	public boolean isReadOnly() {
-		return readOnly;
+		return !projectProfile.hasPermissionsOf(Profile.CONTRIBUTOR);
+	}
+
+	public Profile getProjectProfile() {
+		return projectProfile;
 	}
 
 	public boolean canInvite() {
-		return canInvite;
+		return projectProfile.hasPermissionsOf(Profile.PEOPLE_MANAGER);
 	}
 
-	public void setCanInvite(final boolean canInvite) {
-		this.canInvite = canInvite;
-	}
 }

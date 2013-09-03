@@ -1,13 +1,5 @@
 package br.com.oncast.ontrack.utils.mocks.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.Assert;
-import org.mockito.Mockito;
-import org.reflections.Reflections;
-
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -28,9 +20,18 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.Assert;
+import org.mockito.Mockito;
+import org.reflections.Reflections;
 
 public class ActionTestUtils {
 
@@ -38,7 +39,7 @@ public class ActionTestUtils {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 
 		for (final User user : requiredUsers) {
-			if (user != null) actions.add(new TeamInviteAction(user.getId(), true, false));
+			if (user != null) actions.add(new TeamInviteAction(user.getId(), Profile.PROJECT_MANAGER));
 		}
 
 		final UUID rootScope = ProjectTestUtils.createProject().getProjectScope().getId();
@@ -61,15 +62,11 @@ public class ActionTestUtils {
 		actions.add(new ScopeUpdateAction(insertChild1.getNewScopeId(), "new description"));
 
 		actions.add(new ScopeUpdateAction(insertChild2.getNewScopeId(), "new description " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1"));
-		final ScopeInsertChildAction insertChild31 = new ScopeInsertChildAction(insertChild3.getNewScopeId(),
-				"3.1 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1/It1");
+		final ScopeInsertChildAction insertChild31 = new ScopeInsertChildAction(insertChild3.getNewScopeId(), "3.1 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1/It1");
 		actions.add(insertChild31);
-		actions.add(new ScopeInsertSiblingUpAction(insertChild31.getNewScopeId(),
-				"Before 3.1 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R2/It1"));
-		actions.add(new ScopeInsertSiblingDownAction(insertChild31.getNewScopeId(),
-				"After 3.1 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R2/It1"));
-		actions.add(new ScopeInsertParentAction(insertChild3.getNewScopeId(),
-				"Parent of 3 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1"));
+		actions.add(new ScopeInsertSiblingUpAction(insertChild31.getNewScopeId(), "Before 3.1 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R2/It1"));
+		actions.add(new ScopeInsertSiblingDownAction(insertChild31.getNewScopeId(), "After 3.1 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R2/It1"));
+		actions.add(new ScopeInsertParentAction(insertChild3.getNewScopeId(), "Parent of 3 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1"));
 
 		return actions;
 	}
@@ -101,12 +98,11 @@ public class ActionTestUtils {
 
 	public static List<ModelAction> createOneValidAction() {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
-		actions.add(new TeamInviteAction(DefaultAuthenticationCredentials.USER_ID, true, false));
+		actions.add(new TeamInviteAction(DefaultAuthenticationCredentials.USER_ID, Profile.PROJECT_MANAGER));
 		return actions;
 	}
 
-	public static void assertExpectedKanbanColumns(final ProjectContext context, final Release release, final int expectedColumns,
-			final String... columnDescriptions) {
+	public static void assertExpectedKanbanColumns(final ProjectContext context, final Release release, final int expectedColumns, final String... columnDescriptions) {
 		final Kanban kanban = context.getKanban(release);
 		Assert.assertEquals("Its should have " + expectedColumns + " columns.", expectedColumns, kanban.getColumns().size());
 
@@ -118,18 +114,14 @@ public class ActionTestUtils {
 		}
 	}
 
-	public static void assertExpectedKanbanColumnPosition(final ProjectContext context, final Release release, final String columnDescription,
-			final int columnPosition) {
-		Assert.assertEquals("The position for the column '" + columnDescription + "' should be '" + columnPosition + "'.", columnPosition,
-				context.getKanban(release).indexOf(columnDescription));
+	public static void assertExpectedKanbanColumnPosition(final ProjectContext context, final Release release, final String columnDescription, final int columnPosition) {
+		Assert.assertEquals("The position for the column '" + columnDescription + "' should be '" + columnPosition + "'.", columnPosition, context.getKanban(release).indexOf(columnDescription));
 	}
 
 	public static void assertProgressForScopes(final String expectedProgressDescription, final Scope... scopes) {
 		for (final Scope scope : scopes) {
 			final String desc = scope.getProgress().getDescription().isEmpty() ? Progress.DEFAULT_NOT_STARTED_NAME : scope.getProgress().getDescription();
-			Assert.assertEquals("The progress set for the scope '" + scope.getDescription() + "' is not '" + expectedProgressDescription + "'.",
-					expectedProgressDescription,
-					desc);
+			Assert.assertEquals("The progress set for the scope '" + scope.getDescription() + "' is not '" + expectedProgressDescription + "'.", expectedProgressDescription, desc);
 		}
 	}
 

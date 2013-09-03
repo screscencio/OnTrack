@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.utils.typeConverter.custom;
 
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
+import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,35 +10,33 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
-import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
-import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
+import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("rawtypes")
 public class ListToHashSetConverterTest {
 
 	@Test
 	public void shouldConvertTheListToAHashSetWithConvertedContent() throws Exception {
-		final Set<FileRepresentation> collection = new HashSet<FileRepresentation>();
-		collection.add(FileRepresentationTestUtils.create());
-		collection.add(FileRepresentationTestUtils.create());
+		final Set<String> collection = new HashSet<String>();
+		collection.add("string 1");
+		collection.add("string 2");
 
-		final HashSet<FileRepresentation> hashSetConvertedTwice = convertAndConvertBack(collection);
+		final HashSet<String> hashSetConvertedTwice = convertAndConvertBack(collection);
 
 		assertTrue(collection.containsAll(hashSetConvertedTwice));
 	}
 
 	@Test
 	public void shouldConverEmptyList() throws Exception {
-		final Set<FileRepresentation> collection = new HashSet<FileRepresentation>();
+		final Set<String> collection = new HashSet<String>();
 
-		final HashSet<FileRepresentation> hashSetConvertedTwice = convertAndConvertBack(collection);
+		final HashSet<String> hashSetConvertedTwice = convertAndConvertBack(collection);
 
 		AssertTestUtils.assertCollectionEquality(collection, hashSetConvertedTwice);
 
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	private <T> HashSet<T> convertAndConvertBack(final Set<T> collection) throws TypeConverterException {
 		final List convertedList = (List) new CollectionToListConverter<ArrayList>(ArrayList.class).convert(collection);
 		final Object convertedBackObject = new ListToHashSetConverter().convert(convertedList);

@@ -1,10 +1,8 @@
 package br.com.oncast.ontrack.client.services.context;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
@@ -13,6 +11,7 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
@@ -29,6 +28,9 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.RemoveProjectAuthorizationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.RemoveProjectAuthorizationResponse;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
@@ -170,8 +172,8 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	}
 
 	@Override
-	public void authorizeUser(final String mail, final boolean superUser, final ProjectAuthorizationCallback callback) {
-		dispatchService.dispatch(new ProjectAuthorizationRequest(currentProjectRepresentation.getId(), mail, superUser), new DispatchCallback<ProjectAuthorizationResponse>() {
+	public void authorizeUser(final String mail, final Profile profile, final ProjectAuthorizationCallback callback) {
+		dispatchService.dispatch(new ProjectAuthorizationRequest(currentProjectRepresentation.getId(), mail, profile), new DispatchCallback<ProjectAuthorizationResponse>() {
 			@Override
 			public void onSuccess(final ProjectAuthorizationResponse result) {
 				callback.onSuccess();

@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationExce
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UnableToResetPasswordException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.PasswordValidator;
@@ -90,15 +91,15 @@ public class AuthenticationManager {
 		return false;
 	}
 
-	public User createNewUser(final String email, final String password, final boolean isSuperUser) {
-		return createNewUser(new UUID(), email, password, isSuperUser);
+	public User createNewUser(final String email, final String password, final Profile profile) {
+		return createNewUser(new UUID(), email, password, profile);
 	}
 
-	public User createNewUser(final UUID id, final String email, final String password, final boolean isSuperUser) {
+	public User createNewUser(final UUID id, final String email, final String password, final Profile profile) {
 		final String formattedUserEmail = formatUserEmail(email);
 
 		try {
-			final User user = new User(id, formattedUserEmail, isSuperUser);
+			final User user = new User(id, formattedUserEmail, profile);
 			final User newUser = persistenceService.persistOrUpdateUser(user);
 			if (password != null && !password.isEmpty()) createPasswordForUser(newUser, password);
 			return newUser;

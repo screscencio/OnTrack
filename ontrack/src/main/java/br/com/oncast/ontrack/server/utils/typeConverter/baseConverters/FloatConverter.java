@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.utils.typeConverter.custom;
+package br.com.oncast.ontrack.server.utils.typeConverter.baseConverters;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.TypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;

@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectL
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRevision;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequestResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
@@ -39,7 +40,7 @@ public interface BusinessLogic {
 
 	void sendFeedbackEmail(String feedbackText);
 
-	void authorize(String userEmail, UUID projectId, boolean isSuperUser, boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException, UnableToHandleActionException, AuthorizationException;
+	void authorize(String userEmail, UUID projectId, Profile profile, boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException, UnableToHandleActionException, AuthorizationException;
 
 	void onFileUploadCompleted(final FileRepresentation fileRepresentation) throws UnableToHandleActionException, AuthorizationException;
 
@@ -49,6 +50,6 @@ public interface BusinessLogic {
 
 	ModelActionSyncEventRequestResponse loadProjectActions(UUID projectId, long lastSyncId) throws AuthorizationException, UnableToLoadProjectException;
 
-	UUID createUser(String userEmail, boolean isSuperUser);
+	UUID createUser(String userEmail, Profile profile);
 
 }

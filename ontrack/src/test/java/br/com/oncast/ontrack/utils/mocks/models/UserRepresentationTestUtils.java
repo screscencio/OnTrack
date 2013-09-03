@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.utils.mocks.models;
 
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -48,7 +49,7 @@ public class UserRepresentationTestUtils {
 
 	public static UserRepresentation createUser(final boolean isReadOnly) {
 		final UserRepresentation user = createUser();
-		user.setReadOnly(isReadOnly);
+		user.setProjectProfile(isReadOnly ? Profile.GUEST : Profile.PEOPLE_MANAGER);
 		return user;
 	}
 }

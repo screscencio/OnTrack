@@ -30,19 +30,19 @@ public class User implements Serializable, Comparable<User>, HasUUID {
 	@Element(required = false)
 	private UUID userPictureId;
 
-	@Attribute
-	private boolean superUser;
+	@Element
+	private Profile globalProfile;
 
 	User() {}
 
-	public User(final UUID id, final String email, final boolean superUser) {
+	public User(final UUID id, final String email, final Profile globalProfile) {
 		this.id = id;
 		this.email = email;
-		this.superUser = superUser;
+		this.globalProfile = globalProfile;
 	}
 
 	public User(final UUID id, final String email) {
-		this(id, email, true);
+		this(id, email, Profile.getDefaultProfile());
 	}
 
 	@Override
@@ -58,12 +58,16 @@ public class User implements Serializable, Comparable<User>, HasUUID {
 		this.email = email;
 	}
 
-	public boolean isSuperUser() {
-		return superUser;
+	public boolean isProjectManager() {
+		return getGlobalProfile() == Profile.PROJECT_MANAGER;
 	}
 
-	public void setSuperUser(final boolean isSuperUser) {
-		this.superUser = isSuperUser;
+	public Profile getGlobalProfile() {
+		return globalProfile;
+	}
+
+	public void setGlobalProfile(final Profile globalProfile) {
+		this.globalProfile = globalProfile;
 	}
 
 	public String getName() {

@@ -1,10 +1,10 @@
-package br.com.oncast.ontrack.server.utils.typeConverter.custom;
-
-import java.util.List;
+package br.com.oncast.ontrack.server.utils.typeConverter.baseConverters;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.TypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
+
+import java.util.List;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class ListConverter<T extends List> implements TypeConverter {
@@ -31,8 +31,7 @@ public class ListConverter<T extends List> implements TypeConverter {
 		T instance;
 		try {
 			instance = clazz.newInstance();
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			throw new TypeConverterException("It was not possible to instantiate a new list bean.");
 		}
 		return instance;

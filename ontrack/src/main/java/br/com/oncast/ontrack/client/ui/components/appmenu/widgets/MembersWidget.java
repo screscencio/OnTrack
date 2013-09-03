@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.shared.exceptions.authorization.PermissionDeniedException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -92,7 +93,9 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
 				widget.hide();
 				ClientServices.get().alerting().showInfo(messages.processingYourInvitation());
-				PROVIDER.projectRepresentationProvider().authorizeUser(mail, widget.superUserCheck.getValue(), new ProjectAuthorizationCallback() {
+				// FIXME change this for profile selection
+				final Boolean isSuperUser = widget.superUserCheck.getValue();
+				PROVIDER.projectRepresentationProvider().authorizeUser(mail, isSuperUser ? Profile.PEOPLE_MANAGER : Profile.CONTRIBUTOR, new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {
 						ClientServices.get().alerting().showSuccess(messages.userInvited(mail));

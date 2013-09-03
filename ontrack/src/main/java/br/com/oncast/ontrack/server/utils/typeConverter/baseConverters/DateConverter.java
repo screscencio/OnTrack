@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.utils.typeConverter.custom;
+package br.com.oncast.ontrack.server.utils.typeConverter.baseConverters;
 
 import java.util.Date;
 

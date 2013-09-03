@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.TypeConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.baseConverters.ListConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 
 @SuppressWarnings("rawtypes")

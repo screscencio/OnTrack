@@ -17,7 +17,7 @@ public class UserInformationChangeEvent implements ServerPushEvent {
 
 	public UserInformationChangeEvent(final User user) {
 		id = user.getId();
-		isSuperUser = user.isSuperUser();
+		isSuperUser = user.isProjectManager();
 	}
 
 	public UUID getUserId() {

@@ -1,13 +1,14 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @ConvertTo(User.class)
 @Entity
@@ -27,8 +28,8 @@ public class UserEntity {
 	@Column(name = "userPictureId", unique = true, nullable = true)
 	private String userPictureId;
 
-	@Column(name = "superUser", nullable = false)
-	private boolean superUser;
+	@Column(name = "globalProfile", nullable = false)
+	private Profile globalProfile;
 
 	public String getId() {
 		return id;
@@ -62,12 +63,12 @@ public class UserEntity {
 		this.userPictureId = userPictureId;
 	}
 
-	public boolean isSuperUser() {
-		return superUser;
+	public Profile getGlobalProfile() {
+		return globalProfile;
 	}
 
-	public void setSuperUser(boolean superUser) {
-		this.superUser = superUser;
+	public void setGlobalProfile(final Profile globalProfile) {
+		this.globalProfile = globalProfile;
 	}
 
 }

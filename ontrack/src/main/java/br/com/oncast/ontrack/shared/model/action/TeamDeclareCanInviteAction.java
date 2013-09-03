@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -37,7 +38,7 @@ public class TeamDeclareCanInviteAction implements TeamAction {
 
 		final UserRepresentation user = ActionHelper.findUser(userId, context, this);
 		final boolean previousCanInvite = user.canInvite();
-		user.setCanInvite(canInvite);
+		user.setProjectProfile(canInvite ? Profile.PROJECT_MANAGER : Profile.CONTRIBUTOR);
 		return new TeamDeclareCanInviteAction(userId, previousCanInvite);
 	}
 

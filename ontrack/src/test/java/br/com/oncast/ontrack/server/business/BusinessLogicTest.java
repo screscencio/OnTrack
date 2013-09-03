@@ -43,6 +43,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -157,7 +158,7 @@ public class BusinessLogicTest {
 		authenticateAndAuthorizeUser(authenticatedUser, PROJECT_ID);
 		configureToRetrieveSnapshot(PROJECT_ID);
 
-		when(authorizationManager.authorize(any(UUID.class), anyString(), anyBoolean(), anyBoolean())).thenReturn(new UUID());
+		when(authorizationManager.authorize(any(UUID.class), anyString(), any(Profile.class), anyBoolean())).thenReturn(new UUID());
 	}
 
 	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException, UserNotFoundException {
@@ -273,7 +274,7 @@ public class BusinessLogicTest {
 		action.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(admin.getId(), true, false));
+		actionList.add(new TeamInviteAction(admin.getId(), Profile.PROJECT_MANAGER));
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -293,7 +294,7 @@ public class BusinessLogicTest {
 		action1.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(admin.getId(), true, false));
+		actionList.add(new TeamInviteAction(admin.getId(), Profile.PROJECT_MANAGER));
 		actionList.add(action1);
 
 		final ModelAction action2 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "small sister");
@@ -360,7 +361,7 @@ public class BusinessLogicTest {
 		action.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(admin.getId(), true, false));
+		actionList.add(new TeamInviteAction(admin.getId(), Profile.PROJECT_MANAGER));
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -384,7 +385,7 @@ public class BusinessLogicTest {
 
 		final Project project2 = loadProject(OTHER_PROJECT_ID);
 		final List<ModelAction> actions2 = ActionTestUtils.getActions2();
-		actions2.add(0, new TeamInviteAction(admin.getId(), true, false));
+		actions2.add(0, new TeamInviteAction(admin.getId(), Profile.PROJECT_MANAGER));
 		final List<ModelAction> actionList2 = executeActionsToProject(project2, actions2);
 		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectRepresentation2, actionList2));
 
@@ -514,9 +515,9 @@ public class BusinessLogicTest {
 
 		final UUID projectId = new UUID();
 		setupMocksToCreateProjectWithId(projectId);
-		when(authorizationManager.authorize(projectId, authenticatedUser.getEmail(), authenticatedUser.isSuperUser(), false)).thenReturn(authenticatedUser.getId());
+		when(authorizationManager.authorize(projectId, authenticatedUser.getEmail(), authenticatedUser.getGlobalProfile(), false)).thenReturn(authenticatedUser.getId());
 		business.createProject("new Project");
-		verify(authorizationManager).authorize(projectId, authenticatedUser.getEmail(), authenticatedUser.isSuperUser(), false);
+		verify(authorizationManager).authorize(projectId, authenticatedUser.getEmail(), authenticatedUser.getGlobalProfile(), false);
 		final ArgumentCaptor<ModelActionSyncRequest> captor = ArgumentCaptor.forClass(ModelActionSyncRequest.class);
 		verify(business).handleIncomingActionSyncRequest(captor.capture());
 		final ModelActionSyncRequest request = captor.getValue();
@@ -534,7 +535,7 @@ public class BusinessLogicTest {
 
 		business.createProject("new Project");
 		verify(authorizationManager).authorizeAdmin(createdProject);
-		verify(authorizationManager).authorize(createdProject.getId(), authenticatedUser.getEmail(), authenticatedUser.isSuperUser(), false);
+		verify(authorizationManager).authorize(createdProject.getId(), authenticatedUser.getEmail(), authenticatedUser.getGlobalProfile(), false);
 	}
 
 	@Test(expected = AuthorizationException.class)
@@ -706,10 +707,10 @@ public class BusinessLogicTest {
 
 		business = Mockito.spy(BusinessLogicTestFactory.create(businessLogic().with(authorizationManager)));
 
-		when(authorizationManager.authorize(projectId, userEmail, true, false)).thenReturn(user.getId());
+		when(authorizationManager.authorize(projectId, userEmail, Profile.PROJECT_MANAGER, false)).thenReturn(user.getId());
 		Mockito.doThrow(new UnableToHandleActionException()).when(business).handleIncomingActionSyncRequest(Mockito.any(ModelActionSyncRequest.class));
 		try {
-			business.authorize(userEmail, projectId, true, false);
+			business.authorize(userEmail, projectId, Profile.PROJECT_MANAGER, false);
 			fail("should not authorize user");
 		} catch (final UnableToHandleActionException e) {
 			verify(authorizationManager).removeAuthorization(projectId, user.getId());

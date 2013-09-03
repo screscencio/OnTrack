@@ -16,8 +16,13 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.baseConverters.ListConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.CollectionToListConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.ColorConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.UUIDConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -26,6 +31,7 @@ import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -34,16 +40,26 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import org.hibernate.collection.PersistentBag;
+
 // TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 // TODO Analise using CriteriaApi instead of HQL.
 // TODO Implement better exception handling for JPA exceptions
 // TODO Separate authentication/authorization persistence methods from business related methods.
 // TODO Extract rollback treatment to a method in all the persist methods.
+@SuppressWarnings("rawtypes")
 public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	private final static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ontrackPU");
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 	private final static ObjectCache<UUID, ProjectSnapshot> SNAPSHOT_CACHE = new ObjectCache<UUID, ProjectSnapshot>();
+
+	static {
+		GeneralTypeConverter.addCustomConverter(HashSet.class, new CollectionToListConverter<ArrayList>(ArrayList.class));
+		GeneralTypeConverter.addCustomConverter(UUID.class, new UUIDConverter());
+		GeneralTypeConverter.addCustomConverter(Color.class, new ColorConverter());
+		GeneralTypeConverter.addCustomConverter(PersistentBag.class, new ListConverter<ArrayList>(ArrayList.class));
+	}
 
 	@Override
 	public long persistActions(final UUID projectId, final List<ModelAction> actionList, final UUID userId, final Date timestamp) throws PersistenceException {

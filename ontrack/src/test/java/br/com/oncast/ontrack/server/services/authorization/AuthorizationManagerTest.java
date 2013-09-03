@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationExcept
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
@@ -103,7 +104,7 @@ public class AuthorizationManagerTest {
 	public void shouldBeAbleToAuthorizeAnExistentUser() throws Exception {
 		final String mail = createUser().getEmail();
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false, false);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, Profile.CONTRIBUTOR, false);
 		verify(persistence).authorize(mail, projectId);
 	}
 
@@ -111,17 +112,17 @@ public class AuthorizationManagerTest {
 	public void authorizingAnExistingUserShouldNotChangeSuperUserAttribute() throws Exception {
 		final String mail = createUser().getEmail();
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false, false);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, Profile.CONTRIBUTOR, false);
 		verify(persistence).authorize(mail, projectId);
-		assertTrue(persistence.retrieveUserByEmail(mail).isSuperUser());
+		assertTrue(persistence.retrieveUserByEmail(mail).isProjectManager());
 	}
 
 	@Test
 	public void shouldNotifyIntegrationServiceOnUserAuthorization() throws Exception {
 		final User createdUser = createUser();
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, integration).authorize(projectId, createdUser.getEmail(), true, false);
-		verify(integration).onUserInvited(projectId, authenticatedUser, createdUser, true);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, integration).authorize(projectId, createdUser.getEmail(), Profile.PROJECT_MANAGER, false);
+		verify(integration).onUserInvited(projectId, authenticatedUser, createdUser, Profile.PROJECT_MANAGER);
 	}
 
 	@Test
@@ -129,11 +130,11 @@ public class AuthorizationManagerTest {
 		final String mail = "inexistent@mail.com";
 
 		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
-		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(true))).thenReturn(UserTestUtils.createUser(mail));
+		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(Profile.PROJECT_MANAGER))).thenReturn(UserTestUtils.createUser(mail));
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, true, false);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, Profile.PROJECT_MANAGER, false);
 
-		verify(authenticationManager).createNewUser(eq(mail), Mockito.anyString(), eq(true));
+		verify(authenticationManager).createNewUser(eq(mail), Mockito.anyString(), eq(Profile.PROJECT_MANAGER));
 	}
 
 	@Test(expected = UnableToAuthorizeUserException.class)
@@ -141,7 +142,7 @@ public class AuthorizationManagerTest {
 		final User user = createUser();
 		authorizeUser(user, projectId);
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, user.getEmail(), true, false);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, user.getEmail(), Profile.PROJECT_MANAGER, false);
 	}
 
 	@Test
@@ -156,7 +157,7 @@ public class AuthorizationManagerTest {
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(requestUser);
 		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation());
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, true, true);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, Profile.PROJECT_MANAGER, true);
 
 		verify(mockMail).sendTo(mail, null);
 	}
@@ -174,7 +175,7 @@ public class AuthorizationManagerTest {
 		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation(projectId));
 		when(authenticationManager.isUserAuthenticated()).thenReturn(false);
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false, true);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, Profile.CONTRIBUTOR, true);
 
 		verify(mockMail).currentUser(admin.getEmail());
 		verify(mockMail).sendTo(mail, null);
@@ -260,7 +261,7 @@ public class AuthorizationManagerTest {
 		final ProjectRepresentation project = createProjectRepresentation();
 
 		final AuthorizationManager manager = create(persistence, authenticationManager, mailFactory, multicastService);
-		manager.authorize(project.getId(), user.getEmail(), user.isSuperUser(), false);
+		manager.authorize(project.getId(), user.getEmail(), user.getGlobalProfile(), false);
 
 		final ArgumentCaptor<ProjectAddedEvent> captor = ArgumentCaptor.forClass(ProjectAddedEvent.class);
 		verify(multicastService, times(1)).multicastToUser(captor.capture(), eq(user));

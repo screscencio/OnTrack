@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.integration.bean;
 
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -21,17 +22,17 @@ public class UserInvitedNotificationRequest {
 	String invitedUserEmail;
 
 	@XmlElement
-	private boolean isSuperUser;
+	private Profile profile;
 
 	UserInvitedNotificationRequest() {}
 
-	public UserInvitedNotificationRequest(final UUID projectId, final UUID invitorId, final UUID invitedUserId, final String invitedUserEmail, final boolean isSuperUser) {
+	public UserInvitedNotificationRequest(final UUID projectId, final UUID invitorId, final UUID invitedUserId, final String invitedUserEmail, final Profile profile) {
 		super();
 		this.projectId = projectId;
 		this.invitorId = invitorId;
 		this.invitedUserId = invitedUserId;
 		this.invitedUserEmail = invitedUserEmail;
-		this.isSuperUser = isSuperUser;
+		this.profile = profile;
 	}
 
 	public UUID getProjectId() {
@@ -50,8 +51,8 @@ public class UserInvitedNotificationRequest {
 		return invitedUserEmail;
 	}
 
-	public boolean isSuperUser() {
-		return isSuperUser;
+	public Profile getProfile() {
+		return profile;
 	}
 
 }
