@@ -51,6 +51,7 @@ import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequestResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.user.UserInformationUpdateEvent;
 import br.com.oncast.ontrack.shared.utils.PrettyPrinter;
 
 import java.io.IOException;
@@ -422,7 +423,12 @@ class BusinessLogicImpl implements BusinessLogic {
 	@Override
 	public UUID createUser(final String userEmail, final Profile profile) {
 		User user = retrieveExistingUser(userEmail);
-		if (user != null) return user.getId();
+		if (user != null) {
+			if (!DefaultAuthenticationCredentials.USER_ID.equals(user.getId())) {
+				updateGlobalProfile(user, profile);
+			}
+			return user.getId();
+		}
 
 		final String generatedPassword = generatePasswordForNewUser(userEmail);
 		user = authenticationManager.createNewUser(userEmail, generatedPassword, profile);
@@ -430,6 +436,18 @@ class BusinessLogicImpl implements BusinessLogic {
 		sendWelcomeMail(userEmail, generatedPassword);
 		return user.getId();
 
+	}
+
+	private void updateGlobalProfile(final User user, final Profile profile) {
+		user.setGlobalProfile(profile);
+		try {
+			persistenceService.persistOrUpdateUser(user);
+			multicastService.multicastToUser(new UserInformationUpdateEvent(user), user);
+		} catch (final PersistenceException e) {
+			final String message = "Could not update the global profile of the existing new user (" + user.getEmail() + ")";
+			LOGGER.error(message, e);
+			throw new RuntimeException(message);
+		}
 	}
 
 	private ModelActionSyncRequest createModelActionSyncRequest(final UUID projectId, final ModelAction action) {

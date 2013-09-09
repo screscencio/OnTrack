@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
-import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
@@ -246,17 +245,7 @@ public class ApplicationMenu extends Composite {
 	}
 
 	private void logUserOut() {
-		SERVICE_PROVIDER.authentication().logout(new UserLogoutCallback() {
-
-			@Override
-			public void onUserLogout() {}
-
-			@Override
-			public void onFailure(final Throwable caught) {
-				// TODO Threat this error properly. Maybe even call the ErrorService.
-				ClientServices.get().alerting().showError(messages.logoutFailed());
-			}
-		});
+		SERVICE_PROVIDER.authentication().logout();
 	}
 
 	public void openProjectsMenuItem() {

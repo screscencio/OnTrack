@@ -30,8 +30,8 @@ public class ActionPostProcessmentsInitializer {
 	private ScopeBindHumanIdPostProcessor scopeBindIdPostProcessor;
 	private ScopeUpdatePostProcessor scopeUpdatePostProcessor;
 
-	public ActionPostProcessmentsInitializer(final ActionPostProcessingService actionPostProcessingService, final PersistenceService persistenceService,
-			final MulticastService multicastService, final NotificationServerService notificationServerService) {
+	public ActionPostProcessmentsInitializer(final ActionPostProcessingService actionPostProcessingService, final PersistenceService persistenceService, final MulticastService multicastService,
+			final NotificationServerService notificationServerService) {
 		this.postProcessingService = actionPostProcessingService;
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
@@ -43,9 +43,8 @@ public class ActionPostProcessmentsInitializer {
 		if (initialized) return;
 		postProcessingService.registerPostProcessor(getFileUploadPostProcessor(), FileUploadAction.class);
 		postProcessingService.registerPostProcessor(getTeamActionPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class);
-		postProcessingService.registerPostProcessor(getNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
-				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class, AnnotationCreateAction.class, AnnotationDeprecateAction.class,
-				TeamInviteAction.class, TeamRevogueInvitationAction.class);
+		postProcessingService.registerPostProcessor(getNotificationCreationPostProcessor(), ImpedimentCreateAction.class, ImpedimentSolveAction.class, ScopeDeclareProgressAction.class,
+				AnnotationCreateAction.class, AnnotationDeprecateAction.class, TeamInviteAction.class, TeamRevogueInvitationAction.class);
 		postProcessingService.registerPostProcessor(getScopeBindIdPostProcessor(), ScopeBindReleaseAction.class);
 		postProcessingService.registerPostProcessor(getScopeUpdatePostProcessor(), ScopeUpdateAction.class);
 		initialized = true;

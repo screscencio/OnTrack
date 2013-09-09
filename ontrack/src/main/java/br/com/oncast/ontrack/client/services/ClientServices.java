@@ -150,7 +150,7 @@ public class ClientServices {
 
 	public AuthenticationService authentication() {
 		if (authenticationService != null) return authenticationService;
-		return authenticationService = new AuthenticationServiceImpl(request(), placeController(), serverPush());
+		return authenticationService = new AuthenticationServiceImpl(request(), placeController(), serverPush(), alerting());
 	}
 
 	public ApplicationPlaceController placeController() {

@@ -1,14 +1,15 @@
 package br.com.oncast.ontrack.utils.assertions;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
+import static org.junit.Assert.assertTrue;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 
 public class AssertTestUtils {
 
@@ -52,6 +53,7 @@ public class AssertTestUtils {
 		assertContainsAll(actual, expected);
 	}
 
+	@SafeVarargs
 	public static <T> void assertContainsAll(final Collection<T> actual, final T... expected) {
 		assertContainsAll(actual, Arrays.asList(expected));
 	}

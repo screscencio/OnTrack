@@ -181,7 +181,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 			final boolean isOtherUser = isOtherUser();
 			final boolean canMakeChanges = isOtherUser && isCurrentUserSuperUser && !currentUser.isReadOnly();
 			readOnlyCheckBox.setEnabled(canMakeChanges);
-			canInviteCheckBox.setEnabled(canMakeChanges && currentUser.canInvite());
+			canInviteCheckBox.setEnabled(canMakeChanges && currentUser.canInvitePeople());
 		} catch (final UserNotFoundException e) {
 			readOnlyCheckBox.setEnabled(false);
 			canInviteCheckBox.setEnabled(false);
@@ -194,7 +194,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 
 	private void updateCheckBoxesValues() {
 		readOnlyCheckBox.setValue(userRepresentation.isReadOnly(), false);
-		canInviteCheckBox.setValue(!userRepresentation.isReadOnly() && userRepresentation.canInvite(), false);
+		canInviteCheckBox.setValue(!userRepresentation.isReadOnly() && userRepresentation.canInvitePeople(), false);
 	}
 
 	private void showLabel() {
@@ -241,7 +241,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 		registrations.add(ClientServices.get().userData().registerListenerForSpecificUser(ClientServices.getCurrentUser(), new UserSpecificInformationChangeListener() {
 			@Override
 			public void onInformationChange(final User user) {
-				isCurrentUserSuperUser = user.isProjectManager();
+				isCurrentUserSuperUser = user.canManageProjects();
 				updateCheckBoxesUpdeateability();
 			}
 		}));

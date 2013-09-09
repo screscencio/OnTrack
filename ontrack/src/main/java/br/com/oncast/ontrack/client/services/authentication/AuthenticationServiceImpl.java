@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
@@ -14,9 +14,9 @@ import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.login.ResetPasswordCallback;
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
@@ -24,10 +24,17 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformat
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.PasswordResetRequest;
+import br.com.oncast.ontrack.shared.services.user.UserInformationUpdateEvent;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.Place;
 
 public class AuthenticationServiceImpl implements AuthenticationService {
+
+	protected static final ClientErrorMessages MESSAGES = GWT.create(ClientErrorMessages.class);
 
 	private final Set<UserAuthenticationListener> userAuthenticatedListeners;
 
@@ -35,19 +42,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final DispatchService dispatchService;
 
-	private UUID currentUserId;
+	private User currentUser;
 
-	private boolean isSuperUser;
+	private final ClientAlertingService alertingService;
 
-	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController, final ServerPushClientService serverPushClientService) {
+	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController, final ServerPushClientService serverPushClientService,
+			final ClientAlertingService alertingService) {
 		this.dispatchService = dispatchService;
 		this.applicationPlaceController = applicationPlaceController;
+		this.alertingService = alertingService;
 		userAuthenticatedListeners = new HashSet<UserAuthenticationListener>();
 
-		serverPushClientService.registerServerEventHandler(UserInformationChangeEvent.class, new ServerPushEventHandler<UserInformationChangeEvent>() {
+		serverPushClientService.registerServerEventHandler(UserInformationUpdateEvent.class, new ServerPushEventHandler<UserInformationUpdateEvent>() {
 			@Override
-			public void onEvent(final UserInformationChangeEvent event) {
-				processUserInformationUpdate(event);
+			public void onEvent(final UserInformationUpdateEvent event) {
+				processUserDataUpdate(event);
 			}
 		});
 	}
@@ -66,7 +75,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 				updateCurrentUser(user);
 
-				callback.onUserInformationLoaded(currentUserId);
+				callback.onUserInformationLoaded(currentUser.getId());
 				notifyUserInformationLoadToUserAuthenticationListeners();
 			}
 
@@ -88,7 +97,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			public void onSuccess(final AuthenticationResponse result) {
 				updateCurrentUser(result.getUser());
 
-				callback.onUserAuthenticatedSuccessfully(username, currentUserId);
+				callback.onUserAuthenticatedSuccessfully(username, currentUser.getId());
 				notifyLoginToUserAuthenticationListeners();
 			}
 
@@ -128,25 +137,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public void logout(final UserLogoutCallback callback) {
+	public void logout() {
 		dispatchService.dispatch(new DeAuthenticationRequest(), new DispatchCallback<VoidResult>() {
 
 			@Override
 			public void onSuccess(final VoidResult result) {
 				onUserLogout();
-				callback.onUserLogout();
 			}
 
 			@Override
 			public void onTreatedFailure(final Throwable caught) {
+				alertingService.showError(MESSAGES.logoutFailed());
 				onUserLogout();
-				callback.onUserLogout();
 			}
 
 			@Override
-			public void onUntreatedFailure(final Throwable caught) {
-				callback.onFailure(caught);
-			}
+			public void onUntreatedFailure(final Throwable caught) {}
 		});
 	}
 
@@ -203,33 +209,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	public UUID getCurrentUserId() {
-		return currentUserId;
+		return currentUser.getId();
 	}
 
-	private void processUserInformationUpdate(final UserInformationChangeEvent event) {
-		if (currentUserId == null || !currentUserId.equals(event.getUserId())) logout(new UserLogoutCallback() {
+	private void processUserDataUpdate(final UserInformationUpdateEvent event) {
+		if (!event.getUser().equals(currentUser)) return;
 
-			@Override
-			public void onUserLogout() {
-				AuthenticationServiceImpl.this.onUserLogout();
-			}
-
-			@Override
-			public void onFailure(final Throwable caught) {}
-		});
-
-		isSuperUser = event.isSuperUser();
+		currentUser = event.getUser();
 	}
 
 	private void updateCurrentUser(final User user) {
 		ClientServices.get().metrics().onUserLogin(user);
-		currentUserId = user.getId();
-		isSuperUser = user.isProjectManager();
+		currentUser = user;
 	}
 
 	@Override
 	public boolean isUserAvailable() {
-		return getCurrentUserId() != null;
+		return currentUser != null;
 	}
 
 	@Override
@@ -243,8 +239,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	private void resetCurrentUsetAndGoTo(final Place destinationPlace) {
-		currentUserId = null;
-		isSuperUser = false;
+		currentUser = null;
 		ClientServices.get().metrics().onUserLogout();
 
 		notifyLogoutToUserAuthenticationListeners();
@@ -252,8 +247,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public boolean isCurrentUserSuperUser() {
-		return isSuperUser;
+	public boolean canCurrentUserManageProjects() {
+		return currentUser.getGlobalProfile().hasPermissionsOf(Profile.PROJECT_MANAGER);
 	}
 
 }

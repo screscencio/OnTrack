@@ -151,7 +151,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		String message = "Authorized!";
 		try {
 			final User user = persistenceService.retrieveUserById(userId);
-			if (user.isProjectManager()) return;
+			if (user.canManageProjects()) return;
 
 			message = "The current user don't have the permission to do this operation.";
 		} catch (final Exception e) {

@@ -114,7 +114,7 @@ public class AuthorizationManagerTest {
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, Profile.CONTRIBUTOR, false);
 		verify(persistence).authorize(mail, projectId);
-		assertTrue(persistence.retrieveUserByEmail(mail).isProjectManager());
+		assertTrue(persistence.retrieveUserByEmail(mail).canManageProjects());
 	}
 
 	@Test

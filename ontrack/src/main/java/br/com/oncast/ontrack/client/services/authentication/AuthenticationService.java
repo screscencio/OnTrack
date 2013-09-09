@@ -9,7 +9,7 @@ public interface AuthenticationService {
 
 	void authenticate(String login, String password, UserAuthenticationCallback callback);
 
-	void logout(UserLogoutCallback dispatchCallback);
+	void logout();
 
 	void changePassword(String oldPassword, String newPassword, UserPasswordChangeCallback callback);
 
@@ -29,7 +29,7 @@ public interface AuthenticationService {
 
 	void onUserLoginRequired(Place destinationPlace);
 
-	boolean isCurrentUserSuperUser();
+	boolean canCurrentUserManageProjects();
 
 	void resetPasswordFor(String username, ResetPasswordCallback resetPasswordCallback);
 }

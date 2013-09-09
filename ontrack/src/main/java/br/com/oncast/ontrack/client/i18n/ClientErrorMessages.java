@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.i18n;
 
+
 public interface ClientErrorMessages extends BaseMessages {
 
 	@Description("message shown when server push client receives an error")
@@ -85,5 +86,9 @@ public interface ClientErrorMessages extends BaseMessages {
 	@Description("message shown when there are pending actions and the user tryies to close the window")
 	@DefaultMessage("There are {0} unsaved modifications! If you leave now, you may lose these modifications.")
 	String thereArePedingActionsWannaLeaveAnyway(final String nOfUnsavedModifications);
+
+	@Description("shown when logout fails")
+	@DefaultMessage("Logout failed.")
+	String logoutFailed();
 
 }

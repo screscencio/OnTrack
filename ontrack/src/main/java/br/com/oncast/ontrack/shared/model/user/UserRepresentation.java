@@ -65,14 +65,14 @@ public class UserRepresentation implements HasUUID, Serializable, Comparable<Use
 	}
 
 	public boolean isReadOnly() {
-		return !projectProfile.hasPermissionsOf(Profile.CONTRIBUTOR);
+		return getProjectProfile().isReadOnly();
 	}
 
 	public Profile getProjectProfile() {
 		return projectProfile;
 	}
 
-	public boolean canInvite() {
+	public boolean canInvitePeople() {
 		return projectProfile.hasPermissionsOf(Profile.PEOPLE_MANAGER);
 	}
 

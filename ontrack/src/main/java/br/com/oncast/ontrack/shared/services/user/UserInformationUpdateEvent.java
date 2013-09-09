@@ -3,14 +3,15 @@ package br.com.oncast.ontrack.shared.services.user;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class UserDataUpdateEvent implements UserStatusEvent {
+public class UserInformationUpdateEvent implements UserStatusEvent {
 
 	private static final long serialVersionUID = 1L;
+
 	private User user;
 
-	protected UserDataUpdateEvent() {}
+	protected UserInformationUpdateEvent() {}
 
-	public UserDataUpdateEvent(final User user) {
+	public UserInformationUpdateEvent(final User user) {
 		this.user = user;
 	}
 

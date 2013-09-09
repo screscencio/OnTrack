@@ -58,8 +58,8 @@ public class User implements Serializable, Comparable<User>, HasUUID {
 		this.email = email;
 	}
 
-	public boolean isProjectManager() {
-		return getGlobalProfile() == Profile.PROJECT_MANAGER;
+	public boolean canManageProjects() {
+		return getGlobalProfile().hasPermissionsOf(Profile.PROJECT_MANAGER);
 	}
 
 	public Profile getGlobalProfile() {

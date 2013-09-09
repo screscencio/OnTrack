@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataRequestResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataUpdateRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataUpdateRequestResponse;
-import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
+import br.com.oncast.ontrack.shared.services.user.UserInformationUpdateEvent;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -64,9 +64,9 @@ public class UserDataServiceImpl implements UserDataService {
 			}
 		});
 
-		serverPushClientService.registerServerEventHandler(UserDataUpdateEvent.class, new ServerPushEventHandler<UserDataUpdateEvent>() {
+		serverPushClientService.registerServerEventHandler(UserInformationUpdateEvent.class, new ServerPushEventHandler<UserInformationUpdateEvent>() {
 			@Override
-			public void onEvent(final UserDataUpdateEvent event) {
+			public void onEvent(final UserInformationUpdateEvent event) {
 				final User user = event.getUser();
 				cachedUsers.add(user);
 				notifyUserDataUpdate(user);

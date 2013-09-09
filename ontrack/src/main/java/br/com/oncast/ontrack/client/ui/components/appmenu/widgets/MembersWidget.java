@@ -95,7 +95,7 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 				ClientServices.get().alerting().showInfo(messages.processingYourInvitation());
 				// FIXME change this for profile selection
 				final Boolean isSuperUser = widget.superUserCheck.getValue();
-				PROVIDER.projectRepresentationProvider().authorizeUser(mail, isSuperUser ? Profile.PEOPLE_MANAGER : Profile.CONTRIBUTOR, new ProjectAuthorizationCallback() {
+				PROVIDER.projectRepresentationProvider().authorizeUser(mail, isSuperUser ? Profile.PROJECT_MANAGER : Profile.CONTRIBUTOR, new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {
 						ClientServices.get().alerting().showSuccess(messages.userInvited(mail));

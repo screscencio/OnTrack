@@ -52,7 +52,7 @@ public class TeamInviteAction implements TeamAction {
 		if (context.getUsers().isEmpty()) return;
 
 		final UserRepresentation invitor = ActionHelper.findUserFrom(actionContext, context, this);
-		if (!invitor.canInvite()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.PERMISSION_DENIED);
+		if (!invitor.canInvitePeople()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.PERMISSION_DENIED);
 	}
 
 	@Override

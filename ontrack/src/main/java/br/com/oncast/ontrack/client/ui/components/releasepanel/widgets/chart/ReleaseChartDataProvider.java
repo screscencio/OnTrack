@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
@@ -16,6 +9,13 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ReleaseChartDataProvider {
 
@@ -42,8 +42,7 @@ public class ReleaseChartDataProvider {
 	}
 
 	public float getEstimatedVelocity() {
-		return release.hasDeclaredEstimatedSpeed() ? release.getEstimatedSpeed() : releaseEstimator
-				.getInferedEstimatedSpeed(release);
+		return release.hasDeclaredEstimatedSpeed() ? release.getEstimatedSpeed() : releaseEstimator.getInferedEstimatedSpeed(release);
 	}
 
 	public WorkingDay getEstimatedStartDay() {
@@ -154,7 +153,6 @@ public class ReleaseChartDataProvider {
 			index++;
 		}
 		releaseDays.add(index, day.copy());
-		System.out.println("added at " + index);
 	}
 
 	private Float getAccomplishedValueFor(final WorkingDay day) {

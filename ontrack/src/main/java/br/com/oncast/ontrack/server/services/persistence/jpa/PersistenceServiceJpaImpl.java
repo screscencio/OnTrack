@@ -179,8 +179,8 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public User retrieveUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user where user.email = :email");
-			query.setParameter("email", email);
+			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user where lower(user.email) = lower(:email)");
+			query.setParameter("email", email.trim());
 
 			return (User) TYPE_CONVERTER.convert(query.getSingleResult());
 		} catch (final NoResultException e) {

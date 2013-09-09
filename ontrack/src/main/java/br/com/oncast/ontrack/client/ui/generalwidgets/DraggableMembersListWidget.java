@@ -140,7 +140,7 @@ public class DraggableMembersListWidget extends Composite {
 	private void updateCanInvite() {
 		try {
 			final UserRepresentation currentUser = ClientServices.getCurrentProjectContext().findUser(ClientServices.getCurrentUser());
-			root.setStyleName(style.canInvite(), currentUser.canInvite() && !currentUser.isReadOnly());
+			root.setStyleName(style.canInvite(), currentUser.canInvitePeople() && !currentUser.isReadOnly());
 		} catch (final UserNotFoundException e) {
 			root.setStyleName(style.canInvite(), false);
 		}

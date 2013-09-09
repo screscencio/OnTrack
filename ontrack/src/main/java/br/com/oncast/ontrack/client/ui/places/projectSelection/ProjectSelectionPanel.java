@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.projectSelection;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
-import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectSelectionWidget;
 
 import com.google.gwt.core.client.GWT;
@@ -43,13 +42,7 @@ public class ProjectSelectionPanel extends Composite implements ProjectSelection
 
 	@UiHandler("logoutLabel")
 	protected void onLogoutClick(final ClickEvent event) {
-		ClientServices.get().authentication().logout(new UserLogoutCallback() {
-			@Override
-			public void onUserLogout() {}
-
-			@Override
-			public void onFailure(final Throwable caught) {}
-		});
+		ClientServices.get().authentication().logout();
 	}
 
 	@Override

@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
-
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 
 /**
  * Changes:
@@ -79,7 +79,6 @@ public class Migration_2012_09_14 extends Migration {
 	private Element getAdminInviteUserAction() {
 		for (final Element action : getElementsWithClassAttribute(TEAM_INVITE_ACTION)) {
 			final String inviteeEmail = action.element("inviteeEmail").attributeValue("id");
-			System.out.println(inviteeEmail);
 			if (inviteeEmail.equals("admin@ontrack.com")) { return action.getParent(); }
 		}
 		return null;

@@ -35,9 +35,9 @@ public class TeamDeclareCanInviteActionTest extends ModelActionTest {
 
 	@Test
 	public void changesUserPermissionToInviteOthers() throws Exception {
-		assertTrue(user.canInvite());
+		assertTrue(user.canInvitePeople());
 		executeAction();
-		assertFalse(user.canInvite());
+		assertFalse(user.canInvitePeople());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
@@ -60,10 +60,10 @@ public class TeamDeclareCanInviteActionTest extends ModelActionTest {
 
 	@Test
 	public void undoShouldSetCanInvitePermissionToPreviousStatus() throws Exception {
-		final boolean previousCanInvite = user.canInvite();
+		final boolean previousCanInvite = user.canInvitePeople();
 		final ModelAction undoAction = executeAction();
 		undoAction.execute(context, actionContext);
-		assertEquals(previousCanInvite, user.canInvite());
+		assertEquals(previousCanInvite, user.canInvitePeople());
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class TeamDeclareCanInviteActionTest extends ModelActionTest {
 
 		for (int i = 0; i < 13; i++) {
 			action = action.execute(context, actionContext);
-			assertEquals(canInvite, user.canInvite());
+			assertEquals(canInvite, user.canInvitePeople());
 			canInvite = !canInvite;
 		}
 	}

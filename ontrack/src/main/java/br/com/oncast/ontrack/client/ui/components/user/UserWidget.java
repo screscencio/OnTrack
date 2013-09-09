@@ -246,7 +246,7 @@ public class UserWidget extends Composite {
 		return userCardPopUp;
 	}
 
-	// TODO++ Refactor this to remove the need of creating fake UserRepresentation
+	// FIXME Refactor this to remove the need of creating fake UserRepresentation
 	private static UserRepresentation findUserOrCreateFakeOne(final UUID userId) {
 		try {
 			if (ClientServices.get().contextProvider().isContextAvailable()) return ClientServices.getCurrentProjectContext().findUser(userId);

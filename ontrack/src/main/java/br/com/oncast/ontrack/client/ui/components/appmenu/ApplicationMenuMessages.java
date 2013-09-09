@@ -16,10 +16,6 @@ public interface ApplicationMenuMessages extends BaseMessages {
 	@DefaultMessage("Logout")
 	String logout();
 
-	@Description("shown when logout fails")
-	@DefaultMessage("Logout failed.")
-	String logoutFailed();
-
 	@Description("ProgressPlace back button tooltip text")
 	@DefaultMessage("Go back to Project")
 	String backToProject();

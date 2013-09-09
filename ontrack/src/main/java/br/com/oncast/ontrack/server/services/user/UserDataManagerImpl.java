@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
+import br.com.oncast.ontrack.shared.services.user.UserInformationUpdateEvent;
 
 public class UserDataManagerImpl implements UserDataManager {
 
@@ -33,7 +33,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
 			final List<ProjectRepresentation> listAuthorizedProjects = authorizationManager.listAuthorizedProjects(user.getId());
 
-			multicastService.multicastToAllProjectsInUserAuthorizationList(new UserDataUpdateEvent(user), listAuthorizedProjects);
+			multicastService.multicastToAllProjectsInUserAuthorizationList(new UserInformationUpdateEvent(user), listAuthorizedProjects);
 
 			return u;
 		}

@@ -1,17 +1,17 @@
 package br.com.oncast.ontrack.server.services.multicast;
 
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationListener;
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-
-import br.com.oncast.ontrack.server.services.authentication.AuthenticationListener;
-import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -113,8 +113,7 @@ public class ClientManager {
 
 	private void removeAllValuesInPlace(final SetMultimap<?, ServerPushConnection> multimap, final ServerPushConnection clientId) {
 		final Collection<ServerPushConnection> values = multimap.values();
-		while (values.remove(clientId))
-			;
+		while (values.remove(clientId));
 	}
 
 	private <K, V> K getKeyFor(final SetMultimap<K, V> multimap, final V value) {
@@ -248,7 +247,6 @@ public class ClientManager {
 
 	public void unbindUserFromProject(final UUID userId, final UUID projectId) {
 		for (final ServerPushConnection connection : getClientsOfUser(userId)) {
-			System.out.println("asdasdasd    " + getCurrentProject(connection));
 			if (projectId.equals(getCurrentProject(connection))) unbindClientFromProject(connection);
 		}
 	}
