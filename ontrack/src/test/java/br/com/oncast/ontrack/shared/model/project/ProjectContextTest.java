@@ -1,28 +1,5 @@
 package br.com.oncast.ontrack.shared.model.project;
 
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
@@ -44,7 +21,32 @@ import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
-import com.google.gwt.dev.util.collect.HashSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import static org.mockito.Matchers.anyString;
+
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
+import static junit.framework.Assert.assertEquals;
 
 // TODO Create tests for other methods. Now it is only testing release search.
 public class ProjectContextTest {
@@ -249,8 +251,7 @@ public class ProjectContextTest {
 		try {
 			context.findAnnotation(subjectId, annotation2.getId());
 			fail();
-		}
-		catch (final AnnotationNotFoundException e) {}
+		} catch (final AnnotationNotFoundException e) {}
 	}
 
 	@Test
@@ -281,9 +282,7 @@ public class ProjectContextTest {
 		context.addAnnotation(subjectId, annotation2);
 		context.addAnnotation(subjectId, annotation3);
 
-		assertCollectionEquality(
-				Arrays.asList(annotation3, annotation2, annotation),
-				context.findAnnotationsFor(subjectId));
+		assertCollectionEquality(Arrays.asList(annotation3, annotation2, annotation), context.findAnnotationsFor(subjectId));
 	}
 
 	@Test(expected = UserNotFoundException.class)
@@ -355,8 +354,7 @@ public class ProjectContextTest {
 	}
 
 	@Test(expected = ChecklistNotFoundException.class)
-	public void shouldThrowChecklistNotFoundExceptionEvenWhenThereIsAChecklistAssociatedWithTheGivenSubjectIdButTheChecklistIdIsDifferentFromTheGivenOne()
-			throws Exception {
+	public void shouldThrowChecklistNotFoundExceptionEvenWhenThereIsAChecklistAssociatedWithTheGivenSubjectIdButTheChecklistIdIsDifferentFromTheGivenOne() throws Exception {
 		context = ProjectTestUtils.createProjectContext();
 		final UUID subjectId = new UUID();
 		createAndAddChecklist(subjectId);
@@ -382,8 +380,7 @@ public class ProjectContextTest {
 		try {
 			context.findChecklist(subjectId, checklist.getId());
 			fail("Checklist was not removed from the context.");
-		}
-		catch (final ChecklistNotFoundException e) {
+		} catch (final ChecklistNotFoundException e) {
 			assertTrue(true);
 		}
 	}

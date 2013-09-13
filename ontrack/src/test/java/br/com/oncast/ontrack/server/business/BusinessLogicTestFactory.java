@@ -135,7 +135,8 @@ public class BusinessLogicTestFactory {
 	}
 
 	public BusinessLogicTestFactory with(final ActionPostProcessingService actionPostProcessingService) {
-		this.postProcessments = new ActionPostProcessmentsInitializer(actionPostProcessingService, persistence, multicast, Mockito.mock(NotificationServerService.class));
+		this.postProcessments = new ActionPostProcessmentsInitializer(actionPostProcessingService, persistence, multicast, Mockito.mock(NotificationServerService.class),
+				mock(IntegrationService.class));
 		return this;
 	}
 

@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 
-public class TeamActionPostProcessor implements ActionPostProcessor<ModelAction> {
+public class TeamActionPostProcessor implements ActionPostProcessor<TeamAction> {
 
 	private static final Logger LOGGER = Logger.getLogger(TeamActionPostProcessor.class);
 	private final MulticastService multicastService;
@@ -30,12 +31,12 @@ public class TeamActionPostProcessor implements ActionPostProcessor<ModelAction>
 	}
 
 	@Override
-	public void process(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext) throws UnableToPostProcessActionException {
+	public void process(final TeamAction action, final ActionContext actionContext, final ProjectContext projectContext) throws UnableToPostProcessActionException {
 		LOGGER.debug("Executing Post processor '" + this.getClass().getSimpleName() + "' for '" + action.getClass().getSimpleName() + "' (" + action.toString() + "). "
 				+ action.getReferenceId().toString());
 
 		final UUID projectId = projectContext.getProjectRepresentation().getId();
-		final ModelActionSyncEvent syncEvent = new ModelActionSyncEvent(projectId, Arrays.asList(action), actionContext, -1);
+		final ModelActionSyncEvent syncEvent = new ModelActionSyncEvent(projectId, Arrays.asList((ModelAction) action), actionContext, -1);
 
 		multicastService.multicastToCurrentUserClientInSpecificProject(syncEvent, projectId);
 
