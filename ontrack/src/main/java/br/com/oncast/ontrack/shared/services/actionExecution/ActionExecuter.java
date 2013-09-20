@@ -13,8 +13,8 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.TagAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
-import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
@@ -38,7 +38,7 @@ public class ActionExecuter {
 
 	public static void verifyPermissions(final ModelAction action, final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		try {
-			if (action instanceof TeamInviteAction && action.getReferenceId().equals(actionContext.getUserId())) return;
+			if (ActionHelper.shouldIgnorePermissionVerification(context, actionContext)) return;
 
 			final UserRepresentation author = context.findUser(actionContext.getUserId());
 			if (author.isReadOnly()) throw new UnableToCompleteActionException(action, ActionExecutionErrorMessageCode.READY_ONLY_USER);

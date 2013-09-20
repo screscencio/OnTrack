@@ -49,7 +49,7 @@ public class TeamInviteAction implements TeamAction {
 	}
 
 	private void verifyPermission(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		if (context.getUsers().isEmpty()) return;
+		if (ActionHelper.shouldIgnorePermissionVerification(context, actionContext)) return;
 
 		final UserRepresentation invitor = ActionHelper.findUserFrom(actionContext, context, this);
 		if (!invitor.canInvitePeople()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.PERMISSION_DENIED);

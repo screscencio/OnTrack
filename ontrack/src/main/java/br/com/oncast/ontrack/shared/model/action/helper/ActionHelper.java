@@ -31,6 +31,9 @@ import java.util.List;
 
 public class ActionHelper {
 
+	// TODO ++++ remove the admin_id duplication
+	private static final UUID ADMIN_ID = new UUID("admin@ontrack.com");
+
 	public static List<ModelAction> executeSubActions(final List<ModelAction> subActions, final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final List<ModelAction> rollbackSubActions = new ArrayList<ModelAction>();
 		for (final ModelAction action : subActions) {
@@ -39,7 +42,7 @@ public class ActionHelper {
 		return rollbackSubActions;
 	}
 
-	public static Release findRelease(final UUID releaseId, final ProjectContext context, ModelAction action) throws UnableToCompleteActionException {
+	public static Release findRelease(final UUID releaseId, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		try {
 			return context.findRelease(releaseId);
 		} catch (final ReleaseNotFoundException e) {
@@ -47,7 +50,7 @@ public class ActionHelper {
 		}
 	}
 
-	public static Release findRelease(final String releaseDescription, final ProjectContext context, ModelAction action) throws UnableToCompleteActionException {
+	public static Release findRelease(final String releaseDescription, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		try {
 			return context.findRelease(releaseDescription);
 		} catch (final ReleaseNotFoundException e) {
@@ -55,7 +58,7 @@ public class ActionHelper {
 		}
 	}
 
-	public static Scope findScope(final UUID referenceId, final ProjectContext context, ModelAction action) throws UnableToCompleteActionException {
+	public static Scope findScope(final UUID referenceId, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		try {
 			return context.findScope(referenceId);
 		} catch (final ScopeNotFoundException e) {
@@ -63,7 +66,7 @@ public class ActionHelper {
 		}
 	}
 
-	public static Annotation findAnnotation(final UUID subjectId, final UUID annotationId, final ProjectContext context, ModelAction action) throws UnableToCompleteActionException {
+	public static Annotation findAnnotation(final UUID subjectId, final UUID annotationId, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		try {
 			return context.findAnnotation(subjectId, annotationId);
 		} catch (final AnnotationNotFoundException e) {
@@ -71,7 +74,7 @@ public class ActionHelper {
 		}
 	}
 
-	public static Description findDescription(final UUID subjectId, final ProjectContext context, ModelAction action) throws UnableToCompleteActionException {
+	public static Description findDescription(final UUID subjectId, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		try {
 			return context.findDescriptionFor(subjectId);
 		} catch (final DescriptionNotFoundException e) {
@@ -79,7 +82,7 @@ public class ActionHelper {
 		}
 	}
 
-	public static FileRepresentation findFileRepresentation(final UUID attachmentId, final ProjectContext context, ModelAction action) throws UnableToCompleteActionException {
+	public static FileRepresentation findFileRepresentation(final UUID attachmentId, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		try {
 			return context.findFileRepresentation(attachmentId);
 		} catch (final FileRepresentationNotFoundException e) {
@@ -87,7 +90,7 @@ public class ActionHelper {
 		}
 	}
 
-	public static Checklist findChecklist(final UUID subjectId, final UUID checklistId, final ProjectContext context, ModelAction action) throws UnableToCompleteActionException {
+	public static Checklist findChecklist(final UUID subjectId, final UUID checklistId, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		try {
 			return context.findChecklist(subjectId, checklistId);
 		} catch (final ChecklistNotFoundException e) {
@@ -122,6 +125,10 @@ public class ActionHelper {
 		} catch (final TagNotFoundException e) {
 			throw new UnableToCompleteActionException(action, e);
 		}
+	}
+
+	public static boolean shouldIgnorePermissionVerification(final ProjectContext context, final ActionContext actionContext) {
+		return context.getUsers().isEmpty() || ADMIN_ID.equals(actionContext.getUserId());
 	}
 
 }
