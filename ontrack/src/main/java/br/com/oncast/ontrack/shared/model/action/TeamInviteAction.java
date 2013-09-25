@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.shared.model.action;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.team.TeamInviteActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -37,7 +36,7 @@ public class TeamInviteAction implements TeamAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		verifyPermission(context, actionContext);
+		ActionHelper.verifyPermission(context, actionContext, Profile.PEOPLE_MANAGER, this);
 
 		try {
 			context.findUser(userId).setValid(true);
@@ -46,13 +45,6 @@ public class TeamInviteAction implements TeamAction {
 		}
 
 		return new TeamRevogueInvitationAction(userId);
-	}
-
-	private void verifyPermission(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		if (ActionHelper.shouldIgnorePermissionVerification(context, actionContext)) return;
-
-		final UserRepresentation invitor = ActionHelper.findUserFrom(actionContext, context, this);
-		if (!invitor.canInvitePeople()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.PERMISSION_DENIED);
 	}
 
 	@Override

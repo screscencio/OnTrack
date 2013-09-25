@@ -8,24 +8,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ProjectMemberRemoveApiResponse implements Serializable {
+public class VoidApiResponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String errorMessage;
 
-	ProjectMemberRemoveApiResponse() {}
+	VoidApiResponse() {}
 
-	private ProjectMemberRemoveApiResponse(final String errorMessage) {
+	private VoidApiResponse(final String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
-	public static ProjectMemberRemoveApiResponse success() {
-		return new ProjectMemberRemoveApiResponse(null);
+	public static VoidApiResponse success() {
+		return new VoidApiResponse(null);
 	}
 
-	public static ProjectMemberRemoveApiResponse failed(final String errorMessage) {
-		return new ProjectMemberRemoveApiResponse(errorMessage);
+	public static VoidApiResponse failed(final String errorMessage) {
+		return new VoidApiResponse(errorMessage);
 	}
 
 	public boolean hasFailed() {

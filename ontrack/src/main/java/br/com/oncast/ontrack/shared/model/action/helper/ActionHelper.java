@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action.helper;
 
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -22,6 +23,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.tag.exception.TagNotFoundException;
+import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -125,6 +127,16 @@ public class ActionHelper {
 		} catch (final TagNotFoundException e) {
 			throw new UnableToCompleteActionException(action, e);
 		}
+	}
+
+	public static Profile verifyPermission(final ProjectContext context, final ActionContext actionContext, final Profile neededProfile, final ModelAction action)
+			throws UnableToCompleteActionException {
+		if (shouldIgnorePermissionVerification(context, actionContext)) return Profile.SYSTEM_ADMIN;
+
+		final UserRepresentation actionAuthor = ActionHelper.findUserFrom(actionContext, context, action);
+		final Profile projectProfile = actionAuthor.getProjectProfile();
+		if (!projectProfile.hasPermissionsOf(neededProfile)) throw new UnableToCompleteActionException(action, ActionExecutionErrorMessageCode.PERMISSION_DENIED);
+		return projectProfile;
 	}
 
 	public static boolean shouldIgnorePermissionVerification(final ProjectContext context, final ActionContext actionContext) {

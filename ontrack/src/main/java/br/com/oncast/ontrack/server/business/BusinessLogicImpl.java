@@ -178,7 +178,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		authorizationManager.assureActiveProjectAccessAuthorization(projectId);
 
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-		System.out.println(authenticatedUser);
 		if (!authenticatedUser.equals(userId)) authorizationManager.validateSuperUser(authenticatedUser.getId());
 		handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamRevogueInvitationAction(userId)));
 

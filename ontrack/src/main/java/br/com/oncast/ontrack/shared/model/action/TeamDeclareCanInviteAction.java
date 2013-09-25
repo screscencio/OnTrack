@@ -34,7 +34,7 @@ public class TeamDeclareCanInviteAction implements TeamAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if (userId.equals(actionContext.getUserId())) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CANT_CHANGE_YOUR_OWN_PERMISSION);
-		if (!ActionHelper.findUserFrom(actionContext, context, this).canInvitePeople()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.PERMISSION_DENIED);
+		ActionHelper.verifyPermission(context, actionContext, Profile.PEOPLE_MANAGER, this);
 
 		final UserRepresentation user = ActionHelper.findUser(userId, context, this);
 		final boolean previousCanInvite = user.canInvitePeople();

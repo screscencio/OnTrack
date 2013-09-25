@@ -70,6 +70,7 @@ import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareCanInviteAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareReadOnlyAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
+import br.com.oncast.ontrack.shared.model.action.TeamDeclareProfileAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
@@ -192,7 +193,12 @@ public class UserActionTestUtils {
 		userActions.add(createKanbanLockAction());
 		userActions.add(createTeamDeclareReadOnlyAction());
 		userActions.add(createTeamDeclareCanInviteAction());
+		userActions.add(createTeamDeclareProfileAction());
 		return userActions;
+	}
+
+	private static UserAction createTeamDeclareProfileAction() throws Exception {
+		return createUserAction(new TeamDeclareProfileAction(new UUID(), Profile.CONTRIBUTOR));
 	}
 
 	private static UserAction createTeamDeclareCanInviteAction() throws Exception {
