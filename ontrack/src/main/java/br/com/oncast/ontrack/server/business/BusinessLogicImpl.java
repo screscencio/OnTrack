@@ -190,9 +190,10 @@ class BusinessLogicImpl implements BusinessLogic {
 	@Override
 	public void authorize(final String userEmail, final UUID projectId, final Profile profile, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
 			UnableToHandleActionException, AuthorizationException {
-		final UUID userId = authorizationManager.authorize(projectId, userEmail.toLowerCase().trim(), profile, wasRequestedByTheUser);
+		final Profile projectProfile = profile.compareTo(Profile.PROJECT_MANAGER) > 0 ? Profile.PROJECT_MANAGER : profile;
+		final UUID userId = authorizationManager.authorize(projectId, userEmail.toLowerCase().trim(), projectProfile, wasRequestedByTheUser);
 		try {
-			handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamInviteAction(userId, profile)));
+			handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamInviteAction(userId, projectProfile)));
 			LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toString() + "'");
 		} catch (final UnableToHandleActionException e) {
 			try {

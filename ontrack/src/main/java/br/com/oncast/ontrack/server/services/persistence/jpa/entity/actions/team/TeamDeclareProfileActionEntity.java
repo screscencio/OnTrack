@@ -10,6 +10,8 @@ import br.com.oncast.ontrack.shared.model.user.Profile;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Entity(name = "TeamDeclareProfile")
 @ConvertTo(TeamDeclareProfileAction.class)
@@ -19,6 +21,7 @@ public class TeamDeclareProfileActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_1)
 	private String userId;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = ActionTableColumns.STRING_2)
 	private Profile newProfile;
 
