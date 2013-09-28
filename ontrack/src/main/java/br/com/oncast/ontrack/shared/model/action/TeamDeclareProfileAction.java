@@ -10,13 +10,17 @@ import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import org.simpleframework.xml.Element;
+
 @ConvertTo(TeamDeclareProfileActionEntity.class)
 public class TeamDeclareProfileAction implements TeamAction {
 
 	private static final long serialVersionUID = 1L;
 
+	@Element
 	private UUID userId;
 
+	@Element
 	private Profile newProfile;
 
 	protected TeamDeclareProfileAction() {}

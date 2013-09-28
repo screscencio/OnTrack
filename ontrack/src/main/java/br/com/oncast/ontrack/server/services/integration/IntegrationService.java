@@ -11,4 +11,6 @@ public interface IntegrationService {
 
 	void onProjectCreated(ProjectRepresentation project, User creator);
 
+	void onUserInviteRevogued(ProjectRepresentation project, User removedUser);
+
 }

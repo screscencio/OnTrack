@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import static org.mockito.Mockito.when;
+
 public class TeamDeclareCanInviteActionTest extends ModelActionTest {
 
 	private boolean canInvite;
@@ -54,6 +56,8 @@ public class TeamDeclareCanInviteActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotbeAbleToDeclareCanInviteIfTheAuthorCantInvite() throws Exception {
+		setActionAuthor(UserRepresentationTestUtils.createUser());
+		when(context.getUsers()).thenReturn(UserRepresentationTestUtils.createList(3));
 		getActionAuthor().setProjectProfile(Profile.CONTRIBUTOR);
 		executeAction();
 	}

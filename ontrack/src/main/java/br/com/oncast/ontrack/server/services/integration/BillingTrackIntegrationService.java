@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.integration;
 
 import br.com.oncast.ontrack.server.configuration.Configurations;
 import br.com.oncast.ontrack.server.services.integration.bean.ProjectCreationNotificationRequest;
+import br.com.oncast.ontrack.server.services.integration.bean.UserInviteRevogueNotificationRequest;
 import br.com.oncast.ontrack.server.services.integration.bean.UserInvitedNotificationRequest;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.Profile;
@@ -25,7 +26,6 @@ import javax.ws.rs.ext.Provider;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.filter.HttpBasicAuthFilter;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.moxy.json.MoxyJsonConfig;
 
 public class BillingTrackIntegrationService implements IntegrationService {
@@ -40,34 +40,37 @@ public class BillingTrackIntegrationService implements IntegrationService {
 		final Configurations configurations = Configurations.get();
 		baseUri = URI.create(configurations.getIntegrationApiUrl());
 		config = new ClientConfig();
-		config.register(new LoggingFilter());
+		// config.register(new LoggingFilter());
 		config.register(new JsonMoxyConfigurationContextResolver());
 		config.register(new HttpBasicAuthFilter(configurations.integrationUsername(), configurations.integrationPassword()));
 	}
 
 	@Override
 	public void onUserInvited(final UUID projectId, final User invitor, final User invitedUser, final Profile profile) {
-		final Client client = ClientBuilder.newClient(config);
-		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/notify/userInvite");
-		final UserInvitedNotificationRequest userInvitedNotification = new UserInvitedNotificationRequest(projectId, invitor.getId(), invitedUser.getId(), invitedUser.getEmail(), profile);
-		try {
-			final Response response = client.target(uriBuilder).request(MediaType.TEXT_HTML).post(Entity.entity(userInvitedNotification, MediaType.APPLICATION_JSON));
-			checkErrors(response);
-		} catch (final Exception e) {
-			LOGGER.error("Could not notify integration server: onUserInvited(" + projectId + ", " + invitor + ", " + invitedUser + ")", e);
-		}
+		final UserInvitedNotificationRequest request = new UserInvitedNotificationRequest(projectId, invitor.getId(), invitedUser.getId(), invitedUser.getEmail(), profile);
+		post("userInvite", request, "onUserInvited(" + projectId + ", " + invitor + ", " + invitedUser + ")");
 	}
 
 	@Override
 	public void onProjectCreated(final ProjectRepresentation project, final User creator) {
-		final Client client = ClientBuilder.newClient(config);
-		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/notify/projectCreation");
 		final ProjectCreationNotificationRequest request = new ProjectCreationNotificationRequest(project.getId(), project.getName(), creator.getId());
+		post("projectCreation", request, "onProjectCreated(" + project + ", " + creator + ")");
+	}
+
+	@Override
+	public void onUserInviteRevogued(final ProjectRepresentation project, final User removedUser) {
+		final UserInviteRevogueNotificationRequest request = new UserInviteRevogueNotificationRequest(project.getId(), removedUser.getId());
+		post("userInviteRevogued", request, "onUserInviteRevogued(" + project + ", " + removedUser + ")");
+	}
+
+	private <T> void post(final String path, final T request, final String errorMessage) {
+		final Client client = ClientBuilder.newClient(config);
+		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/notify/" + path);
 		try {
 			final Response response = client.target(uriBuilder).request(MediaType.TEXT_HTML).post(Entity.entity(request, MediaType.APPLICATION_JSON));
 			checkErrors(response);
 		} catch (final Exception e) {
-			LOGGER.error("Could not notify integration server: onProjectCreated(" + project + ", " + creator + ")", e);
+			LOGGER.error("Could not notify integration server: " + errorMessage, e);
 		}
 	}
 

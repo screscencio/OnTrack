@@ -32,8 +32,9 @@ public class ActionPostProcessmentsInitializer {
 	private FileUploadPostProcessor fileUploadPostProcessor;
 	private ScopeBindHumanIdPostProcessor scopeBindIdPostProcessor;
 	private ScopeUpdatePostProcessor scopeUpdatePostProcessor;
-	private IntegrationServiceNotifierPostProcessor integrationServiceNotifierPostProcessor;
+	private IntegrationServiceProfileUpdateNotifierPostProcessor integrationServiceProfileUpdateNotifierPostProcessor;
 	private final IntegrationService integrationService;
+	private IntegrationServiceTeamInviteRevoguedNotifierPostProcessor integrationServiceTeamInviteRevoguedNotifierPostProcessor;
 
 	public ActionPostProcessmentsInitializer(final ActionPostProcessingService actionPostProcessingService, final PersistenceService persistenceService, final MulticastService multicastService,
 			final NotificationServerService notificationServerService, final IntegrationService integrationService) {
@@ -48,7 +49,8 @@ public class ActionPostProcessmentsInitializer {
 	public synchronized void initialize() {
 		if (initialized) return;
 		postProcessingService.registerPostProcessor(getFileUploadPostProcessor(), FileUploadAction.class);
-		postProcessingService.registerPostProcessor(getIntegrationServiceNotifierPostProcessor(), TeamDeclareCanInviteAction.class, TeamDeclareReadOnlyAction.class);
+		postProcessingService.registerPostProcessor(getIntegrationServiceProfileUpdateNotifierPostProcessor(), TeamDeclareCanInviteAction.class, TeamDeclareReadOnlyAction.class);
+		postProcessingService.registerPostProcessor(getIntegrationServiceTeamInviteRevoguedNotifierPostProcessor(), TeamRevogueInvitationAction.class);
 		postProcessingService.registerPostProcessor(getTeamActionPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class);
 		postProcessingService.registerPostProcessor(getNotificationCreationPostProcessor(), ImpedimentCreateAction.class, ImpedimentSolveAction.class, ScopeDeclareProgressAction.class,
 				AnnotationCreateAction.class, AnnotationDeprecateAction.class, TeamInviteAction.class, TeamRevogueInvitationAction.class);
@@ -78,11 +80,18 @@ public class ActionPostProcessmentsInitializer {
 		return notificationCreationPostProcessor;
 	}
 
-	private synchronized ActionPostProcessor<TeamAction> getIntegrationServiceNotifierPostProcessor() {
-		if (integrationServiceNotifierPostProcessor == null) {
-			integrationServiceNotifierPostProcessor = new IntegrationServiceNotifierPostProcessor(integrationService, persistenceService);
+	private synchronized ActionPostProcessor<TeamAction> getIntegrationServiceProfileUpdateNotifierPostProcessor() {
+		if (integrationServiceProfileUpdateNotifierPostProcessor == null) {
+			integrationServiceProfileUpdateNotifierPostProcessor = new IntegrationServiceProfileUpdateNotifierPostProcessor(integrationService, persistenceService);
 		}
-		return integrationServiceNotifierPostProcessor;
+		return integrationServiceProfileUpdateNotifierPostProcessor;
+	}
+
+	private synchronized ActionPostProcessor<TeamRevogueInvitationAction> getIntegrationServiceTeamInviteRevoguedNotifierPostProcessor() {
+		if (integrationServiceTeamInviteRevoguedNotifierPostProcessor == null) {
+			integrationServiceTeamInviteRevoguedNotifierPostProcessor = new IntegrationServiceTeamInviteRevoguedNotifierPostProcessor(integrationService, persistenceService);
+		}
+		return integrationServiceTeamInviteRevoguedNotifierPostProcessor;
 	}
 
 	public synchronized ActionPostProcessor<TeamAction> getTeamActionPostProcessor() {

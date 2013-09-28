@@ -13,15 +13,15 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import org.apache.log4j.Logger;
 
-public class IntegrationServiceNotifierPostProcessor implements ActionPostProcessor<TeamAction> {
+public class IntegrationServiceProfileUpdateNotifierPostProcessor implements ActionPostProcessor<TeamAction> {
 
-	private static final Logger LOGGER = Logger.getLogger(IntegrationServiceNotifierPostProcessor.class);
+	private static final Logger LOGGER = Logger.getLogger(IntegrationServiceProfileUpdateNotifierPostProcessor.class);
 
 	private final IntegrationService integrationService;
 
 	private final PersistenceService persistenceService;
 
-	public IntegrationServiceNotifierPostProcessor(final IntegrationService integrationService, final PersistenceService persistenceService) {
+	public IntegrationServiceProfileUpdateNotifierPostProcessor(final IntegrationService integrationService, final PersistenceService persistenceService) {
 		this.integrationService = integrationService;
 		this.persistenceService = persistenceService;
 	}

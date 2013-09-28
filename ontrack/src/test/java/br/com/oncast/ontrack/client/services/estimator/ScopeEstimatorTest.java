@@ -1,17 +1,5 @@
 package br.com.oncast.ontrack.client.services.estimator;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
-import java.util.Calendar;
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import br.com.oncast.ontrack.client.utils.date.DateUnit;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
@@ -21,6 +9,19 @@ import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.TestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public class ScopeEstimatorTest {
 
@@ -103,6 +104,7 @@ public class ScopeEstimatorTest {
 		assertRemainingTimeWithSecondsOfPrecision(timeDifference);
 	}
 
+	// FIXME this test fails in the weekends replace it with fixed date time
 	@Test
 	public void theScopeRemainingTimeShouldBeNegativeWhenNowIsBeforeTheDueDate() throws Exception {
 		scope.setDueDate(addToNow(-2, -3, -4));

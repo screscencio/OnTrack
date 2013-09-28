@@ -1,16 +1,5 @@
 package br.com.oncast.ontrack.client.utils.date;
 
-import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.HOURS;
-import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.ONE_DAY;
-import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.YEARS;
-import static com.ibm.icu.util.Calendar.DECEMBER;
-import static com.ibm.icu.util.Calendar.JANUARY;
-import static org.apache.commons.lang.time.DateUtils.addDays;
-import static org.apache.commons.lang.time.DateUtils.addMinutes;
-import static org.apache.commons.lang.time.DateUtils.addMonths;
-import static org.apache.commons.lang.time.DateUtils.addSeconds;
-import static org.junit.Assert.assertEquals;
-
 import java.util.Date;
 
 import org.junit.Before;
@@ -21,6 +10,19 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 import com.ibm.icu.util.Calendar;
+
+import static org.apache.commons.lang.time.DateUtils.addDays;
+import static org.apache.commons.lang.time.DateUtils.addMinutes;
+import static org.apache.commons.lang.time.DateUtils.addMonths;
+import static org.apache.commons.lang.time.DateUtils.addSeconds;
+
+import static org.junit.Assert.assertEquals;
+
+import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.HOURS;
+import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.ONE_DAY;
+import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.YEARS;
+import static com.ibm.icu.util.Calendar.DECEMBER;
+import static com.ibm.icu.util.Calendar.JANUARY;
 
 @GwtModule("br.com.oncast.ontrack.Application")
 public class HumanDateFormatterTest extends GwtTest {
@@ -126,6 +128,7 @@ public class HumanDateFormatterTest extends GwtTest {
 		assertEquals(hourAndMinute.format(now), formatter.formatDateRelativeTo(now, relativeTo));
 	}
 
+	// FIXME this test fails in the weekends replace it with fixed date time
 	@Test
 	public void theSameRelativeDateFormattingRulesAppliesWhenRelativeDateIsBeforeTheGivenDate() throws Exception {
 		final Date relativeTo = addMinutes(now, -44);
