@@ -1,11 +1,7 @@
 package br.com.oncast.ontrack.server.services.requestDispatch.metrics;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.drycode.api.web.gwt.dispatchService.server.RequestHandler;
+
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -13,6 +9,11 @@ import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetrics;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
 import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerMetricsRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerMetricsResponse;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
 
@@ -24,8 +25,7 @@ public class OnTrackServerMetricsRequestHandler implements RequestHandler<OnTrac
 
 	@Override
 	public OnTrackServerMetricsResponse handle(final OnTrackServerMetricsRequest request) throws Exception {
-		if (!DefaultAuthenticationCredentials.USER_ID.equals(PROVIDER.getAuthenticationManager().getAuthenticatedUser().getId())) throw new RuntimeException(
-				"You are not admin!");
+		if (!DefaultAuthenticationCredentials.USER_ID.equals(PROVIDER.getAuthenticationManager().getAuthenticatedUser().getId())) throw new RuntimeException("You are not admin!");
 
 		CALENDAR.setTime(new Date());
 		final OnTrackServerMetrics metrics = FACTORY.createOnTrackServerMetrics().as();
@@ -37,13 +37,13 @@ public class OnTrackServerMetricsRequestHandler implements RequestHandler<OnTrac
 		CALENDAR.add(Calendar.HOUR_OF_DAY, -1);
 		metrics.setActionsPerHour(PROVIDER.getServerMetricsService().getActionsCountSince(CALENDAR.getTime()));
 
-		CALENDAR.add(Calendar.MONTH, -1);
-		metrics.setActionsRatio(PROVIDER.getServerMetricsService().getActionsRatio(CALENDAR.getTime()));
+		// FIXME removed to improve performance
+		// CALENDAR.add(Calendar.MONTH, -1);
+		// metrics.setActionsRatio(PROVIDER.getServerMetricsService().getActionsRatio(CALENDAR.getTime()));
+		// metrics.setActiveProjectsMetrics(PROVIDER.getServerMetricsService().getActiveProjectsMetrics());
 
 		metrics.setUsersCount(PROVIDER.getServerMetricsService().getUsersCount());
 		metrics.setProjectsCount(PROVIDER.getServerMetricsService().getProjectsCount());
-
-		metrics.setActiveProjectsMetrics(PROVIDER.getServerMetricsService().getActiveProjectsMetrics());
 
 		return new OnTrackServerMetricsResponse(metrics);
 	}

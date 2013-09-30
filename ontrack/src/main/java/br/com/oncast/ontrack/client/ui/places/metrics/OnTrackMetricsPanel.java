@@ -1,5 +1,14 @@
 package br.com.oncast.ontrack.client.ui.places.metrics;
 
+import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.ui.places.metrics.widgets.ProjectMetricsWidget;
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetrics;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetricsBag;
+import br.com.oncast.ontrack.shared.services.metrics.ProjectMetrics;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,15 +39,6 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.LinePlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
 import org.moxieapps.gwt.highcharts.client.plotOptions.PiePlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
-
-import br.com.oncast.ontrack.client.services.ClientServices;
-import br.com.oncast.ontrack.client.ui.places.metrics.widgets.ProjectMetricsWidget;
-import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetrics;
-import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetricsBag;
-import br.com.oncast.ontrack.shared.services.metrics.ProjectMetrics;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -166,8 +166,7 @@ public class OnTrackMetricsPanel extends Composite {
 				autoUpdateInterval = interval;
 				autoUpdateTimer.scheduleRepeating((int) (autoUpdateInterval * SECOND));
 			}
-		}
-		catch (final Exception e) {}
+		} catch (final Exception e) {}
 
 	}
 
@@ -194,8 +193,9 @@ public class OnTrackMetricsPanel extends Composite {
 		usersCountSeries.addPoint(getUsersCountPoint(statistic));
 		projectsCountSeries.addPoint(getProjectsCountPoint(statistic));
 
-		updateActionsRatioChart(statistic);
-		updateProjectsStatistics(statistic);
+		// FIXME removed to improve performance
+		// updateActionsRatioChart(statistic);
+		// updateProjectsStatistics(statistic);
 
 		metricsCache.put(statistic.getTimestamp().getTime(), statistic);
 
@@ -312,71 +312,45 @@ public class OnTrackMetricsPanel extends Composite {
 	}
 
 	private void createClientsChart() {
-		clientsChart = new Chart()
-				.setChartTitleText("Clients")
-				.setLegend(new Legend()
-						.setAlign(Align.RIGHT)
-						.setVerticalAlign(VerticalAlign.TOP)
-						.setFloating(true))
-				.setSeriesPlotOptions(new SeriesPlotOptions()
-						.setPointMouseOverEventHandler(new PointMouseOverEventHandler() {
-							@Override
-							public boolean onMouseOver(final PointMouseOverEvent pointMouseOverEvent) {
-								final Point[] points = clientsChart.getSeries(pointMouseOverEvent.getSeriesId()).getPoints();
-								for (int i = 0; i < points.length; i++) {
-									if (points[i].getX().equals(pointMouseOverEvent.getPoint().getX())) {
-										updateToolTip(i);
-									}
-								}
-								return true;
+		clientsChart = new Chart().setChartTitleText("Clients").setLegend(new Legend().setAlign(Align.RIGHT).setVerticalAlign(VerticalAlign.TOP).setFloating(true))
+				.setSeriesPlotOptions(new SeriesPlotOptions().setPointMouseOverEventHandler(new PointMouseOverEventHandler() {
+					@Override
+					public boolean onMouseOver(final PointMouseOverEvent pointMouseOverEvent) {
+						final Point[] points = clientsChart.getSeries(pointMouseOverEvent.getSeriesId()).getPoints();
+						for (int i = 0; i < points.length; i++) {
+							if (points[i].getX().equals(pointMouseOverEvent.getPoint().getX())) {
+								updateToolTip(i);
 							}
-						}))
-				.setToolTip(new ToolTip()
-						.setShared(true)
-						.setCrosshairs(true)
-						.setFormatter(new ToolTipFormatter() {
-							@Override
-							public String format(final ToolTipData toolTipData) {
-								final long timestamp = toolTipData.getXAsLong();
-								final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
-								final Set<String> onlineUsers = statistic.getOnlineUsers();
-								String toolTip = formatTime(timestamp) +
-										"<br/><b style=\"color: " + ACTIVE_CONNECTIONS_COLOR + ";\">Active Connections:</b> "
-										+ statistic.getActiveConnectionsCount() +
-										"<br/><b style=\"color: " + ONLINE_USERS_COLOR + ";\">Online Users:</b> " + onlineUsers.size();
+						}
+						return true;
+					}
+				})).setToolTip(new ToolTip().setShared(true).setCrosshairs(true).setFormatter(new ToolTipFormatter() {
+					@Override
+					public String format(final ToolTipData toolTipData) {
+						final long timestamp = toolTipData.getXAsLong();
+						final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
+						final Set<String> onlineUsers = statistic.getOnlineUsers();
+						String toolTip = formatTime(timestamp) + "<br/><b style=\"color: " + ACTIVE_CONNECTIONS_COLOR + ";\">Active Connections:</b> " + statistic.getActiveConnectionsCount()
+								+ "<br/><b style=\"color: " + ONLINE_USERS_COLOR + ";\">Online Users:</b> " + onlineUsers.size();
 
-								for (final String userIdAsString : onlineUsers) {
-									toolTip += "<br/>" + usersCache.get(userIdAsString).getEmail();
-								}
+						for (final String userIdAsString : onlineUsers) {
+							toolTip += "<br/>" + usersCache.get(userIdAsString).getEmail();
+						}
 
-								return toolTip;
-							}
+						return toolTip;
+					}
 
-						})
-				);
+				}));
 
-		clientsChart.getXAxis()
-				.setAxisTitle(null)
-				.setType(Type.DATE_TIME);
+		clientsChart.getXAxis().setAxisTitle(null).setType(Type.DATE_TIME);
 
-		clientsChart.getYAxis()
-				.setAxisTitle(null)
-				.setMin(0)
-				.setAllowDecimals(false);
+		clientsChart.getYAxis().setAxisTitle(null).setMin(0).setAllowDecimals(false);
 
-		onlineUsersSeries = clientsChart.createSeries()
-				.setName("Online Users")
-				.setPlotOptions(new LinePlotOptions()
-						.setMarker(new Marker().setEnabled(false))
-						.setColor(ONLINE_USERS_COLOR)
-						.setLineWidth(1));
+		onlineUsersSeries = clientsChart.createSeries().setName("Online Users")
+				.setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(ONLINE_USERS_COLOR).setLineWidth(1));
 
-		activeConnectionsSeries = clientsChart.createSeries()
-				.setName("Active Connections")
-				.setPlotOptions(new LinePlotOptions()
-						.setMarker(new Marker().setEnabled(false))
-						.setColor(ACTIVE_CONNECTIONS_COLOR)
-						.setLineWidth(1));
+		activeConnectionsSeries = clientsChart.createSeries().setName("Active Connections")
+				.setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(ACTIVE_CONNECTIONS_COLOR).setLineWidth(1));
 
 		clientsChart.addSeries(activeConnectionsSeries);
 		clientsChart.addSeries(onlineUsersSeries);
@@ -385,72 +359,42 @@ public class OnTrackMetricsPanel extends Composite {
 	}
 
 	private void createUsageChart() {
-		usageChart = new Chart()
-				.setChartTitleText("Server Usage")
-				.setLegend(new Legend()
-						.setAlign(Align.RIGHT)
-						.setVerticalAlign(VerticalAlign.TOP)
-						.setFloating(true))
-				.setSeriesPlotOptions(new SeriesPlotOptions()
-						.setPointMouseOverEventHandler(new PointMouseOverEventHandler() {
-							@Override
-							public boolean onMouseOver(final PointMouseOverEvent pointMouseOverEvent) {
-								final Point[] points = usageChart.getSeries(pointMouseOverEvent.getSeriesId()).getPoints();
-								for (int i = 0; i < points.length; i++) {
-									if (points[i].getX().equals(pointMouseOverEvent.getPoint().getX())) {
-										updateToolTip(i);
-									}
-								}
-								return true;
+		usageChart = new Chart().setChartTitleText("Server Usage").setLegend(new Legend().setAlign(Align.RIGHT).setVerticalAlign(VerticalAlign.TOP).setFloating(true))
+				.setSeriesPlotOptions(new SeriesPlotOptions().setPointMouseOverEventHandler(new PointMouseOverEventHandler() {
+					@Override
+					public boolean onMouseOver(final PointMouseOverEvent pointMouseOverEvent) {
+						final Point[] points = usageChart.getSeries(pointMouseOverEvent.getSeriesId()).getPoints();
+						for (int i = 0; i < points.length; i++) {
+							if (points[i].getX().equals(pointMouseOverEvent.getPoint().getX())) {
+								updateToolTip(i);
 							}
-						}))
-				.setToolTip(new ToolTip()
-						.setShared(true)
-						.setCrosshairs(true)
-						.setFormatter(new ToolTipFormatter() {
-							@Override
-							public String format(final ToolTipData toolTipData) {
-								final long timestamp = toolTipData.getXAsLong();
-								final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
-								final String toolTip = formatTime(timestamp) +
-										"<br/><b style=\"color: " + ACTIONS_PER_HOUR_COLOR + ";\">Actions / Hour:</b> " + statistic.getActionsPerHour() +
-										"<br/><b style=\"color: " + USERS_COUNT_COLOR + ";\">Users Count:</b> " + statistic.getUsersCount() +
-										"<br/><b style=\"color: " + PROJECTS_COUNT_COLOR + ";\">Projects Count:</b> " + statistic.getProjectsCount();
-								return toolTip;
-							}
+						}
+						return true;
+					}
+				})).setToolTip(new ToolTip().setShared(true).setCrosshairs(true).setFormatter(new ToolTipFormatter() {
+					@Override
+					public String format(final ToolTipData toolTipData) {
+						final long timestamp = toolTipData.getXAsLong();
+						final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
+						final String toolTip = formatTime(timestamp) + "<br/><b style=\"color: " + ACTIONS_PER_HOUR_COLOR + ";\">Actions / Hour:</b> " + statistic.getActionsPerHour()
+								+ "<br/><b style=\"color: " + USERS_COUNT_COLOR + ";\">Users Count:</b> " + statistic.getUsersCount() + "<br/><b style=\"color: " + PROJECTS_COUNT_COLOR
+								+ ";\">Projects Count:</b> " + statistic.getProjectsCount();
+						return toolTip;
+					}
 
-						})
-				);
+				}));
 
-		usageChart.getXAxis()
-				.setAxisTitle(null)
-				.setType(Type.DATE_TIME);
+		usageChart.getXAxis().setAxisTitle(null).setType(Type.DATE_TIME);
 
-		usageChart.getYAxis()
-				.setAxisTitle(null)
-				.setMin(0)
-				.setAllowDecimals(false);
+		usageChart.getYAxis().setAxisTitle(null).setMin(0).setAllowDecimals(false);
 
-		actionsPerHourSeries = usageChart.createSeries()
-				.setName("Actions / Hour")
-				.setPlotOptions(new LinePlotOptions()
-						.setMarker(new Marker().setEnabled(false))
-						.setColor(ACTIONS_PER_HOUR_COLOR)
-						.setLineWidth(1));
+		actionsPerHourSeries = usageChart.createSeries().setName("Actions / Hour")
+				.setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(ACTIONS_PER_HOUR_COLOR).setLineWidth(1));
 
-		usersCountSeries = usageChart.createSeries()
-				.setName("Total Users")
-				.setPlotOptions(new LinePlotOptions()
-						.setMarker(new Marker().setEnabled(false))
-						.setColor(USERS_COUNT_COLOR)
-						.setLineWidth(1));
+		usersCountSeries = usageChart.createSeries().setName("Total Users").setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(USERS_COUNT_COLOR).setLineWidth(1));
 
-		projectsCountSeries = usageChart.createSeries()
-				.setName("Total Users")
-				.setPlotOptions(new LinePlotOptions()
-						.setMarker(new Marker().setEnabled(false))
-						.setColor(PROJECTS_COUNT_COLOR)
-						.setLineWidth(1));
+		projectsCountSeries = usageChart.createSeries().setName("Total Users")
+				.setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(PROJECTS_COUNT_COLOR).setLineWidth(1));
 
 		usageChart.addSeries(actionsPerHourSeries);
 		usageChart.addSeries(usersCountSeries);
@@ -460,30 +404,18 @@ public class OnTrackMetricsPanel extends Composite {
 	}
 
 	private void createActionsRatioChart() {
-		actionsRatioChart = new Chart()
-				.setType(Series.Type.PIE)
-				.setChartTitleText("Actions")
-				.setPiePlotOptions(new PiePlotOptions()
-						.setPieDataLabels(new PieDataLabels()
-								.setConnectorColor("#000000")
-								.setEnabled(true)
-								.setColor("#000000")
-								.setFormatter(new DataLabelsFormatter() {
-									@Override
-									public String format(final DataLabelsData dataLabelsData) {
-										return "<b>" + dataLabelsData.getPointName() + "</b>: " + dataLabelsData.getYAsLong() + " actions";
-									}
-								})
-						)
-				)
-				.setToolTip(new ToolTip()
-						.setFormatter(new ToolTipFormatter() {
-							@Override
-							public String format(final ToolTipData data) {
-								return "<b>" + data.getPointName() + "</b>: " + ClientDecimalFormat.roundFloat((float) data.getPercentage(), 1) + "%";
-							}
-						})
-				);
+		actionsRatioChart = new Chart().setType(Series.Type.PIE).setChartTitleText("Actions")
+				.setPiePlotOptions(new PiePlotOptions().setPieDataLabels(new PieDataLabels().setConnectorColor("#000000").setEnabled(true).setColor("#000000").setFormatter(new DataLabelsFormatter() {
+					@Override
+					public String format(final DataLabelsData dataLabelsData) {
+						return "<b>" + dataLabelsData.getPointName() + "</b>: " + dataLabelsData.getYAsLong() + " actions";
+					}
+				}))).setToolTip(new ToolTip().setFormatter(new ToolTipFormatter() {
+					@Override
+					public String format(final ToolTipData data) {
+						return "<b>" + data.getPointName() + "</b>: " + ClientDecimalFormat.roundFloat((float) data.getPercentage(), 1) + "%";
+					}
+				}));
 		actionsPanel.setWidget(actionsRatioChart);
 	}
 
