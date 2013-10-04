@@ -40,7 +40,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.hibernate.collection.PersistentBag;
+import org.hibernate.collection.internal.PersistentBag;
 
 // TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 // TODO Analise using CriteriaApi instead of HQL.

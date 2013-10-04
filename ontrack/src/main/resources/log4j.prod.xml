@@ -4,6 +4,7 @@
 
 	<!-- CONSOLE APPENDER - Logs out to the console -->
 	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<param name="Threshold" value="INFO" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
 		</layout>
@@ -12,7 +13,7 @@
 	<!-- MAIN APPENDER - Logs out to a file -->
 	<appender name="MainLogFile" class="org.apache.log4j.FileAppender">
 		<param name="File" value="/var/lib/ontrack/logs/all.log" />
-		<param name="Threshold" value="INFO" />
+		<param name="Threshold" value="DEBUG" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
 		</layout>
@@ -46,7 +47,7 @@
 
 	<!-- Application Related Log -->
 	<logger name="br.com.oncast.ontrack.server.services.log.RequestLogger">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="RequestLogFile" />
 	</logger>
 
@@ -58,42 +59,42 @@
 
 	<!-- Database Related Log - Logs c3p0 connection pool warnings -->
 	<logger name="com.mchange">
-		<level value="WARN" />
+		<level value="DEBUG" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- GWT's JSP Internals Related Log -->
 	<logger name="org.apache.jasper">
-		<level value="WARN" />
+		<level value="DEBUG" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- Database Related Log - Log all SQL DML statements as they are executed -->
 	<logger name="org.hibernate.SQL">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- Database Related Log - Log all second-level cache activity -->
 	<logger name="org.hibernate.cache">
-		<level value="WARN" />
+		<level value="DEBUG" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- Database Related Log - Log everything -->
 	<logger name="org.hibernate">
-		<level value="WARN" />
+		<level value="DEBUG" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<root>
-		<!-- <level value="DEBUG" /> -->
-		<priority value="INFO" />
+		<priority value="DEBUG" />
+		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</root>
 

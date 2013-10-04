@@ -9,16 +9,18 @@
 	<packaging>war</packaging>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
 		<gwtModule>br.com.oncast.ontrack.Application</gwtModule>
+		<webappDirectory>${basedir}/war</webappDirectory>
 		<gwtVersion>2.5.1</gwtVersion>
 		<guavaVersion>12.0</guavaVersion>
 		<jerseyVersion>2.0</jerseyVersion>
 		<atmosphereVersion>1.1.0.RC1</atmosphereVersion>
-		<webappDirectory>${basedir}/war</webappDirectory>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<hibernateVersion>4.2.5.Final</hibernateVersion>
 		<maven.compiler.source>1.6</maven.compiler.source>
     	<maven.compiler.target>1.6</maven.compiler.target>
-    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<dependencies>
@@ -149,22 +151,22 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.6.6.Final</version>
+			<version>${hibernateVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.6.6.Final</version>
+			<version>${hibernateVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
-			<version>3.6.6.Final</version>
+			<version>${hibernateVersion}</version>
 		</dependency>
 		<dependency>
-			<groupId>hsqldb</groupId>
+			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.10</version>
+			<version>2.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>c3p0</groupId>
