@@ -1,16 +1,16 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findScope;
-import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findUserFrom;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareTimeSpentActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
+import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findScope;
+import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findUserFrom;
 
 @ConvertTo(ScopeDeclareTimeSpentActionEntity.class)
 public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction {
@@ -23,7 +23,7 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 	@Attribute
 	private Float timeSpent;
 
-	protected ScopeDeclareTimeSpentAction() {}
+	public ScopeDeclareTimeSpentAction() {}
 
 	public ScopeDeclareTimeSpentAction(final UUID scopeId, final Float timeSpent) {
 		this.scopeId = scopeId;
@@ -44,6 +44,22 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 	@Override
 	public UUID getReferenceId() {
 		return scopeId;
+	}
+
+	public UUID getScopeId() {
+		return scopeId;
+	}
+
+	public void setScopeId(final UUID scopeId) {
+		this.scopeId = scopeId;
+	}
+
+	public Float getTimeSpent() {
+		return timeSpent;
+	}
+
+	public void setTimeSpent(final Float timeSpent) {
+		this.timeSpent = timeSpent;
 	}
 
 	@Override

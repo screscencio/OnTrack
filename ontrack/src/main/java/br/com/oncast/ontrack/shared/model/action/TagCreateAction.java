@@ -36,7 +36,7 @@ public class TagCreateAction implements TagAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
-	protected TagCreateAction() {}
+	public TagCreateAction() {}
 
 	public TagCreateAction(final String description, final Color foregroundColor, final Color backgroundColor) {
 		this.subActionList = new ArrayList<ModelAction>();
@@ -77,6 +77,46 @@ public class TagCreateAction implements TagAction {
 	@Override
 	public UUID getReferenceId() {
 		return tagId;
+	}
+
+	public UUID getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(final UUID tagId) {
+		this.tagId = tagId;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	public Color getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public void setBackgroundColor(final Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
+
+	public Color getTextColor() {
+		return textColor;
+	}
+
+	public void setTextColor(final Color textColor) {
+		this.textColor = textColor;
+	}
+
+	public List<ModelAction> getSubActionList() {
+		return subActionList;
+	}
+
+	public void setSubActionList(final List<ModelAction> subActionList) {
+		this.subActionList = subActionList;
 	}
 
 }

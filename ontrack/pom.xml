@@ -18,7 +18,7 @@
 		<guavaVersion>12.0</guavaVersion>
 		<jerseyVersion>2.0</jerseyVersion>
 		<atmosphereVersion>1.1.0.RC1</atmosphereVersion>
-		<hibernateVersion>4.2.5.Final</hibernateVersion>
+		<hibernateVersion>3.6.6.Final</hibernateVersion>
 		<maven.compiler.source>1.6</maven.compiler.source>
     	<maven.compiler.target>1.6</maven.compiler.target>
 	</properties>
@@ -38,6 +38,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- GWT dependency bug in production environment reported here: https://code.google.com/p/google-web-toolkit/issues/detail?id=7527 -->
+		
 		<dependency>
 			<groupId>com.google.web.bindery</groupId>
 			<artifactId>requestfactory-server</artifactId>
@@ -166,7 +167,7 @@
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>2.3.0</version>
+			<version>1.8.0.10</version>
 		</dependency>
 		<dependency>
 			<groupId>c3p0</groupId>
@@ -246,6 +247,7 @@
 			<artifactId>reflections</artifactId>
 			<version>0.9.5</version>
 		</dependency>
+		
 		<!-- scope set to system because of a workarround for failures in compilation and test process. -->
 		<dependency>
 			<groupId>jaxen</groupId>
@@ -275,6 +277,14 @@
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
 			<version>4.8.1.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.kfuntak.gwt.json</groupId>
+			<artifactId>gwtprojsonserializer</artifactId>
+			<version>1.0.4</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/war/WEB-INF/lib/gwtprojsonserializer-1.0.4.jar</systemPath>
 		</dependency>
 
 		<!-- Testing Related Dependencies. -->

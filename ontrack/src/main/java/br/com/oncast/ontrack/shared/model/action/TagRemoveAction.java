@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag.TagRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.IgnoreByConversion;
@@ -15,6 +9,12 @@ import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(TagRemoveActionEntity.class)
 public class TagRemoveAction implements TagAction {
@@ -28,7 +28,7 @@ public class TagRemoveAction implements TagAction {
 	@ElementList(required = false)
 	private List<UUID> removedScopes;
 
-	protected TagRemoveAction() {}
+	public TagRemoveAction() {}
 
 	public TagRemoveAction(final UUID tagId) {
 		this.tagId = tagId;
@@ -63,6 +63,18 @@ public class TagRemoveAction implements TagAction {
 	@Override
 	public UUID getReferenceId() {
 		return tagId;
+	}
+
+	public UUID getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(final UUID tagId) {
+		this.tagId = tagId;
+	}
+
+	public void setRemovedScopes(final List<UUID> removedScopes) {
+		this.removedScopes = removedScopes;
 	}
 
 }

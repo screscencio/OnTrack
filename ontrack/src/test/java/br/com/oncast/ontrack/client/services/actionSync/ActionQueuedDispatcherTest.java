@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTe
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.ValueHolder;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
+import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -45,12 +46,15 @@ public class ActionQueuedDispatcherTest extends GwtTest {
 	@Mock
 	private EventBus eventBus;
 
+	@Mock
+	private ClientStorageService storage;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
-		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock, getProjectRepresentationProviderMock(), eventBus, alertingService, messages);
+		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock, getProjectRepresentationProviderMock(), eventBus, alertingService, storage, messages);
 	}
 
 	@Test

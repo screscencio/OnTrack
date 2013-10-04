@@ -23,7 +23,7 @@ public class TeamInviteAction implements TeamAction {
 	@Element
 	private Profile projectProfile;
 
-	protected TeamInviteAction() {}
+	public TeamInviteAction() {}
 
 	public TeamInviteAction(final UUID userId, final Profile projectProfile) {
 		this.userId = userId;
@@ -50,6 +50,22 @@ public class TeamInviteAction implements TeamAction {
 	@Override
 	public UUID getReferenceId() {
 		return userId;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public void setUserId(final UUID userId) {
+		this.userId = userId;
+	}
+
+	public Profile getProjectProfile() {
+		return projectProfile;
+	}
+
+	public void setProjectProfile(final Profile projectProfile) {
+		this.projectProfile = projectProfile;
 	}
 
 	@Override

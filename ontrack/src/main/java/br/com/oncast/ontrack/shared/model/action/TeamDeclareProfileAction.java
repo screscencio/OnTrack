@@ -23,7 +23,7 @@ public class TeamDeclareProfileAction implements TeamAction {
 	@Element
 	private Profile newProfile;
 
-	protected TeamDeclareProfileAction() {}
+	public TeamDeclareProfileAction() {}
 
 	public TeamDeclareProfileAction(final UUID userId, final Profile newProfile) {
 		this.userId = userId;
@@ -49,6 +49,22 @@ public class TeamDeclareProfileAction implements TeamAction {
 	@Override
 	public UUID getReferenceId() {
 		return userId;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public void setUserId(final UUID userId) {
+		this.userId = userId;
+	}
+
+	public Profile getNewProfile() {
+		return newProfile;
+	}
+
+	public void setNewProfile(final Profile newProfile) {
+		this.newProfile = newProfile;
 	}
 
 }

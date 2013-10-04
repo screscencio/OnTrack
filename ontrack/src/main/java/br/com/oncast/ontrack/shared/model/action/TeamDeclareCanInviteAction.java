@@ -24,7 +24,7 @@ public class TeamDeclareCanInviteAction implements TeamAction {
 	@Attribute
 	private boolean canInvite;
 
-	protected TeamDeclareCanInviteAction() {}
+	public TeamDeclareCanInviteAction() {}
 
 	public TeamDeclareCanInviteAction(final UUID userId, final boolean canInvite) {
 		this.userId = userId;
@@ -45,6 +45,22 @@ public class TeamDeclareCanInviteAction implements TeamAction {
 	@Override
 	public UUID getReferenceId() {
 		return userId;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public void setUserId(final UUID userId) {
+		this.userId = userId;
+	}
+
+	public boolean getCanInvite() {
+		return canInvite;
+	}
+
+	public void setCanInvite(final boolean canInvite) {
+		this.canInvite = canInvite;
 	}
 
 }

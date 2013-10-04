@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -19,6 +13,12 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.simpleframework.xml.Element;
+
 @ConvertTo(ReleaseRemoveActionEntity.class)
 public class ReleaseRemoveAction implements ReleaseAction {
 
@@ -28,8 +28,7 @@ public class ReleaseRemoveAction implements ReleaseAction {
 	@Element
 	private UUID referenceId;
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ReleaseRemoveAction() {}
+	public ReleaseRemoveAction() {}
 
 	public ReleaseRemoveAction(final UUID selectedReleaseId) {
 		this.referenceId = selectedReleaseId;
@@ -51,8 +50,7 @@ public class ReleaseRemoveAction implements ReleaseAction {
 		final int index = parentRelease.getChildIndex(selectedRelease);
 		parentRelease.removeChild(selectedRelease);
 
-		return new ReleaseRemoveRollbackAction(parentRelease.getId(), referenceId, selectedRelease.getDescription(), index, childActionRollbackList,
-				subActionRollbackList);
+		return new ReleaseRemoveRollbackAction(parentRelease.getId(), referenceId, selectedRelease.getDescription(), index, childActionRollbackList, subActionRollbackList);
 	}
 
 	private List<ModelAction> removeAnnotations(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -71,8 +69,7 @@ public class ReleaseRemoveAction implements ReleaseAction {
 		return subActionRollbackList;
 	}
 
-	private List<ScopeBindReleaseAction> dissociateScopesFromThisRelease(final ProjectContext context, final ActionContext actionContext, final Release release)
-			throws UnableToCompleteActionException {
+	private List<ScopeBindReleaseAction> dissociateScopesFromThisRelease(final ProjectContext context, final ActionContext actionContext, final Release release) throws UnableToCompleteActionException {
 
 		final List<ScopeBindReleaseAction> subActionRollbackList = new ArrayList<ScopeBindReleaseAction>();
 		for (final Scope scope : release.getScopeList())
@@ -82,8 +79,7 @@ public class ReleaseRemoveAction implements ReleaseAction {
 		return subActionRollbackList;
 	}
 
-	private List<ReleaseRemoveRollbackAction> removeDescendantsReleases(final ProjectContext context, final ActionContext actionContext, final Release release)
-			throws UnableToCompleteActionException {
+	private List<ReleaseRemoveRollbackAction> removeDescendantsReleases(final ProjectContext context, final ActionContext actionContext, final Release release) throws UnableToCompleteActionException {
 
 		final List<ReleaseRemoveRollbackAction> childActionRollbackList = new ArrayList<ReleaseRemoveRollbackAction>();
 		for (final Release child : release.getChildren())
@@ -96,4 +92,9 @@ public class ReleaseRemoveAction implements ReleaseAction {
 	public UUID getReferenceId() {
 		return referenceId;
 	}
+
+	public void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
+	}
+
 }

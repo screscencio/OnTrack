@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindHumanIdActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -16,6 +11,11 @@ import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeBindHumanIdActionEntity.class)
 public class ScopeBindHumanIdAction implements ScopeAction {
@@ -31,7 +31,7 @@ public class ScopeBindHumanIdAction implements ScopeAction {
 	@Attribute
 	private String humanId;
 
-	protected ScopeBindHumanIdAction() {}
+	public ScopeBindHumanIdAction() {}
 
 	public ScopeBindHumanIdAction(final UUID scopeId, final String humanId) {
 		this.scopeId = scopeId;
@@ -59,6 +59,30 @@ public class ScopeBindHumanIdAction implements ScopeAction {
 	@Override
 	public UUID getReferenceId() {
 		return scopeId;
+	}
+
+	public UUID getScopeId() {
+		return scopeId;
+	}
+
+	public void setScopeId(final UUID scopeId) {
+		this.scopeId = scopeId;
+	}
+
+	public UUID getMetadataId() {
+		return metadataId;
+	}
+
+	public void setMetadataId(final UUID metadataId) {
+		this.metadataId = metadataId;
+	}
+
+	public String getHumanId() {
+		return humanId;
+	}
+
+	public void setHumanId(final String humanId) {
+		this.humanId = humanId;
 	}
 
 	@Override

@@ -197,7 +197,7 @@ public class ClientServices {
 	private ActionSyncService actionSync() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(request(), serverPush(), actionExecution(), projectRepresentationProvider(), alerting(), errorMessages(), networkMonitor(), contextProvider(),
-				eventBus());
+				eventBus(), storage());
 	}
 
 	public ServerPushClientService serverPush() {

@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRenameActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -11,6 +9,8 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ReleaseRenameActionEntity.class)
 public class ReleaseRenameAction implements ReleaseAction {
@@ -25,8 +25,7 @@ public class ReleaseRenameAction implements ReleaseAction {
 	@Element
 	private String newReleaseDescription;
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ReleaseRenameAction() {}
+	public ReleaseRenameAction() {}
 
 	public ReleaseRenameAction(final UUID releaseId, final String newReleaseDescription) {
 		this.referenceId = releaseId;
@@ -39,8 +38,7 @@ public class ReleaseRenameAction implements ReleaseAction {
 		final String oldDescription = release.getDescription();
 		try {
 			release.setDescription(newReleaseDescription);
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.INVALID_RELEASE_DESCRIPTION);
 		}
 		return new ReleaseRenameAction(referenceId, oldDescription);
@@ -50,4 +48,17 @@ public class ReleaseRenameAction implements ReleaseAction {
 	public UUID getReferenceId() {
 		return referenceId;
 	}
+
+	public String getNewReleaseDescription() {
+		return newReleaseDescription;
+	}
+
+	public void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
+	}
+
+	public void setNewReleaseDescription(final String newReleaseDescription) {
+		this.newReleaseDescription = newReleaseDescription;
+	}
+
 }

@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareEffortActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -11,6 +8,9 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeDeclareEffortActionEntity.class)
 public class ScopeDeclareEffortAction implements ScopeAction {
@@ -35,8 +35,7 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 		this.newDeclaredEffort = newDeclaredEffort;
 	}
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeDeclareEffortAction() {}
+	public ScopeDeclareEffortAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -56,6 +55,26 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 		return referenceId;
 	}
 
+	public boolean getHasDeclaredEffort() {
+		return hasDeclaredEffort;
+	}
+
+	public void setHasDeclaredEffort(final boolean hasDeclaredEffort) {
+		this.hasDeclaredEffort = hasDeclaredEffort;
+	}
+
+	public float getNewDeclaredEffort() {
+		return newDeclaredEffort;
+	}
+
+	public void setNewDeclaredEffort(final float newDeclaredEffort) {
+		this.newDeclaredEffort = newDeclaredEffort;
+	}
+
+	public void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
+	}
+
 	@Override
 	public boolean changesEffortInference() {
 		return true;
@@ -70,4 +89,5 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 	public boolean changesProgressInference() {
 		return true;
 	}
+
 }

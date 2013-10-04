@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.file.FileUploadActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(FileUploadActionEntity.class)
 public class FileUploadAction implements FileAction {
@@ -24,7 +24,7 @@ public class FileUploadAction implements FileAction {
 	@Attribute
 	private String filePath;
 
-	protected FileUploadAction() {}
+	public FileUploadAction() {}
 
 	public FileUploadAction(final FileRepresentation fileRepresentation) {
 		this(fileRepresentation.getId(), fileRepresentation.getFileName(), fileRepresentation.getFilePath());
@@ -50,6 +50,26 @@ public class FileUploadAction implements FileAction {
 
 	public String getFileName() {
 		return fileName;
+	}
+
+	public UUID getFileRepresentationId() {
+		return fileRepresentationId;
+	}
+
+	public void setFileRepresentationId(final UUID fileRepresentationId) {
+		this.fileRepresentationId = fileRepresentationId;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(final String filePath) {
+		this.filePath = filePath;
+	}
+
+	public void setFileName(final String fileName) {
+		this.fileName = fileName;
 	}
 
 }

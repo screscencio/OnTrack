@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanLockActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -16,6 +10,12 @@ import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(KanbanLockActionEntity.class)
 public class KanbanLockAction implements KanbanAction {
@@ -31,7 +31,7 @@ public class KanbanLockAction implements KanbanAction {
 	@ElementList(required = false)
 	private List<String> columnIds;
 
-	protected KanbanLockAction() {}
+	public KanbanLockAction() {}
 
 	public KanbanLockAction(final UUID releaseId) {
 		this.releaseId = releaseId;
@@ -62,6 +62,30 @@ public class KanbanLockAction implements KanbanAction {
 	@Override
 	public UUID getReferenceId() {
 		return releaseId;
+	}
+
+	public UUID getReleaseId() {
+		return releaseId;
+	}
+
+	public void setReleaseId(final UUID releaseId) {
+		this.releaseId = releaseId;
+	}
+
+	public List<String> getColumnDescriptions() {
+		return columnDescriptions;
+	}
+
+	public void setColumnDescriptions(final List<String> columnDescriptions) {
+		this.columnDescriptions = columnDescriptions;
+	}
+
+	public List<String> getColumnIds() {
+		return columnIds;
+	}
+
+	public void setColumnIds(final List<String> columnIds) {
+		this.columnIds = columnIds;
 	}
 
 }

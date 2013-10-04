@@ -27,7 +27,7 @@ public class ReleaseDeclareStartDayAction implements ReleaseAction {
 	@IgnoredByDeepEquality
 	private Date date;
 
-	protected ReleaseDeclareStartDayAction() {}
+	public ReleaseDeclareStartDayAction() {}
 
 	public ReleaseDeclareStartDayAction(final UUID referenceId, final Date date) {
 		this.referenceId = referenceId;
@@ -47,6 +47,18 @@ public class ReleaseDeclareStartDayAction implements ReleaseAction {
 	@Override
 	public UUID getReferenceId() {
 		return referenceId;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(final Date date) {
+		this.date = date;
+	}
+
+	public void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
 	}
 
 }

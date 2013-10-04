@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -11,6 +9,8 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeInsertParentActionEntity.class)
 public class ScopeInsertParentAction implements ScopeInsertAction {
@@ -29,8 +29,7 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 	@Element
 	private ScopeUpdateAction scopeUpdateAction;
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeInsertParentAction() {}
+	public ScopeInsertParentAction() {}
 
 	public ScopeInsertParentAction(final UUID selectedScopeId, final String pattern) {
 		this(selectedScopeId, new UUID(), pattern);
@@ -68,6 +67,22 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 	@Override
 	public UUID getNewScopeId() {
 		return newScopeId;
+	}
+
+	public ScopeUpdateAction getScopeUpdateAction() {
+		return scopeUpdateAction;
+	}
+
+	public void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
+	}
+
+	public void setNewScopeId(final UUID newScopeId) {
+		this.newScopeId = newScopeId;
+	}
+
+	public void setScopeUpdateAction(final ScopeUpdateAction scopeUpdateAction) {
+		this.scopeUpdateAction = scopeUpdateAction;
 	}
 
 	@Override

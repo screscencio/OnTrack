@@ -19,7 +19,7 @@ public class TeamRevogueInvitationAction implements TeamAction {
 	@Element
 	private UUID userId;
 
-	protected TeamRevogueInvitationAction() {}
+	public TeamRevogueInvitationAction() {}
 
 	public TeamRevogueInvitationAction(final User user) {
 		this(user.getId());
@@ -40,6 +40,14 @@ public class TeamRevogueInvitationAction implements TeamAction {
 	@Override
 	public UUID getReferenceId() {
 		return userId;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public void setUserId(final UUID userId) {
+		this.userId = userId;
 	}
 
 }

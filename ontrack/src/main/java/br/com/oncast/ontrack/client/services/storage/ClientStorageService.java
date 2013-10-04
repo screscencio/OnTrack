@@ -1,11 +1,12 @@
 package br.com.oncast.ontrack.client.services.storage;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetricsBag;
+
+import java.util.List;
 
 public interface ClientStorageService {
 
@@ -32,5 +33,9 @@ public interface ClientStorageService {
 	void appendOnTrackServerMetrics(OnTrackServerMetricsBag statisticsBag);
 
 	OnTrackServerMetricsBag loadOnTrackServerMetricsList();
+
+	void savePendingActions(List<ModelAction> pendingActions);
+
+	List<ModelAction> loadPendingActions();
 
 }

@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.client.services.internet.ConnectionListener;
 import br.com.oncast.ontrack.client.services.internet.NetworkMonitoringService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
+import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -52,14 +53,14 @@ public class ActionSyncService {
 
 	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService, final ActionExecutionService actionExecutionService,
 			final ProjectRepresentationProvider projectRepresentationProvider, final ClientAlertingService alertingService, final ClientErrorMessages messages,
-			final NetworkMonitoringService networkMonitoringService, final ContextProviderService contextProviderService, final EventBus eventBus) {
+			final NetworkMonitoringService networkMonitoringService, final ContextProviderService contextProviderService, final EventBus eventBus, final ClientStorageService storage) {
 		this.requestDispatchService = requestDispatchService;
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.actionExecutionService = actionExecutionService;
 		this.alertingService = alertingService;
 		this.messages = messages;
 		this.contextProviderService = contextProviderService;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, eventBus, alertingService, messages);
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, eventBus, alertingService, storage, messages);
 
 		serverPushClientService.registerServerEventHandler(ModelActionSyncEvent.class, new ServerActionSyncEventHandler() {
 
@@ -91,6 +92,7 @@ public class ActionSyncService {
 			@Override
 			public void onProjectChanged(final UUID projectId, final Long loadedProjectRevision) {
 				updateLastSyncId(loadedProjectRevision);
+				if (projectId != null) actionQueuedDispatcher.loadPendingActions();
 			}
 		});
 		actionQueuedDispatcher.addDispatchCallback(new ActionQueuedDispatchCallback() {

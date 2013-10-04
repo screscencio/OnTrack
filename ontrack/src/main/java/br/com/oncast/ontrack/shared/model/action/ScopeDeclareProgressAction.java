@@ -7,13 +7,6 @@
 
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareProgressActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -26,6 +19,13 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(ScopeDeclareProgressActionEntity.class)
 public class ScopeDeclareProgressAction implements ScopeAction {
@@ -54,8 +54,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		this.newProgressDescription = newProgressDescription == null ? "" : newProgressDescription;
 	}
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeDeclareProgressAction() {}
+	public ScopeDeclareProgressAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -68,8 +67,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollbackActions);
 	}
 
-	private List<ModelAction> processSubActions(final ProjectContext context, final ActionContext actionContext, final Scope scope)
-			throws UnableToCompleteActionException {
+	private List<ModelAction> processSubActions(final ProjectContext context, final ActionContext actionContext, final Scope scope) throws UnableToCompleteActionException {
 		if (subActionList.isEmpty()) {
 			checkUserAssociation(context, actionContext, scope);
 			assureKanbanColumnExistence(context, scope);
@@ -99,6 +97,26 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	@Override
 	public UUID getReferenceId() {
 		return referenceId;
+	}
+
+	public String getNewProgressDescription() {
+		return newProgressDescription;
+	}
+
+	public void setNewProgressDescription(final String newProgressDescription) {
+		this.newProgressDescription = newProgressDescription;
+	}
+
+	public List<ModelAction> getSubActionList() {
+		return subActionList;
+	}
+
+	public void setSubActionList(final List<ModelAction> subActionList) {
+		this.subActionList = subActionList;
+	}
+
+	public void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
 	}
 
 	@Override

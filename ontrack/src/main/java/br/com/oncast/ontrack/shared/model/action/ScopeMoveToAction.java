@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveToActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -10,6 +7,9 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeMoveToActionEntity.class)
 public class ScopeMoveToAction implements ScopeMoveAction {
@@ -25,7 +25,7 @@ public class ScopeMoveToAction implements ScopeMoveAction {
 	@Attribute
 	private int desiredIndex;
 
-	protected ScopeMoveToAction() {}
+	public ScopeMoveToAction() {}
 
 	public ScopeMoveToAction(final UUID movingScopeId, final UUID futureParentId, final int futureIndex) {
 		this.movingScopeId = movingScopeId;
@@ -58,6 +58,30 @@ public class ScopeMoveToAction implements ScopeMoveAction {
 		return movingScopeId;
 	}
 
+	public UUID getMovingScopeId() {
+		return movingScopeId;
+	}
+
+	public void setMovingScopeId(final UUID movingScopeId) {
+		this.movingScopeId = movingScopeId;
+	}
+
+	public UUID getDesiredParentId() {
+		return desiredParentId;
+	}
+
+	public void setDesiredParentId(final UUID desiredParentId) {
+		this.desiredParentId = desiredParentId;
+	}
+
+	public int getDesiredIndex() {
+		return desiredIndex;
+	}
+
+	public void setDesiredIndex(final int desiredIndex) {
+		this.desiredIndex = desiredIndex;
+	}
+
 	@Override
 	public boolean changesEffortInference() {
 		return true;
@@ -71,6 +95,11 @@ public class ScopeMoveToAction implements ScopeMoveAction {
 	@Override
 	public boolean changesValueInference() {
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "ScopeMoveToAction [movingScopeId=" + movingScopeId + ", desiredParentId=" + desiredParentId + ", desiredIndex=" + desiredIndex + "]";
 	}
 
 }

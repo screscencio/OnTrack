@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.internet.ConnectionListener;
-import br.com.oncast.ontrack.client.ui.events.PendingActionsCountChangeEvent;
+import br.com.oncast.ontrack.client.ui.events.PendingActionsChangeEvent;
 import br.com.oncast.ontrack.client.ui.events.PendingActionsCountChangeEventHandler;
 
 import java.util.HashSet;
@@ -40,7 +40,7 @@ public class ActionSyncStateMenuItem extends Composite implements IsWidget, Pend
 	protected void onLoad() {
 		if (!handlerRegistrations.isEmpty()) return;
 
-		handlerRegistrations.add(ClientServices.get().eventBus().addHandler(PendingActionsCountChangeEvent.getType(), this));
+		handlerRegistrations.add(ClientServices.get().eventBus().addHandler(PendingActionsChangeEvent.getType(), this));
 		handlerRegistrations.add(ClientServices.get().networkMonitor().addConnectionListener(this));
 	}
 
@@ -82,7 +82,7 @@ public class ActionSyncStateMenuItem extends Composite implements IsWidget, Pend
 	}
 
 	@Override
-	public void onPendingActionsCountChange(final PendingActionsCountChangeEvent e) {
+	public void onPendingActionsCountChange(final PendingActionsChangeEvent e) {
 		notSent = e.getNotSentActionsCount();
 		waiting = e.getWaitingAnswerActionsCount();
 		updateHeader();

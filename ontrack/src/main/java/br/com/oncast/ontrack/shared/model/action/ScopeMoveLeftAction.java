@@ -40,8 +40,7 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 		this.subActionList = subActionList;
 	}
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeMoveLeftAction() {}
+	public ScopeMoveLeftAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -62,6 +61,18 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	@Override
 	public UUID getReferenceId() {
 		return referenceId;
+	}
+
+	public List<ModelAction> getSubActionList() {
+		return subActionList;
+	}
+
+	public void setSubActionList(final List<ModelAction> subActionList) {
+		this.subActionList = subActionList;
+	}
+
+	public void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
 	}
 
 	@Override

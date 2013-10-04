@@ -7,9 +7,11 @@ import javax.xml.bind.annotation.XmlValue;
 
 import org.simpleframework.xml.Attribute;
 
+import com.kfuntak.gwt.json.serialization.client.JsonSerializable;
+
 // TODO Test this class
 @XmlRootElement
-public class UUID implements Serializable {
+public class UUID implements Serializable, JsonSerializable {
 
 	private static final int CHECK_CHAR_INDEX = 14;
 
@@ -91,6 +93,14 @@ public class UUID implements Serializable {
 			if (SEPARATOR_CHAR != this.id.charAt(separatorCharIndex)) return false;
 		}
 		return true;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(final String id) {
+		this.id = id;
 	}
 
 }

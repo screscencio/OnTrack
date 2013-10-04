@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -14,6 +8,12 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(AnnotationRemoveActionEntity.class)
 public class AnnotationRemoveAction implements AnnotationAction {
@@ -29,7 +29,7 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	@Attribute
 	private boolean userAction;
 
-	protected AnnotationRemoveAction() {}
+	public AnnotationRemoveAction() {}
 
 	public AnnotationRemoveAction(final UUID subjectId, final UUID annotationId) {
 		this(subjectId, annotationId, true);
@@ -44,8 +44,7 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context, this);
-		if (userAction && !annotation.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(
-				this, ActionExecutionErrorMessageCode.ANNOTATION_REMOVE);
+		if (userAction && !annotation.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.ANNOTATION_REMOVE);
 
 		final List<ModelAction> rollbackSubActions = removeSubAnnotations(context, actionContext);
 
@@ -70,6 +69,26 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	@Override
 	public UUID getReferenceId() {
 		return subjectId;
+	}
+
+	public UUID getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(final UUID subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public boolean getUserAction() {
+		return userAction;
+	}
+
+	public void setUserAction(final boolean userAction) {
+		this.userAction = userAction;
+	}
+
+	public void setAnnotationId(final UUID annotationId) {
+		this.annotationId = annotationId;
 	}
 
 }

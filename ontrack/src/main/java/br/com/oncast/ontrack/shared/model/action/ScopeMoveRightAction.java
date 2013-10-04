@@ -53,8 +53,7 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 		this.subActionList = subActionList;
 	}
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeMoveRightAction() {}
+	public ScopeMoveRightAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -85,6 +84,34 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 
 	private boolean isFirstNode(final int index) {
 		return index == 0;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(final int position) {
+		this.position = position;
+	}
+
+	public boolean getWasIndexSet() {
+		return wasIndexSet;
+	}
+
+	public void setWasIndexSet(final boolean wasIndexSet) {
+		this.wasIndexSet = wasIndexSet;
+	}
+
+	public List<ModelAction> getSubActionList() {
+		return subActionList;
+	}
+
+	public void setSubActionList(final List<ModelAction> subActionList) {
+		this.subActionList = subActionList;
+	}
+
+	public void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
 	}
 
 	@Override

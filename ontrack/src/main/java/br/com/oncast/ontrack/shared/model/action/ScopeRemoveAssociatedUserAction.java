@@ -26,7 +26,7 @@ public class ScopeRemoveAssociatedUserAction implements ScopeAction {
 	@Element
 	private UUID userId;
 
-	protected ScopeRemoveAssociatedUserAction() {}
+	public ScopeRemoveAssociatedUserAction() {}
 
 	public ScopeRemoveAssociatedUserAction(final UUID scopeId, final UUID userId) {
 		this.scopeId = scopeId;
@@ -53,6 +53,22 @@ public class ScopeRemoveAssociatedUserAction implements ScopeAction {
 	@Override
 	public UUID getReferenceId() {
 		return scopeId;
+	}
+
+	public UUID getScopeId() {
+		return scopeId;
+	}
+
+	public void setScopeId(final UUID scopeId) {
+		this.scopeId = scopeId;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public void setUserId(final UUID userId) {
+		this.userId = userId;
 	}
 
 	@Override

@@ -32,8 +32,7 @@ public class ScopeRemoveAction implements ScopeAction {
 		this.referenceId = selectedScopeId;
 	}
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeRemoveAction() {}
+	public ScopeRemoveAction() {}
 
 	@Override
 	public ScopeRemoveRollbackAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -96,6 +95,10 @@ public class ScopeRemoveAction implements ScopeAction {
 	@Override
 	public UUID getReferenceId() {
 		return referenceId;
+	}
+
+	public void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
 	}
 
 	@Override

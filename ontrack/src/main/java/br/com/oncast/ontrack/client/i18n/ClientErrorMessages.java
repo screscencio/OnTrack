@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.i18n;
 
-
 public interface ClientErrorMessages extends BaseMessages {
 
 	@Description("message shown when server push client receives an error")
@@ -84,11 +83,15 @@ public interface ClientErrorMessages extends BaseMessages {
 	String offilineMode();
 
 	@Description("message shown when there are pending actions and the user tryies to close the window")
-	@DefaultMessage("There are {0} unsaved modifications! If you leave now, you may lose these modifications.")
+	@DefaultMessage("There are {0} modifications that were saved locally in this machine but were not sent to the others. We will try to sent them in your next acess to this project with this same machine")
 	String thereArePedingActionsWannaLeaveAnyway(final String nOfUnsavedModifications);
 
 	@Description("shown when logout fails")
 	@DefaultMessage("Logout failed.")
 	String logoutFailed();
+
+	@Description("shown when locally saved pending actions were sent to server")
+	@DefaultMessage("{0} locally saved actions were synced with other members")
+	String pendingActionsSynced(int actions);
 
 }

@@ -1,16 +1,17 @@
 package br.com.oncast.ontrack.server.model.project;
 
+import br.com.oncast.ontrack.server.utils.serializer.Serializer;
+import br.com.oncast.ontrack.shared.model.project.Project;
+
 import java.io.IOException;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import br.com.oncast.ontrack.server.utils.serializer.Serializer;
-import br.com.oncast.ontrack.shared.model.project.Project;
 
 @Entity
 public class ProjectSnapshot {
@@ -19,8 +20,10 @@ public class ProjectSnapshot {
 	private String id;
 
 	@Lob
+	@Column
 	private byte[] serializedProject;
 
+	@Column
 	private long lastAppliedActionId;
 
 	@Temporal(TemporalType.TIMESTAMP)

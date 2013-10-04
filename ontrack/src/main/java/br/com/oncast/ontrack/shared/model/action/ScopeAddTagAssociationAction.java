@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag.ScopeAddTagAssociationActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -13,6 +11,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeAddTagAssociationActionEntity.class)
 public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
@@ -28,7 +28,7 @@ public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
 	@Element
 	private UUID tagId;
 
-	protected ScopeAddTagAssociationAction() {}
+	public ScopeAddTagAssociationAction() {}
 
 	public ScopeAddTagAssociationAction(final UUID scopeId, final UUID tagId) {
 		this.scopeId = scopeId;
@@ -73,6 +73,30 @@ public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
 	@Override
 	public boolean changesValueInference() {
 		return false;
+	}
+
+	public UUID getMetadataId() {
+		return metadataId;
+	}
+
+	public UUID getScopeId() {
+		return scopeId;
+	}
+
+	public UUID getTagId() {
+		return tagId;
+	}
+
+	public void setMetadataId(final UUID metadataId) {
+		this.metadataId = metadataId;
+	}
+
+	public void setScopeId(final UUID scopeId) {
+		this.scopeId = scopeId;
+	}
+
+	public void setTagId(final UUID tagId) {
+		this.tagId = tagId;
 	}
 
 }

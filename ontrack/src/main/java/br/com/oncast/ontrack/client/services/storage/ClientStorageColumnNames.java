@@ -8,5 +8,6 @@ public interface ClientStorageColumnNames {
 	final String MODIFIED_CONTAINER_STATE_RELEASES = "planning.release.containerState.modified";
 	final String DEFAULT_PLACE = "place.default";
 	final String SERVER_STATISTICS = "ontrack.server.statistics";
+	final String PENDING_ACTIONS = "ontrack.actions.pending";
 
 }
