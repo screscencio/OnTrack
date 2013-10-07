@@ -96,9 +96,9 @@ public interface ScopeTreeShortcutMappingsMessage extends BaseMessages {
 	@DefaultMessage("Jump to next selection")
 	String selectNextSelectedScope();
 
-	@Description("add tag to selected scope shortcut")
-	@DefaultMessage("Add a tag to selection")
-	String addTagToScope();
+	@Description("add or remove a tag on the selected scope shortcut")
+	@DefaultMessage("Add or remove a tag on the selected scope")
+	String addOrRemoveTagToScope();
 
 	@Description("Can''t move the scope because both the selected scope and the targeted parent scope are in a release")
 	@DefaultMessage("Can''t move the scope because both the selected scope and the targeted parent scope are in a release")

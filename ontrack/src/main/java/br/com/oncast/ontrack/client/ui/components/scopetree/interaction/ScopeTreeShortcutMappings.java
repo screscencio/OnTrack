@@ -377,7 +377,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 		@Override
 		public String getDescription() {
-			return messages.addTagToScope();
+			return messages.addOrRemoveTagToScope();
 		}
 
 	};

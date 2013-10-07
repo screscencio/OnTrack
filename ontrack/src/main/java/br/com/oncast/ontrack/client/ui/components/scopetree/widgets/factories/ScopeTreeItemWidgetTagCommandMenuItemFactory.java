@@ -6,10 +6,13 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ColorSelectionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagMenuItem;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.TagAction;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
 import br.com.oncast.ontrack.shared.model.color.ColorPack;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.tag.exception.TagNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -40,15 +43,13 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 			public void onColorPackSelect(final ColorPack colorPack) {
 				tag.setColorPack(colorPack);
 			}
-		}), inputText,
-				new Command() {
-					@Override
-					public void execute() {
-						launchAction(new TagCreateAction(controller.getScope().getId(), inputText, tag.getColorPack().getForeground(), tag
-								.getColorPack().getBackground()));
-						cachedColors = SERVICE_PROVIDER.colorProvider().pickColorPack();
-					}
-				}).setGrowAnimation(false);
+		}), inputText, new Command() {
+			@Override
+			public void execute() {
+				launchAction(new TagCreateAction(controller.getScope().getId(), inputText, tag.getColorPack().getForeground(), tag.getColorPack().getBackground()));
+				cachedColors = SERVICE_PROVIDER.colorProvider().pickColorPack();
+			}
+		}).setGrowAnimation(false);
 	}
 
 	@Override
@@ -65,16 +66,22 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 
 			@Override
 			public void execute() {
-				launchAction(new ScopeAddTagAssociationAction(controller.getScope().getId(), tag.getId()));
+				final Scope scope = controller.getScope();
+
+				if (getContext().getTagsFor(scope).contains(tag)) {
+					launchAction(new ScopeRemoveTagAssociationAction(scope.getId(), tag.getId()));
+				} else {
+					launchAction(new ScopeAddTagAssociationAction(scope.getId(), tag.getId()));
+				}
 			}
+
 		});
 	}
 
 	private Tag getTagForDescription(final String itemText) {
 		try {
-			return SERVICE_PROVIDER.contextProvider().getCurrent().findTag(itemText);
-		}
-		catch (final TagNotFoundException e) {
+			return getContext().findTag(itemText);
+		} catch (final TagNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -96,4 +103,9 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 	public boolean shouldPrioritizeCustomItem() {
 		return false;
 	}
+
+	private ProjectContext getContext() {
+		return SERVICE_PROVIDER.contextProvider().getCurrent();
+	}
+
 }
