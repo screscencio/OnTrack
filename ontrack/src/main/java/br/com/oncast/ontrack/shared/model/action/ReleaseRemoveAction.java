@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.shared.model.action;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.IgnoreByConversion;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
@@ -27,6 +28,9 @@ public class ReleaseRemoveAction implements ReleaseAction {
 	@ConversionAlias("referenceId")
 	@Element
 	private UUID referenceId;
+
+	@IgnoreByConversion
+	private List<UUID> dissociatedScopes;
 
 	public ReleaseRemoveAction() {}
 
@@ -72,8 +76,11 @@ public class ReleaseRemoveAction implements ReleaseAction {
 	private List<ScopeBindReleaseAction> dissociateScopesFromThisRelease(final ProjectContext context, final ActionContext actionContext, final Release release) throws UnableToCompleteActionException {
 
 		final List<ScopeBindReleaseAction> subActionRollbackList = new ArrayList<ScopeBindReleaseAction>();
-		for (final Scope scope : release.getScopeList())
+		dissociatedScopes = new ArrayList<UUID>();
+		for (final Scope scope : release.getScopeList()) {
 			subActionRollbackList.add(new ScopeBindReleaseAction(scope.getId(), null).execute(context, actionContext));
+			dissociatedScopes.add(scope.getId());
+		}
 
 		Collections.reverse(subActionRollbackList);
 		return subActionRollbackList;
@@ -95,6 +102,14 @@ public class ReleaseRemoveAction implements ReleaseAction {
 
 	public void setReferenceId(final UUID referenceId) {
 		this.referenceId = referenceId;
+	}
+
+	public List<UUID> getDissociatedScopes() {
+		return dissociatedScopes == null ? new ArrayList<UUID>() : dissociatedScopes;
+	}
+
+	public void setDissociatedScopes(final List<UUID> dissociatedScopes) {
+		this.dissociatedScopes = dissociatedScopes;
 	}
 
 }

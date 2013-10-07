@@ -31,8 +31,7 @@ public class ReleaseTag extends Composite implements HasText, HasClickHandlers {
 
 	@Override
 	public boolean isVisible() {
-		if (visible != null) return visible;
-		return visible = super.isVisible();
+		return visible != null ? visible : (visible = super.isVisible());
 	}
 
 	@Override
@@ -49,6 +48,7 @@ public class ReleaseTag extends Composite implements HasText, HasClickHandlers {
 
 	/**
 	 * It is safe to use the {@link #setText(String)} repeatedly. {@link ReleaseTag} makes use of the {@link FastLabel} component.
+	 * 
 	 * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
 	 */
 	@Override
@@ -59,6 +59,7 @@ public class ReleaseTag extends Composite implements HasText, HasClickHandlers {
 
 	/**
 	 * It is safe to use the {@link #setTitle(String)} repeatedly. {@link ReleaseTag} makes use of the {@link FastLabel} component.
+	 * 
 	 * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
 	 */
 	@Override
