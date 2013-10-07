@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.client.ui.components.report;
 
-import java.util.Comparator;
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.ui.components.report.ImpedimentDatabase.ImpedimentItem;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+
+import java.util.Comparator;
+import java.util.Date;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -19,6 +19,7 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionModel;
@@ -74,7 +75,7 @@ public class ImpedimentReportTable extends Composite {
 		final Column<ImpedimentItem, String> descriptionColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ImpedimentItem object) {
-				return object.getDescription();
+				return new InlineHTML(object.getDescription()).getText();
 			}
 		};
 		descriptionColumn.setSortable(true);

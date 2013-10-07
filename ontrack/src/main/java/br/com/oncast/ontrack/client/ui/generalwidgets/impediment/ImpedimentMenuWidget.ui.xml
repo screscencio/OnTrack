@@ -17,16 +17,11 @@
 				margin: 0px 9px 18px 9px;
 			}
 			
-			.subjectLabel {
-				font-weight: bold;		
-				width: 100%;
-			}
-			
 			.message {
 				text-align: justify;
 				vertical-align: top;
-				width: 100%;
 				line-height: 18px;
+				word-wrap: break-word;
 			}
 
 			.deprecatedMessage {

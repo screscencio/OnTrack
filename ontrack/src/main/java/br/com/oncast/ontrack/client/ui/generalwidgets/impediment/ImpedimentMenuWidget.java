@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.impediment;
 
-import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_IMPEDIMENT;
-import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.SOLVED_IMPEDIMENT;
-
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserUpdateListener;
@@ -16,6 +11,8 @@ import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -33,6 +30,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_IMPEDIMENT;
+import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.SOLVED_IMPEDIMENT;
 
 public class ImpedimentMenuWidget extends Composite implements HasClickHandlers, ModelWidget<Annotation>, UserUpdateListener {
 
@@ -86,7 +86,7 @@ public class ImpedimentMenuWidget extends Composite implements HasClickHandlers,
 
 	@Override
 	public boolean update() {
-		message.setText(impediment.getMessage());
+		message.setText(new InlineHTML(impediment.getMessage()).getText());
 		final boolean isDeprecated = impediment.isDeprecated();
 		message.setStyleName(style.deprecatedMessage(), isDeprecated);
 		final Date t = impediment.getLastOcuurenceOf(impediment.getType());

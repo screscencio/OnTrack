@@ -9,13 +9,11 @@
 	<ui:style src="../../style/default.css">
 	
 		.root {
-			width: 400px;
 		}
 		
 		.impedimentsContainer {
 			background: COLOR_BACKGROUND_HEADER;
 			color: COLOR_TEXT_HEADER;
-			width: 100%;
 		}
 		
 		.noImpedimentsItem {
@@ -28,6 +26,10 @@
 			white-space: nowrap;
 			text-align: center;
 		}
+		
+		.impediments {
+			width: auto;
+		}
 	
 	</ui:style>
 	
@@ -39,7 +41,7 @@
 			<div ui:field="noImpedimentsItem" class="{style.noImpedimentsItem}">
 				<ui:msg description="text showed when there is no impediments at all">Oh no! Your first imepdiment!</ui:msg>
 			</div>
-			<w:ModelWidgetContainer ui:field="impedimentsContainer"/>
+			<w:ModelWidgetContainer ui:field="impedimentsContainer" styleName="{style.impediments}"/>
 		</div>
 	</g:HTMLPanel>
 	

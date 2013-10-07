@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.impediment;
 
-import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentProjectContext;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.IconTextBox;
@@ -26,6 +20,10 @@ import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,6 +39,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentProjectContext;
 
 public class ImpedimentListWidget extends Composite implements PopupAware, HasCloseHandlers<ImpedimentListWidget>, ActionExecutionListener {
 
@@ -80,8 +80,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 		final String description = newImpedimentDescription.getText().trim();
 		if (event.getNativeKeyCode() != BrowserKeyCodes.KEY_ENTER || description.isEmpty()) return;
 
-		ClientServices.get().actionExecution()
-				.onUserActionExecutionRequest(new AnnotationCreateAction(subjectId, AnnotationType.OPEN_IMPEDIMENT, description));
+		ClientServices.get().actionExecution().onUserActionExecutionRequest(new AnnotationCreateAction(subjectId, AnnotationType.OPEN_IMPEDIMENT, description));
 		hide();
 	}
 
@@ -152,9 +151,7 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final ActionExecutionContext executionContext,
-			final boolean isUserAction) {
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
 
 		if ((action instanceof AnnotationAction || action instanceof ImpedimentAction) && action.getReferenceId().equals(subjectId)) update();
 
