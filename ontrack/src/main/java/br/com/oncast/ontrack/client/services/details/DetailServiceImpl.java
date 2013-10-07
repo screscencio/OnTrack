@@ -128,16 +128,16 @@ public class DetailServiceImpl implements DetailService {
 					final ActionContext actionContext,
 					final ActionExecutionContext executionContext, final boolean isUserAction) {
 
-				if (action instanceof ChecklistItemAction) fireScopeDetailUpdateEvent(((ChecklistItemAction) action).getSubjectId(), context);
+				if (action instanceof ChecklistItemAction) fireSubjectDetailUpdateEvent(((ChecklistItemAction) action).getSubjectId(), context);
 
 				else if (action instanceof AnnotationAction
 						|| action instanceof ImpedimentAction
 						|| action instanceof ChecklistAction
 						|| action instanceof DescriptionAction
-				) fireScopeDetailUpdateEvent(action.getReferenceId(), context);
+				) fireSubjectDetailUpdateEvent(action.getReferenceId(), context);
 			}
 
-			private void fireScopeDetailUpdateEvent(final UUID subjectId, final ProjectContext context) {
+			private void fireSubjectDetailUpdateEvent(final UUID subjectId, final ProjectContext context) {
 				final SubjectDetailUpdateEvent event = getDetailUpdateEvent(subjectId);
 				if (event != null) eventBus.fireEvent((Event<?>) event);
 			}

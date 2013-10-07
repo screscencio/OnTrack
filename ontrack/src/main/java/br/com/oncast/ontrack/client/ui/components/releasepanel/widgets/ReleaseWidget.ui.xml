@@ -230,6 +230,8 @@
 		.inlineEditableLabel {
 			display: inline-block;
 			max-width: 36px;
+			height: inherit;
+			vertical-align: middle;
 		}
 		
 		.clickable {
@@ -293,9 +295,9 @@
 						<i class="icon-time"></i> <span ui:field="periodLabel"/>
 					</div>
 					<span ui:field="durationLabel" class="{style.detailTag}"/>
-					<div class="{style.valueContainer} {style.detailTag} {style.lastTag}">
-						<i class="icon-dashboard"></i> <w:EditableLabel ui:field="speedLabel" value="2.3" styleName="{style.inlineEditableLabel}"/>
-					</div>
+					<span class="{style.valueContainer} {style.detailTag} {style.lastTag}">
+						<i class="icon-dashboard"></i> <w:EditableLabel ui:field="speedLabel" styleName="{style.inlineEditableLabel}"/>
+					</span>
 				</div>
 			</div>
 			<r:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />

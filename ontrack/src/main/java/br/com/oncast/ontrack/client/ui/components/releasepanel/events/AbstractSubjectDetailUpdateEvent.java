@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.SubjectDetailUpdateEvent;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
@@ -11,6 +8,9 @@ import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -30,8 +30,7 @@ public abstract class AbstractSubjectDetailUpdateEvent<T extends HasUUID, H exte
 		this.subject = subject;
 	}
 
-	public AbstractSubjectDetailUpdateEvent(final T subject, final List<Checklist> checklists, final List<Annotation> annotations,
-			final Description description) {
+	public AbstractSubjectDetailUpdateEvent(final T subject, final List<Checklist> checklists, final List<Annotation> annotations, final Description description) {
 		this.subject = subject;
 		setChecklists(checklists);
 		setAnnotations(annotations);
@@ -131,6 +130,11 @@ public abstract class AbstractSubjectDetailUpdateEvent<T extends HasUUID, H exte
 	public String getChecklistCompletitionText() {
 		updateChecklistCompletition();
 		return totalChecklistItemsCount == 0 ? "" : checkedItemsCount + "/" + totalChecklistItemsCount;
+	}
+
+	@Override
+	public boolean hasAnyDetails() {
+		return hasChecklists() || hasDescription() || hasAnnotations();
 	}
 
 	private List<Annotation> getList(final AnnotationType type) {

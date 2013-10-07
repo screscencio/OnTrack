@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.events;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.release.Release;
+
+import java.util.List;
 
 public class ReleaseDetailUpdateEvent extends AbstractSubjectDetailUpdateEvent<Release, ReleaseDetailUpdateEventHandler> {
 
@@ -15,8 +15,7 @@ public class ReleaseDetailUpdateEvent extends AbstractSubjectDetailUpdateEvent<R
 		super(release);
 	}
 
-	public ReleaseDetailUpdateEvent(final Release release, final List<Checklist> checklists, final List<Annotation> annotations,
-			final Description description) {
+	public ReleaseDetailUpdateEvent(final Release release, final List<Checklist> checklists, final List<Annotation> annotations, final Description description) {
 		super(release, checklists, annotations, description);
 	}
 

@@ -1,46 +1,48 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.events;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import java.util.List;
+
 public interface SubjectDetailUpdateEvent {
 
-	public UUID getSubjectId();
+	UUID getSubjectId();
 
-	public void setChecklists(List<Checklist> checklists);
+	void setChecklists(List<Checklist> checklists);
 
 	boolean hasChecklists();
 
-	public List<Checklist> getChecklists();
+	List<Checklist> getChecklists();
 
-	public int getCheckedItemCount();
+	int getCheckedItemCount();
 
-	public int getTotalChecklistItemCount();
+	int getTotalChecklistItemCount();
 
-	public boolean isChecklistComplete();
+	boolean isChecklistComplete();
 
-	public String getChecklistCompletitionText();
+	String getChecklistCompletitionText();
 
-	public void setAnnotations(List<Annotation> annotations);
+	void setAnnotations(List<Annotation> annotations);
 
-	public int getAnnotationsCount();
+	int getAnnotationsCount();
 
 	boolean hasAnnotations();
 
-	public int getOpenImpedimentsCount();
+	int getOpenImpedimentsCount();
 
 	boolean hasOpenImpediments();
 
-	public void setDescription(Description description);
+	void setDescription(Description description);
 
-	public boolean hasDescription();
+	boolean hasDescription();
 
-	public String getDescriptionText();
+	String getDescriptionText();
 
 	public List<Annotation> getOpenImpediments();
+
+	boolean hasAnyDetails();
 
 }

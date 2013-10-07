@@ -4,6 +4,8 @@ import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEvent;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartPopup;
 import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
@@ -41,7 +43,9 @@ import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -64,6 +68,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 
 import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
 import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
@@ -200,7 +205,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private boolean kanbanSpecific;
 
-	private ActionExecutionListener actionExecutionListener;
+	private final Set<HandlerRegistration> installedHandlers = new HashSet<HandlerRegistration>();
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory, final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
@@ -263,13 +268,23 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@Override
 	protected void onLoad() {
-		ClientServices.get().actionExecution().addActionExecutionListener(getActionExecutionListener());
+		if (!installedHandlers.isEmpty()) return;
+
+		installedHandlers.add(ClientServices.get().actionExecution().addActionExecutionListener(getActionExecutionListener()));
+		installedHandlers.add(ClientServices.get().eventBus().addHandler(ReleaseDetailUpdateEvent.getType(), new ReleaseDetailUpdateEventHandler() {
+			@Override
+			public void onReleaseDetailUpdate(final ReleaseDetailUpdateEvent event) {
+				hasDetailsIndicatorContainer.setVisible(event.hasAnyDetails());
+			}
+		}));
 	}
 
 	@Override
 	protected void onUnload() {
-		if (actionExecutionListener == null) return;
-		ClientServices.get().actionExecution().removeActionExecutionListener(actionExecutionListener);
+		for (final HandlerRegistration registration : installedHandlers) {
+			registration.removeHandler();
+		}
+		installedHandlers.clear();
 	}
 
 	private void setupNavigationIcon(final Release release, final boolean kanbanSpecific) {
@@ -583,14 +598,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private ActionExecutionListener getActionExecutionListener() {
-		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
+		return new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
 				if (action instanceof ReleaseDeclareStartDayAction || action instanceof ReleaseDeclareEndDayAction && action.getReferenceId().equals(release.getId())) update();
 			}
 		};
-		return actionExecutionListener;
 	}
 
 }
