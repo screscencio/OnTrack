@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -33,6 +28,11 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -198,8 +198,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 			updateItems();
 			shouldUpdate = false;
-		}
-		else {
+		} else {
 			if (mouseOver) return;
 			JQuery.jquery(columnContainer).slideRightShow(300, new AnimationCallback() {
 
@@ -257,23 +256,30 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	private void updateItems() {
 		final ProjectContext context = ClientServices.getCurrentProjectContext();
-		final List<Scope> scopes;
-		if (filterTagId != null) scopes = getScopesWithTag(context, filterTagId);
-		else scopes = context.getProjectScope().getAllDescendantScopes();
+		final Set<Scope> scopes;
+		if (filterTagId != null) scopes = getScopesWithTagAndRelatedScopes(context, filterTagId);
+		else scopes = new HashSet<Scope>(context.getProjectScope().getAllDescendantScopes());
 		search.setItems(asCommandMenuItens(scopes));
 	}
 
-	private List<Scope> getScopesWithTag(final ProjectContext context, final UUID filterTagId) {
-		final List<Scope> list = new ArrayList<Scope>();
+	private Set<Scope> getScopesWithTagAndRelatedScopes(final ProjectContext context, final UUID filterTagId) {
+		final Set<Scope> relatedScopes = new HashSet<Scope>();
 		for (final TagAssociationMetadata metadata : context.<TagAssociationMetadata> getAllMetadata(MetadataType.TAG)) {
-			if (metadata.getTag().getId().equals(filterTagId)) list.add((Scope) metadata.getSubject());
+			if (metadata.getTag().getId().equals(filterTagId)) relatedScopes.addAll(getTagRelatedScopes((Scope) metadata.getSubject()));
 		}
-		return list;
+		return relatedScopes;
 	}
 
-	private List<CommandMenuItem> asCommandMenuItens(final List<Scope> scopeList) {
+	private List<Scope> getTagRelatedScopes(final Scope scope) {
+		final List<Scope> related = scope.getAllAncestors();
+		related.add(scope);
+		related.addAll(scope.getAllDescendantScopes());
+		return related;
+	}
+
+	private List<CommandMenuItem> asCommandMenuItens(final Set<Scope> scopes) {
 		final List<CommandMenuItem> menuItens = new ArrayList<CommandMenuItem>();
-		for (final Scope scope : scopeList) {
+		for (final Scope scope : scopes) {
 			menuItens.add(new SearchScopeResultCommandMenuItem(scope, new Command() {
 				@Override
 				public void execute() {
@@ -301,9 +307,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final ActionExecutionContext executionContext, final boolean isUserAction) {
-		if (action instanceof ScopeUpdateAction || action instanceof ScopeInsertAction || action instanceof ScopeRemoveAction
-				|| action instanceof ScopeMoveAction) shouldUpdate = true;
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
+		if (action instanceof ScopeUpdateAction || action instanceof ScopeInsertAction || action instanceof ScopeRemoveAction || action instanceof ScopeMoveAction) shouldUpdate = true;
 	}
 }

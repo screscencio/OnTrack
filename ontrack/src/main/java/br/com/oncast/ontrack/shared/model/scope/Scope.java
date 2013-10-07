@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.shared.model.scope;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Value;
@@ -15,6 +10,11 @@ import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 
@@ -85,8 +85,8 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 	}
 
 	/**
-	 * Returns a copy of the list of child scopes. If you want to add or remove a scope from this scope, use {@link Scope#add(Scope)} and
-	 * {@link Scope#remove(Scope)}. Do NOT manipulate this list directly.
+	 * Returns a copy of the list of child scopes. If you want to add or remove a scope from this scope, use {@link Scope#add(Scope)} and {@link Scope#remove(Scope)}. Do NOT manipulate this list
+	 * directly.
 	 */
 	public List<Scope> getChildren() {
 		return new ArrayList<Scope>(childrenList);
@@ -238,6 +238,18 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 
 	public boolean hasDueDate() {
 		return dueDate != null;
+	}
+
+	public List<Scope> getAllAncestors() {
+		final List<Scope> ancestors = new ArrayList<Scope>();
+		if (this.isRoot()) return ancestors;
+
+		Scope current = this.getParent();
+		while (!current.isRoot()) {
+			ancestors.add(current);
+			current = current.getParent();
+		}
+		return ancestors;
 	}
 
 }
