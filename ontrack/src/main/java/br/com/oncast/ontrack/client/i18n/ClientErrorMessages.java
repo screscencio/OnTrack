@@ -83,7 +83,7 @@ public interface ClientErrorMessages extends BaseMessages {
 	String offilineMode();
 
 	@Description("message shown when there are pending actions and the user tryies to close the window")
-	@DefaultMessage("There are {0} modifications that were saved locally in this machine but were not sent to the others. We will try to sent them in your next acess to this project with this same machine")
+	@DefaultMessage("There are {0} unsaved modifications. Please reload the application to avoid losing those modifications")
 	String thereArePedingActionsWannaLeaveAnyway(final String nOfUnsavedModifications);
 
 	@Description("shown when logout fails")
@@ -91,7 +91,7 @@ public interface ClientErrorMessages extends BaseMessages {
 	String logoutFailed();
 
 	@Description("shown when locally saved pending actions were sent to server")
-	@DefaultMessage("{0} locally saved actions were synced with other members")
+	@DefaultMessage("{0} pending modifications were saved")
 	String pendingActionsSynced(int actions);
 
 }

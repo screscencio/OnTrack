@@ -28,7 +28,9 @@ public class ClientAlertingService {
 
 	/**
 	 * Set the Alerting's ParentWidget, useful to set the alert's position or from where it will appear
-	 * @param the new parent widget
+	 * 
+	 * @param the
+	 *            new parent widget
 	 * @return the previous parent widget
 	 */
 	public Widget setAlertingParentWidget(final Widget widget) {
@@ -86,7 +88,11 @@ public class ClientAlertingService {
 	}
 
 	public AlertRegistration showSuccess(final String message) {
-		return makeAutoCloseAlert(message, AlertType.SUCCESS, DURATION_SHORT);
+		return showSuccess(message, DURATION_SHORT);
+	}
+
+	public AlertRegistration showSuccess(final String message, final int duration) {
+		return makeAutoCloseAlert(message, AlertType.SUCCESS, duration);
 	}
 
 	public AlertRegistration showBlockingError(final String message) {

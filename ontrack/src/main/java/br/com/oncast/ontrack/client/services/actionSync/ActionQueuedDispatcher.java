@@ -103,7 +103,7 @@ class ActionQueuedDispatcher {
 
 					@Override
 					public void onTreatedFailure(final Throwable caught) {
-						resetPendingActions(waitingServerAnsuerReverseActionList);
+						resetPendingActions();
 					}
 
 					@Override
@@ -120,11 +120,11 @@ class ActionQueuedDispatcher {
 								}
 							});
 						} else {
-							resetPendingActions(waitingServerAnsuerReverseActionList);
+							resetPendingActions();
 						}
 					}
 
-					private void resetPendingActions(final ArrayList<ModelAction> waitingServerAnsuerReverseActionList) {
+					private void resetPendingActions() {
 						for (final ModelAction pendingReverseAction : waitingServerAnsuerReverseActionList) {
 							reverseActionList.add(0, pendingReverseAction);
 						}
@@ -177,7 +177,7 @@ class ActionQueuedDispatcher {
 		actionList.addAll(pendingActions);
 		tryExchange(true);
 		savePendingActions();
-		if (actionList.isEmpty()) alertingService.showSuccess(messages.pendingActionsSynced(pendingActions.size()));
+		if (actionList.isEmpty()) alertingService.showSuccess(messages.pendingActionsSynced(pendingActions.size()), ClientAlertingService.DURATION_LONG);
 	}
 
 }
