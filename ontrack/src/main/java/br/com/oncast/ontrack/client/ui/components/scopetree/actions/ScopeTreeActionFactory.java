@@ -4,16 +4,14 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWid
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
-import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeDeclareDueDateAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
@@ -32,7 +30,6 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
-import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
@@ -63,21 +60,17 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ScopeRemoveAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeRemoveRollbackAction) return new ScopeTreeRemoveRollbackAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeUpdateAction || action instanceof ScopeBindReleaseAction) return new ScopeTreeUpdateAction(tree, action);
-		else if (action instanceof ReleaseAction) return new ScopeTreeReleaseAction(tree, action);
+		else if (action instanceof ReleaseRenameAction) return new ScopeTreeReleaseRenameAction(tree, (ReleaseRenameAction) action);
+		else if (action instanceof ReleaseRemoveAction) return new ScopeTreeReleaseRemoveAction(tree, (ReleaseRemoveAction) action);
+		else if (action instanceof ReleaseRemoveRollbackAction) return new ScopeTreeReleaseRemoveRollbackAction(tree, (ReleaseRemoveRollbackAction) action);
 		else if (action instanceof ScopeDeclareProgressAction) return new ScopeTreeUpdateAction(tree, action);
 		else if (action instanceof ScopeDeclareEffortAction) return new ScopeTreeUpdateAction(tree, action);
 		else if (action instanceof ScopeDeclareValueAction) return new ScopeTreeUpdateAction(tree, action);
-		else if (action instanceof ReleaseRenameAction) return new ScopeTreeReleaseUpdateAction(tree, (ReleaseAction) action);
 		else if (action instanceof KanbanAction) return new ScopeTreeUpdateProgressAction(tree, (KanbanAction) action);
 		else if (action instanceof ScopeAddTagAssociationAction || action instanceof ScopeRemoveTagAssociationAction) return new ScopeTreeTagAssociationAction(tree, action);
 		else if (action instanceof TagRemoveAction) return new ScopeTreeTagRemoveUpdateAction(tree, (TagRemoveAction) action);
 		else if (action instanceof TagCreateAction) return new ScopeTreeTagUpdateAction(tree, action);
 		else if (action instanceof AnnotationCreateAction) return new ScopeTreeUpdateAction(tree, action, true);
-		else if (action instanceof ScopeBindHumanIdAction) return IGNORE_ACTION;
-		else if (action instanceof FileUploadAction) return IGNORE_ACTION;
-		else if (action instanceof ScopeDeclareDueDateAction) return IGNORE_ACTION;
-		else if (action instanceof TeamAction) return IGNORE_ACTION;
-
-		throw new RuntimeException("It was not possible to find the equivalent action for " + action + ".");
+		return IGNORE_ACTION;
 	}
 }
