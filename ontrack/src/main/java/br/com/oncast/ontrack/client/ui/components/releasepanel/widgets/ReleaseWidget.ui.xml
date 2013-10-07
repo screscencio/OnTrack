@@ -39,10 +39,6 @@
 			position: relative;
 		}
 		
-		.containerStateToogleClickableArea > div > div > input {
-			height: 60% !important;
-		}
-		
 		.headerItem, .descriptionLabel {
 			cursor: pointer;
 			margin: 0px 4px;

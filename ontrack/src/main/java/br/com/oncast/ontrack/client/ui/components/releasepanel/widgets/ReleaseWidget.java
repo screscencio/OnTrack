@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
-import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.details.DetailService;
@@ -46,6 +39,10 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionCont
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.SpanElement;
@@ -67,6 +64,9 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
 
 public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
@@ -202,14 +202,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private ActionExecutionListener actionExecutionListener;
 
-	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
-			final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory,
+	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory, final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this(release, releaseWidgetFactory, scopeWidgetFactory, releasePanelInteractionHandler, false);
 	}
 
-	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
-			final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory,
+	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory, final ModelWidgetFactory<Scope, ScopeCardWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean kanbanSpecific) {
 		this.release = release;
 		this.releaseWidgetFactory = releaseWidgetFactory;
@@ -241,8 +239,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 					final float speed = Float.valueOf(text.replace(',', '.'));
 					ClientServices.get().actionExecution().onUserActionExecutionRequest(new ReleaseDeclareEstimatedVelocityAction(release.getId(), speed));
 					return true;
-				}
-				catch (final Exception e) {
+				} catch (final Exception e) {
 					ClientServices.get().alerting().showWarning(messages.shouldBeAValidNumber());
 					return false;
 				}
@@ -285,8 +282,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 					goToPlanning();
 				}
 			});
-		}
-		else if (release.isLeaf()) {
+		} else if (release.isLeaf()) {
 			navigationIcon.addStyleName("icon-columns");
 			navigationIcon.setTitle(messages.goToKanban());
 			navigationIcon.addClickHandler(new ClickHandler() {
@@ -295,15 +291,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 					goToProgress();
 				}
 			});
-		}
-		else navigationIcon.removeFromParent();
+		} else navigationIcon.removeFromParent();
 	}
 
 	private void popImpediments(final UIObject alignmentWidget) {
-		PopupConfig.configPopup().popup(new ImpedimentListWidget(release))
-				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(alignmentWidget, HorizontalAlignment.RIGHT))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(alignmentWidget, VerticalAlignment.BOTTOM))
-				.pop();
+		PopupConfig.configPopup().popup(new ImpedimentListWidget(release)).alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(alignmentWidget, HorizontalAlignment.RIGHT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(alignmentWidget, VerticalAlignment.BOTTOM)).pop();
 	}
 
 	@UiHandler("progressIcon")
@@ -320,10 +313,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiHandler("menuIcon")
 	protected void onClick(final ClickEvent event) {
-		configPopup().popup(getMouseActionMenu())
-				.alignHorizontal(RIGHT, new AlignmentReference(menuIcon, RIGHT))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(menuIcon, VerticalAlignment.BOTTOM, 0))
-				.pop();
+		configPopup().popup(getMouseActionMenu()).alignHorizontal(RIGHT, new AlignmentReference(menuIcon, RIGHT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(menuIcon, VerticalAlignment.BOTTOM, 0)).pop();
 		event.stopPropagation();
 	}
 
@@ -528,10 +519,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void popChartPanel() {
-		configPopup().popup(getChartPanel())
-				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(header, HorizontalAlignment.RIGHT))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(header, VerticalAlignment.BOTTOM))
-				.pop();
+		configPopup().popup(getChartPanel()).alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(header, HorizontalAlignment.RIGHT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(header, VerticalAlignment.BOTTOM)).pop();
 	}
 
 	private ReleaseChartPopup getChartPanel() {
@@ -596,11 +585,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private ActionExecutionListener getActionExecutionListener() {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
-				if (action instanceof ReleaseDeclareStartDayAction || action instanceof ReleaseDeclareEndDayAction
-						&& action.getReferenceId().equals(release.getId())) update();
+				if (action instanceof ReleaseDeclareStartDayAction || action instanceof ReleaseDeclareEndDayAction && action.getReferenceId().equals(release.getId())) update();
 			}
 		};
 		return actionExecutionListener;
