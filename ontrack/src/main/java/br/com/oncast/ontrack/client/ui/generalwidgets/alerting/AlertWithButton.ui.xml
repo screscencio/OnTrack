@@ -1,0 +1,68 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style src="../../style/default.css">
+
+		.rootPanel {
+			width: 100%;
+			z-index: 1;
+
+			text-align: center;
+		}
+
+		.alertPanel {
+			margin: 0px auto;
+			overflow: hidden;
+			display: inline-block;
+
+            height: 35px;
+            max-height: 35px;
+            min-height: 35px;
+
+            background-color: COLOR_BACKGROUND_TERTIARY;
+            -webkit-box-shadow: SHADOW_ALERT;
+            -moz-box-shadow: SHADOW_ALERT;
+            box-shadow: SHADOW_ALERT;
+
+			background-repeat: no-repeat;
+			background-position: 0px 0px;
+			position: initial !important;
+		}
+		
+		.alertText {
+            color: COLOR_TEXT_PRIMARY;
+            font-family: FONT_DEFAULT;
+            font-size: FONT_SIZE_MEDIUM;
+
+            margin-right: 10px;
+            margin-left: 10px;
+            display: inline-block;
+		}
+		
+		.alertIcon {
+			margin-left: 10px;
+		}
+		
+		.button {
+			margin-left: 18px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+		
+		.button:HOVER {
+			text-decoration: underline;
+		}
+
+	</ui:style>
+
+    <g:HTMLPanel ui:field="alertContainer" styleName="{style.rootPanel}">
+        <div ui:field="alertDiv" class="{style.alertPanel}">
+            <table height="100%" width="100%">
+                <tr><td>
+                	<span ui:field="alertIcon" class="{style.alertIcon} icon-large"></span>
+		            <div class='{style.alertText}'><span ui:field='alertText'/><g:InlineLabel styleName="{style.button}" ui:field="button"/></div>
+                </td></tr>
+            </table>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder> 

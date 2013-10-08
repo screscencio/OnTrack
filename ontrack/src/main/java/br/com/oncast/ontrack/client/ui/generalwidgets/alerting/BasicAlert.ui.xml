@@ -50,7 +50,7 @@
             <table height="100%" width="100%">
                 <tr><td>
                 	<span ui:field="alertIcon" class="{style.alertIcon} icon-large"></span>
-		            <div class='{style.alertText}' ui:field='alertText'></div>
+		            <div class='{style.alertText}' ui:field='alertText'/>
                 </td></tr>
             </table>
         </div>

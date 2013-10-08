@@ -22,14 +22,14 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The {@link PopupConfig} allows easy link-popup binding in controllers. It uses a fluent interface syntax and handles popup placement, user interaction mask,
- * auto-closing behavior on leave and general popup style-sheet elements.
- * This is an example of how to use it:
+ * The {@link PopupConfig} allows easy link-popup binding in controllers. It uses a fluent interface syntax and handles popup placement, user interaction mask, auto-closing behavior on leave and
+ * general popup style-sheet elements. This is an example of how to use it:
  * 
  * <pre>
  * configPopup().link(changePasswordLabel).popup(new ChangePasswordForm()).alignRight(changePasswordLabel).alignBelow(this);
@@ -39,9 +39,9 @@ public class PopupConfig {
 	/**
 	 * Popups that implement this interface are <i>popup-aware</i>. This means that they know how to show and hide themselves.<br />
 	 * The {@link PopupConfig} won't change the popup widget visibility, instead it will ask them to show or hide when appropriate.<br />
-	 * Being <i>popup-aware</i> is particularly interesting if the popup widget is interested on being notified when it must show or hide, sometimes it needs to
-	 * do something on this occasions. Note that if the controller wants to add extra functionality he may use the {@link PopupConfig#onOpen(PopupOpenListener)}
-	 * and {@link PopupConfig#onClose(PopupCloseListener)} instead of making the popup widget <i>popup-aware</i>.
+	 * Being <i>popup-aware</i> is particularly interesting if the popup widget is interested on being notified when it must show or hide, sometimes it needs to do something on this occasions. Note
+	 * that if the controller wants to add extra functionality he may use the {@link PopupConfig#onOpen(PopupOpenListener)} and {@link PopupConfig#onClose(PopupCloseListener)} instead of making the
+	 * popup widget <i>popup-aware</i>.
 	 */
 	public interface PopupAware {
 		/**
@@ -56,17 +56,16 @@ public class PopupConfig {
 	}
 
 	/**
-	 * Listener to popup open events. It is designed to be used by the view controller. If you want to let the popup widget itself get notified of such events,
-	 * make it implement the {@link PopupAware} interface.
+	 * Listener to popup open events. It is designed to be used by the view controller. If you want to let the popup widget itself get notified of such events, make it implement the {@link PopupAware}
+	 * interface.
 	 */
 	public interface PopupOpenListener {
 		public abstract void onWillOpen();
 	}
 
 	/**
-	 * Listener to popup close (hide) events. It is designed to be used by the view controller. If you want to let the popup widget itself get notified of such
-	 * events,
-	 * make it implement the {@link PopupAware} interface.
+	 * Listener to popup close (hide) events. It is designed to be used by the view controller. If you want to let the popup widget itself get notified of such events, make it implement the
+	 * {@link PopupAware} interface.
 	 */
 	public interface PopupCloseListener {
 		public abstract void onHasClosed();
@@ -88,7 +87,7 @@ public class PopupConfig {
 	private VerticalAlignment verticalAlignment;
 	private AlignmentReference alignVerticallyTo;
 	private boolean isModal = false;
-	private Widget previousAlertingParent;
+	private Panel previousAlertingParent;
 	private Widget previousShortcutHelpParent;
 	private BasicMaskPanel maskPanel;
 
@@ -97,6 +96,7 @@ public class PopupConfig {
 	/**
 	 * Starts a popup configuration.<br />
 	 * A convenient way to use this method is to import it statically.
+	 * 
 	 * @return a new popup configuration assistant.
 	 */
 	public static PopupConfig configPopup() {
@@ -105,9 +105,12 @@ public class PopupConfig {
 
 	/**
 	 * Defines the link to the popup. Note that there is another way to trigger a popup, take a look at the {@link #pop()} method.
-	 * @param popupLink the widget that will trigger the popup upon click.
+	 * 
+	 * @param popupLink
+	 *            the widget that will trigger the popup upon click.
 	 * @return the self assistant for in-line call convenience.
-	 * @throws IllegalArgumentException in case the link widget does not implement {@link HasClickHandlers}.
+	 * @throws IllegalArgumentException
+	 *             in case the link widget does not implement {@link HasClickHandlers}.
 	 */
 	public PopupConfig link(final Widget popupLink) {
 		if (!(popupLink instanceof HasClickHandlers)) throw new IllegalArgumentException("The popup link must accept clicks (Implement HasClickHandlers).");
@@ -122,8 +125,7 @@ public class PopupConfig {
 
 		if (popupLink instanceof Button) {
 			DOM.setStyleAttribute(popupLink.getElement(), "cursor", "default");
-		}
-		else {
+		} else {
 			DOM.setStyleAttribute(popupLink.getElement(), "cursor", "pointer");
 		}
 
@@ -131,25 +133,26 @@ public class PopupConfig {
 	}
 
 	/**
-	 * Defines the widget to popup, i.e., the popup widget itself. The popup widget may be any widget that accepts {@link CloseHandler CloseHandlers} (i.e.,
-	 * implements {@link HasCloseHandlers}). This implementation is needed to hide the mask panel blocking user input in the
-	 * main UI. <br />
-	 * The widget may also implement the {@link PopupAware} interface. In this case the popup widget will be asked to show and hide, instead of simply setting
-	 * the visible property to true. This gives the widget the advantage to do actions during show (like cleaning it up) and hiding (like aborting an operation
-	 * that is under process).<br />
+	 * Defines the widget to popup, i.e., the popup widget itself. The popup widget may be any widget that accepts {@link CloseHandler CloseHandlers} (i.e., implements {@link HasCloseHandlers}). This
+	 * implementation is needed to hide the mask panel blocking user input in the main UI. <br />
+	 * The widget may also implement the {@link PopupAware} interface. In this case the popup widget will be asked to show and hide, instead of simply setting the visible property to true. This gives
+	 * the widget the advantage to do actions during show (like cleaning it up) and hiding (like aborting an operation that is under process).<br />
 	 * <b>Important:</b> Note that the same instance of the widget will be reused every time, so be sure to prepare it for the next call when it gets closed.<br />
-	 * In the future a factory to popup widgets may be passed instead of a sole instance, therefore removing the need to prepare the widget for the next call.
-	 * TODO+ Make PopupConfig accept popup widget factories, not just single instances.
-	 * @param widgetToPopup the instance of the widget to popup.
+	 * In the future a factory to popup widgets may be passed instead of a sole instance, therefore removing the need to prepare the widget for the next call. TODO+ Make PopupConfig accept popup
+	 * widget factories, not just single instances.
+	 * 
+	 * @param widgetToPopup
+	 *            the instance of the widget to popup.
 	 * @return the self assistant for in-line call convenience.
-	 * @throws IllegalStateException in case the popup widget was set more than once.
-	 * @throws IllegalArgumentException in case the provided widget does not implement {@link HasCloseHandlers} nor {@link PopupAware}.
+	 * @throws IllegalStateException
+	 *             in case the popup widget was set more than once.
+	 * @throws IllegalArgumentException
+	 *             in case the provided widget does not implement {@link HasCloseHandlers} nor {@link PopupAware}.
 	 */
 	public PopupConfig popup(final Widget widgetToPopup) {
 		if (this.widgetToPopup != null) throw new IllegalStateException("You cannot set the popup widget twice in a popup configuration.");
 
-		if (!(widgetToPopup instanceof HasCloseHandlers)) throw new IllegalArgumentException(
-				"The popup widget must implement HasCloseHandlers interface.");
+		if (!(widgetToPopup instanceof HasCloseHandlers)) throw new IllegalArgumentException("The popup widget must implement HasCloseHandlers interface.");
 
 		this.widgetToPopup = widgetToPopup;
 
@@ -158,15 +161,18 @@ public class PopupConfig {
 
 	/**
 	 * Defines the horizontal alignment of the widget to popup.<br>
-	 * Note that the popup configuration may override this definition in case it realizes the popup widget will not fit. The popup configuration will try the
-	 * following to determine the popup widget horizontal alignment:
+	 * Note that the popup configuration may override this definition in case it realizes the popup widget will not fit. The popup configuration will try the following to determine the popup widget
+	 * horizontal alignment:
 	 * <ol>
 	 * <li>Match popup widget and reference widget margins according to the given specification;</li>
 	 * <li>Use the closes possible placement to the first rule in case the first rule does not apply;</li>
 	 * <li>Fix the popup to the alignment side margin and let it pass through the other side in case the widget is bigger than the screen</li>
 	 * </ol>
-	 * @param Horizontal alignment of the widget to popup.
-	 * @param Reference widget .
+	 * 
+	 * @param Horizontal
+	 *            alignment of the widget to popup.
+	 * @param Reference
+	 *            widget .
 	 * @return the self assistant for in-line call convenience.
 	 */
 	public PopupConfig alignHorizontal(final HorizontalAlignment alignment, final AlignmentReference alignmentReference) {
@@ -185,7 +191,9 @@ public class PopupConfig {
 
 	/**
 	 * Defines if the popup should be shown in a modal background or on a transparent background, default is transparent
-	 * @param isModal, true if you want a modal background or false otherwise
+	 * 
+	 * @param isModal
+	 *            , true if you want a modal background or false otherwise
 	 * @return the self assistant for in-line call convenience.
 	 */
 	public PopupConfig setModal(final boolean isModal) {
@@ -195,7 +203,9 @@ public class PopupConfig {
 
 	/**
 	 * Defines the duration of the popup's animation when showing or hiding.
-	 * @param Animation duration in milliseconds.
+	 * 
+	 * @param Animation
+	 *            duration in milliseconds.
 	 * @return the self assistant for in-line call convenience.
 	 */
 	public PopupConfig setAnimationDuration(final int milliseconds) {
@@ -206,9 +216,12 @@ public class PopupConfig {
 	/**
 	 * Defines a listener that will be notified when the popup opens.<br />
 	 * Each popup configuration allows just one open listener.
-	 * @param openListener the open listener to be notified.
+	 * 
+	 * @param openListener
+	 *            the open listener to be notified.
 	 * @return the self assistant for in-line call convenience.
-	 * @throws IllegalStateException in case there is already a listener set.
+	 * @throws IllegalStateException
+	 *             in case there is already a listener set.
 	 */
 	public PopupConfig onOpen(final PopupOpenListener openListener) {
 		if (this.openListener != null) throw new IllegalStateException("Another open listener already set.");
@@ -219,9 +232,12 @@ public class PopupConfig {
 	/**
 	 * Defines a listener that will be notified when the popup closes.<br />
 	 * Each popup configuration allows just one close listener.
-	 * @param closeListener the close listener to be notified.
+	 * 
+	 * @param closeListener
+	 *            the close listener to be notified.
 	 * @return the self assistant for in-line call convenience.
-	 * @throws IllegalStateException in case there is already a listener set.
+	 * @throws IllegalStateException
+	 *             in case there is already a listener set.
 	 */
 	public PopupConfig onClose(final PopupCloseListener closeListener) {
 		if (this.closeListener != null) throw new IllegalStateException("Another close listener already set.");
@@ -230,17 +246,14 @@ public class PopupConfig {
 	}
 
 	/**
-	 * Makes the popup pop up, i.e., shows the popup to the user. Note that you may link the popup to a click event of a widget, take a look at
-	 * {@link #link(Widget)}.
-	 * See also {@link #toggle()}
+	 * Makes the popup pop up, i.e., shows the popup to the user. Note that you may link the popup to a click event of a widget, take a look at {@link #link(Widget)}. See also {@link #toggle()}
 	 */
 	public void pop() {
 		engagePopup();
 	}
 
 	/**
-	 * Makes the popup {@link #pop()} if not shown or {@link #hidePopup()} if it's already shown
-	 * .
+	 * Makes the popup {@link #pop()} if not shown or {@link #hidePopup()} if it's already shown .
 	 */
 	public void toggle() {
 		if (shown) hidePopup();
@@ -280,11 +293,8 @@ public class PopupConfig {
 			public void onWillHide() {
 				hidePopup();
 				if (isModal) {
-					if (previousAlertingParent != null)
-					ClientServices.get().alerting()
-							.setAlertingParentWidget(previousAlertingParent);
-					if (previousShortcutHelpParent != null)
-					ShortcutService.setShortcutHelpPanelParentWidget(previousShortcutHelpParent);
+					if (previousAlertingParent != null) ClientServices.get().alerting().setAlertingParentWidget(previousAlertingParent);
+					if (previousShortcutHelpParent != null) ShortcutService.setShortcutHelpPanelParentWidget(previousShortcutHelpParent);
 				}
 				maskPanel = null;
 			}
@@ -475,8 +485,7 @@ public class PopupConfig {
 
 			if (showAnimation) {
 				setPopupWidgetVisible();
-			}
-			else {
+			} else {
 				widgetToPopup.setVisible(false);
 				disengagePopup();
 			}

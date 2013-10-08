@@ -33,41 +33,36 @@ public class ProjectCreationActivity extends AbstractActivity {
 
 		final String projectName = projectCreationPlace.getProjectName();
 		view.setMainMessage(messages.creatingProject(projectName));
-		ClientServices.get().projectRepresentationProvider()
-				.createNewProject(projectName, new ProjectCreationListener() {
+		ClientServices.get().projectRepresentationProvider().createNewProject(projectName, new ProjectCreationListener() {
 
-					@Override
-					public void onProjectCreated(final ProjectRepresentation projectRepresentation) {
-						openProject(projectRepresentation);
-					}
+			@Override
+			public void onProjectCreated(final ProjectRepresentation projectRepresentation) {
+				openProject(projectRepresentation);
+			}
 
+			@Override
+			public void onProjectCreationFailure() {
+				// TODO +++Treat failure properly
+				SERVICE_PROVIDER.alerting().showErrorWithConfirmation(messages.projectCreationFailed(), new AlertConfirmationListener() {
 					@Override
-					public void onProjectCreationFailure() {
-						// TODO +++Treat failure properly
-						SERVICE_PROVIDER.alerting().showErrorWithConfirmation(
-								messages.projectCreationFailed(),
-								new AlertConfirmationListener() {
-									@Override
-									public void onConfirmation() {
-										Window.Location.reload();
-									}
-								});
-					}
-
-					@Override
-					public void onUnexpectedFailure() {
-						// TODO +++Treat failure properly
-						SERVICE_PROVIDER.alerting().showErrorWithConfirmation(
-								messages.itWasNotPossibleToCreateTheProject(),
-								new AlertConfirmationListener() {
-									@Override
-									public void onConfirmation() {
-										Window.Location.reload();
-									}
-								});
+					public void onConfirmation() {
+						Window.Location.reload();
 					}
 				});
-		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
+			}
+
+			@Override
+			public void onUnexpectedFailure() {
+				// TODO +++Treat failure properly
+				SERVICE_PROVIDER.alerting().showErrorWithConfirmation(messages.itWasNotPossibleToCreateTheProject(), new AlertConfirmationListener() {
+					@Override
+					public void onConfirmation() {
+						Window.Location.reload();
+					}
+				});
+			}
+		});
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
 	}
 
 	@Override

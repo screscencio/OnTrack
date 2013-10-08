@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.client.ui.places.report;
 
-import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentProjectContext;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.report.ImpedimentReportTable;
@@ -17,6 +10,11 @@ import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotF
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import com.google.common.base.Joiner;
 import com.google.gwt.core.client.GWT;
@@ -30,6 +28,8 @@ import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentProjectContext;
 
 public class ReportPanel extends Composite {
 
@@ -102,8 +102,7 @@ public class ReportPanel extends Composite {
 
 		try {
 			description.setHTML(getCurrentProjectContext().findDescriptionFor(release.getId()).getDescription());
-		}
-		catch (final DescriptionNotFoundException e) {
+		} catch (final DescriptionNotFoundException e) {
 			descriptionContainer.removeFromParent();
 		}
 
@@ -138,7 +137,7 @@ public class ReportPanel extends Composite {
 		return projectName + " &gt; " + Joiner.on(" &gt; ").join(ancestorsSimpleDescriptions);
 	}
 
-	public Widget getAlertingContainer() {
+	public HTMLPanel getAlertingContainer() {
 		return rootPanel;
 	}
 

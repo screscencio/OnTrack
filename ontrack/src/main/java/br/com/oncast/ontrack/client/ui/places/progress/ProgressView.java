@@ -6,8 +6,8 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanWidgetDisp
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.places.progress.details.ProgressDetailPanel;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 public interface ProgressView extends IsWidget {
 
@@ -15,7 +15,7 @@ public interface ProgressView extends IsWidget {
 
 	KanbanWidgetDisplay getKanbanPanel();
 
-	Widget getAlertingPanel();
+	FlowPanel getAlertingPanel();
 
 	void registerActionExecutionHandler(ActionExecutionService actionExecutionService);
 

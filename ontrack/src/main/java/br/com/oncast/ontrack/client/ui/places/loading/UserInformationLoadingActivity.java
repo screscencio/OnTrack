@@ -47,7 +47,7 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 			}
 
 		});
-		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
 	}
 
 	@Override

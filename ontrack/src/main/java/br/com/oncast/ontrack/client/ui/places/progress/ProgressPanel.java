@@ -24,6 +24,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -108,7 +109,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 	}
 
 	@Override
-	public Widget getAlertingPanel() {
+	public FlowPanel getAlertingPanel() {
 		return rootPanel.getContentPanelWidget();
 	}
 

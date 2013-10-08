@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 public interface LoginView {
@@ -21,4 +22,6 @@ public interface LoginView {
 	void setUsername(String username);
 
 	void onIncorrectUsername();
+
+	Panel getAlertingContainer();
 }

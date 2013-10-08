@@ -5,11 +5,14 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.HideHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MaskPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.alerting.Alert;
 import br.com.oncast.ontrack.client.ui.generalwidgets.alerting.AlertType;
+import br.com.oncast.ontrack.client.ui.generalwidgets.alerting.AlertWithButton;
 import br.com.oncast.ontrack.client.ui.generalwidgets.alerting.AlertingContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.alerting.BasicAlert;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.Panel;
 
 // TODO Refactor this class to be more flexible or create a builder
 public class ClientAlertingService {
@@ -18,7 +21,7 @@ public class ClientAlertingService {
 
 	public static final int DURATION_LONG = 5000;
 
-	Widget alertingParentPanel;
+	Panel alertingParentPanel;
 
 	AlertingContainer alertingContainer;
 
@@ -33,17 +36,17 @@ public class ClientAlertingService {
 	 *            new parent widget
 	 * @return the previous parent widget
 	 */
-	public Widget setAlertingParentWidget(final Widget widget) {
-		final Widget previous = clearAlertingParentWidget();
+	public Panel setAlertingParentWidget(final Panel widget) {
+		final Panel previous = clearAlertingParentWidget();
 		alertingParentPanel = widget;
-		alertingParentPanel.getElement().appendChild(alertingContainer.getElement());
+		alertingParentPanel.add(alertingContainer);
 		return previous;
 	}
 
-	public Widget clearAlertingParentWidget() {
+	public Panel clearAlertingParentWidget() {
 		if (alertingParentPanel == null) return null;
 
-		final Widget widget = alertingParentPanel;
+		final Panel widget = alertingParentPanel;
 
 		alertingContainer.removeFromParent();
 		alertingParentPanel = null;
@@ -51,11 +54,11 @@ public class ClientAlertingService {
 	}
 
 	private void addAlertToAlertingContainer(final Alert alertMessage) {
-		alertingContainer.add(alertMessage);
+		alertingContainer.add(alertMessage.asWidget());
 	}
 
 	private void removeAlertFromAlertingContainer(final Alert alertingMessage) {
-		alertingContainer.remove(alertingMessage);
+		alertingContainer.remove(alertingMessage.asWidget());
 	}
 
 	// TODO make this message alert like modal popup
@@ -87,6 +90,13 @@ public class ClientAlertingService {
 		return makeAutoCloseAlert(message, AlertType.WARNING, duration);
 	}
 
+	public AlertRegistration showInfoWithButton(final String message, final String buttonText, final ClickHandler handler) {
+		final AlertWithButton toast = new AlertWithButton();
+		toast.setButtonText(buttonText);
+		toast.addClickHandler(handler);
+		return makeAutoCloseAlert(toast, message, AlertType.INFO, DURATION_LONG);
+	}
+
 	public AlertRegistration showSuccess(final String message) {
 		return showSuccess(message, DURATION_SHORT);
 	}
@@ -100,43 +110,19 @@ public class ClientAlertingService {
 	}
 
 	private AlertRegistration makeBlockingAlert(final String message, final AlertType type) {
-		final Alert toast = new Alert();
-		addAlertToAlertingContainer(toast);
-
-		final AlertRegistration alertRegistration = new AlertRegistration() {
-			@Override
-			public void hide() {
-				toast.hide(new AnimationCallback() {
-
-					@Override
-					public void onComplete() {
-						removeAlertFromAlertingContainer(toast);
-					}
-				});
-			}
-		};
+		final BasicAlert toast = new BasicAlert();
+		final AlertRegistration alertRegistration = register(toast);
 		toast.show(message, type);
 		return alertRegistration;
 	}
 
 	private AlertRegistration makeAutoCloseAlert(final String message, final AlertType type, final int autoCloseTime) {
-		final Alert toast = new Alert();
-		addAlertToAlertingContainer(toast);
+		return makeAutoCloseAlert(new BasicAlert(), message, type, autoCloseTime);
+	}
 
-		final AlertRegistration alertRegistration = new AlertRegistration() {
-			@Override
-			public void hide() {
-				toast.hide(new AnimationCallback() {
-
-					@Override
-					public void onComplete() {
-						removeAlertFromAlertingContainer(toast);
-					}
-				});
-			}
-		};
+	private AlertRegistration makeAutoCloseAlert(final Alert toast, final String message, final AlertType type, final int autoCloseTime) {
+		final AlertRegistration alertRegistration = register(toast);
 		toast.show(message, type, new AnimationCallback() {
-
 			@Override
 			public void onComplete() {
 				new Timer() {
@@ -151,15 +137,13 @@ public class ClientAlertingService {
 	}
 
 	private ConfirmationAlertRegister makeConfirmationAlert(final String message, final AlertType type, final AlertConfirmationListener listener) {
-		final Alert toast = new Alert();
+		final BasicAlert toast = new BasicAlert();
 		addAlertToAlertingContainer(toast);
 
 		ErrorMaskPanel.show(new HideHandler() {
-
 			@Override
 			public void onWillHide() {
 				toast.hide(new AnimationCallback() {
-
 					@Override
 					public void onComplete() {
 						removeAlertFromAlertingContainer(toast);
@@ -181,23 +165,16 @@ public class ClientAlertingService {
 	}
 
 	private void makeModalAutoCloseAlert(final String errorDescriptionMessage, final AlertType type, final int autoCloseTime) {
-		final Alert toast = new Alert();
+		final BasicAlert toast = new BasicAlert();
 		addAlertToAlertingContainer(toast);
 
 		ErrorMaskPanel.show(new HideHandler() {
 			@Override
 			public void onWillHide() {
-				toast.hide(new AnimationCallback() {
-
-					@Override
-					public void onComplete() {
-						removeAlertFromAlertingContainer(toast);
-					}
-				});
+				hideAndRemoveFromContainer(toast);
 			}
 		});
 		toast.show(errorDescriptionMessage, type, new AnimationCallback() {
-
 			@Override
 			public void onComplete() {
 				new Timer() {
@@ -209,4 +186,30 @@ public class ClientAlertingService {
 			}
 		});
 	}
+
+	private AlertRegistration register(final Alert toast) {
+		addAlertToAlertingContainer(toast);
+		final AlertRegistration alertRegistration = new AlertRegistration() {
+			@Override
+			public void hide() {
+				hideAndRemoveFromContainer(toast);
+			}
+
+			@Override
+			public void setMessage(final String message) {
+				toast.setMessage(message);
+			}
+		};
+		return alertRegistration;
+	}
+
+	private void hideAndRemoveFromContainer(final Alert toast) {
+		toast.hide(new AnimationCallback() {
+			@Override
+			public void onComplete() {
+				removeAlertFromAlertingContainer(toast);
+			}
+		});
+	}
+
 }

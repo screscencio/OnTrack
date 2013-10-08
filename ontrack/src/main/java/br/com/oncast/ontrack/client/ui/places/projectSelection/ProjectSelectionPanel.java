@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.projectSelection;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectSelectionWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationWidgetContainer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,6 +13,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProjectSelectionPanel extends Composite implements ProjectSelectionView {
@@ -21,10 +23,13 @@ public class ProjectSelectionPanel extends Composite implements ProjectSelection
 	interface ProjectSelectionPanelUiBinder extends UiBinder<Widget, ProjectSelectionPanel> {}
 
 	@UiField
-	protected ProjectSelectionWidget selectionProject;
+	protected FocusPanel rootPanel;
 
 	@UiField
-	protected FocusPanel rootPanel;
+	protected ApplicationWidgetContainer container;
+
+	@UiField
+	protected ProjectSelectionWidget selectionProject;
 
 	@UiFactory
 	protected ProjectSelectionWidget createProjectSwitchCommandMenu() {
@@ -48,5 +53,10 @@ public class ProjectSelectionPanel extends Composite implements ProjectSelection
 	@Override
 	public void focus() {
 		selectionProject.focus();
+	}
+
+	@Override
+	public Panel getAlertingContainer() {
+		return container.getAlertingContainer();
 	}
 }

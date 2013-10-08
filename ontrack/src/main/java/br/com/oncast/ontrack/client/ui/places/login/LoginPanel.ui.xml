@@ -47,7 +47,7 @@
 		
 	</ui:style>
 
-	<layout:ApplicationWidgetContainer debugId="loginPlace">
+	<layout:ApplicationWidgetContainer ui:field="root" debugId="loginPlace">
 		<g:FormPanel ui:field="form" action="fakeAction" method="post">
 			<g:HTMLPanel styleName="{style.contentPanel}">
 				<layout:ValidationInputContainer debugId="emailInput" ui:field="emailArea" defaultText="Username">

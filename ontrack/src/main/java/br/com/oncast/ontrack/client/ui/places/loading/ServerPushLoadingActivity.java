@@ -50,7 +50,7 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 			public void disconnected() {}
 
 		});
-		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
 	}
 
 	@Override

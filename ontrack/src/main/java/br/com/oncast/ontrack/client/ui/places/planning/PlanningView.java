@@ -5,8 +5,8 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar.SearchBar;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 public interface PlanningView extends IsWidget {
 
@@ -22,7 +22,7 @@ public interface PlanningView extends IsWidget {
 
 	boolean ensureWidgetIsVisible(IsWidget widget);
 
-	Widget getAlertingMenu();
+	FlowPanel getAlertingMenu();
 
 	void toggleReleasePanel();
 

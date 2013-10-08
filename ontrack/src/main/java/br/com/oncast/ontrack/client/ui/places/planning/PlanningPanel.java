@@ -24,6 +24,7 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
@@ -123,15 +124,15 @@ public class PlanningPanel extends Composite implements PlanningView {
 	}
 
 	@Override
-	public Widget getAlertingMenu() {
+	public FlowPanel getAlertingMenu() {
 		return rootPanel.getContentPanelWidget();
 	}
 
 	/**
 	 * Makes the widget visible by moving the scroll position<br>
-	 * If the widget is already completely visible it does nothing.
-	 * If the widget is higher than the scroll then it scrolls to top of the widget letting the bottom part hidden.
-	 * If the widget is occupying all the scroll space then it does nothing.
+	 * If the widget is already completely visible it does nothing. If the widget is higher than the scroll then it scrolls to top of the widget letting the bottom part hidden. If the widget is
+	 * occupying all the scroll space then it does nothing.
+	 * 
 	 * @return true if the widget fits the scroll been able to be completely visible false otherwise.
 	 */
 	@Override

@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.layout;
 
-import java.util.Iterator;
-
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
+
+import java.util.Iterator;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -61,7 +61,7 @@ public class ApplicationMenuAndWidgetContainer extends Composite implements HasW
 		return widgetContainer;
 	}
 
-	public Widget getContentPanelWidget() {
+	public FlowPanel getContentPanelWidget() {
 		return widgetContainer;
 	}
 }

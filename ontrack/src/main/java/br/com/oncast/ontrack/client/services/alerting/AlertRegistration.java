@@ -4,4 +4,6 @@ public interface AlertRegistration {
 
 	void hide();
 
+	void setMessage(String message);
+
 }

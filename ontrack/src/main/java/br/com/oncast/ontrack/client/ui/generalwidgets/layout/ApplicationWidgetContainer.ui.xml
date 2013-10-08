@@ -64,7 +64,7 @@
 
     </ui:style>
 
-    <g:HTMLPanel styleName="{style.rootPanel}">
+    <g:HTMLPanel ui:field="root" styleName="{style.rootPanel}">
         <g:HTMLPanel styleName="{style.positioningPanel}">
         	<g:SimplePanel ui:field="logoImage" styleName="{style.logoImage}"/>
             <g:FlowPanel ui:field="widgetContainer" styleName="{style.contentPanel}" />

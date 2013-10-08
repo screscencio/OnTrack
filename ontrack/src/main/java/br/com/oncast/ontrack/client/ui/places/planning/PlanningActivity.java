@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.places.planning;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -27,6 +23,10 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.services.url.URLBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.Scheduler;

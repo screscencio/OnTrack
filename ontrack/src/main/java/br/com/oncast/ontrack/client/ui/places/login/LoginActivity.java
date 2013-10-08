@@ -47,7 +47,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		panel.setWidget(view.asWidget());
-		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
 		view.setUsername(SERVICE_PROVIDER.storage().loadLastUserEmail(""));
 	}
 

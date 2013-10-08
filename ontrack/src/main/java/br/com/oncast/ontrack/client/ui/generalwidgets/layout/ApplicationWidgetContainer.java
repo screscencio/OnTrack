@@ -7,6 +7,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -16,6 +17,9 @@ public class ApplicationWidgetContainer extends Composite implements HasWidgets 
 	private static ApplicationWidgetContainerUiBinder uiBinder = GWT.create(ApplicationWidgetContainerUiBinder.class);
 
 	interface ApplicationWidgetContainerUiBinder extends UiBinder<Widget, ApplicationWidgetContainer> {}
+
+	@UiField
+	HTMLPanel root;
 
 	@UiField
 	protected Label messageLabel;
@@ -58,5 +62,9 @@ public class ApplicationWidgetContainer extends Composite implements HasWidgets 
 	@Override
 	public boolean remove(final Widget w) {
 		return widgetContainer.remove(w);
+	}
+
+	public HTMLPanel getAlertingContainer() {
+		return root;
 	}
 }

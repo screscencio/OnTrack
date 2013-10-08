@@ -53,7 +53,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 			}
 		});
 
-		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
 	}
 
 	@Override

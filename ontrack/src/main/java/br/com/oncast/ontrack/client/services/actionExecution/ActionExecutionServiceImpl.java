@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.services.actionExecution;
 
+import br.com.oncast.ontrack.client.services.alerting.AlertRegistration;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
@@ -8,6 +9,7 @@ import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.places.PlaceChangeListener;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ShowsUndoAlertAfterActionExecution;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
@@ -16,10 +18,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
 
 public class ActionExecutionServiceImpl implements ActionExecutionService {
+
+	private static final UndoWarningMessages MESSAGES = GWT.create(UndoWarningMessages.class);
 
 	private final ActionExecutionManager actionManager;
 	private final ContextProviderService contextService;
@@ -34,10 +41,30 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 		this.actionExecutionListeners = new ArrayList<ActionExecutionListener>();
 		this.contextService = contextService;
 		this.actionManager = new ActionExecutionManager(new ActionExecutionListener() {
+
+			private AlertRegistration alertRegistration;
+
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
 					final boolean isClientAction) {
+
 				notifyActionExecutionListeners(action, context, actionContext, executionContext, isClientAction);
+				if (!isClientAction || !(action instanceof ShowsUndoAlertAfterActionExecution)) return;
+
+				hideAlert();
+
+				final String warningMessage = ((ShowsUndoAlertAfterActionExecution) action).getAlertMessage(MESSAGES);
+				alertRegistration = alertingService.showInfoWithButton(warningMessage, MESSAGES.undo(), new ClickHandler() {
+					@Override
+					public void onClick(final ClickEvent event) {
+						hideAlert();
+						onUserActionExecutionRequest(executionContext.getReverseAction());
+					}
+				});
+			}
+
+			private void hideAlert() {
+				if (alertRegistration != null) alertRegistration.hide();
 			}
 		});
 		applicationPlaceController.addPlaceChangeListener(new PlaceChangeListener() {

@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.login;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.validation.EmailValidator;
+import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ValidationInputContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ValidationInputContainer.ValidationHandler;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
@@ -18,6 +19,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,6 +28,9 @@ public class LoginPanel extends Composite implements LoginView {
 	private static LoginPanelUiBinder uiBinder = GWT.create(LoginPanelUiBinder.class);
 
 	interface LoginPanelUiBinder extends UiBinder<Widget, LoginPanel> {}
+
+	@UiField
+	ApplicationWidgetContainer root;
 
 	@UiField
 	protected ValidationInputContainer emailArea;
@@ -161,5 +166,10 @@ public class LoginPanel extends Composite implements LoginView {
 		emailArea.update(false);
 		passwordArea.update(true);
 		emailArea.setFocus(true);
+	}
+
+	@Override
+	public Panel getAlertingContainer() {
+		return root.getAlertingContainer();
 	}
 }

@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import br.com.oncast.ontrack.client.services.actionExecution.UndoWarningMessages;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -20,7 +21,7 @@ import java.util.List;
 import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeRemoveActionEntity.class)
-public class ScopeRemoveAction implements ScopeAction {
+public class ScopeRemoveAction implements ScopeAction, ShowsUndoAlertAfterActionExecution {
 
 	private static final long serialVersionUID = 1L;
 
@@ -115,4 +116,10 @@ public class ScopeRemoveAction implements ScopeAction {
 	public boolean changesProgressInference() {
 		return true;
 	}
+
+	@Override
+	public String getAlertMessage(final UndoWarningMessages messages) {
+		return messages.scopeRemove();
+	}
+
 }

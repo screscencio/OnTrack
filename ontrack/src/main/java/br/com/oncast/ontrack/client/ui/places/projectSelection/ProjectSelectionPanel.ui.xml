@@ -45,7 +45,7 @@
 	</ui:style>
 
 	<g:FocusPanel debugId="projectSelectionPlace" ui:field="rootPanel" styleName="{style.rootPanel}">
-	   <layout:ApplicationWidgetContainer>
+	   <layout:ApplicationWidgetContainer ui:field="container">
             <g:HTMLPanel styleName="{style.projectSelectionPanel}">
             	<g:Label styleName="{style.chooseLabel}">
             		<ui:msg description="project selection label">Choose a Project</ui:msg>

@@ -18,7 +18,7 @@ public class ProjectSelectionActivity extends AbstractActivity {
 		final ProjectSelectionView view = new ProjectSelectionPanel();
 		panel.setWidget(view.asWidget());
 		view.focus();
-		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.asWidget());
+		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
 
 	}
 
