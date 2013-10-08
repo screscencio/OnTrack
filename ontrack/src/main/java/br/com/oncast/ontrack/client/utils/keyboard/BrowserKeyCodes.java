@@ -72,6 +72,8 @@ public class BrowserKeyCodes {
 
 	public static final int KEY_A = 65;
 
+	public static final int KEY_C = 67;
+
 	public static final int KEY_E = 69;
 
 	public static final int KEY_F = 70;
@@ -132,6 +134,7 @@ public class BrowserKeyCodes {
 			keysRepresentations.put(KEY_DOWN, "DOWN");
 
 			// The string representation without SHIFT key pressed
+			keysRepresentations.put(KEY_C, "c");
 			keysRepresentations.put(KEY_1, "1");
 			keysRepresentations.put(KEY_2, "2");
 			keysRepresentations.put(KEY_3, "3");
@@ -151,6 +154,7 @@ public class BrowserKeyCodes {
 			keysRepresentations.put(KEY_Z, "z");
 
 			// The string representation with SHIFT key pressed
+			shiftedKeysRepresentations.put(KEY_C, "C");
 			shiftedKeysRepresentations.put(KEY_1, "!");
 			shiftedKeysRepresentations.put(KEY_2, "@");
 			shiftedKeysRepresentations.put(KEY_3, "#");

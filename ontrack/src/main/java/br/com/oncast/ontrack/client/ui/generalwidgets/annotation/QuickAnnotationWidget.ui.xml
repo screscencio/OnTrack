@@ -1,0 +1,49 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style>
+
+		.root {
+			padding: 9px;
+			box-shadow: 1px 1px 10px #666;
+			background: #f1f1f1;
+			border-radius: 3px;
+		}
+		
+		.button {
+			outline: none;
+			background: #fafafa;
+			border: 1px solid #ccc;
+			border-radius: 0px 3px 3px 0px;
+			cursor: pointer;
+			margin: 0px;
+			height: 92px;
+			color: #444;
+			padding: 0px 15px;
+		}
+		
+		.button:HOVER {
+			box-shadow: inset 0px 0px 5px #ddd;
+		}
+		
+		.textArea {
+			float: left;
+			width: 540px;
+			height: 80px;
+			outline: none;
+			border: 1px solid #ccc;
+			border-right: none;
+			border-radius: 3px 0px 0px 3px;
+			margin: 0px;
+			padding: 5px;
+		}
+		
+	</ui:style>
+	
+	<g:HTMLPanel styleName="{style.root}">
+		<g:TextArea ui:field="text" styleName="{style.textArea}"/>
+		<g:Button styleName="{style.button}" ui:field="button"><i class="icon-ok icon-2x"/></g:Button>
+	</g:HTMLPanel>
+	
+</ui:UiBinder> 

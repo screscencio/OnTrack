@@ -1,17 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.CENTER;
-import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.LEFT;
-import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
-import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment.BOTTOM;
-import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment.TOP;
-import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.user.Selection;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.SubjectDetailUpdateEvent;
@@ -33,11 +21,13 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.annotation.QuickAnnotationWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.TagAssociationWidget;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.PrioritizationCriteria;
@@ -49,6 +39,9 @@ import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.base.Joiner;
 import com.google.gwt.animation.client.Animation;
@@ -80,6 +73,15 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.CENTER;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.LEFT;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment.BOTTOM;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment.TOP;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 
 public class ScopeTreeItemWidget extends Composite {
 
@@ -257,8 +259,7 @@ public class ScopeTreeItemWidget extends Composite {
 				if (ipadFocusWorkaround.shouldNotAllowBlur()) {
 					editionBox.setFocus(true);
 					event.preventDefault();
-				}
-				else switchToVisualization(true);
+				} else switchToVisualization(true);
 			}
 		});
 
@@ -360,10 +361,8 @@ public class ScopeTreeItemWidget extends Composite {
 		if (!shouldTryToUpdateChanges) {
 			editionBox.setText(descriptionLabel.getText());
 			editionHandler.onEditionCancel();
-		}
-		else {
-			if (!getSimpleDescription().equals(editionBox.getText())) editionHandler
-					.onEditionEnd(editionBox.getText());
+		} else {
+			if (!getSimpleDescription().equals(editionBox.getText())) editionHandler.onEditionEnd(editionBox.getText());
 			else editionHandler.onEditionCancel();
 		}
 	}
@@ -486,8 +485,7 @@ public class ScopeTreeItemWidget extends Composite {
 		if (release == null) release = getCurrentRelease();
 
 		for (final Release releaseItem : releaseList) {
-			final SimpleCommandMenuItem item = releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(),
-					releaseItem.getFullDescription());
+			final SimpleCommandMenuItem item = releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(), releaseItem.getFullDescription());
 
 			if (release.equals(releaseItem)) scopeReleaseItem = item;
 			items.add(item);
@@ -500,9 +498,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		commandsMenu.addCloseHandler(createCloseHandler());
 
-		align(configPopup(), releaseTag)
-				.popup(commandsMenu)
-				.pop();
+		align(configPopup(), releaseTag).popup(commandsMenu).pop();
 
 		if (scopeReleaseItem != null) {
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -558,9 +554,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		commandsMenu.addCloseHandler(createCloseHandler());
 
-		align(configPopup(), progressLabel)
-				.popup(commandsMenu)
-				.pop();
+		align(configPopup(), progressLabel).popup(commandsMenu).pop();
 	}
 
 	public void showEffortMenu(final List<String> fibonacciScaleForEffort) {
@@ -575,9 +569,7 @@ public class ScopeTreeItemWidget extends Composite {
 		commandsMenu.addCloseHandler(createCloseHandler());
 
 		commandsMenu.setHelpText("");
-		align(configPopup(), effortPanel)
-				.popup(commandsMenu)
-				.pop();
+		align(configPopup(), effortPanel).popup(commandsMenu).pop();
 	}
 
 	public void showValueMenu(final List<String> fibonacciScaleForValue) {
@@ -592,9 +584,7 @@ public class ScopeTreeItemWidget extends Composite {
 		commandsMenu.addCloseHandler(createCloseHandler());
 
 		commandsMenu.setHelpText("");
-		align(configPopup(), valuePanel)
-				.popup(commandsMenu)
-				.pop();
+		align(configPopup(), valuePanel).popup(commandsMenu).pop();
 	}
 
 	public void showTagMenu(final List<Tag> tags) {
@@ -609,23 +599,24 @@ public class ScopeTreeItemWidget extends Composite {
 		commandsMenu.addCloseHandler(createCloseHandler());
 
 		commandsMenu.setHelpText("");
-		align(configPopup(), valuePanel)
-				.popup(commandsMenu)
-				.pop();
+		align(configPopup(), this.tags).popup(commandsMenu).pop();
+	}
+
+	public void showQuickAddAnnotationMenu(final List<Annotation> annotations) {
+		popBellowMe(new QuickAnnotationWidget(scope.getId()));
 	}
 
 	public void showImpedimentMenu() {
-		configPopup()
-				.popup(new ImpedimentListWidget(scope))
-				.alignHorizontal(LEFT, new AlignmentReference(this, LEFT, -1))
-				.alignVertical(TOP, new AlignmentReference(this, BOTTOM, 11))
-				.onClose(new PopupCloseListener() {
-					@Override
-					public void onHasClosed() {
-						focusPanel.setFocus(true);
-					}
-				})
-				.pop();
+		popBellowMe(new ImpedimentListWidget(scope));
+	}
+
+	private void popBellowMe(final Widget widgetToPop) {
+		configPopup().popup(widgetToPop).alignHorizontal(LEFT, new AlignmentReference(this, LEFT, -1)).alignVertical(TOP, new AlignmentReference(this, BOTTOM, 11)).onClose(new PopupCloseListener() {
+			@Override
+			public void onHasClosed() {
+				focusPanel.setFocus(true);
+			}
+		}).pop();
 	}
 
 	private PopupConfig align(final PopupConfig config, final Widget widget) {
@@ -646,8 +637,7 @@ public class ScopeTreeItemWidget extends Composite {
 		return menu;
 	}
 
-	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory,
-			final int maxWidth, final int maxHeight) {
+	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
 		final FiltrableCommandMenu menu = new FiltrableCommandMenu(customItemFactory, maxWidth, maxHeight);
 		menu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
 			@Override

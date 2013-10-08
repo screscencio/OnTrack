@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.ui.keyeventhandler;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
@@ -12,6 +9,9 @@ import br.com.oncast.ontrack.client.ui.keyeventhandlers.ShortcutHelpPanelShortcu
 import br.com.oncast.ontrack.client.utils.jquery.Event;
 import br.com.oncast.ontrack.client.utils.jquery.EventHandler;
 import br.com.oncast.ontrack.client.utils.jquery.JQuery;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -31,9 +31,13 @@ public class ShortcutService {
 
 	/**
 	 * Register the given shortcut mappings to RoopPanel's instance.
-	 * @param widget that is registering the shortcuts, the shortcuts are registered when this widget is attached and unregistered when it is unattached.
-	 * @param parameter that the shortcut mapping will receive when the shortcut is triggered.
-	 * @param mappings of the shortcuts.
+	 * 
+	 * @param widget
+	 *            that is registering the shortcuts, the shortcuts are registered when this widget is attached and unregistered when it is unattached.
+	 * @param parameter
+	 *            that the shortcut mapping will receive when the shortcut is triggered.
+	 * @param mappings
+	 *            of the shortcuts.
 	 * @return the re
 	 */
 	public static <T> HandlerRegistration register(final IsWidget widget, final T shortcutParameter, final ShortcutMapping<T>[] mappings) {
@@ -61,8 +65,7 @@ public class ShortcutService {
 				if (event.isAttached()) {
 					jquery.bindKeydown(handler);
 					registeredShortcuts.addAll(Arrays.asList(mappings));
-				}
-				else {
+				} else {
 					jquery.unbindKeyDown(handler);
 					registeredShortcuts.removeAll(Arrays.asList(mappings));
 				}
@@ -70,7 +73,6 @@ public class ShortcutService {
 		});
 
 		return new HandlerRegistration() {
-
 			@Override
 			public void removeHandler() {
 				attachRegistration.removeHandler();
@@ -78,8 +80,7 @@ public class ShortcutService {
 
 				try {
 					jquery.unbindKeyDown(handler);
-				}
-				catch (final Exception e) {}
+				} catch (final Exception e) {}
 			}
 		};
 	}
@@ -87,19 +88,15 @@ public class ShortcutService {
 	public static void toggleShortcutHelpPanel() {
 		if (shortcutHelpPanelConfig != null) {
 			return;
-		}
-		else {
-			shortcutHelpPanelConfig = PopupConfig.configPopup()
-					.popup(new ShortcutHelpPanel(registeredShortcuts))
+		} else {
+			shortcutHelpPanelConfig = PopupConfig.configPopup().popup(new ShortcutHelpPanel(registeredShortcuts))
 					.alignVertical(VerticalAlignment.TOP, new AlignmentReference(shortcutHelpPanelParentWidget, VerticalAlignment.TOP))
-					.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(shortcutHelpPanelParentWidget, HorizontalAlignment.RIGHT, 10))
-					.onClose(new PopupCloseListener() {
+					.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(shortcutHelpPanelParentWidget, HorizontalAlignment.RIGHT, 10)).onClose(new PopupCloseListener() {
 						@Override
 						public void onHasClosed() {
 							shortcutHelpPanelConfig = null;
 						}
-					})
-					.setAnimationDuration(500);
+					}).setAnimationDuration(500);
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {

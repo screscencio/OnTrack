@@ -104,4 +104,8 @@ public interface ScopeTreeShortcutMappingsMessage extends BaseMessages {
 	@DefaultMessage("Can''t move the scope because both the selected scope and the targeted parent scope are in a release")
 	String cantMoveBecauseCantCascadeScopesWithReleases();
 
+	@Description("Quick add an annotation to scope shortcut")
+	@DefaultMessage("Quickly add an annotation to the selected scope")
+	String quickAddAnnotationToScope();
+
 }
