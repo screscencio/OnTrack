@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.AltModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
+import br.com.oncast.ontrack.client.ui.keyeventhandlers.ShortcutsSet;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
@@ -46,16 +47,16 @@ public enum PlanningShortcutMappings implements ShortcutMapping<PlanningActivity
 		}
 	};
 
-	private final Shortcut shortcut;
+	private final ShortcutsSet shortcuts;
 	private static final PlanningShortcutMappingsMessage messages = GWT.create(PlanningShortcutMappingsMessage.class);
 
-	PlanningShortcutMappings(final Shortcut shortcut) {
-		this.shortcut = shortcut;
+	PlanningShortcutMappings(final Shortcut... shortcuts) {
+		this.shortcuts = new ShortcutsSet(shortcuts);
 	}
 
 	@Override
-	public Shortcut getShortcut() {
-		return this.shortcut;
+	public ShortcutsSet getShortcuts() {
+		return this.shortcuts;
 	}
 
 	@Override

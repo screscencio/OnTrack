@@ -3,9 +3,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 import br.com.oncast.ontrack.client.utils.RuntimeEnvironment;
 
 enum PlatformDependantKey {
-	CONTROL("⌘", "Ctrl"),
-	ALT("⌥", "Alt"),
-	DELETE("Fn + Delete", "Delete");
+	CONTROL("⌘", "Ctrl"), ALT("⌥", "Alt"), DELETE("fn + delete", "Delete"), BACKSPACE("delete", "Backspace"), F2("fn + F2", "F2");
 
 	private final String mac;
 	private final String others;

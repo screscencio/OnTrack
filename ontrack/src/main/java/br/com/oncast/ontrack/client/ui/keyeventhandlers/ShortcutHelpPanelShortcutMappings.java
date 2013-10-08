@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
+
 import com.google.gwt.core.client.GWT;
 
 public enum ShortcutHelpPanelShortcutMappings implements ShortcutMapping<Void> {
@@ -22,16 +23,16 @@ public enum ShortcutHelpPanelShortcutMappings implements ShortcutMapping<Void> {
 		}
 	};
 
-	private final Shortcut shortcut;
+	private final ShortcutsSet shortcuts;
 	private static final ShortcutHelpPanelShortcutMappingsMessages messages = GWT.create(ShortcutHelpPanelShortcutMappingsMessages.class);
 
-	private ShortcutHelpPanelShortcutMappings(final Shortcut shortcut) {
-		this.shortcut = shortcut;
+	private ShortcutHelpPanelShortcutMappings(final Shortcut... shortcuts) {
+		this.shortcuts = new ShortcutsSet(shortcuts);
 	}
 
 	@Override
-	public Shortcut getShortcut() {
-		return shortcut;
+	public ShortcutsSet getShortcuts() {
+		return shortcuts;
 	}
 
 	@Override

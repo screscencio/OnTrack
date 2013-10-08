@@ -94,7 +94,7 @@
 		<g:Button ui:field="btnNSibli" styleName="{style.btnNSibling} {style.btn}" title="{messages.insertSiblingDown}" />
 		<g:Button ui:field="btnNChild" styleName="{style.btnNChild} {style.btn}" title="{messages.insertChild}" />
 		<g:Button ui:field="btnEdit" styleName="{style.btnEdit} {style.btn}" title="{messages.updateScope}" />
-		<g:Button ui:field="btnDetail" styleName="{style.btnDetail} {style.btn}" title="{messages.showAnnotations}" />
+		<g:Button ui:field="btnDetail" styleName="{style.btnDetail} {style.btn}" title="{messages.openDetailsPanel}" />
 		<g:Label styleName="{style.spacer}" />
 		<g:Button ui:field="btnRelease" styleName="{style.btnRelease} {style.btn}" title="{messages.bindRelease}" />
 		<g:Button ui:field="btnEffort" styleName="{style.btnEffort} {style.btn}" title="{messages.declareEffort}" />

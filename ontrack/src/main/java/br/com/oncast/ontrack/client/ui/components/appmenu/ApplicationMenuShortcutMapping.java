@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.EventProcessor;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.AltModifier;
+import br.com.oncast.ontrack.client.ui.keyeventhandlers.ShortcutsSet;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
@@ -43,17 +44,17 @@ public enum ApplicationMenuShortcutMapping implements ShortcutMapping<Applicatio
 		}
 	};
 
-	private final Shortcut shortcut;
+	private final ShortcutsSet shortcuts;
 
 	private static final ApplicationMenuShortcutMappingMessages messages = GWT.create(ApplicationMenuShortcutMappingMessages.class);
 
-	private ApplicationMenuShortcutMapping(final Shortcut shortcut) {
-		this.shortcut = shortcut;
+	private ApplicationMenuShortcutMapping(final Shortcut... shortcuts) {
+		this.shortcuts = new ShortcutsSet(shortcuts);
 	}
 
 	@Override
-	public Shortcut getShortcut() {
-		return this.shortcut;
+	public ShortcutsSet getShortcuts() {
+		return this.shortcuts;
 	}
 
 	@Override

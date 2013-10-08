@@ -45,7 +45,7 @@ public class ShortcutService {
 			@Override
 			public void handle(final Event e) {
 				for (final ShortcutMapping<T> mapping : mappings) {
-					if (mapping.getShortcut().accepts(e)) {
+					if (mapping.getShortcuts().accepts(e)) {
 						mapping.getEventPostExecutionProcessor().process(e);
 						mapping.execute(shortcutParameter);
 					}

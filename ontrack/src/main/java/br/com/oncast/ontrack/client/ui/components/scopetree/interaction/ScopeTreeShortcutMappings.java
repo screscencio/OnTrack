@@ -22,6 +22,7 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.AltModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
+import br.com.oncast.ontrack.client.ui.keyeventhandlers.ShortcutsSet;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveToAction;
@@ -37,15 +38,15 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_4;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_5;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DELETE;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOWN;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_E;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_F2;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LEFT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
 
-// TODO Refactor this class into a shortcut manager with better resposability division and better performance while mapping interactions.
 public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidgetInteractionHandler> {
-	UPDATE(new Shortcut(KEY_F2)) {
+	UPDATE(new Shortcut(KEY_F2), new Shortcut(KEY_E).with(ShiftModifier.BOTH)) {
 		@Override
 		public void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new NodeEditionInternalAction(scope));
@@ -188,7 +189,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
-	DELETE_SCOPE(new Shortcut(KEY_DELETE)) {
+	DELETE_SCOPE(new Shortcut(KEY_DELETE), new Shortcut(BrowserKeyCodes.KEY_BACKSPACE)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onUserActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
@@ -201,7 +202,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
-	DECLARE_IMPEDIMENT(new Shortcut(KEY_1).with(ShiftModifier.PRESSED)) {
+	DECLARE_IMPEDIMENT(new Shortcut(KEY_1).with(ShiftModifier.BOTH)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareImpedimentInternalAction(scope));
@@ -214,7 +215,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
-	BIND_RELEASE(new Shortcut(KEY_2).with(ShiftModifier.PRESSED)) {
+	BIND_RELEASE(new Shortcut(KEY_2).with(ShiftModifier.BOTH)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new BindReleaseInternalAction(scope, interactionHandler.getProjectContext()));
@@ -227,7 +228,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
-	BIND_EFFORT(new Shortcut(KEY_3).with(ShiftModifier.PRESSED)) {
+	BIND_EFFORT(new Shortcut(KEY_3).with(ShiftModifier.BOTH)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareEffortInternalAction(scope, interactionHandler.getProjectContext()));
@@ -240,7 +241,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
-	BIND_VALUE(new Shortcut(KEY_4).with(ShiftModifier.PRESSED)) {
+	BIND_VALUE(new Shortcut(KEY_4).with(ShiftModifier.BOTH)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareValueInternalAction(scope, interactionHandler.getProjectContext()));
@@ -253,7 +254,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
-	BIND_PROGRESS(new Shortcut(KEY_5).with(ShiftModifier.PRESSED)) {
+	BIND_PROGRESS(new Shortcut(KEY_5).with(ShiftModifier.BOTH)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareProgressInternalAction(scope, interactionHandler.getProjectContext()));
@@ -266,7 +267,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
-	ADD_TAG(new Shortcut(BrowserKeyCodes.KEY_7).with(ShiftModifier.PRESSED)) {
+	ADD_TAG(new Shortcut(BrowserKeyCodes.KEY_7).with(ShiftModifier.BOTH)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new AddTagInternalAction(scope, interactionHandler.getProjectContext()));
@@ -292,7 +293,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
-	OPEN_DETAILS(new Shortcut(BrowserKeyCodes.KEY_A).with(ShiftModifier.PRESSED)) {
+	OPEN_DETAILS(new Shortcut(BrowserKeyCodes.KEY_A).with(ShiftModifier.BOTH)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			ClientServices.get().details().showDetailsFor(scope.getId());
@@ -300,7 +301,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 		@Override
 		public String getDescription() {
-			return messages.showAnnotations();
+			return messages.openDetailsPanel();
 		}
 
 	},
@@ -357,7 +358,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	},
 
-	FIND_SCOPE_AT_RELEASE_WIDGET(new Shortcut(BrowserKeyCodes.KEY_F).with(AltModifier.PRESSED)) {
+	FIND_SCOPE_AT_RELEASE_WIDGET(new Shortcut(BrowserKeyCodes.KEY_SPACE), new Shortcut(BrowserKeyCodes.KEY_F).with(AltModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
@@ -396,11 +397,11 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 
 	};
 
-	private final Shortcut shortcut;
+	private final ShortcutsSet shortcuts;
 	private static final ScopeTreeShortcutMappingsMessage messages = GWT.create(ScopeTreeShortcutMappingsMessage.class);
 
-	ScopeTreeShortcutMappings(final Shortcut shortcut) {
-		this.shortcut = shortcut;
+	ScopeTreeShortcutMappings(final Shortcut... shortcuts) {
+		this.shortcuts = new ShortcutsSet(shortcuts);
 	}
 
 	@Override
@@ -414,8 +415,8 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	protected abstract void customExecution(ScopeTreeWidgetInteractionHandler interactionHandler, Scope scope);
 
 	@Override
-	public Shortcut getShortcut() {
-		return this.shortcut;
+	public ShortcutsSet getShortcuts() {
+		return this.shortcuts;
 	}
 
 	@Override

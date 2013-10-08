@@ -19,6 +19,7 @@
 			color: COLOR_MENUBOX_TEXT;
 			
 			max-height: 600px;
+			width: 680px;
 			overflow-y: auto;
 			overflow-x: hidden;
 		}

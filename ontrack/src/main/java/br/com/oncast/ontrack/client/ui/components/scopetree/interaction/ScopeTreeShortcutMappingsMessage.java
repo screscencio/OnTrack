@@ -64,9 +64,9 @@ public interface ScopeTreeShortcutMappingsMessage extends BaseMessages {
 	@DefaultMessage("Declares a value of your choice to the selected scope")
 	String declareValue();
 
-	@Description("Description for show annotations shortcut")
-	@DefaultMessage("Show annotations for the selected scope")
-	String showAnnotations();
+	@Description("Description for open details panel shortcut")
+	@DefaultMessage("Opens a panel with details of the selected scope")
+	String openDetailsPanel();
 
 	@Description("Description for toggle value column shortcut")
 	@DefaultMessage("Show / hide values of all scopes")

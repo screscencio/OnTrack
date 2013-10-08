@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.keyeventhandler;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.ShortcutLabel;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.AltModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
@@ -65,6 +66,11 @@ public class Shortcut {
 
 	public AltModifier getAlt() {
 		return alt;
+	}
+
+	@Override
+	public String toString() {
+		return ShortcutLabel.toString(this);
 	}
 
 }

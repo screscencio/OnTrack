@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.details;
 
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -93,8 +92,7 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 
 	private com.google.web.bindery.event.shared.HandlerRegistration handlerRegistration;
 
-	private DetailsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId, final String subjectDescription, final String headerTagDescription,
-			final String humanId) {
+	private DetailsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId, final String subjectDescription, final String headerTagDescription, final String humanId) {
 		this.subjectId = subjectId;
 		subjectTitle = new EditableLabel(new EditableLabelEditionHandler() {
 
@@ -105,14 +103,11 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 				try {
 					projectContext.findScope(subjectId);
 					actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(subjectId, text));
-				}
-				catch (final ScopeNotFoundException e) {
+				} catch (final ScopeNotFoundException e) {
 					try {
 						projectContext.findRelease(subjectId);
-						actionExecutionService
-								.onUserActionExecutionRequest(new ReleaseRenameAction(subjectId, text));
-					}
-					catch (final ReleaseNotFoundException e1) {
+						actionExecutionService.onUserActionExecutionRequest(new ReleaseRenameAction(subjectId, text));
+					} catch (final ReleaseNotFoundException e1) {
 						throw new RuntimeException("Impossible to create an editable label for this annotation.");
 					}
 				}
@@ -153,8 +148,7 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 		try {
 			final Description description = ClientServices.getCurrentProjectContext().findDescriptionFor(subjectId);
 			updateDescription(description.getDescription());
-		}
-		catch (final DescriptionNotFoundException e) {}
+		} catch (final DescriptionNotFoundException e) {}
 
 		setHeaderTagDescription(headerTagDescription);
 		setHumanId(humanId);
@@ -192,7 +186,7 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 	@UiHandler("rootPanel")
 	protected void onKeyDown(final KeyDownEvent e) {
 		for (final UndoRedoShortCutMapping m : UndoRedoShortCutMapping.values())
-			if (m.getShortcut().accepts(e.getNativeEvent())) return;
+			if (m.getShortcuts().accepts(e.getNativeEvent())) return;
 		e.stopPropagation();
 		if (BrowserKeyCodes.KEY_ESCAPE == e.getNativeKeyCode()) hide();
 	}
@@ -244,11 +238,9 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 		unregisterActionExecutionListener();
 		handlerRegistration = SERVICE_PROVIDER.actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
 					final boolean isUserAction) {
-				if (action instanceof DescriptionAction && action.getReferenceId().equals(subjectId)) updateDescription(((DescriptionAction) action)
-						.getDescription());
+				if (action instanceof DescriptionAction && action.getReferenceId().equals(subjectId)) updateDescription(((DescriptionAction) action).getDescription());
 			}
 		});
 	}

@@ -60,7 +60,7 @@ public class ShortcutHelpPanel extends Composite implements PopupAware, HasClose
 
 		int row = 0;
 		for (final ShortcutMapping<?> sm : registeredShortcuts) {
-			final ShortcutLabel shortcutLabel = new ShortcutLabel(sm.getShortcut());
+			final ShortcutLabel shortcutLabel = new ShortcutLabel(sm.getShortcuts());
 			shortcutLabel.addStyleName(style.shortcutLabel());
 			shortcutsContainer.setWidget(row, 0, shortcutLabel);
 			shortcutsContainer.setText(row, 1, ":");
@@ -79,7 +79,7 @@ public class ShortcutHelpPanel extends Composite implements PopupAware, HasClose
 	@UiHandler("rootPanel")
 	void onKeyDown(final KeyDownEvent e) {
 		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE ||
-				ShortcutHelpPanelShortcutMappings.SHOW_SHORTCUT_HELP_PANEL.getShortcut().accepts(e.getNativeEvent())) hide();
+				ShortcutHelpPanelShortcutMappings.SHOW_SHORTCUT_HELP_PANEL.getShortcuts().accepts(e.getNativeEvent())) hide();
 	}
 
 	@Override
