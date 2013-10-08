@@ -25,6 +25,7 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 		final int index = parentScope.getChildIndex(scope);
 
 		ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
+		final boolean state = treeItem.getState();
 		treeItem.remove();
 		if (treeItem.isFake()) treeItem = new ScopeTreeItem(scope);
 		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope);
@@ -34,6 +35,6 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 
 		treeItem.setHierarchicalState(true);
 		tree.setSelectedItem(treeItem, true);
-
+		treeItem.setState(state);
 	}
 }
