@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.services.feedback.ProjectCreationQuotaRequisitionCallback;
@@ -11,6 +7,10 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -91,12 +91,11 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private static FiltrableCommandMenu createDefaultFiltrableCommandMenu() {
-		return configureFiltrableMenu(new FiltrableCommandMenu(createCustomItemFactory(), FILTRABLE_MENU_MAX_WIDTH, FILTRABLE_MENU_MAX_HEIGHT).setCloseOnEscape(false));
-
+		return configureFiltrableMenu(new FiltrableCommandMenu(createCustomItemFactory(), FILTRABLE_MENU_MAX_WIDTH, FILTRABLE_MENU_MAX_HEIGHT).setCloseOnEscape(false).setAlwaysShowMenu(false));
 	}
 
 	private static FiltrableCommandMenu configureFiltrableMenu(final FiltrableCommandMenu filtrableMenu) {
-		return filtrableMenu.setAlwaysShowMenu(false).setHelpText(messages.selectionHelpText()).setLargePadding();
+		return filtrableMenu.setHelpText(messages.selectionHelpText()).setLargePadding();
 	}
 
 	private static CustomCommandMenuItemFactory createCustomItemFactory() {
