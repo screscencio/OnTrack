@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.RichTextToolbar;
+import br.com.oncast.ontrack.client.utils.html.HTMLTextUtils;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
@@ -177,7 +178,7 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 	public void setText(final String text) {
 		currentText = text.trim();
 		textArea.setHTML(currentText);
-		label.setHTML(currentText);
+		label.setHTML(HTMLTextUtils.setTargetBlankInHyperLinks(currentText));
 		updateVisibleWidget();
 	}
 

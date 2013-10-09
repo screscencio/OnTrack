@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -19,19 +20,21 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 public class QuickAnnotationWidget extends Composite implements PopupAware, HasCloseHandlers<QuickAnnotationWidget> {
-
-	private static final QuickAnnotationWidgetMessages MESSAGES = GWT.create(QuickAnnotationWidgetMessages.class);
 
 	private static QuickAnnotationWidgetUiBinder uiBinder = GWT.create(QuickAnnotationWidgetUiBinder.class);
 
 	interface QuickAnnotationWidgetUiBinder extends UiBinder<Widget, QuickAnnotationWidget> {}
 
 	@UiField
-	TextArea text;
+	RichTextArea text;
+
+	@UiField
+	InlineLabel helpLabel;
 
 	@UiField
 	Button button;
@@ -41,7 +44,6 @@ public class QuickAnnotationWidget extends Composite implements PopupAware, HasC
 	public QuickAnnotationWidget(final UUID subjectId) {
 		this.subjectId = subjectId;
 		initWidget(uiBinder.createAndBindUi(this));
-		text.getElement().setAttribute("placeholder", MESSAGES.annotationTextPlaceholder());
 	}
 
 	@UiHandler("text")
@@ -50,14 +52,22 @@ public class QuickAnnotationWidget extends Composite implements PopupAware, HasC
 		if (new Shortcut(BrowserKeyCodes.KEY_ENTER).with(ControlModifier.PRESSED).accepts(e.getNativeEvent())) createAnnotation();
 	}
 
+	@UiHandler("text")
+	void onTextKeyUp(final KeyUpEvent e) {
+		helpLabel.setVisible(text.getText().isEmpty());
+	}
+
 	@UiHandler("button")
 	void onClick(final ClickEvent e) {
 		createAnnotation();
 	}
 
 	private void createAnnotation() {
-		final String message = text.getText();
-		if (message.trim().isEmpty()) return;
+		final String message = text.getHTML();
+		if (message.trim().isEmpty()) {
+			text.setFocus(true);
+			return;
+		}
 
 		ClientServices.get().details().createAnnotationFor(subjectId, message, null);
 		hide();

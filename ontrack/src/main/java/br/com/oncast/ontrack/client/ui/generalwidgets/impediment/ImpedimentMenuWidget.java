@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserUpdateListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.client.utils.html.HTMLTextUtils;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
@@ -86,7 +87,7 @@ public class ImpedimentMenuWidget extends Composite implements HasClickHandlers,
 
 	@Override
 	public boolean update() {
-		message.setText(new InlineHTML(impediment.getMessage()).getText());
+		message.setText(HTMLTextUtils.getTextOnly(impediment.getMessage()));
 		final boolean isDeprecated = impediment.isDeprecated();
 		message.setStyleName(style.deprecatedMessage(), isDeprecated);
 		final Date t = impediment.getLastOcuurenceOf(impediment.getType());

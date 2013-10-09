@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.Since
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.client.utils.html.HTMLTextUtils;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
@@ -132,7 +133,7 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 		deprecatedLabel.setText(getDeprecationText());
 		deprecatedLabel.setTitle(absoluteDate);
 
-		closedDeprecatedLabel.setText(MESSAGES.deprecated(annotation.getMessage()));
+		closedDeprecatedLabel.setText(MESSAGES.deprecated(HTMLTextUtils.getTextOnly(annotation.getMessage())));
 		closedDeprecatedLabel.setTitle(absoluteDate);
 	}
 

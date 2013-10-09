@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.Remov
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.client.utils.html.HTMLTextUtils;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -146,7 +147,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		if (this.annotation.getMessage().trim().isEmpty()) return;
 
 		final InlineHTML richText = new InlineHTML();
-		richText.setHTML(this.annotation.getMessage());
+		richText.setHTML(HTMLTextUtils.setTargetBlankInHyperLinks(this.annotation.getMessage()));
 		richText.setStyleName(style.richTextArea());
 		messageBody.add(richText);
 		messageBody.setCellWidth(richText, "100%");
@@ -225,7 +226,6 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		final String formattedDate = HumanDateFormatter.get().formatDateRelativeToNow(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 		deprecatedLabel.setText(messages.deprecationDetails("user", formattedDate));
 		ClientServices.get().userData().loadRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED).getId(), new AsyncCallback<User>() {
-
 			@Override
 			public void onSuccess(final User result) {
 				deprecatedLabel.setText(messages.deprecationDetails(result.getName(), formattedDate));

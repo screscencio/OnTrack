@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.report;
 
 import br.com.oncast.ontrack.client.ui.components.report.ImpedimentDatabase.ImpedimentItem;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.client.utils.html.HTMLTextUtils;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
@@ -19,7 +20,6 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionModel;
@@ -75,7 +75,7 @@ public class ImpedimentReportTable extends Composite {
 		final Column<ImpedimentItem, String> descriptionColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ImpedimentItem object) {
-				return new InlineHTML(object.getDescription()).getText();
+				return HTMLTextUtils.getTextOnly(object.getDescription());
 			}
 		};
 		descriptionColumn.setSortable(true);

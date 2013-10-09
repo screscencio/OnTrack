@@ -1,8 +1,11 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
-	<ui:style>
+	<ui:style src="../../style/default.css">
 
 		.root {
 			padding: 9px;
@@ -30,20 +33,30 @@
 		.textArea {
 			float: left;
 			width: 540px;
-			height: 80px;
+			height: 90px;
+			background: white;
 			outline: none;
 			border: 1px solid #ccc;
 			border-right: none;
 			border-radius: 3px 0px 0px 3px;
 			margin: 0px;
-			padding: 5px;
+		}
+		
+		.helpLabel {
+			position: absolute;
+			top: 19px;
+			left: 19px;
+			font-family: sans-serif;
+			font-size: 14px;
+			color: #999;
 		}
 		
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.root}">
-		<g:TextArea ui:field="text" styleName="{style.textArea}"/>
+		<g:RichTextArea ui:field="text" styleName="{style.textArea}"/>
 		<g:Button styleName="{style.button}" ui:field="button"><i class="icon-ok icon-2x"/></g:Button>
+		<g:InlineLabel ui:field="helpLabel" styleName="{style.helpLabel} {style.noSelection}"><ui:msg description="placeholder for new annotation creation text area">The content of the annotation goes here</ui:msg></g:InlineLabel>
 	</g:HTMLPanel>
 	
 </ui:UiBinder> 
