@@ -40,7 +40,7 @@
 		</w:IconTextBox>
 		<div class = "{style.impedimentsContainer}">
 			<div ui:field="noImpedimentsItem" class="{style.noImpedimentsItem}">
-				<ui:msg description="text showed when there is no impediments at all">Oh no! Your first imepdiment!</ui:msg>
+				<ui:msg description="text showed when there is no impediments at all">There are no impediments yet</ui:msg>
 			</div>
 			<w:ModelWidgetContainer ui:field="impedimentsContainer" styleName="{style.impediments}"/>
 		</div>

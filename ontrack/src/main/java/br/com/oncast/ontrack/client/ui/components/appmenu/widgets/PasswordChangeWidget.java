@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
 import br.com.oncast.ontrack.client.ui.components.appmenu.PasswordChangeWidgetMessages;
@@ -14,7 +11,6 @@ import br.com.oncast.ontrack.shared.utils.PasswordValidator;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -27,6 +23,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 
 public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget>, PopupAware {
 
@@ -56,15 +56,6 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 
 	public PasswordChangeWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
-		final KeyDownHandler consumeKeyDownHandler = new KeyDownHandler() {
-			@Override
-			public void onKeyDown(final KeyDownEvent event) {
-				event.stopPropagation();
-			}
-		};
-		oldPasswordArea.addKeyDownHandler(consumeKeyDownHandler);
-		newPasswordArea.addKeyDownHandler(consumeKeyDownHandler);
-		retypePasswordArea.addKeyDownHandler(consumeKeyDownHandler);
 	}
 
 	@Override
@@ -81,6 +72,11 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 
 	public void focus() {
 		oldPasswordArea.setFocus(true);
+	}
+
+	@UiHandler({ "oldPasswordArea", "newPasswordArea", "retypePasswordArea" })
+	protected void oldOnKeyDown(final KeyDownEvent event) {
+		event.stopPropagation();
 	}
 
 	@UiHandler("oldPasswordArea")
@@ -142,31 +138,30 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	private void submitUserPasswordChange() {
 		hideErrorMessage();
 		disable();
-		ClientServices.get().authentication()
-				.changePassword(oldPasswordArea.getText(), newPasswordArea.getText(), new UserPasswordChangeCallback() {
+		ClientServices.get().authentication().changePassword(oldPasswordArea.getText(), newPasswordArea.getText(), new UserPasswordChangeCallback() {
 
-					@Override
-					public void onUserPasswordChangedSuccessfully() {
-						ClientServices.get().alerting().showSuccess(messages.successfulChange());
-						enable();
-						hide();
-					}
+			@Override
+			public void onUserPasswordChangedSuccessfully() {
+				ClientServices.get().alerting().showSuccess(messages.successfulChange());
+				enable();
+				hide();
+			}
 
-					@Override
-					public void onUnexpectedFailure(final Throwable caught) {
-						// TODO Improve feedback message.
-						enable();
-						ClientServices.get().alerting().showError(messages.unexpectedError());
+			@Override
+			public void onUnexpectedFailure(final Throwable caught) {
+				// TODO Improve feedback message.
+				enable();
+				ClientServices.get().alerting().showError(messages.unexpectedError());
 
-					}
+			}
 
-					@Override
-					public void onIncorrectUserPasswordFailure() {
-						// TODO Improve feedback message.
-						enable();
-						ClientServices.get().alerting().showError(messages.incorrectOldPassword());
-					}
-				});
+			@Override
+			public void onIncorrectUserPasswordFailure() {
+				// TODO Improve feedback message.
+				enable();
+				ClientServices.get().alerting().showError(messages.incorrectOldPassword());
+			}
+		});
 
 	}
 
