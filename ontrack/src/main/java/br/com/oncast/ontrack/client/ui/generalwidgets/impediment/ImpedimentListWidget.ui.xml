@@ -28,7 +28,8 @@
 		}
 		
 		.impediments {
-			width: auto;
+			min-width: 450px;
+			max-width: 650px;
 		}
 	
 	</ui:style>

@@ -5,13 +5,13 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.WidgetMenuItem;
 
-public class TagCommandMenuItem implements CommandMenuItem {
+public class CustomWidgetCommandMenuItem implements CommandMenuItem {
 
 	private final WidgetMenuItem widgetMenuItem;
 	private final Command command;
 	private final String text;
 
-	public TagCommandMenuItem(final Widget widget, final String text, final Command cmd) {
+	public CustomWidgetCommandMenuItem(final Widget widget, final String text, final Command cmd) {
 		this.text = text;
 		this.command = cmd;
 		widgetMenuItem = new WidgetMenuItem(widget, cmd);
@@ -44,7 +44,7 @@ public class TagCommandMenuItem implements CommandMenuItem {
 		return true;
 	}
 
-	public TagCommandMenuItem setGrowAnimation(final boolean enabled) {
+	public CustomWidgetCommandMenuItem setGrowAnimation(final boolean enabled) {
 		widgetMenuItem.setStyleName("gwt-MenuItem-noGrow", !enabled);
 		return this;
 	}

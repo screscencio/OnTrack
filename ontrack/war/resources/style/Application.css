@@ -267,6 +267,7 @@ html,body {
 	background: #d1d1d1;
 	border-top: 1px solid #999;
 	white-space: nowrap;
+	text-shadow: 0px 0px 5px white;
 }
 
 .gwt-MenuBar-largePadding .gwt-MenuItem {

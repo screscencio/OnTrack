@@ -20,7 +20,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
-import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.annotation.QuickAnnotationWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.TagAssociationWidget;
@@ -485,14 +484,14 @@ public class ScopeTreeItemWidget extends Composite {
 		if (release == null) release = getCurrentRelease();
 
 		for (final Release releaseItem : releaseList) {
-			final SimpleCommandMenuItem item = releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(), releaseItem.getFullDescription());
+			final CommandMenuItem item = releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(), releaseItem.getFullDescription());
 
 			if (release.equals(releaseItem)) scopeReleaseItem = item;
 			items.add(item);
 		}
 
 		final CommandMenuItem scopeReleaseItemFinal = scopeReleaseItem;
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(releaseCommandMenuItemFactory, 350, 264);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(releaseCommandMenuItemFactory, 550, 264);
 
 		commandsMenu.setOrderedItems(items);
 

@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ColorSelectionListener;
-import br.com.oncast.ontrack.client.ui.generalwidgets.TagCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.CustomWidgetCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagMenuItem;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
@@ -35,9 +35,9 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 	}
 
 	@Override
-	public TagCommandMenuItem createCustomItem(final String inputText) {
+	public CustomWidgetCommandMenuItem createCustomItem(final String inputText) {
 		final Tag tag = createTag(inputText);
-		return new TagCommandMenuItem(new TagMenuItem(tag, new ColorSelectionListener() {
+		return new CustomWidgetCommandMenuItem(new TagMenuItem(tag, new ColorSelectionListener() {
 
 			@Override
 			public void onColorPackSelect(final ColorPack colorPack) {
@@ -53,9 +53,9 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 	}
 
 	@Override
-	public TagCommandMenuItem createItem(final String itemText, final String valueToDeclare) {
+	public CustomWidgetCommandMenuItem createItem(final String itemText, final String valueToDeclare) {
 		final Tag tag = getTagForDescription(itemText);
-		return new TagCommandMenuItem(new TagMenuItem(tag, new ColorSelectionListener() {
+		return new CustomWidgetCommandMenuItem(new TagMenuItem(tag, new ColorSelectionListener() {
 
 			@Override
 			public void onColorPackSelect(final ColorPack colorPack) {

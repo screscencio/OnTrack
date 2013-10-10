@@ -1,6 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
+import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.CustomWidgetCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 
 import com.google.gwt.core.client.GWT;
@@ -26,14 +29,13 @@ public class ScopeTreeItemWidgetReleaseCommandMenuItemFactory implements ScopeTr
 	}
 
 	@Override
-	public SimpleCommandMenuItem createItem(final String itemText, final String releaseToBind) {
-		return new SimpleCommandMenuItem(itemText, releaseToBind, new Command() {
-
+	public CommandMenuItem createItem(final String itemText, final String releaseToBind) {
+		return new CustomWidgetCommandMenuItem(new ReleaseCommandMenuItem(itemText), releaseToBind, new Command() {
 			@Override
 			public void execute() {
 				controller.bindRelease(releaseToBind);
 			}
-		}).setRtl(true);
+		}).setGrowAnimation(false);
 	}
 
 	@Override
