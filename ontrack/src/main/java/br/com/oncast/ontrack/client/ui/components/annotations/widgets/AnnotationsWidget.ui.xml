@@ -8,7 +8,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 	
-	<ui:style src="../../../style/default.css">
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget.AnnotationsWidgetStyle">
 	
 		.container {
 			position: relative;
@@ -59,6 +59,10 @@
 			box-shadow: none;
 		}
 		
+		.createImpedimentButton {
+			background-color: COLOR_ERROR_TERTIARY;
+		}
+		
 		.author {
 			margin-right: 10px;
 		}	
@@ -84,7 +88,10 @@
 							<div class="{style.buttonContainer}">
 								<g:FocusPanel ui:field="cancelButton" styleName="icon-trash icon-large {style.left} {style.cancel}"/>
 								<g:Button ui:field="createButton" styleName="{style.right} {style.create}">
-									<ui:msg description="create annotation">Create annotation</ui:msg>
+									<i ui:field="createButtonIcon" class="icon-comment"/> 
+									<span ui:field="createButtonText">
+										<ui:msg description="create annotation">Create annotation</ui:msg>
+									</span>
 								</g:Button>
 								<aw:UploadWidget ui:field="uploadWidget" styleName="{style.right}"/>
 							</div>

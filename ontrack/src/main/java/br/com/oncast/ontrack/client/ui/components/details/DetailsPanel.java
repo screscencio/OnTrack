@@ -23,6 +23,7 @@ import br.com.oncast.ontrack.shared.model.action.DescriptionAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
@@ -198,12 +199,17 @@ public class DetailsPanel extends Composite implements HasCloseHandlers<DetailsP
 
 	@UiHandler("addAnnotationButton")
 	protected void onAddAnnotationClick(final ClickEvent e) {
-		annotations.enterEditMode();
+		annotations.enterEditMode(AnnotationType.SIMPLE);
 	}
 
 	@UiHandler("addChecklistButton")
 	protected void onAddChecklistClick(final ClickEvent e) {
 		checklist.enterEditMode();
+	}
+
+	@UiHandler("addImpedimentButton")
+	protected void onAddImpedimentClick(final ClickEvent e) {
+		annotations.enterEditMode(AnnotationType.OPEN_IMPEDIMENT);
 	}
 
 	@Override

@@ -17,14 +17,18 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -38,12 +42,21 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationsWidget extends Composite {
 
+	private static final AnnotationsWidgetMessages MESSAGES = GWT.create(AnnotationsWidgetMessages.class);
+
 	private static AnnotationsWidgetUiBinder uiBinder = GWT.create(AnnotationsWidgetUiBinder.class);
 
 	interface AnnotationsWidgetUiBinder extends UiBinder<Widget, AnnotationsWidget> {}
 
+	interface AnnotationsWidgetStyle extends CssResource {
+		String createImpedimentButton();
+	}
+
 	@UiField
-	protected FocusPanel root;
+	AnnotationsWidgetStyle style;
+
+	@UiField
+	FocusPanel root;
 
 	@UiField
 	protected RichTextArea newAnnotationText;
@@ -56,6 +69,12 @@ public class AnnotationsWidget extends Composite {
 
 	@UiField
 	protected Button createButton;
+
+	@UiField
+	protected Element createButtonIcon;
+
+	@UiField
+	protected SpanElement createButtonText;
 
 	@UiField
 	protected UserWidget author;
@@ -81,6 +100,8 @@ public class AnnotationsWidget extends Composite {
 	private final UUID subjectId;
 
 	private ActionExecutionListener actionsListener;
+
+	private AnnotationType selectedType = AnnotationType.SIMPLE;
 
 	public AnnotationsWidget(final UUID subjectId) {
 		this.subjectId = subjectId;
@@ -147,9 +168,17 @@ public class AnnotationsWidget extends Composite {
 		hideNewAnnotationContainer();
 	}
 
-	public void enterEditMode() {
+	public void enterEditMode(final AnnotationType annotationType) {
+		setAnnotationType(annotationType);
 		newAnnotationContainer.setVisible(true);
 		setFocus(true);
+	}
+
+	private void setAnnotationType(final AnnotationType type) {
+		if (this.selectedType == type) return;
+
+		this.selectedType = type;
+		updateAnnotationType();
 	}
 
 	public void setFocus(final boolean b) {
@@ -178,11 +207,29 @@ public class AnnotationsWidget extends Composite {
 		uploadWidget.clearChosenFile();
 		newAnnotationText.setText("");
 		newAnnotationContainer.setVisible(false);
+		createButton.setEnabled(false);
 		root.setFocus(true);
 	}
 
 	private void update() {
 		annotationsWidgetContainer.update(getAnnotationService().getAnnotationsFor(subjectId));
+	}
+
+	private void updateAnnotationType() {
+		String buttonText;
+		String buttonIconStyle;
+
+		if (selectedType == AnnotationType.OPEN_IMPEDIMENT) {
+			buttonText = MESSAGES.createImpediment();
+			buttonIconStyle = "icon-flag";
+			createButton.addStyleName(style.createImpedimentButton());
+		} else {
+			buttonText = MESSAGES.createAnnotation();
+			buttonIconStyle = "icon-comment";
+			createButton.removeStyleName(style.createImpedimentButton());
+		}
+		createButtonText.setInnerText(buttonText);
+		createButtonIcon.setClassName(buttonIconStyle);
 	}
 
 	private ActionExecutionListener getListener() {

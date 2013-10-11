@@ -47,6 +47,7 @@
 			border-bottom: 1px solid #ccc;
 			line-height: 30px;
 			margin: 0px 10px;
+			text-shadow: 0px 0px 5px #fff;
 		}
 
 		.headerBar {
@@ -149,6 +150,7 @@
 			color: #fafafa;
 			text-align: center;
 			line-height: 18px;
+			text-shadow: 0px 0px 5px #000;
 		}
 		
 		.createButtonIcon {
@@ -208,6 +210,11 @@
 									<g:FocusPanel ui:field="addAnnotationButton" styleName="{style.createButton}">
 										<g:HTMLPanel>
 											<i class="icon-comment {style.createButtonIcon}"/> <span><ui:msg description="Add annotation">Add annotation</ui:msg></span>
+										</g:HTMLPanel>
+									</g:FocusPanel>
+									<g:FocusPanel ui:field="addImpedimentButton" styleName="{style.createButton}">
+										<g:HTMLPanel>
+											<i class="icon-flag {style.createButtonIcon}"/> <span><ui:msg description="Add impediment">Add impediment</ui:msg></span>
 										</g:HTMLPanel>
 									</g:FocusPanel>
 									<g:FocusPanel ui:field="addChecklistButton" styleName="{style.createButton}">
