@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Two
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.OperationNotAllowedException;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.utils.ScopeBindReleaseActionHelper;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
@@ -22,6 +23,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInteractionHandler {
@@ -35,8 +37,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 			this.pendingAction = internalAction;
 			try {
 				execute(internalAction);
-			}
-			catch (final RuntimeException e) {
+			} catch (final RuntimeException e) {
 				this.pendingAction = null;
 				throw e;
 			}
@@ -54,12 +55,10 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		public void rollbackPendingAction() {
 			try {
 				pendingAction.rollback(tree);
-			}
-			catch (final UnableToCompleteActionException e) {
+			} catch (final UnableToCompleteActionException e) {
 				// TODO ++Implement an adequate exception treatment.
 				throw new RuntimeException();
-			}
-			finally {
+			} finally {
 				this.pendingAction = null;
 			}
 		}
@@ -71,11 +70,9 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		private void execute(final InternalAction internalAction) {
 			try {
 				internalAction.execute(tree);
-			}
-			catch (final OperationNotAllowedException e) {
+			} catch (final OperationNotAllowedException e) {
 				ClientServices.get().alerting().showWarning(e.getLocalizedMessage());
-			}
-			catch (final UnableToCompleteActionException e) {
+			} catch (final UnableToCompleteActionException e) {
 				ClientServices.get().alerting().showError(e.getLocalizedMessage());
 			}
 		}
@@ -129,8 +126,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 			final ModelAction action = internalActionHandler.getPendingActionEquivalentModelActionFor(value);
 			internalActionHandler.rollbackPendingAction();
 			applicationActionHandler.onUserActionExecutionRequest(action);
-		}
-		else applicationActionHandler.onUserActionExecutionRequest(new ScopeUpdateAction(item.getReferencedScope().getId(), value));
+		} else applicationActionHandler.onUserActionExecutionRequest(new ScopeUpdateAction(item.getReferencedScope().getId(), value));
 	}
 
 	@Override
@@ -145,6 +141,9 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {
 		if (!ScopeBindReleaseActionHelper.validadeHierarchicalCondition(scopeId, releaseDescription)) return;
 		applicationActionHandler.onUserActionExecutionRequest(new ScopeBindReleaseAction(scopeId, releaseDescription));
+		try {
+			ClientServices.get().eventBus().fireEvent(new ScopeSelectionEvent(context.findScope(scopeId), true));
+		} catch (final ScopeNotFoundException e) {}
 	}
 
 	@Override
@@ -160,8 +159,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		try {
 			declaredEffort = Float.valueOf(effortDescription);
 			hasDeclaredEffort = true;
-		}
-		catch (final NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			declaredEffort = 0;
 			hasDeclaredEffort = false;
 		}
@@ -177,8 +175,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		try {
 			declaredValue = Float.valueOf(valueDescription);
 			hasDeclaredValue = true;
-		}
-		catch (final NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			declaredValue = 0;
 			hasDeclaredValue = false;
 		}

@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.services.applicationState;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
-
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
@@ -27,6 +23,10 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.web.bindery.event.shared.EventBus;
@@ -47,8 +47,8 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 
 	private UUID filterTagId;
 
-	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService,
-			final ClientStorageService clientStorageService, final ClientAlertingService alertingService, final ClientErrorMessages messages) {
+	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService, final ClientStorageService clientStorageService,
+			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 		this.eventBus = eventBus;
 		this.contextProviderService = contextProviderService;
 		this.clientStorageService = clientStorageService;
@@ -95,8 +95,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 		handlerRegistrations.add(eventBus.addHandler(ReleaseContainerStateChangeEvent.getType(), new ReleaseContainerStateChangeEventHandler() {
 			@Override
 			public void onReleaseContainerStateChange(final ReleaseContainerStateChangeEvent releaseContainerStateChangeEvent) {
-				clientStorageService.storeReleaseContainerState(releaseContainerStateChangeEvent.getTargetRelease(),
-						releaseContainerStateChangeEvent.getTargetContainerState());
+				clientStorageService.storeReleaseContainerState(releaseContainerStateChangeEvent.getTargetRelease(), releaseContainerStateChangeEvent.getTargetContainerState());
 			}
 		}));
 	}
@@ -149,8 +148,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 				previousSelectedScopes.add(contextProviderService.getCurrent().findScope(scopeSelectedId));
 			}
 			restore();
-		}
-		catch (final ScopeNotFoundException e) {
+		} catch (final ScopeNotFoundException e) {
 			alertingService.showError(messages.errorSelectingScope());
 		}
 	}
@@ -166,8 +164,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 						eventBus.fireEvent(new ReleaseContainerStateChangeEvent(release, !DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE));
 					}
 				});
-			}
-			catch (final ReleaseNotFoundException e) {}
+			} catch (final ReleaseNotFoundException e) {}
 		}
 	}
 
@@ -181,7 +178,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 		Scheduler.get().scheduleEntry(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				eventBus.fireEvent(new ScopeSelectionEvent(getSelectedScope()));
+				eventBus.fireEvent(new ScopeSelectionEvent(getSelectedScope(), true));
 			}
 		});
 	}
@@ -208,8 +205,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 		Scope selectedScope = null;
 		try {
 			selectedScope = currentContext.findScope(clientStorageService.loadSelectedScopeId(currentContext.getProjectScope().getId()));
-		}
-		catch (final ScopeNotFoundException e) {
+		} catch (final ScopeNotFoundException e) {
 			selectedScope = currentContext.getProjectScope();
 		}
 		previousSelectedScopes.add(selectedScope);

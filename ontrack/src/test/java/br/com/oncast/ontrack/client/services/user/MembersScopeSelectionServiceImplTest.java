@@ -1,31 +1,8 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.verification.VerificationMode;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.estimator.ScopeEstimatorProvider;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -46,8 +23,34 @@ import br.com.oncast.ontrack.shared.services.user.UserSelectedScopeEvent;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.verification.VerificationMode;
+
 import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class MembersScopeSelectionServiceImplTest {
 
@@ -100,15 +103,12 @@ public class MembersScopeSelectionServiceImplTest {
 		scope1 = createScope();
 
 		final ArgumentCaptor<ServerPushEventHandler> userSelectedScopeEventHandlerCaptor = ArgumentCaptor.forClass(ServerPushEventHandler.class);
-		when(serverPushClientService.registerServerEventHandler(eq(UserSelectedScopeEvent.class), userSelectedScopeEventHandlerCaptor.capture())).thenReturn(
-				null);
+		when(serverPushClientService.registerServerEventHandler(eq(UserSelectedScopeEvent.class), userSelectedScopeEventHandlerCaptor.capture())).thenReturn(null);
 
 		final ArgumentCaptor<ServerPushEventHandler> userClosedProjectEventHandlerCaptor = ArgumentCaptor.forClass(ServerPushEventHandler.class);
-		when(serverPushClientService.registerServerEventHandler(eq(UserClosedProjectEvent.class), userClosedProjectEventHandlerCaptor.capture())).thenReturn(
-				null);
+		when(serverPushClientService.registerServerEventHandler(eq(UserClosedProjectEvent.class), userClosedProjectEventHandlerCaptor.capture())).thenReturn(null);
 
-		new ColorProviderServiceImpl(requestDispatchService, contextProviderService, scopeEstimatorProvider, serverPushClientService,
-				eventBus, usersStatusServiceImpl, colorPicker, colorPackPicker);
+		new ColorProviderServiceImpl(requestDispatchService, contextProviderService, scopeEstimatorProvider, serverPushClientService, eventBus, usersStatusServiceImpl, colorPicker, colorPackPicker);
 
 		userClosedProjectEventHandler = userClosedProjectEventHandlerCaptor.getValue();
 		userSelectedScopeEventHandler = userSelectedScopeEventHandlerCaptor.getValue();
@@ -126,7 +126,7 @@ public class MembersScopeSelectionServiceImplTest {
 
 	@Test
 	public void shouldRequestToServerToMulticastTheCurrentUserScopeSelection() throws Exception {
-		scopeSelectionEventHandler.onScopeSelectionRequest(new ScopeSelectionEvent(scope1));
+		scopeSelectionEventHandler.onScopeSelectionRequest(new ScopeSelectionEvent(scope1, true));
 		assertRequested(scope1);
 	}
 

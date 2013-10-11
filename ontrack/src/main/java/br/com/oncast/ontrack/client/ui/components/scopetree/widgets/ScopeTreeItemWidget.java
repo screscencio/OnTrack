@@ -308,7 +308,7 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiHandler("releaseTag")
 	protected void onTagClick(final ClickEvent e) {
 		e.stopPropagation();
-		ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), releaseTag);
+		ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope, true), releaseTag);
 	}
 
 	@UiHandler("openImpedimentIcon")

@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
@@ -17,6 +12,11 @@ import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -58,7 +58,7 @@ public class AssignedToMeWidget extends Composite implements PopupAware, HasClos
 				assignedScopeWidget.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(final ClickEvent event) {
-						ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(modelBean), this);
+						ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(modelBean, true), this);
 						hide();
 					}
 				});

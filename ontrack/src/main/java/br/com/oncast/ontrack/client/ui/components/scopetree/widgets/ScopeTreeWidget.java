@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scopetree.FakeScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
@@ -46,6 +40,12 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -181,16 +181,16 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 			private void addToCache(final ScopeTreeItem scopeTreeItem) {
 				final Scope scope = scopeTreeItem.getReferencedScope();
-				if (itemMapCache.containsKey(scope.getId())) throw new RuntimeException(
-						"You are trying to Add a widget for Scope '" + scope.getDescription() + "' that the ScopeTreeWidget already has");
+				if (itemMapCache.containsKey(scope.getId()))
+					throw new RuntimeException("You are trying to Add a widget for Scope '" + scope.getDescription() + "' that the ScopeTreeWidget already has");
 
 				itemMapCache.put(scope.getId(), scopeTreeItem);
 			}
 
 			private void removeFromCache(final ScopeTreeItem scopeTreeItem) {
 				final Scope scope = scopeTreeItem.getReferencedScope();
-				if (!itemMapCache.containsKey(scope.getId())) throw new RuntimeException("You are trying to Remove a widget for Scope '"
-						+ scope.getDescription() + "' that is not present in the ScopeTreeWidget");
+				if (!itemMapCache.containsKey(scope.getId()))
+					throw new RuntimeException("You are trying to Remove a widget for Scope '" + scope.getDescription() + "' that is not present in the ScopeTreeWidget");
 
 				itemMapCache.remove(scope.getId());
 			}
@@ -360,10 +360,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 				if (!selectedItem.isRoot()) addBorderToSelectedItem();
 
-				ClientServices.get().eventBus()
-						.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
-				ClientServices.get().eventBus()
-						.fireEventFromSource(new ScopeTreeItemSelectionEvent(selectedItem.getScopeTreeItemWidget()), ScopeTreeWidget.this);
+				ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope(), false), ScopeTreeWidget.this);
+				ClientServices.get().eventBus().fireEventFromSource(new ScopeTreeItemSelectionEvent(selectedItem.getScopeTreeItemWidget()), ScopeTreeWidget.this);
 			}
 		}));
 

@@ -8,11 +8,14 @@ import com.google.gwt.event.shared.GwtEvent;
 public class ScopeSelectionEvent extends GwtEvent<ScopeSelectionEventHandler> {
 
 	public static Type<ScopeSelectionEventHandler> TYPE;
+
 	private final Scope scope;
 	private final UUID projectId;
+	private boolean shouldForceScopeVisibility;
 
-	public ScopeSelectionEvent(final Scope scope) {
+	public ScopeSelectionEvent(final Scope scope, final boolean shouldForceScopeVisibility) {
 		this(scope, null);
+		setShouldForceScopeVisibility(shouldForceScopeVisibility);
 	}
 
 	public ScopeSelectionEvent(final Scope scope, final UUID projectId) {
@@ -20,8 +23,8 @@ public class ScopeSelectionEvent extends GwtEvent<ScopeSelectionEventHandler> {
 		this.projectId = projectId;
 	}
 
-	public static Type<ScopeSelectionEventHandler> getType() {
-		return TYPE == null ? TYPE = new Type<ScopeSelectionEventHandler>() : TYPE;
+	public void setShouldForceScopeVisibility(final boolean shouldForceScopeVisibility) {
+		this.shouldForceScopeVisibility = shouldForceScopeVisibility;
 	}
 
 	@Override
@@ -40,6 +43,14 @@ public class ScopeSelectionEvent extends GwtEvent<ScopeSelectionEventHandler> {
 
 	public UUID getProjectId() {
 		return projectId;
+	}
+
+	public boolean shouldForceScopeVisibility() {
+		return shouldForceScopeVisibility;
+	}
+
+	public static Type<ScopeSelectionEventHandler> getType() {
+		return TYPE == null ? TYPE = new Type<ScopeSelectionEventHandler>() : TYPE;
 	}
 
 }

@@ -401,7 +401,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 	}
 
 	private void fireScopeSelectionEvent() {
-		SERVICE_PROVIDER.eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
+		SERVICE_PROVIDER.eventBus().fireEventFromSource(new ScopeSelectionEvent(scope, false), this);
 	}
 
 	@Override

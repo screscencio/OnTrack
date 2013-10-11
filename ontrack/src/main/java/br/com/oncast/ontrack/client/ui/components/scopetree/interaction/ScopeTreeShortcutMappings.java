@@ -361,7 +361,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	FIND_SCOPE_AT_RELEASE_WIDGET(new Shortcut(BrowserKeyCodes.KEY_SPACE), new Shortcut(BrowserKeyCodes.KEY_F).with(AltModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
+			ClientServices.get().eventBus().fireEventFromSource(new ScopeSelectionEvent(scope, true), this);
 		}
 
 		@Override

@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
@@ -56,6 +51,11 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -100,18 +100,13 @@ public class ReleasePanelWidget extends Composite {
 		this(releasePanelInteractionHandler, null, null, false);
 	}
 
-	public ReleasePanelWidget(
-			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler,
-			final DragAndDropManager userDragAndDropManager,
-			final DropControllerFactory userDropControllerFactory,
-			final boolean releaseSpecific) {
+	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final DragAndDropManager userDragAndDropManager,
+			final DropControllerFactory userDropControllerFactory, final boolean releaseSpecific) {
 		dragAndDropManager = new DragAndDropManager();
 		this.releaseSpecific = releaseSpecific;
 		handlerRegistration = new HashSet<HandlerRegistration>();
-		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager, userDragAndDropManager,
-				userDropControllerFactory, releaseSpecific),
-				dragAndDropManager,
-				releaseSpecific);
+		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager, userDragAndDropManager, userDropControllerFactory, releaseSpecific),
+				dragAndDropManager, releaseSpecific);
 
 		initWidget(uiBinder.createAndBindUi(this));
 		dragAndDropManager.configureBoundaryPanel(RootPanel.get());
@@ -119,45 +114,26 @@ public class ReleasePanelWidget extends Composite {
 
 		actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext, final boolean isUserAction) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
+					final boolean isUserAction) {
 
-				if (action instanceof ScopeUpdateAction ||
-						action instanceof ScopeRemoveAction ||
-						action instanceof ScopeInsertAction ||
-						action instanceof ScopeInsertParentRollbackAction ||
-						action instanceof ScopeInsertChildRollbackAction ||
-						action instanceof ScopeInsertSiblingUpRollbackAction ||
-						action instanceof ScopeInsertSiblingDownRollbackAction ||
-						action instanceof ScopeMoveLeftAction ||
-						action instanceof ScopeMoveRightAction ||
-						action instanceof ScopeRemoveRollbackAction ||
-						action instanceof ScopeDeclareProgressAction ||
-						action instanceof ScopeDeclareEffortAction ||
-						action instanceof ScopeDeclareValueAction ||
-						action instanceof ScopeBindReleaseAction ||
-						action instanceof ScopeBindHumanIdAction ||
-						action instanceof ScopeUnbindHumanIdAction ||
-						action instanceof ScopeRemoveAssociatedUserAction ||
-						action instanceof ScopeAddAssociatedUserAction ||
-						action instanceof ReleaseRemoveAction ||
-						action instanceof ReleaseRemoveRollbackAction ||
-						action instanceof ReleaseUpdatePriorityAction ||
-						action instanceof ReleaseScopeUpdatePriorityAction ||
-						action instanceof ReleaseRenameAction ||
-						action instanceof ReleaseDeclareEstimatedVelocityAction ||
-						action instanceof ScopeDeclareDueDateAction ||
-						action instanceof KanbanAction) update();
+				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction || action instanceof ScopeInsertAction || action instanceof ScopeInsertParentRollbackAction
+						|| action instanceof ScopeInsertChildRollbackAction || action instanceof ScopeInsertSiblingUpRollbackAction || action instanceof ScopeInsertSiblingDownRollbackAction
+						|| action instanceof ScopeMoveLeftAction || action instanceof ScopeMoveRightAction || action instanceof ScopeRemoveRollbackAction
+						|| action instanceof ScopeDeclareProgressAction || action instanceof ScopeDeclareEffortAction || action instanceof ScopeDeclareValueAction
+						|| action instanceof ScopeBindReleaseAction || action instanceof ScopeBindHumanIdAction || action instanceof ScopeUnbindHumanIdAction
+						|| action instanceof ScopeRemoveAssociatedUserAction || action instanceof ScopeAddAssociatedUserAction || action instanceof ReleaseRemoveAction
+						|| action instanceof ReleaseRemoveRollbackAction || action instanceof ReleaseUpdatePriorityAction || action instanceof ReleaseScopeUpdatePriorityAction
+						|| action instanceof ReleaseRenameAction || action instanceof ReleaseDeclareEstimatedVelocityAction || action instanceof ScopeDeclareDueDateAction
+						|| action instanceof KanbanAction) update();
 
-				if (action instanceof ScopeBindReleaseAction || action instanceof ReleaseScopeUpdatePriorityAction
-						|| action instanceof ScopeDeclareEffortAction || action instanceof ScopeDeclareValueAction) {
+				if (action instanceof ScopeBindReleaseAction || action instanceof ReleaseScopeUpdatePriorityAction || action instanceof ScopeDeclareEffortAction
+						|| action instanceof ScopeDeclareValueAction) {
 					try {
-						final UUID scopeId = (action instanceof ReleaseScopeUpdatePriorityAction) ? ((ReleaseScopeUpdatePriorityAction) (action))
-								.getScopeReferenceId() : action.getReferenceId();
+						final UUID scopeId = (action instanceof ReleaseScopeUpdatePriorityAction) ? ((ReleaseScopeUpdatePriorityAction) (action)).getScopeReferenceId() : action.getReferenceId();
 						final Release release = ClientServices.getCurrentProjectContext().findScope(scopeId).getRelease();
 						ClientServices.get().eventBus().fireEvent(new ReleaseScopeListUpdateEvent(release));
-					}
-					catch (final ScopeNotFoundException e) {}
+					} catch (final ScopeNotFoundException e) {}
 				}
 			}
 		};
@@ -165,40 +141,37 @@ public class ReleasePanelWidget extends Composite {
 
 	@Override
 	protected void onLoad() {
-		handlerRegistration.add(ClientServices.get().eventBus()
-				.addHandler(ReleaseContainerStateChangeEvent.getType(), new ReleaseContainerStateChangeEventHandler() {
-					@Override
-					public void onReleaseContainerStateChange(final ReleaseContainerStateChangeEvent event) {
-						if (rootRelease == null || event.getSource() instanceof ReleaseWidget) return;
-						final ReleaseWidget widget = getWidgetFor(event.getTargetRelease());
-						widget.setContainerState(event.getTargetContainerState(), false);
-					}
-				}));
+		handlerRegistration.add(ClientServices.get().eventBus().addHandler(ReleaseContainerStateChangeEvent.getType(), new ReleaseContainerStateChangeEventHandler() {
+			@Override
+			public void onReleaseContainerStateChange(final ReleaseContainerStateChangeEvent event) {
+				if (rootRelease == null || event.getSource() instanceof ReleaseWidget) return;
+				final ReleaseWidget widget = getWidgetFor(event.getTargetRelease());
+				widget.setContainerState(event.getTargetContainerState(), false);
+			}
+		}));
 
-		handlerRegistration.add(ClientServices.get().eventBus()
-				.addHandler(ReleaseDetailUpdateEvent.getType(), new ReleaseDetailUpdateEventHandler() {
-					@Override
-					public void onReleaseDetailUpdate(final ReleaseDetailUpdateEvent event) {
-						final ReleaseWidget widget = releaseContainer.getWidgetFor(event.getTargetSubject());
-						if (widget == null) return;
-						widget.update();
-					}
-				}));
-		handlerRegistration.add(ClientServices.get().eventBus()
-				.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
-					@Override
-					public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
-						final Scope scope = event.getTargetSubject();
-						final Release release = scope.getRelease();
-						if (release == null) return;
+		handlerRegistration.add(ClientServices.get().eventBus().addHandler(ReleaseDetailUpdateEvent.getType(), new ReleaseDetailUpdateEventHandler() {
+			@Override
+			public void onReleaseDetailUpdate(final ReleaseDetailUpdateEvent event) {
+				final ReleaseWidget widget = releaseContainer.getWidgetFor(event.getTargetSubject());
+				if (widget == null) return;
+				widget.update();
+			}
+		}));
+		handlerRegistration.add(ClientServices.get().eventBus().addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
+			@Override
+			public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
+				final Scope scope = event.getTargetSubject();
+				final Release release = scope.getRelease();
+				if (release == null) return;
 
-						final ReleaseWidget releaseWidget = getWidgetFor(release);
+				final ReleaseWidget releaseWidget = getWidgetFor(release);
 
-						final ScopeCardWidget scopeWidget = releaseWidget.getScopeContainer().getWidgetFor(scope);
-						scopeWidget.setHasOpenImpediments(event.hasOpenImpediments());
-					}
+				final ScopeCardWidget scopeWidget = releaseWidget.getScopeContainer().getWidgetFor(scope);
+				scopeWidget.setHasOpenImpediments(event.hasOpenImpediments());
+			}
 
-				}));
+		}));
 	}
 
 	@Override
@@ -222,8 +195,7 @@ public class ReleasePanelWidget extends Composite {
 		final List<Release> children = new ArrayList<Release>();
 		if (releaseSpecific) {
 			children.add(rootRelease);
-		}
-		else {
+		} else {
 			children.addAll(rootRelease.getChildren());
 		}
 		noReleaseText.setVisible(children.isEmpty());
