@@ -57,7 +57,7 @@ public class UserRepresentation implements HasUUID, Serializable, Comparable<Use
 
 	@Override
 	public String toString() {
-		return id.toString();
+		return "UserRepresentation [id=" + id + ", valid=" + valid + ", projectProfile=" + projectProfile + "]";
 	}
 
 	public void setProjectProfile(final Profile projectProfile) {

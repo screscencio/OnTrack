@@ -135,6 +135,7 @@ public class ActionHelper {
 
 		final UserRepresentation actionAuthor = ActionHelper.findUserFrom(actionContext, context, action);
 		final Profile projectProfile = actionAuthor.getProjectProfile();
+		System.out.println(actionAuthor);
 		if (!projectProfile.hasPermissionsOf(neededProfile)) throw new UnableToCompleteActionException(action, ActionExecutionErrorMessageCode.PERMISSION_DENIED);
 		return projectProfile;
 	}

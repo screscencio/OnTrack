@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.shared.model.project;
 
-import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
@@ -39,6 +38,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -357,9 +358,20 @@ public class ProjectContext implements HasUUID {
 
 	public ArrayList<Tag> getTagsFor(final Scope scope) {
 		final ArrayList<Tag> tags = new ArrayList<Tag>();
-		for (final TagAssociationMetadata metadata : ClientServices.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType())) {
+		for (final TagAssociationMetadata metadata : this.<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType())) {
 			tags.add(metadata.getTag());
 		}
+		return sortTagsByCreation(tags);
+	}
+
+	private ArrayList<Tag> sortTagsByCreation(final ArrayList<Tag> tags) {
+		final List<Tag> allTags = getAllTags();
+		Collections.sort(tags, new Comparator<Tag>() {
+			@Override
+			public int compare(final Tag o1, final Tag o2) {
+				return allTags.indexOf(o1) - allTags.indexOf(o2);
+			}
+		});
 		return tags;
 	}
 

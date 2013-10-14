@@ -24,6 +24,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundExceptio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -155,7 +156,8 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 
 	private void fireReleaseContainerStateChangeEvents() {
 		final ProjectContext context = contextProviderService.getCurrent();
-		for (final UUID releaseId : clientStorageService.loadModifiedContainerStateReleases()) {
+		final List<UUID> savedReleaseContainerStates = clientStorageService.loadModifiedContainerStateReleases();
+		for (final UUID releaseId : savedReleaseContainerStates) {
 			try {
 				final Release release = context.findRelease(releaseId);
 				Scheduler.get().scheduleEntry(new ScheduledCommand() {
@@ -165,6 +167,13 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 					}
 				});
 			} catch (final ReleaseNotFoundException e) {}
+		}
+		if (savedReleaseContainerStates.isEmpty()) {
+			for (final Release r : context.getProjectRelease().getAllReleasesInTemporalOrder()) {
+				if (!r.isRoot() && r.isDone() == DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE) {
+					eventBus.fireEvent(new ReleaseContainerStateChangeEvent(r, !DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE));
+				}
+			}
 		}
 	}
 

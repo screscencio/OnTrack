@@ -40,6 +40,8 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.common.base.Joiner;
@@ -391,7 +393,19 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	public void updateTagsDisplay() {
-		tags.update(ClientServices.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
+		final List<TagAssociationMetadata> metadatas = ClientServices.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType());
+		tags.update(sortTags(metadatas));
+	}
+
+	private List<TagAssociationMetadata> sortTags(final List<TagAssociationMetadata> tagMetadataList) {
+		final List<Tag> allTags = ClientServices.getCurrentProjectContext().getAllTags();
+		Collections.sort(tagMetadataList, new Comparator<TagAssociationMetadata>() {
+			@Override
+			public int compare(final TagAssociationMetadata o1, final TagAssociationMetadata o2) {
+				return allTags.indexOf(o1.getTag()) - allTags.indexOf(o2.getTag());
+			}
+		});
+		return tagMetadataList;
 	}
 
 	public void updateDetails(final SubjectDetailUpdateEvent event) {
