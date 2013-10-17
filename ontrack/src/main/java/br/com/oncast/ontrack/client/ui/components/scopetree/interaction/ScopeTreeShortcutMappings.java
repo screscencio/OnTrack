@@ -395,6 +395,42 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 			return messages.selectNextSelectedScope();
 		}
 
+	},
+
+	CUT_SELECTED_SCOPE(new Shortcut(BrowserKeyCodes.KEY_X).with(ControlModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.cutToClipboard(scope);
+		}
+
+		@Override
+		public String getDescription() {
+			return messages.cutsSelectedScopeToClipboard();
+		}
+	},
+
+	COPY_SELECTED_SCOPE(new Shortcut(BrowserKeyCodes.KEY_C).with(ControlModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.copyToClipboard(scope);
+		}
+
+		@Override
+		public String getDescription() {
+			return messages.copiesSelectedScopeToClipboard();
+		}
+	},
+
+	PASTE_SCOPE(new Shortcut(BrowserKeyCodes.KEY_V).with(ControlModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.pasteClipboardContentAsChildOf(scope);
+		}
+
+		@Override
+		public String getDescription() {
+			return messages.pasteClipboardContentAsChildOfTheSelectedScope();
+		}
 	};
 
 	private final ShortcutsSet shortcuts;

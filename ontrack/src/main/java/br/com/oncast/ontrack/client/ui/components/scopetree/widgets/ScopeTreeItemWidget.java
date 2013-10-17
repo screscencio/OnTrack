@@ -399,7 +399,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 	private List<TagAssociationMetadata> sortTags(final List<TagAssociationMetadata> tagMetadataList) {
 		final List<Tag> allTags = ClientServices.getCurrentProjectContext().getAllTags();
-		Collections.sort(tagMetadataList, new Comparator<TagAssociationMetadata>() {
+		Collections.sort(new ArrayList<TagAssociationMetadata>(tagMetadataList), new Comparator<TagAssociationMetadata>() {
 			@Override
 			public int compare(final TagAssociationMetadata o1, final TagAssociationMetadata o2) {
 				return allTags.indexOf(o1.getTag()) - allTags.indexOf(o2.getTag());

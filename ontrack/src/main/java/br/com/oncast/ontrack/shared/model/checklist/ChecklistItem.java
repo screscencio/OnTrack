@@ -1,17 +1,18 @@
 package br.com.oncast.ontrack.shared.model.checklist;
 
-import java.io.Serializable;
-
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.io.Serializable;
 
 public class ChecklistItem implements Serializable, HasUUID {
 
 	private static final long serialVersionUID = 1L;
 
-	private String description;
 	private UUID id;
+
+	private String description;
 
 	private boolean checked;
 

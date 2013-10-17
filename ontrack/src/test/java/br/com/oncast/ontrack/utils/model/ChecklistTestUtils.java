@@ -22,4 +22,22 @@ public class ChecklistTestUtils {
 		return createItem(itemId, "checklist item description " + itemId.toString(), true);
 	}
 
+	public static Checklist createWithItems(final int itemsCount) {
+		final Checklist checklist = create();
+		for (int i = 0; i < itemsCount; i++) {
+			checklist.addItem(createItem());
+		}
+		return checklist;
+	}
+
+	public static Checklist createWithItems(final boolean... checklistItemsValues) {
+		final Checklist checklist = create();
+		for (final boolean value : checklistItemsValues) {
+			final ChecklistItem item = createItem();
+			item.setChecked(value);
+			checklist.addItem(item);
+		}
+		return checklist;
+	}
+
 }

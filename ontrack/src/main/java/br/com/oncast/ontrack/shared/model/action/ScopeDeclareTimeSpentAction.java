@@ -10,7 +10,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findScope;
-import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findUserFrom;
+import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findActionAuthor;
 
 @ConvertTo(ScopeDeclareTimeSpentActionEntity.class)
 public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction {
@@ -33,7 +33,7 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		findScope(scopeId, context, this);
-		final UUID currentUserId = findUserFrom(actionContext, context, this).getId();
+		final UUID currentUserId = findActionAuthor(actionContext, context, this).getId();
 
 		final Float previousTimespent = context.getDeclaredTimeSpent(scopeId, currentUserId);
 		context.declareTimeSpent(scopeId, currentUserId, timeSpent);

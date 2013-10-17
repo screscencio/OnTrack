@@ -41,6 +41,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeCopyToAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareDueDateAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -68,9 +69,9 @@ import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareCanInviteAction;
+import br.com.oncast.ontrack.shared.model.action.TeamDeclareProfileAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareReadOnlyAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
-import br.com.oncast.ontrack.shared.model.action.TeamDeclareProfileAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
@@ -194,7 +195,12 @@ public class UserActionTestUtils {
 		userActions.add(createTeamDeclareReadOnlyAction());
 		userActions.add(createTeamDeclareCanInviteAction());
 		userActions.add(createTeamDeclareProfileAction());
+		userActions.add(createScopeCopyToAction());
 		return userActions;
+	}
+
+	private static UserAction createScopeCopyToAction() throws Exception {
+		return createUserAction(new ScopeCopyToAction(new UUID(), new UUID(), 0));
 	}
 
 	private static UserAction createTeamDeclareProfileAction() throws Exception {

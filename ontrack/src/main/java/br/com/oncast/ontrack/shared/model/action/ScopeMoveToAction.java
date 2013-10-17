@@ -12,7 +12,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeMoveToActionEntity.class)
-public class ScopeMoveToAction implements ScopeMoveAction {
+public class ScopeMoveToAction implements ScopeMoveAction, HasDestination {
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,10 +27,20 @@ public class ScopeMoveToAction implements ScopeMoveAction {
 
 	public ScopeMoveToAction() {}
 
-	public ScopeMoveToAction(final UUID movingScopeId, final UUID futureParentId, final int futureIndex) {
+	public ScopeMoveToAction(final UUID movingScopeId, final UUID desiredParentId, final int desiredIndex) {
+		this(movingScopeId);
+		setDestination(desiredParentId, desiredIndex);
+	}
+
+	public ScopeMoveToAction(final UUID movingScopeId) {
 		this.movingScopeId = movingScopeId;
-		this.desiredParentId = futureParentId;
-		this.desiredIndex = futureIndex;
+	}
+
+	@Override
+	public ScopeMoveToAction setDestination(final UUID desiredParentId, final int desiredIndex) {
+		this.desiredParentId = desiredParentId;
+		this.desiredIndex = desiredIndex;
+		return this;
 	}
 
 	@Override
@@ -55,6 +65,11 @@ public class ScopeMoveToAction implements ScopeMoveAction {
 
 	@Override
 	public UUID getReferenceId() {
+		return movingScopeId;
+	}
+
+	@Override
+	public UUID getSourceScopeId() {
 		return movingScopeId;
 	}
 

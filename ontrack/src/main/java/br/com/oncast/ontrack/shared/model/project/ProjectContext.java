@@ -356,7 +356,7 @@ public class ProjectContext implements HasUUID {
 		return project.getDeclaredTimeSpent(scopeId, userId);
 	}
 
-	public ArrayList<Tag> getTagsFor(final Scope scope) {
+	public List<Tag> getTagsFor(final Scope scope) {
 		final ArrayList<Tag> tags = new ArrayList<Tag>();
 		for (final TagAssociationMetadata metadata : this.<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType())) {
 			tags.add(metadata.getTag());
@@ -364,7 +364,7 @@ public class ProjectContext implements HasUUID {
 		return sortTagsByCreation(tags);
 	}
 
-	private ArrayList<Tag> sortTagsByCreation(final ArrayList<Tag> tags) {
+	private List<Tag> sortTagsByCreation(final ArrayList<Tag> tags) {
 		final List<Tag> allTags = getAllTags();
 		Collections.sort(tags, new Comparator<Tag>() {
 			@Override

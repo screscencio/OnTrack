@@ -14,11 +14,14 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.Operation
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.utils.ScopeBindReleaseActionHelper;
+import br.com.oncast.ontrack.shared.model.action.HasDestination;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeCopyToAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveToAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -83,6 +86,8 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	private ScopeTreeWidget tree;
 	private ProjectContext context;
 	private final ScopeTree scopeTree;
+
+	private HasDestination clipboardAction;
 
 	public ScopeTreeInteractionHandler(final ScopeTree scopeTree) {
 		this.scopeTree = scopeTree;
@@ -234,4 +239,29 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		}
 		return null;
 	}
+
+	@Override
+	public void copyToClipboard(final Scope scope) {
+		copyToClipboard(scope.getId());
+	}
+
+	private void copyToClipboard(final UUID scopeId) {
+		try {
+			clipboardAction = new ScopeCopyToAction(scopeId).saveSourceAttributes(context);
+		} catch (final UnableToCompleteActionException e) {
+			ClientServices.get().alerting().showError(e.getLocalizedMessage());
+		}
+	}
+
+	@Override
+	public void cutToClipboard(final Scope scope) {
+		clipboardAction = new ScopeMoveToAction(scope.getId());
+	}
+
+	@Override
+	public void pasteClipboardContentAsChildOf(final Scope parentScope) {
+		onUserActionExecutionRequest(clipboardAction.setDestination(parentScope.getId(), parentScope.getChildCount()));
+		copyToClipboard(clipboardAction.getSourceScopeId());
+	}
+
 }

@@ -50,7 +50,7 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 
-		final UserRepresentation author = ActionHelper.findUserFrom(actionContext, context, this);
+		final UserRepresentation author = ActionHelper.findActionAuthor(actionContext, context, this);
 		selectedScope.add(new Scope("", newScopeId, author, actionContext.getTimestamp()));
 
 		subActionRollbackList.add(scopeUpdateAction.execute(context, actionContext));

@@ -108,4 +108,16 @@ public interface ScopeTreeShortcutMappingsMessage extends BaseMessages {
 	@DefaultMessage("Quickly add an annotation to the selected scope")
 	String quickAddAnnotationToScope();
 
+	@Description("Copy scope shortcut")
+	@DefaultMessage("Copies the selected scope")
+	String copiesSelectedScopeToClipboard();
+
+	@Description("paste clipboard content shortcut")
+	@DefaultMessage("Pastes the copied scope as a child of the selected scope")
+	String pasteClipboardContentAsChildOfTheSelectedScope();
+
+	@Description("Cut scope shortcut")
+	@DefaultMessage("Cuts the selected scope")
+	String cutsSelectedScopeToClipboard();
+
 }

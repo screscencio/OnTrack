@@ -88,6 +88,10 @@ public class BrowserKeyCodes {
 
 	public static final int KEY_U = 85;
 
+	public static final int KEY_V = 86;
+
+	public static final int KEY_X = 88;
+
 	public static final int KEY_Y = 89;
 
 	public static final int KEY_Z = 90;

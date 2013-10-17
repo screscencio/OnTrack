@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeCopyToAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
@@ -53,7 +54,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ScopeInsertSiblingAction) return new ScopeTreeInsertSiblingAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeInsertSiblingUpRollbackAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeInsertSiblingDownRollbackAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
-		else if (action instanceof ScopeInsertChildAction) return new ScopeTreeInsertChildAction(tree, (ScopeInsertAction) action);
+		else if (action instanceof ScopeInsertChildAction || action instanceof ScopeCopyToAction) return new ScopeTreeInsertChildAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeInsertChildRollbackAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeInsertParentAction) return new ScopeTreeInsertParentAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeInsertParentRollbackAction) return new ScopeTreeParentRollbackAction(tree, (ScopeAction) action);

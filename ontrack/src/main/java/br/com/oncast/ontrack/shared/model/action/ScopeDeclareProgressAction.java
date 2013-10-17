@@ -61,7 +61,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context, this);
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
-		selectedScope.getProgress().setDescription(newProgressDescription, ActionHelper.findUserFrom(actionContext, context, this), actionContext.getTimestamp());
+		selectedScope.getProgress().setDescription(newProgressDescription, ActionHelper.findActionAuthor(actionContext, context, this), actionContext.getTimestamp());
 		final List<ModelAction> rollbackActions = processSubActions(context, actionContext, selectedScope);
 
 		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollbackActions);

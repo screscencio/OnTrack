@@ -100,7 +100,7 @@ public class ActionHelper {
 		}
 	}
 
-	public static UserRepresentation findUserFrom(final ActionContext actionContext, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
+	public static UserRepresentation findActionAuthor(final ActionContext actionContext, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		return findUser(actionContext.getUserId(), context, action);
 	}
 
@@ -133,7 +133,7 @@ public class ActionHelper {
 			throws UnableToCompleteActionException {
 		if (shouldIgnorePermissionVerification(context, actionContext)) return Profile.SYSTEM_ADMIN;
 
-		final UserRepresentation actionAuthor = ActionHelper.findUserFrom(actionContext, context, action);
+		final UserRepresentation actionAuthor = ActionHelper.findActionAuthor(actionContext, context, action);
 		final Profile projectProfile = actionAuthor.getProjectProfile();
 		System.out.println(actionAuthor);
 		if (!projectProfile.hasPermissionsOf(neededProfile)) throw new UnableToCompleteActionException(action, ActionExecutionErrorMessageCode.PERMISSION_DENIED);

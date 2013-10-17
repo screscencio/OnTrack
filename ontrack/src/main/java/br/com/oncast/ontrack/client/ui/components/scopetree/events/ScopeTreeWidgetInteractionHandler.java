@@ -4,15 +4,8 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public interface ScopeTreeWidgetInteractionHandler extends
-		ScopeTreeItemEditionStartEventHandler,
-		ScopeTreeItemEditionEndEventHandler,
-		ScopeTreeItemEditionCancelEventHandler,
-		ScopeTreeItemBindReleaseEventHandler,
-		ScopeTreeItemDeclareProgressEventHandler,
-		ScopeTreeItemDeclareEffortEventHandler,
-		ScopeTreeItemDeclareValueEventHandler,
-		ScopeTreeInternalActionHandler {
+public interface ScopeTreeWidgetInteractionHandler extends ScopeTreeItemEditionStartEventHandler, ScopeTreeItemEditionEndEventHandler, ScopeTreeItemEditionCancelEventHandler,
+		ScopeTreeItemBindReleaseEventHandler, ScopeTreeItemDeclareProgressEventHandler, ScopeTreeItemDeclareEffortEventHandler, ScopeTreeItemDeclareValueEventHandler, ScopeTreeInternalActionHandler {
 
 	Scope getSelectedScope();
 
@@ -25,4 +18,10 @@ public interface ScopeTreeWidgetInteractionHandler extends
 	Scope getVisibleScopeAbove(Scope scope);
 
 	Scope getVisibleScopeBelow(Scope scope);
+
+	void copyToClipboard(Scope scope);
+
+	void pasteClipboardContentAsChildOf(Scope parentScope);
+
+	void cutToClipboard(Scope scope);
 }

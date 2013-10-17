@@ -50,7 +50,7 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 		final int index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
 
-		final Scope newScope = new Scope("", newScopeId, ActionHelper.findUserFrom(actionContext, context, this), actionContext.getTimestamp());
+		final Scope newScope = new Scope("", newScopeId, ActionHelper.findActionAuthor(actionContext, context, this), actionContext.getTimestamp());
 
 		parent.add(index, newScope);
 		newScope.add(selectedScope);

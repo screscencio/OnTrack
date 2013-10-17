@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.utils.model;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -13,6 +8,11 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import com.ibm.icu.util.Calendar;
 
@@ -24,8 +24,7 @@ public class ScopeTestUtils {
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getScope() {
 		final Scope root = ScopeTestUtils.createScope("Project");
-		root.add(ScopeTestUtils.createScope("1")
-				.add(ScopeTestUtils.createScope("1.1").add(ScopeTestUtils.createScope("1.1.1")).add(ScopeTestUtils.createScope("1.1.2")))
+		root.add(ScopeTestUtils.createScope("1").add(ScopeTestUtils.createScope("1.1").add(ScopeTestUtils.createScope("1.1.1")).add(ScopeTestUtils.createScope("1.1.2")))
 				.add(ScopeTestUtils.createScope("1.2")));
 		root.add(ScopeTestUtils.createScope("2"));
 		root.add(ScopeTestUtils.createScope("3"));
@@ -113,6 +112,11 @@ public class ScopeTestUtils {
 		return scope;
 	}
 
+	public static Scope declareValue(final Scope scope, final float value) {
+		scope.getValue().setDeclared(value);
+		return scope;
+	}
+
 	public static void setEndDate(final Scope scope, final WorkingDay day) {
 		scope.getProgress().setDescription(ProgressState.DONE.getDescription(), UserRepresentationTestUtils.getAdmin(), day.getJavaDate());
 	}
@@ -147,9 +151,7 @@ public class ScopeTestUtils {
 		result.getProjectRelease().addChild(r3);
 	}
 
-	private static void populateWithScopes(final Scope projectScope, final Release release, final WorkingDay day, final int nChildReleases,
-			final int nDoneScopes,
-			final int nUnderWorkScopes,
+	private static void populateWithScopes(final Scope projectScope, final Release release, final WorkingDay day, final int nChildReleases, final int nDoneScopes, final int nUnderWorkScopes,
 			final int nNotStartedScopes) {
 
 		final List<Integer> efforts = Arrays.asList(1, 1, 1, 1, 2, 2, 2, 3, 3, 5, 8);
@@ -166,22 +168,18 @@ public class ScopeTestUtils {
 				final WorkingDay startDay = day.copy();
 				final WorkingDay endDay = day.add(daysSpent).copy();
 
-				final Scope createdScope = createScope(childDescription + "-S" + scopeNumber, ProgressState.DONE, choose(efforts), startDay,
-						endDay);
+				final Scope createdScope = createScope(childDescription + "-S" + scopeNumber, ProgressState.DONE, choose(efforts), startDay, endDay);
 				child.addScope(createdScope);
 				projectScope.add(createdScope);
 			}
 			for (int scopeNumber = 1; scopeNumber <= nUnderWorkScopes; scopeNumber++) {
 				final WorkingDay startDay = day.copy();
-				final Scope createdScope = createScope(childDescription + "-S" + scopeNumber, ProgressState.UNDER_WORK, choose(efforts),
-						startDay,
-						null);
+				final Scope createdScope = createScope(childDescription + "-S" + scopeNumber, ProgressState.UNDER_WORK, choose(efforts), startDay, null);
 				child.addScope(createdScope);
 				projectScope.add(createdScope);
 			}
 			for (int scopeNumber = 1; scopeNumber <= nNotStartedScopes; scopeNumber++) {
-				final Scope createdScope = createScope(childDescription + "-S" + scopeNumber, ProgressState.NOT_STARTED, choose(efforts), null,
-						null);
+				final Scope createdScope = createScope(childDescription + "-S" + scopeNumber, ProgressState.NOT_STARTED, choose(efforts), null, null);
 				child.addScope(createdScope);
 				projectScope.add(createdScope);
 			}
