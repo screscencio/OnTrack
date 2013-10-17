@@ -133,9 +133,7 @@ public class ActionHelper {
 			throws UnableToCompleteActionException {
 		if (shouldIgnorePermissionVerification(context, actionContext)) return Profile.SYSTEM_ADMIN;
 
-		final UserRepresentation actionAuthor = ActionHelper.findActionAuthor(actionContext, context, action);
-		final Profile projectProfile = actionAuthor.getProjectProfile();
-		System.out.println(actionAuthor);
+		final Profile projectProfile = ActionHelper.findActionAuthor(actionContext, context, action).getProjectProfile();
 		if (!projectProfile.hasPermissionsOf(neededProfile)) throw new UnableToCompleteActionException(action, ActionExecutionErrorMessageCode.PERMISSION_DENIED);
 		return projectProfile;
 	}
