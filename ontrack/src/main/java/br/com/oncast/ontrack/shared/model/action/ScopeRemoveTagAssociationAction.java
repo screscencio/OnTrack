@@ -24,7 +24,7 @@ public class ScopeRemoveTagAssociationAction implements ScopeAction, TagAction {
 	@Element
 	private UUID tagId;
 
-	public ScopeRemoveTagAssociationAction() {}
+	protected ScopeRemoveTagAssociationAction() {}
 
 	public ScopeRemoveTagAssociationAction(final UUID scopeId, final UUID tagId) {
 		this.scopeId = scopeId;
@@ -48,22 +48,6 @@ public class ScopeRemoveTagAssociationAction implements ScopeAction, TagAction {
 	@Override
 	public UUID getReferenceId() {
 		return scopeId;
-	}
-
-	public UUID getScopeId() {
-		return scopeId;
-	}
-
-	public void setScopeId(final UUID scopeId) {
-		this.scopeId = scopeId;
-	}
-
-	public UUID getTagId() {
-		return tagId;
-	}
-
-	public void setTagId(final UUID tagId) {
-		this.tagId = tagId;
 	}
 
 	@Override

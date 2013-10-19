@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -7,8 +9,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import org.simpleframework.xml.Element;
 
 @ConvertTo(ChecklistRemoveActionEntity.class)
 public class ChecklistRemoveAction implements ChecklistAction {
@@ -21,7 +21,7 @@ public class ChecklistRemoveAction implements ChecklistAction {
 	@Element
 	private UUID subjectId;
 
-	public ChecklistRemoveAction() {}
+	protected ChecklistRemoveAction() {}
 
 	public ChecklistRemoveAction(final UUID subjectId, final UUID checklistId) {
 		this.checklistId = checklistId;
@@ -38,22 +38,6 @@ public class ChecklistRemoveAction implements ChecklistAction {
 	@Override
 	public UUID getReferenceId() {
 		return subjectId;
-	}
-
-	public UUID getChecklistId() {
-		return checklistId;
-	}
-
-	public UUID getSubjectId() {
-		return subjectId;
-	}
-
-	public void setChecklistId(final UUID checklistId) {
-		this.checklistId = checklistId;
-	}
-
-	public void setSubjectId(final UUID subjectId) {
-		this.subjectId = subjectId;
 	}
 
 }

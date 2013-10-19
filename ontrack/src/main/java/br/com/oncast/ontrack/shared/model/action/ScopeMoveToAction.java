@@ -25,7 +25,7 @@ public class ScopeMoveToAction implements ScopeMoveAction, HasDestination {
 	@Attribute
 	private int desiredIndex;
 
-	public ScopeMoveToAction() {}
+	protected ScopeMoveToAction() {}
 
 	public ScopeMoveToAction(final UUID movingScopeId, final UUID desiredParentId, final int desiredIndex) {
 		this(movingScopeId);
@@ -73,30 +73,6 @@ public class ScopeMoveToAction implements ScopeMoveAction, HasDestination {
 		return movingScopeId;
 	}
 
-	public UUID getMovingScopeId() {
-		return movingScopeId;
-	}
-
-	public void setMovingScopeId(final UUID movingScopeId) {
-		this.movingScopeId = movingScopeId;
-	}
-
-	public UUID getDesiredParentId() {
-		return desiredParentId;
-	}
-
-	public void setDesiredParentId(final UUID desiredParentId) {
-		this.desiredParentId = desiredParentId;
-	}
-
-	public int getDesiredIndex() {
-		return desiredIndex;
-	}
-
-	public void setDesiredIndex(final int desiredIndex) {
-		this.desiredIndex = desiredIndex;
-	}
-
 	@Override
 	public boolean changesEffortInference() {
 		return true;
@@ -110,11 +86,6 @@ public class ScopeMoveToAction implements ScopeMoveAction, HasDestination {
 	@Override
 	public boolean changesValueInference() {
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "ScopeMoveToAction [movingScopeId=" + movingScopeId + ", desiredParentId=" + desiredParentId + ", desiredIndex=" + desiredIndex + "]";
 	}
 
 }

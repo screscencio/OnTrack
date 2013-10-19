@@ -1,5 +1,12 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -13,13 +20,6 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
 
 @ConvertTo(ScopeBindReleaseActionEntity.class)
 public class ScopeBindReleaseAction implements ScopeAction {
@@ -48,7 +48,8 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	@Attribute
 	private int scopePriority;
 
-	public ScopeBindReleaseAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeBindReleaseAction() {}
 
 	public ScopeBindReleaseAction(final UUID scopeId, final String newReleaseDescription) {
 		this.referenceId = scopeId;
@@ -139,7 +140,8 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		ModelAction newRollbackSubAction = null;
 		try {
 			context.findRelease(newReleaseDescription);
-		} catch (final ReleaseNotFoundException e) {
+		}
+		catch (final ReleaseNotFoundException e) {
 			if (releaseCreateAction == null) releaseCreateAction = new ReleaseCreateAction(newReleaseDescription);
 			newRollbackSubAction = releaseCreateAction.execute(context, actionContext);
 		}
@@ -149,38 +151,6 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	@Override
 	public UUID getReferenceId() {
 		return referenceId;
-	}
-
-	public List<ModelAction> getRollbackSubActions() {
-		return rollbackSubActions;
-	}
-
-	public void setRollbackSubActions(final List<ModelAction> rollbackSubActions) {
-		this.rollbackSubActions = rollbackSubActions;
-	}
-
-	public ModelAction getReleaseCreateAction() {
-		return releaseCreateAction;
-	}
-
-	public void setReleaseCreateAction(final ModelAction releaseCreateAction) {
-		this.releaseCreateAction = releaseCreateAction;
-	}
-
-	public int getScopePriority() {
-		return scopePriority;
-	}
-
-	public void setScopePriority(final int scopePriority) {
-		this.scopePriority = scopePriority;
-	}
-
-	public void setReferenceId(final UUID referenceId) {
-		this.referenceId = referenceId;
-	}
-
-	public void setNewReleaseDescription(final String newReleaseDescription) {
-		this.newReleaseDescription = newReleaseDescription;
 	}
 
 	@Override

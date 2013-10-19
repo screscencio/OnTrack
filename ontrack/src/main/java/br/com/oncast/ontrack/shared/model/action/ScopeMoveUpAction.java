@@ -25,7 +25,8 @@ public class ScopeMoveUpAction implements ScopeMoveAction {
 		this.referenceId = selectedScopeId;
 	}
 
-	public ScopeMoveUpAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeMoveUpAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -50,10 +51,6 @@ public class ScopeMoveUpAction implements ScopeMoveAction {
 	@Override
 	public UUID getReferenceId() {
 		return referenceId;
-	}
-
-	public void setReferenceId(final UUID referenceId) {
-		this.referenceId = referenceId;
 	}
 
 	@Override

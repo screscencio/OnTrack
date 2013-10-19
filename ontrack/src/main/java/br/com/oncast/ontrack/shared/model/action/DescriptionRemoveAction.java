@@ -26,7 +26,7 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	@Attribute
 	private Boolean userAction;
 
-	public DescriptionRemoveAction() {}
+	protected DescriptionRemoveAction() {}
 
 	public DescriptionRemoveAction(final UUID subjectId, final UUID descriptionId, final boolean isUserAction) {
 		this.subjectId = subjectId;
@@ -57,25 +57,5 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	@Override
 	public String getDescription() {
 		return "";
-	}
-
-	public UUID getSubjectId() {
-		return subjectId;
-	}
-
-	public void setSubjectId(final UUID subjectId) {
-		this.subjectId = subjectId;
-	}
-
-	public Boolean getUserAction() {
-		return userAction;
-	}
-
-	public void setUserAction(final Boolean userAction) {
-		this.userAction = userAction;
-	}
-
-	public void setDescriptionId(final UUID descriptionId) {
-		this.descriptionId = descriptionId;
 	}
 }

@@ -24,7 +24,7 @@ public class TeamDeclareReadOnlyAction implements TeamAction {
 	@Attribute
 	private boolean readOnly;
 
-	public TeamDeclareReadOnlyAction() {}
+	protected TeamDeclareReadOnlyAction() {}
 
 	public TeamDeclareReadOnlyAction(final UUID userId, final boolean readOnly) {
 		this.userId = userId;
@@ -44,22 +44,6 @@ public class TeamDeclareReadOnlyAction implements TeamAction {
 	@Override
 	public UUID getReferenceId() {
 		return userId;
-	}
-
-	public UUID getUserId() {
-		return userId;
-	}
-
-	public void setUserId(final UUID userId) {
-		this.userId = userId;
-	}
-
-	public boolean getReadOnly() {
-		return readOnly;
-	}
-
-	public void setReadOnly(final boolean readOnly) {
-		this.readOnly = readOnly;
 	}
 
 }

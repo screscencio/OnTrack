@@ -36,7 +36,8 @@ public class KanbanColumnMoveAction implements KanbanAction {
 	@ElementList(required = false)
 	private List<ModelAction> subActions;
 
-	public KanbanColumnMoveAction() {}
+	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
+	protected KanbanColumnMoveAction() {}
 
 	public KanbanColumnMoveAction(final UUID releaseId, final String kanbanColumnDescription, final int desiredIndex) {
 		this.releaseId = releaseId;
@@ -63,38 +64,6 @@ public class KanbanColumnMoveAction implements KanbanAction {
 	@Override
 	public UUID getReferenceId() {
 		return releaseId;
-	}
-
-	public UUID getReleaseId() {
-		return releaseId;
-	}
-
-	public void setReleaseId(final UUID releaseId) {
-		this.releaseId = releaseId;
-	}
-
-	public String getColumnDescription() {
-		return columnDescription;
-	}
-
-	public void setColumnDescription(final String columnDescription) {
-		this.columnDescription = columnDescription;
-	}
-
-	public int getDesiredIndex() {
-		return desiredIndex;
-	}
-
-	public void setDesiredIndex(final int desiredIndex) {
-		this.desiredIndex = desiredIndex;
-	}
-
-	public List<ModelAction> getSubActions() {
-		return subActions;
-	}
-
-	public void setSubActions(final List<ModelAction> subActions) {
-		this.subActions = subActions;
 	}
 
 }

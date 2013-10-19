@@ -9,8 +9,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
-import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findScope;
 import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findActionAuthor;
+import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findScope;
 
 @ConvertTo(ScopeDeclareTimeSpentActionEntity.class)
 public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction {
@@ -23,7 +23,7 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 	@Attribute
 	private Float timeSpent;
 
-	public ScopeDeclareTimeSpentAction() {}
+	protected ScopeDeclareTimeSpentAction() {}
 
 	public ScopeDeclareTimeSpentAction(final UUID scopeId, final Float timeSpent) {
 		this.scopeId = scopeId;
@@ -44,22 +44,6 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 	@Override
 	public UUID getReferenceId() {
 		return scopeId;
-	}
-
-	public UUID getScopeId() {
-		return scopeId;
-	}
-
-	public void setScopeId(final UUID scopeId) {
-		this.scopeId = scopeId;
-	}
-
-	public Float getTimeSpent() {
-		return timeSpent;
-	}
-
-	public void setTimeSpent(final Float timeSpent) {
-		this.timeSpent = timeSpent;
 	}
 
 	@Override

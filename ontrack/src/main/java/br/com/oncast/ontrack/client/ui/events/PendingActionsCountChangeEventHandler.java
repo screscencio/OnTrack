@@ -4,6 +4,6 @@ import com.google.gwt.event.shared.EventHandler;
 
 public interface PendingActionsCountChangeEventHandler extends EventHandler {
 
-	void onPendingActionsCountChange(PendingActionsChangeEvent pendingActionsCountChangeEvent);
+	void onPendingActionsCountChange(PendingActionsCountChangeEvent pendingActionsCountChangeEvent);
 
 }

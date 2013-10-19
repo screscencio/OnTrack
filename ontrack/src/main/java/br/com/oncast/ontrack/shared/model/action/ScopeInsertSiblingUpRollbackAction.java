@@ -26,7 +26,8 @@ public class ScopeInsertSiblingUpRollbackAction implements ScopeAction {
 	@Element
 	private ScopeUpdateAction scopeUpdateRollbackAction;
 
-	public ScopeInsertSiblingUpRollbackAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeInsertSiblingUpRollbackAction() {}
 
 	public ScopeInsertSiblingUpRollbackAction(final UUID newScopeId, final ScopeUpdateAction scopeUpdateRollbackAction) {
 		this.referenceId = newScopeId;
@@ -51,18 +52,6 @@ public class ScopeInsertSiblingUpRollbackAction implements ScopeAction {
 	@Override
 	public UUID getReferenceId() {
 		return referenceId;
-	}
-
-	public ScopeUpdateAction getScopeUpdateRollbackAction() {
-		return scopeUpdateRollbackAction;
-	}
-
-	public void setScopeUpdateRollbackAction(final ScopeUpdateAction scopeUpdateRollbackAction) {
-		this.scopeUpdateRollbackAction = scopeUpdateRollbackAction;
-	}
-
-	public void setReferenceId(final UUID referenceId) {
-		this.referenceId = referenceId;
 	}
 
 	@Override

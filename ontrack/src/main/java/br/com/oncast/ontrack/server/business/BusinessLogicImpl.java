@@ -77,7 +77,6 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final AuthorizationManager authorizationManager;
 	private final MailFactory mailFactory;
 	private final IntegrationService integrationService;
-
 	private final SyncronizationService syncronizationService;
 	private final ActionPostProcessmentsInitializer postProcessmentsControler;
 
@@ -100,57 +99,57 @@ class BusinessLogicImpl implements BusinessLogic {
 	@PostProcessActions
 	public long handleIncomingActionSyncRequest(final ModelActionSyncRequest actionSyncRequest) throws UnableToHandleActionException, AuthorizationException {
 		final long initialTime = getCurrentTime();
-		try {
-			final UUID projectId = actionSyncRequest.getProjectId();
-			authorizationManager.assureActiveProjectAccessAuthorization(projectId);
+		final UUID projectId = actionSyncRequest.getProjectId();
+		authorizationManager.assureActiveProjectAccessAuthorization(projectId);
 
-			ModelActionSyncEvent modelActionSyncEvent = null;
+		ModelActionSyncEvent modelActionSyncEvent = null;
 
-			long lastApplyedActionId = -1;
-			synchronized (syncronizationService.getSyncLockFor(projectId)) {
-				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-				final Date timestamp = new Date();
-
-				final ActionContext actionContext = new ActionContext(authenticatedUser.getId(), timestamp);
+		synchronized (syncronizationService.getSyncLockFor(projectId)) {
+			try {
 				final List<ModelAction> actionList = actionSyncRequest.getActionList();
+				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
+				LOGGER.debug("Handling incoming actions " + PrettyPrinter.getSimpleNamesListString(actionList) + " from user " + authenticatedUser);
 
-				validateIncomingActions(projectId, actionList, actionContext);
-				lastApplyedActionId = persistenceService.persistActions(projectId, actionList, authenticatedUser.getId(), timestamp);
-				modelActionSyncEvent = new ModelActionSyncEvent(projectId, actionList, actionContext, lastApplyedActionId);
+				final ActionContext cachedActionContext = new ActionContext(authenticatedUser.getId(), new Date());
+				final ProjectContext cachedContext = new ProjectContext(loadProject(projectId).getProject());
+
+				validateIncomingActions(projectId, actionList, cachedActionContext, cachedContext);
+				final long lastApplyedActionId = persistenceService.persistActions(projectId, actionList, cachedActionContext.getUserId(), cachedActionContext.getTimestamp());
 				LOGGER.debug("Handled incoming actions " + PrettyPrinter.getSimpleNamesListString(actionList) + " from user " + authenticatedUser + " in " + getTimeSpent(initialTime) + " ms.");
+
+				modelActionSyncEvent = new ModelActionSyncEvent(projectId, actionList, cachedActionContext, lastApplyedActionId);
+				if (actionSyncRequest.shouldReturnToSender()) multicastService.multicastToAllUsersInSpecificProject(modelActionSyncEvent, projectId);
+				else multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(modelActionSyncEvent, projectId);
+
+				return lastApplyedActionId;
+			} catch (final UnableToLoadProjectException e) {
+				final String errorMessage = "The server could not handle the incoming action: The project could not be loaded.";
+				LOGGER.error(errorMessage, e);
+				throw new UnableToHandleActionException(errorMessage);
+			} catch (final PersistenceException e) {
+				final String errorMessage = "The server could not handle the incoming action: The action could not be persisted.";
+				LOGGER.error(errorMessage, e);
+				throw new UnableToHandleActionException(errorMessage);
+			} catch (final ProjectNotFoundException e) {
+				final String errorMessage = "The server could not handle the incoming action: The project could not be found.";
+				LOGGER.error(errorMessage, e);
+				throw new UnableToHandleActionException(errorMessage);
 			}
-			if (actionSyncRequest.shouldReturnToSender()) multicastService.multicastToAllUsersInSpecificProject(modelActionSyncEvent, projectId);
-			else multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(modelActionSyncEvent, projectId);
-			return lastApplyedActionId;
-		} catch (final PersistenceException e) {
-			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
-			LOGGER.error(errorMessage, e);
-			throw new UnableToHandleActionException(errorMessage);
 		}
 	}
 
 	// TODO Report errors as feedback for development.
 	// TODO Re-think validation strategy as loading the project every time may be a performance bottleneck.
 	@PostProcessActions
-	private void validateIncomingActions(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext) throws UnableToHandleActionException {
+	private void validateIncomingActions(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext, final ProjectContext context)
+			throws UnableToHandleActionException {
 		try {
-			final ProjectRevision projectVersion = loadProject(projectId);
-			final Project project = projectVersion.getProject();
-			final ProjectContext context = new ProjectContext(project);
 			for (final ModelAction action : actionList) {
 				ActionExecuter.verifyPermissions(action, context, actionContext);
 				ActionExecuter.executeAction(context, actionContext, action);
 			}
 		} catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "Unable to process action. The incoming action is invalid.";
-			LOGGER.error(errorMessage, e);
-			throw new InvalidIncomingAction(errorMessage);
-		} catch (final UnableToLoadProjectException e) {
-			final String errorMessage = "The server could not handle the incoming action. The action could not be validated because the project could not be loaded.";
-			LOGGER.error(errorMessage, e);
-			throw new UnableToHandleActionException(errorMessage);
-		} catch (final Exception e) {
-			final String errorMessage = "Unable to process action. An unknown problem occured.";
 			LOGGER.error(errorMessage, e);
 			throw new InvalidIncomingAction(errorMessage);
 		}

@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertSiblingDownRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -10,8 +12,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeInsertSiblingDownRollbackActionEntity.class)
 public class ScopeInsertSiblingDownRollbackAction implements ScopeAction {
@@ -26,7 +26,8 @@ public class ScopeInsertSiblingDownRollbackAction implements ScopeAction {
 	@Element
 	private ScopeUpdateAction scopeUpdateRollbackAction;
 
-	public ScopeInsertSiblingDownRollbackAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeInsertSiblingDownRollbackAction() {}
 
 	public ScopeInsertSiblingDownRollbackAction(final UUID newScopeId, final ScopeUpdateAction scopeUpdateRollbackAction) {
 		this.referenceId = newScopeId;
@@ -51,18 +52,6 @@ public class ScopeInsertSiblingDownRollbackAction implements ScopeAction {
 	@Override
 	public UUID getReferenceId() {
 		return referenceId;
-	}
-
-	public ScopeUpdateAction getScopeUpdateRollbackAction() {
-		return scopeUpdateRollbackAction;
-	}
-
-	public void setScopeUpdateRollbackAction(final ScopeUpdateAction scopeUpdateRollbackAction) {
-		this.scopeUpdateRollbackAction = scopeUpdateRollbackAction;
-	}
-
-	public void setReferenceId(final UUID referenceId) {
-		this.referenceId = referenceId;
 	}
 
 	@Override

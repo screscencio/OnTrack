@@ -1,13 +1,12 @@
 package br.com.oncast.ontrack.shared.services.actionSync;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+import br.com.oncast.ontrack.shared.utils.PrettyPrinter;
 
-import com.google.common.base.Joiner;
+import java.util.List;
 
 public class ModelActionSyncEvent implements ServerPushEvent {
 
@@ -49,6 +48,6 @@ public class ModelActionSyncEvent implements ServerPushEvent {
 
 	@Override
 	public String toString() {
-		return "[Project: " + projectId + "; " + Joiner.on(", ").join(actionList) + "]";
+		return "[Project: " + projectId + "; " + PrettyPrinter.getSimpleNamesListString(actionList) + "]";
 	}
 }

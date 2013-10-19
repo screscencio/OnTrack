@@ -1,5 +1,12 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeUpdateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -9,13 +16,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
 
 @ConvertTo(ScopeUpdateActionEntity.class)
 public class ScopeUpdateAction implements ScopeAction {
@@ -53,7 +53,8 @@ public class ScopeUpdateAction implements ScopeAction {
 		this.subActionList = subActionList;
 	}
 
-	public ScopeUpdateAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeUpdateAction() {}
 
 	@Override
 	public ScopeUpdateAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -71,26 +72,6 @@ public class ScopeUpdateAction implements ScopeAction {
 	@Override
 	public UUID getReferenceId() {
 		return referenceId;
-	}
-
-	public String getNewDescription() {
-		return newDescription;
-	}
-
-	public void setNewDescription(final String newDescription) {
-		this.newDescription = newDescription;
-	}
-
-	public List<ModelAction> getSubActionList() {
-		return subActionList;
-	}
-
-	public void setSubActionList(final List<ModelAction> subActionList) {
-		this.subActionList = subActionList;
-	}
-
-	public void setReferenceId(final UUID referenceId) {
-		this.referenceId = referenceId;
 	}
 
 	// TODO Result should depend on its subActions.

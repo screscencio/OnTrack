@@ -60,7 +60,7 @@ public class ActionSyncService {
 		this.alertingService = alertingService;
 		this.messages = messages;
 		this.contextProviderService = contextProviderService;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, eventBus, alertingService, storage, messages);
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, eventBus, alertingService, messages, storage);
 
 		serverPushClientService.registerServerEventHandler(ModelActionSyncEvent.class, new ServerActionSyncEventHandler() {
 

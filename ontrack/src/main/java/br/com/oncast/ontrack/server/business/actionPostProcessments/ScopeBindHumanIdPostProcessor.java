@@ -1,13 +1,7 @@
 package br.com.oncast.ontrack.server.business.actionPostProcessments;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
-import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
@@ -21,27 +15,28 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 public class ScopeBindHumanIdPostProcessor implements ActionPostProcessor<ScopeBindReleaseAction> {
 
 	private static final Logger LOGGER = Logger.getLogger(ScopeBindHumanIdPostProcessor.class);
 
 	private final PersistenceService persistenceService;
-	private final MulticastService multicastService;
 
 	private boolean active;
 
-	public ScopeBindHumanIdPostProcessor(final PersistenceService persistenceService, final MulticastService multicastService) {
+	public ScopeBindHumanIdPostProcessor(final PersistenceService persistenceService) {
 		this.persistenceService = persistenceService;
-		this.multicastService = multicastService;
 		active = true;
 	}
 
 	@Override
-	public void process(final ScopeBindReleaseAction action, final ActionContext actionContext, final ProjectContext context)
-			throws UnableToPostProcessActionException {
+	public void process(final ScopeBindReleaseAction action, final ActionContext actionContext, final ProjectContext context) throws UnableToPostProcessActionException {
 		if (!active) {
 			LOGGER.debug("Ignoring ScopeBindReleaseAction post processment of action '" + action + "': the post processor was deactivated.");
 			return;
@@ -56,19 +51,15 @@ public class ScopeBindHumanIdPostProcessor implements ActionPostProcessor<ScopeB
 			persistenceService.persistOrUpdateProjectRepresentation(representation);
 
 			launchAction(new ScopeBindHumanIdAction(scope.getId(), humanId), representation.getId(), actionContext);
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			throw new UnableToPostProcessActionException("Could not bind human id", e);
 		}
 	}
 
-	private void launchAction(final ScopeBindHumanIdAction action, final UUID projectId, final ActionContext actionContext)
-			throws UnableToHandleActionException, AuthorizationException {
-
+	private void launchAction(final ScopeBindHumanIdAction action, final UUID projectId, final ActionContext actionContext) throws UnableToHandleActionException, AuthorizationException {
 		final List<ModelAction> list = new ArrayList<ModelAction>();
 		list.add(action);
-		ServerServiceProvider.getInstance().getBusinessLogic().handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, list));
-		multicastService.multicastToCurrentUserClientInSpecificProject(new ModelActionSyncEvent(projectId, list, actionContext, -1), projectId);
+		ServerServiceProvider.getInstance().getBusinessLogic().handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, list).setShouldReturnToSender(true));
 	}
 
 	public void deactivate() {

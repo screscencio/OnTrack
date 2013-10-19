@@ -1,5 +1,10 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.Date;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareDueDateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -7,11 +12,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import java.util.Date;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeDeclareDueDateActionEntity.class)
 public class ScopeDeclareDueDateAction implements ScopeAction {
@@ -24,7 +24,7 @@ public class ScopeDeclareDueDateAction implements ScopeAction {
 	@Attribute(required = false)
 	private Date dueDate;
 
-	public ScopeDeclareDueDateAction() {}
+	protected ScopeDeclareDueDateAction() {}
 
 	public ScopeDeclareDueDateAction(final UUID scopeId, final Date dueDate) {
 		this.scopeId = scopeId;
@@ -44,14 +44,6 @@ public class ScopeDeclareDueDateAction implements ScopeAction {
 		return scopeId;
 	}
 
-	public void setScopeId(final UUID scopeId) {
-		this.scopeId = scopeId;
-	}
-
-	public void setDueDate(final Date dueDate) {
-		this.dueDate = dueDate;
-	}
-
 	@Override
 	public boolean changesEffortInference() {
 		return false;
@@ -65,14 +57,6 @@ public class ScopeDeclareDueDateAction implements ScopeAction {
 	@Override
 	public boolean changesValueInference() {
 		return false;
-	}
-
-	public UUID getScopeId() {
-		return scopeId;
-	}
-
-	public Date getDueDate() {
-		return dueDate;
 	}
 
 }

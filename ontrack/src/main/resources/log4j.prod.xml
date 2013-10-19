@@ -59,11 +59,11 @@
 
 	<!-- Database Related Log - Logs c3p0 connection pool warnings -->
 	<logger name="com.mchange">
-		<level value="DEBUG" />
+		<level value="WARN" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</logger>
-
+	
 	<!-- GWT's JSP Internals Related Log -->
 	<logger name="org.apache.jasper">
 		<level value="DEBUG" />
@@ -73,21 +73,21 @@
 
 	<!-- Database Related Log - Log all SQL DML statements as they are executed -->
 	<logger name="org.hibernate.SQL">
-		<level value="DEBUG" />
+		<level value="WARN" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- Database Related Log - Log all second-level cache activity -->
 	<logger name="org.hibernate.cache">
-		<level value="DEBUG" />
+		<level value="WARN" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- Database Related Log - Log everything -->
 	<logger name="org.hibernate">
-		<level value="DEBUG" />
+		<level value="WARN" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</logger>

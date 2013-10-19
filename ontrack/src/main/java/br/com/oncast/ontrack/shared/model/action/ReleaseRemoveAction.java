@@ -33,7 +33,8 @@ public class ReleaseRemoveAction implements ReleaseAction, ShowsUndoAlertAfterAc
 	@IgnoreByConversion
 	private List<UUID> dissociatedScopes;
 
-	public ReleaseRemoveAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ReleaseRemoveAction() {}
 
 	public ReleaseRemoveAction(final UUID selectedReleaseId) {
 		this.referenceId = selectedReleaseId;
@@ -75,7 +76,6 @@ public class ReleaseRemoveAction implements ReleaseAction, ShowsUndoAlertAfterAc
 	}
 
 	private List<ScopeBindReleaseAction> dissociateScopesFromThisRelease(final ProjectContext context, final ActionContext actionContext, final Release release) throws UnableToCompleteActionException {
-
 		final List<ScopeBindReleaseAction> subActionRollbackList = new ArrayList<ScopeBindReleaseAction>();
 		dissociatedScopes = new ArrayList<UUID>();
 		for (final Scope scope : release.getScopeList()) {
@@ -101,16 +101,8 @@ public class ReleaseRemoveAction implements ReleaseAction, ShowsUndoAlertAfterAc
 		return referenceId;
 	}
 
-	public void setReferenceId(final UUID referenceId) {
-		this.referenceId = referenceId;
-	}
-
 	public List<UUID> getDissociatedScopes() {
 		return dissociatedScopes == null ? new ArrayList<UUID>() : dissociatedScopes;
-	}
-
-	public void setDissociatedScopes(final List<UUID> dissociatedScopes) {
-		this.dissociatedScopes = dissociatedScopes;
 	}
 
 	@Override

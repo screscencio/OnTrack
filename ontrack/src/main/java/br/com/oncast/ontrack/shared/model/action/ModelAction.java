@@ -8,10 +8,8 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.kfuntak.gwt.json.serialization.client.JsonSerializable;
-
 @XmlRootElement
-public interface ModelAction extends Serializable, JsonSerializable {
+public interface ModelAction extends Serializable {
 
 	ModelAction execute(final ProjectContext context, ActionContext actionContext) throws UnableToCompleteActionException;
 

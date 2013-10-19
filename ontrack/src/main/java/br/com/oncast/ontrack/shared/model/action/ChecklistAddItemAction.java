@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistAddItemActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -8,9 +11,6 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
 
 @ConvertTo(ChecklistAddItemActionEntity.class)
 public class ChecklistAddItemAction implements ChecklistItemAction {
@@ -32,7 +32,7 @@ public class ChecklistAddItemAction implements ChecklistItemAction {
 	@Attribute
 	private boolean checked;
 
-	public ChecklistAddItemAction() {}
+	protected ChecklistAddItemAction() {}
 
 	public ChecklistAddItemAction(final UUID subjectId, final UUID checklistId, final String itemDescription) {
 		this.checklistId = checklistId;
@@ -68,42 +68,6 @@ public class ChecklistAddItemAction implements ChecklistItemAction {
 	@Override
 	public UUID getSubjectId() {
 		return subjectId;
-	}
-
-	public UUID getChecklistId() {
-		return checklistId;
-	}
-
-	public String getItemDescription() {
-		return itemDescription;
-	}
-
-	public void setChecklistId(final UUID checklistId) {
-		this.checklistId = checklistId;
-	}
-
-	public void setItemDescription(final String itemDescription) {
-		this.itemDescription = itemDescription;
-	}
-
-	public void setSubjectId(final UUID subjectId) {
-		this.subjectId = subjectId;
-	}
-
-	public void setItemId(final UUID itemId) {
-		this.itemId = itemId;
-	}
-
-	public void setChecked(final boolean checked) {
-		this.checked = checked;
-	}
-
-	public UUID getItemId() {
-		return itemId;
-	}
-
-	public boolean getChecked() {
-		return checked;
 	}
 
 }

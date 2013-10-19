@@ -6,7 +6,6 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import java.io.IOException;
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -20,10 +19,8 @@ public class ProjectSnapshot {
 	private String id;
 
 	@Lob
-	@Column
 	private byte[] serializedProject;
 
-	@Column
 	private long lastAppliedActionId;
 
 	@Temporal(TemporalType.TIMESTAMP)

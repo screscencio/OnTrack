@@ -44,7 +44,8 @@ public class ReleaseRemoveRollbackAction implements ReleaseAction {
 	@ElementList
 	private List<ModelAction> subActionRollbackList;
 
-	public ReleaseRemoveRollbackAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ReleaseRemoveRollbackAction() {}
 
 	public ReleaseRemoveRollbackAction(final UUID parentReleaseId, final UUID newReleaseId, final String description, final int index, final List<ReleaseRemoveRollbackAction> childActionList,
 			final List<ModelAction> subActionRollbackList) {
@@ -85,49 +86,5 @@ public class ReleaseRemoveRollbackAction implements ReleaseAction {
 
 	public UUID getNewReleaseId() {
 		return newReleaseId;
-	}
-
-	public UUID getParentReleaseId() {
-		return parentReleaseId;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public int getIndex() {
-		return index;
-	}
-
-	public List<ReleaseRemoveRollbackAction> getChildActionList() {
-		return childActionList;
-	}
-
-	public List<ModelAction> getSubActionRollbackList() {
-		return subActionRollbackList;
-	}
-
-	public void setNewReleaseId(final UUID newReleaseId) {
-		this.newReleaseId = newReleaseId;
-	}
-
-	public void setParentReleaseId(final UUID parentReleaseId) {
-		this.parentReleaseId = parentReleaseId;
-	}
-
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	public void setIndex(final int index) {
-		this.index = index;
-	}
-
-	public void setChildActionList(final List<ReleaseRemoveRollbackAction> childActionList) {
-		this.childActionList = childActionList;
-	}
-
-	public void setSubActionRollbackList(final List<ModelAction> subActionRollbackList) {
-		this.subActionRollbackList = subActionRollbackList;
 	}
 }

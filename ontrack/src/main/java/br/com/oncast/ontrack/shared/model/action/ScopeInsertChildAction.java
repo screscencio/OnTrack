@@ -1,5 +1,10 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertChildActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -9,11 +14,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeInsertChildActionEntity.class)
 public class ScopeInsertChildAction implements ScopeInsertAction {
@@ -32,7 +32,8 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	@Element
 	private ScopeUpdateAction scopeUpdateAction;
 
-	public ScopeInsertChildAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeInsertChildAction() {}
 
 	public ScopeInsertChildAction(final UUID parentScopeId, final String pattern) {
 		this(parentScopeId, new UUID(), pattern);
@@ -67,22 +68,6 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 		return newScopeId;
 	}
 
-	public ScopeUpdateAction getScopeUpdateAction() {
-		return scopeUpdateAction;
-	}
-
-	public void setScopeUpdateAction(final ScopeUpdateAction scopeUpdateAction) {
-		this.scopeUpdateAction = scopeUpdateAction;
-	}
-
-	public void setReferenceId(final UUID referenceId) {
-		this.referenceId = referenceId;
-	}
-
-	public void setNewScopeId(final UUID newScopeId) {
-		this.newScopeId = newScopeId;
-	}
-
 	@Override
 	public boolean changesEffortInference() {
 		return true;
@@ -97,5 +82,4 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	public boolean changesProgressInference() {
 		return true;
 	}
-
 }

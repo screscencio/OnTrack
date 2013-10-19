@@ -48,6 +48,10 @@
 		    <param-name>org.atmosphere.disableOnStateEvent</param-name>
 		    <param-value>true</param-value>
 		</init-param>
+		<init-param>
+			<param-name>org.atmosphere.cpr.sessionSupport</param-name>
+			<param-value>true</param-value>
+		</init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>AtmosphereServlet</servlet-name>

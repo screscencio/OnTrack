@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationDeprecateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -8,8 +10,6 @@ import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import org.simpleframework.xml.Element;
 
 @ConvertTo(AnnotationDeprecateActionEntity.class)
 public class AnnotationDeprecateAction implements AnnotationAction {
@@ -22,7 +22,7 @@ public class AnnotationDeprecateAction implements AnnotationAction {
 	@Element
 	private UUID annotationId;
 
-	public AnnotationDeprecateAction() {}
+	protected AnnotationDeprecateAction() {}
 
 	public AnnotationDeprecateAction(final UUID subjectId, final UUID annotationId) {
 		this.subjectId = subjectId;
@@ -43,17 +43,5 @@ public class AnnotationDeprecateAction implements AnnotationAction {
 
 	public UUID getAnnotationId() {
 		return annotationId;
-	}
-
-	public UUID getSubjectId() {
-		return subjectId;
-	}
-
-	public void setSubjectId(final UUID subjectId) {
-		this.subjectId = subjectId;
-	}
-
-	public void setAnnotationId(final UUID annotationId) {
-		this.annotationId = annotationId;
 	}
 }

@@ -1,5 +1,9 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.Date;
+
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.impediments.ImpedimentSolveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -10,10 +14,6 @@ import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import java.util.Date;
-
-import org.simpleframework.xml.Element;
 
 @ConvertTo(ImpedimentSolveActionEntity.class)
 public class ImpedimentSolveAction implements ImpedimentAction {
@@ -26,7 +26,7 @@ public class ImpedimentSolveAction implements ImpedimentAction {
 	@Element
 	private UUID annotationId;
 
-	public ImpedimentSolveAction() {}
+	protected ImpedimentSolveAction() {}
 
 	public ImpedimentSolveAction(final UUID subjectId, final UUID annotationId) {
 		this.subjectId = subjectId;
@@ -53,17 +53,5 @@ public class ImpedimentSolveAction implements ImpedimentAction {
 
 	public UUID getAnnotationId() {
 		return annotationId;
-	}
-
-	public UUID getSubjectId() {
-		return subjectId;
-	}
-
-	public void setSubjectId(final UUID subjectId) {
-		this.subjectId = subjectId;
-	}
-
-	public void setAnnotationId(final UUID annotationId) {
-		this.annotationId = annotationId;
 	}
 }

@@ -32,7 +32,7 @@ public class ChecklistCreateAction implements ChecklistAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
-	public ChecklistCreateAction() {}
+	protected ChecklistCreateAction() {}
 
 	protected ChecklistCreateAction(final UUID subjectId, final Checklist checklist) {
 		this.subjectId = subjectId;
@@ -65,36 +65,8 @@ public class ChecklistCreateAction implements ChecklistAction {
 		return subjectId;
 	}
 
-	public UUID getSubjectId() {
-		return subjectId;
-	}
-
-	public void setSubjectId(final UUID subjectId) {
-		this.subjectId = subjectId;
-	}
-
 	public UUID getChecklistId() {
 		return checklistId;
-	}
-
-	public void setChecklistId(final UUID checklistId) {
-		this.checklistId = checklistId;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(final String title) {
-		this.title = title;
-	}
-
-	public List<ModelAction> getSubActionList() {
-		return subActionList;
-	}
-
-	public void setSubActionList(final List<ModelAction> subActionList) {
-		this.subActionList = subActionList;
 	}
 
 }

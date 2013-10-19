@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseScopeUpdatePriorityActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -10,9 +13,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
 
 @ConvertTo(ReleaseScopeUpdatePriorityActionEntity.class)
 public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
@@ -31,7 +31,8 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 	@Attribute
 	private int priority;
 
-	public ReleaseScopeUpdatePriorityAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ReleaseScopeUpdatePriorityAction() {}
 
 	public ReleaseScopeUpdatePriorityAction(final UUID releaseReferenceId, final UUID scopeReferenceId, final int priority) {
 		this.releaseReferenceId = releaseReferenceId;
@@ -45,9 +46,12 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 		// IMPORTANT The release id should be used to recover the release, but as it was not being saved there is the need to maintain backwards compatibility.
 		final Release release = releaseReferenceId != null ? ActionHelper.findRelease(releaseReferenceId, context, this) : scope.getRelease();
 
-		if (!release.containsScope(scope)) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.RELEASE_NOT_CONTAINS_SCOPE);
-		if (priority < 0) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.ALREADY_THE_MOST_PRIORITARY);
-		if (priority >= release.getScopeList().size()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.ALREADY_THE_LEAST_PRIORITARY);
+		if (!release.containsScope(scope)) throw new UnableToCompleteActionException(
+				this, ActionExecutionErrorMessageCode.RELEASE_NOT_CONTAINS_SCOPE);
+		if (priority < 0) throw new UnableToCompleteActionException(
+				this, ActionExecutionErrorMessageCode.ALREADY_THE_MOST_PRIORITARY);
+		if (priority >= release.getScopeList().size()) throw new UnableToCompleteActionException(
+				this, ActionExecutionErrorMessageCode.ALREADY_THE_LEAST_PRIORITARY);
 
 		final int oldPriority = release.getScopeIndex(scope);
 		release.removeScope(scope);
@@ -63,25 +67,5 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 
 	public UUID getScopeReferenceId() {
 		return scopeReferenceId;
-	}
-
-	public UUID getReleaseReferenceId() {
-		return releaseReferenceId;
-	}
-
-	public void setReleaseReferenceId(final UUID releaseReferenceId) {
-		this.releaseReferenceId = releaseReferenceId;
-	}
-
-	public int getPriority() {
-		return priority;
-	}
-
-	public void setPriority(final int priority) {
-		this.priority = priority;
-	}
-
-	public void setScopeReferenceId(final UUID scopeReferenceId) {
-		this.scopeReferenceId = scopeReferenceId;
 	}
 }

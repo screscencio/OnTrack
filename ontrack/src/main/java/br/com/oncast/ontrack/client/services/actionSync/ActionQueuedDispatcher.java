@@ -8,13 +8,16 @@ import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
-import br.com.oncast.ontrack.client.ui.events.PendingActionsChangeEvent;
+import br.com.oncast.ontrack.client.ui.events.PendingActionsCountChangeEvent;
+import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequestResponse;
+import br.com.oncast.ontrack.shared.utils.PrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,6 @@ class ActionQueuedDispatcher {
 	private final ProjectRepresentationProvider projectRepresentationProvider;
 	private final ClientErrorMessages messages;
 	private final ClientAlertingService alertingService;
-
 	private final List<ActionQueuedDispatchCallback> callbacks = new ArrayList<ActionQueuedDispatchCallback>();
 	private boolean paused = false;
 
@@ -44,16 +46,15 @@ class ActionQueuedDispatcher {
 	private final ClientStorageService storage;
 
 	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider, final EventBus eventBus,
-			final ClientAlertingService alertingService, final ClientStorageService storage, final ClientErrorMessages messages) {
+			final ClientAlertingService alertingService, final ClientErrorMessages messages, final ClientStorageService clientStorageService) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.requestDispatchService = requestDispatchService;
 		this.eventBus = eventBus;
 		this.alertingService = alertingService;
-		this.storage = storage;
 		this.messages = messages;
+		storage = clientStorageService;
 
 		actionList = new ArrayList<ModelAction>();
-
 		reverseActionList = new ArrayList<ModelAction>();
 		waitingServerAnswerActionList = new ArrayList<ModelAction>();
 		Window.addWindowClosingHandler(new ClosingHandler() {
@@ -61,17 +62,15 @@ class ActionQueuedDispatcher {
 			public void onWindowClosing(final ClosingEvent event) {
 				final int nOfPendingActions = actionList.size() + waitingServerAnswerActionList.size();
 				savePendingActions();
-
 				if (nOfPendingActions > 0) event.setMessage(messages.thereArePedingActionsWannaLeaveAnyway("" + nOfPendingActions));
 			}
 		});
-
 	}
 
 	public void dispatch(final ModelAction action, final ActionExecutionContext executionContext) {
 		actionList.add(action);
 		reverseActionList.add(executionContext.getReverseAction());
-		firePendingActionsChangeEvent();
+		firePendingActionsCountChangeEvent();
 		tryExchange();
 	}
 
@@ -84,19 +83,21 @@ class ActionQueuedDispatcher {
 		if (!waitingServerAnswerActionList.isEmpty()) return;
 		if (actionList.isEmpty()) return;
 
-		waitingServerAnswerActionList = new ArrayList<ModelAction>(actionList);
-		final ArrayList<ModelAction> waitingServerAnsuerReverseActionList = new ArrayList<ModelAction>(reverseActionList);
+		waitingServerAnswerActionList = getActionsBatch();
+		final ArrayList<ModelAction> waitingServerAnsuerReverseActionList = new ArrayList<ModelAction>(reverseActionList.subList(0, waitingServerAnswerActionList.size()));
 		actionList.removeAll(waitingServerAnswerActionList);
-		firePendingActionsChangeEvent();
+		firePendingActionsCountChangeEvent();
 		reverseActionList.removeAll(waitingServerAnsuerReverseActionList);
 
+		// TODO Display 'loading' UI indicator.
 		requestDispatchService.dispatch(new ModelActionSyncRequest(projectRepresentationProvider.getCurrent(), waitingServerAnswerActionList).setShouldReturnToSender(returnActionsToSender),
 				new DispatchCallback<ModelActionSyncRequestResponse>() {
 
 					@Override
 					public void onSuccess(final ModelActionSyncRequestResponse response) {
+						// TODO Hide 'loading' UI indicator.
 						waitingServerAnswerActionList.clear();
-						firePendingActionsChangeEvent();
+						firePendingActionsCountChangeEvent();
 						notifyCallbacks(response);
 						tryExchange();
 					}
@@ -108,6 +109,7 @@ class ActionQueuedDispatcher {
 
 					@Override
 					public void onUntreatedFailure(final Throwable caught) {
+						// TODO Hide 'loading' UI indicator.
 						// TODO When "Broswer-Reload" is removed, this method should fix "sync lists" according to the error returned.
 						// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
 						if (caught instanceof InvalidIncomingAction || caught instanceof UnableToHandleActionException) {
@@ -133,13 +135,26 @@ class ActionQueuedDispatcher {
 							actionList.add(0, pendingAction);
 						}
 						waitingServerAnswerActionList.clear();
-						firePendingActionsChangeEvent();
+						firePendingActionsCountChangeEvent();
 					}
 				});
 	}
 
-	private void firePendingActionsChangeEvent() {
-		eventBus.fireEvent(new PendingActionsChangeEvent(actionList, waitingServerAnswerActionList));
+	private ArrayList<ModelAction> getActionsBatch() {
+		final ArrayList<ModelAction> list = new ArrayList<ModelAction>();
+		for (final ModelAction action : actionList) {
+			if (!list.isEmpty() && action instanceof ScopeBindReleaseAction) {
+				SpeedTracerConsole.log("splitted " + PrettyPrinter.getSimpleName(action));
+				break;
+			}
+			SpeedTracerConsole.log("added " + PrettyPrinter.getSimpleName(action));
+			list.add(action);
+		}
+		return list;
+	}
+
+	private void firePendingActionsCountChangeEvent() {
+		eventBus.fireEvent(new PendingActionsCountChangeEvent(actionList.size(), waitingServerAnswerActionList.size()));
 	}
 
 	protected void notifyCallbacks(final ModelActionSyncRequestResponse response) {

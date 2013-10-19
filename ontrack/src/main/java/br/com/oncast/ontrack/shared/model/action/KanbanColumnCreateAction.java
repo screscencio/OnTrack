@@ -1,5 +1,12 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -11,13 +18,6 @@ import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
 
 @ConvertTo(KanbanColumnCreateActionEntity.class)
 public class KanbanColumnCreateAction implements KanbanAction {
@@ -57,12 +57,14 @@ public class KanbanColumnCreateAction implements KanbanAction {
 		this.columnIndex = columnIndex;
 	}
 
-	public KanbanColumnCreateAction(final UUID releaseReferenceId, final String columnDescription, final boolean shouldLockKanban, final int columnIndex, final List<ModelAction> rollbackActions) {
+	public KanbanColumnCreateAction(final UUID releaseReferenceId, final String columnDescription, final boolean shouldLockKanban, final int columnIndex,
+			final List<ModelAction> rollbackActions) {
 		this(releaseReferenceId, columnDescription, shouldLockKanban, rollbackActions);
 		this.columnIndex = columnIndex;
 	}
 
-	private KanbanColumnCreateAction(final UUID releaseReferenceId, final String columnDescription, final boolean shouldLockKanban, final List<ModelAction> rollbackActions) {
+	private KanbanColumnCreateAction(final UUID releaseReferenceId, final String columnDescription, final boolean shouldLockKanban,
+			final List<ModelAction> rollbackActions) {
 		this.referenceId = releaseReferenceId;
 		this.columnDescription = columnDescription;
 		this.shouldLockKanban = shouldLockKanban;
@@ -70,7 +72,8 @@ public class KanbanColumnCreateAction implements KanbanAction {
 		this.columnId = new UUID();
 	}
 
-	public KanbanColumnCreateAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected KanbanColumnCreateAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -91,49 +94,4 @@ public class KanbanColumnCreateAction implements KanbanAction {
 	public UUID getReferenceId() {
 		return referenceId;
 	}
-
-	public UUID getColumnId() {
-		return columnId;
-	}
-
-	public void setColumnId(final UUID columnId) {
-		this.columnId = columnId;
-	}
-
-	public String getColumnDescription() {
-		return columnDescription;
-	}
-
-	public void setColumnDescription(final String columnDescription) {
-		this.columnDescription = columnDescription;
-	}
-
-	public boolean getShouldLockKanban() {
-		return shouldLockKanban;
-	}
-
-	public void setShouldLockKanban(final boolean shouldLockKanban) {
-		this.shouldLockKanban = shouldLockKanban;
-	}
-
-	public List<ModelAction> getSubActions() {
-		return subActions;
-	}
-
-	public void setSubActions(final List<ModelAction> subActions) {
-		this.subActions = subActions;
-	}
-
-	public int getColumnIndex() {
-		return columnIndex;
-	}
-
-	public void setColumnIndex(final int columnIndex) {
-		this.columnIndex = columnIndex;
-	}
-
-	public void setReferenceId(final UUID referenceId) {
-		this.referenceId = referenceId;
-	}
-
 }

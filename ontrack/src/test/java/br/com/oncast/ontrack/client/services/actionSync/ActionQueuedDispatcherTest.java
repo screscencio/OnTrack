@@ -54,7 +54,7 @@ public class ActionQueuedDispatcherTest extends GwtTest {
 		MockitoAnnotations.initMocks(this);
 		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
-		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock, getProjectRepresentationProviderMock(), eventBus, alertingService, storage, messages);
+		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock, getProjectRepresentationProviderMock(), eventBus, alertingService, messages, storage);
 	}
 
 	@Test

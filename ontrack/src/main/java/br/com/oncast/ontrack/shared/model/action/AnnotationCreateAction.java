@@ -42,7 +42,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 	@Attribute(required = false)
 	private String annotationType;
 
-	public AnnotationCreateAction() {}
+	protected AnnotationCreateAction() {}
 
 	public AnnotationCreateAction(final UUID subjectId, final String message, final UUID attachmentId) {
 		this.message = message;
@@ -104,50 +104,6 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	public UUID getAnnotationId() {
 		return annotationId;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public UUID getSubjectId() {
-		return subjectId;
-	}
-
-	public UUID getAttachmentId() {
-		return attachmentId;
-	}
-
-	public List<ModelAction> getSubActionList() {
-		return subActionList;
-	}
-
-	public String getAnnotationType() {
-		return annotationType;
-	}
-
-	public void setMessage(final String message) {
-		this.message = message;
-	}
-
-	public void setAnnotationId(final UUID annotationId) {
-		this.annotationId = annotationId;
-	}
-
-	public void setSubjectId(final UUID subjectId) {
-		this.subjectId = subjectId;
-	}
-
-	public void setAttachmentId(final UUID attachmentId) {
-		this.attachmentId = attachmentId;
-	}
-
-	public void setSubActionList(final List<ModelAction> subActionList) {
-		this.subActionList = subActionList;
-	}
-
-	public void setAnnotationType(final String annotationType) {
-		this.annotationType = annotationType;
 	}
 
 }

@@ -29,7 +29,8 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 	@Element
 	private ScopeUpdateAction scopeUpdateAction;
 
-	public ScopeInsertSiblingUpAction() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeInsertSiblingUpAction() {}
 
 	public ScopeInsertSiblingUpAction(final UUID selectedScopeId, final String pattern) {
 		this(selectedScopeId, new UUID(), pattern);
@@ -63,22 +64,6 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 	@Override
 	public UUID getNewScopeId() {
 		return newScopeId;
-	}
-
-	public ScopeUpdateAction getScopeUpdateAction() {
-		return scopeUpdateAction;
-	}
-
-	public void setScopeUpdateAction(final ScopeUpdateAction scopeUpdateAction) {
-		this.scopeUpdateAction = scopeUpdateAction;
-	}
-
-	public void setReferenceId(final UUID referenceId) {
-		this.referenceId = referenceId;
-	}
-
-	public void setNewScopeId(final UUID newScopeId) {
-		this.newScopeId = newScopeId;
 	}
 
 	@Override
