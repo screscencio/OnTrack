@@ -45,6 +45,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -56,18 +57,23 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class OnTrackMetricsPanel extends Composite {
 
-	private static final int MAX_ACTIONS = 8;
+	private static final int MAX_ACTIONS = 10;
 
 	private static final String PROJECTS_COUNT_COLOR = "#CCCC44";
 
 	private static final String USERS_COUNT_COLOR = "#CC44CC";
 
-	private static final String ACTIONS_PER_HOUR_COLOR = "#44CC44";
+	private static final String ACTIONS_COUNT_COLOR = "#44CC44";
 
 	private static final String ACTIVE_CONNECTIONS_COLOR = "#ff4444";
 
@@ -102,11 +108,17 @@ public class OnTrackMetricsPanel extends Composite {
 	@UiField
 	FlowPanel projectsPanel;
 
+	@UiField
+	SuggestBox actionCountSuggestBox;
+
+	@UiField
+	HTMLPanel actionCountResultsPanel;
+
 	private Series onlineUsersSeries;
 
 	private Series activeConnectionsSeries;
 
-	private Series actionsPerHourSeries;
+	private Series actionsCountSeries;
 
 	private Series usersCountSeries;
 
@@ -131,9 +143,11 @@ public class OnTrackMetricsPanel extends Composite {
 
 	private Chart usageChart;
 
-	private Chart clientsChart;
+	private Chart currentlyChart;
 
 	private Chart actionsRatioChart;
+
+	private Date lastMetricsUpdate;
 
 	public OnTrackMetricsPanel() {
 		projects = new HashMap<String, ProjectMetricsWidget>();
@@ -186,18 +200,22 @@ public class OnTrackMetricsPanel extends Composite {
 		update();
 	}
 
+	@UiHandler("actionCountSuggestBox")
+	void onActionSelected(final SelectionEvent<Suggestion> event) {
+		actionCountResultsPanel.add(new Label(event.getSelectedItem().getReplacementString()));
+		actionCountSuggestBox.setValue("", false);
+	}
+
 	private void updateView(final OnTrackServerMetrics statistic) {
 		onlineUsersSeries.addPoint(getOnlineUsersPoint(statistic));
 		activeConnectionsSeries.addPoint(getActiveConnectionsPoint(statistic));
-		actionsPerHourSeries.addPoint(getActionsPerHourPoint(statistic));
+		actionsCountSeries.addPoint(getActionsCountPoint(statistic));
 		usersCountSeries.addPoint(getUsersCountPoint(statistic));
 		projectsCountSeries.addPoint(getProjectsCountPoint(statistic));
 
-		// FIXME removed to improve performance
-		// updateActionsRatioChart(statistic);
-		// updateProjectsStatistics(statistic);
-
-		metricsCache.put(statistic.getTimestamp().getTime(), statistic);
+		updateActionsRatioChart(statistic);
+		lastMetricsUpdate = statistic.getTimestamp();
+		metricsCache.put(lastMetricsUpdate.getTime(), statistic);
 
 		for (final String user : statistic.getOnlineUsers()) {
 			ClientServices.get().userData().loadRealUser(new UUID(user), new AsyncCallback<User>() {
@@ -227,11 +245,20 @@ public class OnTrackMetricsPanel extends Composite {
 
 	private void updateActionsRatioChart(final OnTrackServerMetrics statistic) {
 		actionsRatioChart.removeAllSeries();
+		final MultiWordSuggestOracle oracle = (MultiWordSuggestOracle) actionCountSuggestBox.getSuggestOracle();
+		oracle.clear();
 		final Series series = actionsRatioChart.createSeries();
-		final Map<String, Integer> actionsMap = statistic.getActionsRatio();
-		if (actionsMap == null) return;
+		final Map<String, Integer> actionsCountMap = statistic.getActionsRatio();
+		if (actionsCountMap == null) return;
 
-		final ArrayList<Entry<String, Integer>> orderedList = new ArrayList<Map.Entry<String, Integer>>(actionsMap.entrySet());
+		for (final Entry<String, Integer> e : actionsCountMap.entrySet()) {
+			oracle.add(e.getKey() + ": " + e.getValue());
+		}
+		actionCountSuggestBox.refreshSuggestionList();
+		actionCountResultsPanel.clear();
+		actionCountSuggestBox.setValue("", false);
+
+		final ArrayList<Entry<String, Integer>> orderedList = new ArrayList<Map.Entry<String, Integer>>(actionsCountMap.entrySet());
 		Collections.sort(orderedList, new Comparator<Entry<String, Integer>>() {
 			@Override
 			public int compare(final Entry<String, Integer> o1, final Entry<String, Integer> o2) {
@@ -250,7 +277,7 @@ public class OnTrackMetricsPanel extends Composite {
 
 	private void update() {
 		setOptionsEnabled(false);
-		ClientServices.get().metrics().getMetrics(new AsyncCallback<OnTrackServerMetrics>() {
+		ClientServices.get().metrics().getMetrics(lastMetricsUpdate, new AsyncCallback<OnTrackServerMetrics>() {
 
 			@Override
 			public void onSuccess(final OnTrackServerMetrics statistic) {
@@ -269,7 +296,7 @@ public class OnTrackMetricsPanel extends Composite {
 				boolean equals = o1.getActiveConnectionsCount() == o2.getActiveConnectionsCount();
 				equals &= o1.getOnlineUsers().size() == o2.getOnlineUsers().size();
 				equals &= o1.getOnlineUsers().containsAll(o2.getOnlineUsers());
-				equals &= o1.getActionsPerHour() == o2.getActionsPerHour();
+				equals &= o1.getActionsCount() == o2.getActionsCount();
 				equals &= o1.getUsersCount() == o2.getUsersCount();
 				return equals;
 			}
@@ -312,11 +339,11 @@ public class OnTrackMetricsPanel extends Composite {
 	}
 
 	private void createClientsChart() {
-		clientsChart = new Chart().setChartTitleText("Clients").setLegend(new Legend().setAlign(Align.RIGHT).setVerticalAlign(VerticalAlign.TOP).setFloating(true))
+		currentlyChart = new Chart().setChartTitleText("Currently").setLegend(new Legend().setAlign(Align.RIGHT).setVerticalAlign(VerticalAlign.TOP).setFloating(true))
 				.setSeriesPlotOptions(new SeriesPlotOptions().setPointMouseOverEventHandler(new PointMouseOverEventHandler() {
 					@Override
 					public boolean onMouseOver(final PointMouseOverEvent pointMouseOverEvent) {
-						final Point[] points = clientsChart.getSeries(pointMouseOverEvent.getSeriesId()).getPoints();
+						final Point[] points = currentlyChart.getSeries(pointMouseOverEvent.getSeriesId()).getPoints();
 						for (int i = 0; i < points.length; i++) {
 							if (points[i].getX().equals(pointMouseOverEvent.getPoint().getX())) {
 								updateToolTip(i);
@@ -330,8 +357,9 @@ public class OnTrackMetricsPanel extends Composite {
 						final long timestamp = toolTipData.getXAsLong();
 						final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
 						final Set<String> onlineUsers = statistic.getOnlineUsers();
-						String toolTip = formatTime(timestamp) + "<br/><b style=\"color: " + ACTIVE_CONNECTIONS_COLOR + ";\">Active Connections:</b> " + statistic.getActiveConnectionsCount()
-								+ "<br/><b style=\"color: " + ONLINE_USERS_COLOR + ";\">Online Users:</b> " + onlineUsers.size();
+						String toolTip = formatTime(timestamp) + "<br/><b style=\"color: " + ACTIONS_COUNT_COLOR + ";\">Actions:</b> " + statistic.getActionsCount() + "<br/><b style=\"color: "
+								+ ACTIVE_CONNECTIONS_COLOR + ";\">Active Connections:</b> " + statistic.getActiveConnectionsCount() + "<br/><b style=\"color: " + ONLINE_USERS_COLOR
+								+ ";\">Online Users:</b> " + onlineUsers.size();
 
 						for (final String userIdAsString : onlineUsers) {
 							toolTip += "<br/>" + usersCache.get(userIdAsString).getEmail();
@@ -342,24 +370,28 @@ public class OnTrackMetricsPanel extends Composite {
 
 				}));
 
-		clientsChart.getXAxis().setAxisTitle(null).setType(Type.DATE_TIME);
+		currentlyChart.getXAxis().setAxisTitle(null).setType(Type.DATE_TIME);
 
-		clientsChart.getYAxis().setAxisTitle(null).setMin(0).setAllowDecimals(false);
+		currentlyChart.getYAxis().setAxisTitle(null).setMin(0).setAllowDecimals(false);
 
-		onlineUsersSeries = clientsChart.createSeries().setName("Online Users")
+		onlineUsersSeries = currentlyChart.createSeries().setName("Online Users")
 				.setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(ONLINE_USERS_COLOR).setLineWidth(1));
 
-		activeConnectionsSeries = clientsChart.createSeries().setName("Active Connections")
+		activeConnectionsSeries = currentlyChart.createSeries().setName("Active Connections")
 				.setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(ACTIVE_CONNECTIONS_COLOR).setLineWidth(1));
 
-		clientsChart.addSeries(activeConnectionsSeries);
-		clientsChart.addSeries(onlineUsersSeries);
+		actionsCountSeries = currentlyChart.createSeries().setName("Actions")
+				.setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(ACTIONS_COUNT_COLOR).setLineWidth(1));
 
-		onlineUsersPanel.setWidget(clientsChart);
+		currentlyChart.addSeries(actionsCountSeries);
+		currentlyChart.addSeries(activeConnectionsSeries);
+		currentlyChart.addSeries(onlineUsersSeries);
+
+		onlineUsersPanel.setWidget(currentlyChart);
 	}
 
 	private void createUsageChart() {
-		usageChart = new Chart().setChartTitleText("Server Usage").setLegend(new Legend().setAlign(Align.RIGHT).setVerticalAlign(VerticalAlign.TOP).setFloating(true))
+		usageChart = new Chart().setChartTitleText("Total").setLegend(new Legend().setAlign(Align.RIGHT).setVerticalAlign(VerticalAlign.TOP).setFloating(true))
 				.setSeriesPlotOptions(new SeriesPlotOptions().setPointMouseOverEventHandler(new PointMouseOverEventHandler() {
 					@Override
 					public boolean onMouseOver(final PointMouseOverEvent pointMouseOverEvent) {
@@ -376,9 +408,8 @@ public class OnTrackMetricsPanel extends Composite {
 					public String format(final ToolTipData toolTipData) {
 						final long timestamp = toolTipData.getXAsLong();
 						final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
-						final String toolTip = formatTime(timestamp) + "<br/><b style=\"color: " + ACTIONS_PER_HOUR_COLOR + ";\">Actions / Hour:</b> " + statistic.getActionsPerHour()
-								+ "<br/><b style=\"color: " + USERS_COUNT_COLOR + ";\">Users Count:</b> " + statistic.getUsersCount() + "<br/><b style=\"color: " + PROJECTS_COUNT_COLOR
-								+ ";\">Projects Count:</b> " + statistic.getProjectsCount();
+						final String toolTip = formatTime(timestamp) + "<br/><b style=\"color: " + USERS_COUNT_COLOR + ";\">Users Count:</b> " + statistic.getUsersCount() + "<br/><b style=\"color: "
+								+ PROJECTS_COUNT_COLOR + ";\">Projects Count:</b> " + statistic.getProjectsCount();
 						return toolTip;
 					}
 
@@ -388,15 +419,11 @@ public class OnTrackMetricsPanel extends Composite {
 
 		usageChart.getYAxis().setAxisTitle(null).setMin(0).setAllowDecimals(false);
 
-		actionsPerHourSeries = usageChart.createSeries().setName("Actions / Hour")
-				.setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(ACTIONS_PER_HOUR_COLOR).setLineWidth(1));
-
 		usersCountSeries = usageChart.createSeries().setName("Total Users").setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(USERS_COUNT_COLOR).setLineWidth(1));
 
 		projectsCountSeries = usageChart.createSeries().setName("Total Users")
 				.setPlotOptions(new LinePlotOptions().setMarker(new Marker().setEnabled(false)).setColor(PROJECTS_COUNT_COLOR).setLineWidth(1));
 
-		usageChart.addSeries(actionsPerHourSeries);
 		usageChart.addSeries(usersCountSeries);
 		usageChart.addSeries(projectsCountSeries);
 
@@ -421,7 +448,7 @@ public class OnTrackMetricsPanel extends Composite {
 
 	private void updateToolTip(final int pointIndex) {
 		usageChart.refreshTooltip(0, pointIndex);
-		clientsChart.refreshTooltip(0, pointIndex);
+		currentlyChart.refreshTooltip(0, pointIndex);
 	}
 
 	private void setOptionsEnabled(final boolean enabled) {
@@ -438,8 +465,8 @@ public class OnTrackMetricsPanel extends Composite {
 		return createPoint(statistic, statistic.getActiveConnectionsCount());
 	}
 
-	private Point getActionsPerHourPoint(final OnTrackServerMetrics statistic) {
-		return createPoint(statistic, statistic.getActionsPerHour());
+	private Point getActionsCountPoint(final OnTrackServerMetrics statistic) {
+		return createPoint(statistic, statistic.getActionsCount());
 	}
 
 	private Point getUsersCountPoint(final OnTrackServerMetrics statistic) {

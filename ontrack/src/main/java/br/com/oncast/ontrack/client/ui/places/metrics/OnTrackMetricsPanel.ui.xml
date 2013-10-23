@@ -50,6 +50,10 @@
 			<g:FocusPanel ui:field="onlineUsersPanel" styleName="{style.chartPanel}"/>
 			<g:FocusPanel ui:field="usagePanel" styleName="{style.chartPanel}"/>
 			<g:FocusPanel ui:field="actionsPanel" styleName="{style.chartPanel}"/>
+			<div>
+				<g:SuggestBox ui:field="actionCountSuggestBox"/>
+				<g:HTMLPanel ui:field="actionCountResultsPanel"/>
+			</div>
 			<g:FlowPanel ui:field="projectsPanel" styleName="{style.chartPanel}"/>
 		</g:HTMLPanel>
 	</g:HTMLPanel>

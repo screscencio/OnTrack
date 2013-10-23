@@ -87,7 +87,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 	@Override
 	public void storeReleaseContainerState(final Release release, final boolean containerState) {
-		final String userProjectSpecificKey = getUserProjectSpecificItem(ClientStorageColumnNames.MODIFIED_CONTAINER_STATE_RELEASES);
+		final String userProjectSpecificKey = getUserProjectStorageKey(ClientStorageColumnNames.MODIFIED_CONTAINER_STATE_RELEASES);
 		final List<String> modifiedReleases = getList(userProjectSpecificKey);
 
 		final boolean hasBeenModified = containerState != DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE;
@@ -105,7 +105,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	public List<UUID> loadModifiedContainerStateReleases() {
 		final List<UUID> modifiedReleases = new ArrayList<UUID>();
 
-		for (final String idString : getList(getUserProjectSpecificItem(ClientStorageColumnNames.MODIFIED_CONTAINER_STATE_RELEASES))) {
+		for (final String idString : getList(getUserProjectStorageKey(ClientStorageColumnNames.MODIFIED_CONTAINER_STATE_RELEASES))) {
 			modifiedReleases.add(new UUID(idString));
 		}
 
@@ -145,13 +145,13 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	private String getUserProjectSpecificItem(final String key) {
 		if (storage == null) return null;
 
-		return storage.getItem(getCurrentUserProjectStorageKey(key));
+		return storage.getItem(getUserProjectStorageKey(key));
 	}
 
 	private void setUserProjectSpecificItem(final String key, final String value) {
 		if (storage == null) return;
 
-		storage.setItem(getCurrentUserProjectStorageKey(key), value);
+		storage.setItem(getUserProjectStorageKey(key), value);
 	}
 
 	private String getItem(final String key) {
@@ -175,7 +175,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		return getApplicationKey(authenticationService.getCurrentUserId() + SEPARATOR + key);
 	}
 
-	private String getCurrentUserProjectStorageKey(final String key) {
+	private String getUserProjectStorageKey(final String key) {
 		if (!authenticationService.isUserAvailable()) throw new RuntimeException("There is no user available for user dependant storage operation");
 		return getApplicationKey(authenticationService.getCurrentUserId() + SEPARATOR + projectRepresentationProvider.getCurrent().getId() + SEPARATOR + key);
 	}
@@ -213,7 +213,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	public void savePendingActions(final List<ModelAction> pendingActions) {
 		if (gwtStorage == null) return;
 
-		final String keyName = getCurrentUserProjectStorageKey(ClientStorageColumnNames.PENDING_ACTIONS_LIST);
+		final String keyName = getUserProjectStorageKey(ClientStorageColumnNames.PENDING_ACTIONS_LIST);
 		final StorageKey<ArrayList<ModelAction>> key = StorageKeyFactory.objectKey(keyName);
 		try {
 			gwtStorage.put(key, new ArrayList<ModelAction>(pendingActions));
@@ -226,13 +226,11 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 	@Override
 	public List<ModelAction> loadPendingActions() {
-		if (gwtStorage == null) return new ArrayList<ModelAction>();
-		final String keyName = getCurrentUserProjectStorageKey(ClientStorageColumnNames.PENDING_ACTIONS_LIST);
-		final StorageKey<ArrayList<ModelAction>> key = StorageKeyFactory.objectKey(keyName);
 		try {
-			return gwtStorage.get(key);
-		} catch (final SerializationException e) {
-			e.printStackTrace();
+			final String keyName = getUserProjectStorageKey(ClientStorageColumnNames.PENDING_ACTIONS_LIST);
+			final StorageKey<ArrayList<ModelAction>> key = StorageKeyFactory.objectKey(keyName);
+			return new ArrayList<ModelAction>(gwtStorage.get(key));
+		} catch (final Exception e) {
 			return new ArrayList<ModelAction>();
 		}
 	}

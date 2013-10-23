@@ -5,12 +5,14 @@ import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetrics;
 
+import java.util.Date;
+
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ClientMetricsService {
 
-	void getMetrics(AsyncCallback<OnTrackServerMetrics> callback);
+	void getMetrics(Date lastMetricsUpdate, AsyncCallback<OnTrackServerMetrics> callback);
 
 	void onPlaceRequest(Place place);
 

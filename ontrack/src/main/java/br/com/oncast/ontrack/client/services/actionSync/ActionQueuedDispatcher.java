@@ -187,7 +187,7 @@ class ActionQueuedDispatcher {
 
 	public void loadPendingActions() {
 		final List<ModelAction> pendingActions = storage.loadPendingActions();
-		if (pendingActions.isEmpty()) return;
+		if (pendingActions == null || pendingActions.isEmpty()) return;
 
 		actionList.addAll(pendingActions);
 		tryExchange(true);

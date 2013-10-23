@@ -12,6 +12,8 @@ import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
 import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerMetricsRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerMetricsResponse;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,8 +35,8 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	}
 
 	@Override
-	public void getMetrics(final AsyncCallback<OnTrackServerMetrics> callback) {
-		dispatchService.dispatch(new OnTrackServerMetricsRequest(), new DispatchCallback<OnTrackServerMetricsResponse>() {
+	public void getMetrics(final Date lastMetricsUpdate, final AsyncCallback<OnTrackServerMetrics> callback) {
+		dispatchService.dispatch(new OnTrackServerMetricsRequest(lastMetricsUpdate), new DispatchCallback<OnTrackServerMetricsResponse>() {
 			@Override
 			public void onSuccess(final OnTrackServerMetricsResponse result) {
 				callback.onSuccess(result.getStatistics(getFactory()));

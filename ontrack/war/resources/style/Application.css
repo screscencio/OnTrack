@@ -62,6 +62,25 @@ html,body {
 	max-width: 100%;
 }
 
+.gwt-SuggestBoxPopup {
+	background: rgba(0,0,0,0.8);
+	border-radius: 3px;
+	color: whitesmoke;
+}
+
+.gwt-SuggestBoxPopup .item {
+	cursor: pointer;
+}
+
+.gwt-SuggestBoxPopup .item strong {
+	color: #3A87AD;
+}
+
+.gwt-SuggestBoxPopup .item-selected {
+	background: rgba(255,255,255,0.8);
+	color: black;
+}
+
 /* TabLayout */
 
 .gwt-TabLayoutPanelTabs {

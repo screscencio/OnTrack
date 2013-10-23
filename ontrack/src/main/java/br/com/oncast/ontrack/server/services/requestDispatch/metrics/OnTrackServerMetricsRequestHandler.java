@@ -34,12 +34,14 @@ public class OnTrackServerMetricsRequestHandler implements RequestHandler<OnTrac
 		metrics.setOnlineUsers(toStringSet(PROVIDER.getClientManagerService().getOnlineUsers()));
 		metrics.setActiveConnectionsCount(PROVIDER.getClientManagerService().getAllClients().size());
 
+		final Date lastRequest = request.getDateOfLastMetricsRequest();
 		CALENDAR.add(Calendar.HOUR_OF_DAY, -1);
-		metrics.setActionsPerHour(PROVIDER.getServerMetricsService().getActionsCountSince(CALENDAR.getTime()));
+		metrics.setActionsCount(PROVIDER.getServerMetricsService().getActionsCountSince(lastRequest == null ? CALENDAR.getTime() : lastRequest));
+		CALENDAR.add(Calendar.HOUR_OF_DAY, 1);
 
+		CALENDAR.add(Calendar.MONTH, -1);
+		metrics.setActionsRatio(PROVIDER.getServerMetricsService().getActionsRatio(CALENDAR.getTime()));
 		// FIXME removed to improve performance
-		// CALENDAR.add(Calendar.MONTH, -1);
-		// metrics.setActionsRatio(PROVIDER.getServerMetricsService().getActionsRatio(CALENDAR.getTime()));
 		// metrics.setActiveProjectsMetrics(PROVIDER.getServerMetricsService().getActiveProjectsMetrics());
 
 		metrics.setUsersCount(PROVIDER.getServerMetricsService().getUsersCount());

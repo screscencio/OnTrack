@@ -19,9 +19,9 @@ public interface OnTrackServerMetrics {
 
 	int getActiveConnectionsCount();
 
-	void setActionsPerHour(long actionsPerHour);
+	void setActionsCount(long actionsCount);
 
-	long getActionsPerHour();
+	long getActionsCount();
 
 	void setUsersCount(int usersCount);
 
