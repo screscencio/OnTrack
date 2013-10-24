@@ -1,5 +1,25 @@
 package br.com.oncast.ontrack.server.services.metrics;
 
+import br.com.oncast.ontrack.server.business.BusinessLogic;
+import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager;
+import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
+import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
+import br.com.oncast.ontrack.shared.services.metrics.ProjectMetrics;
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
+
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,26 +30,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.multicast.ClientManager;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
-import br.com.oncast.ontrack.shared.model.project.Project;
-import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
-import br.com.oncast.ontrack.shared.services.metrics.ProjectMetrics;
-import br.com.oncast.ontrack.shared.utils.WorkingDay;
-
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
 
 public class ServerMetricsService {
 
 	private static final OnTrackStatisticsFactory FACTORY = AutoBeanFactorySource.create(OnTrackStatisticsFactory.class);
+
 	private static final Logger LOGGER = Logger.getLogger(ServerMetricsService.class);
 
 	private final PersistenceService persistenceService;
@@ -45,8 +51,7 @@ public class ServerMetricsService {
 	public long getActionsCountSince(final Date date) {
 		try {
 			return persistenceService.countActionsSince(date);
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getLocalizedMessage());
 		}
@@ -63,8 +68,7 @@ public class ServerMetricsService {
 			}
 
 			return map;
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getLocalizedMessage());
 		}
@@ -73,8 +77,7 @@ public class ServerMetricsService {
 	public int getUsersCount() {
 		try {
 			return persistenceService.retrieveAllUsers().size();
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getLocalizedMessage());
 		}
@@ -83,8 +86,7 @@ public class ServerMetricsService {
 	public int getProjectsCount() {
 		try {
 			return persistenceService.retrieveAllProjectRepresentations().size();
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getLocalizedMessage());
 		}
@@ -102,8 +104,7 @@ public class ServerMetricsService {
 		for (final UUID projectId : activeProjects) {
 			try {
 				metrics.add(getProjectMetrics(projectId));
-			}
-			catch (final Exception e) {
+			} catch (final Exception e) {
 				LOGGER.error("unable to get projects metrics", e);
 			}
 		}
@@ -164,4 +165,37 @@ public class ServerMetricsService {
 		}
 		return count;
 	}
+
+	public void exportPcflCsv(final OutputStream out) throws PersistenceException, IOException {
+		final Map<UUID, String> projectsNamesMap = getProjectsNamesMap();
+		final Map<UUID, String> usersEmailsMap = getUsersEmailsMap();
+
+		final CsvWriter csv = new CsvWriter(out, "Project", "User", "First Action", "Last Action");
+		for (final ProjectAuthorization auth : persistenceService.retrieveAllProjectAuthorizations()) {
+			final String project = projectsNamesMap.get(auth.getProjectId());
+			final String user = usersEmailsMap.get(auth.getUserId());
+
+			final Date firstAction = persistenceService.retrieveFirstActionTimestamp(auth.getProjectId(), auth.getUserId());
+			final Date lastAction = persistenceService.retrieveLastActionTimestamp(auth.getProjectId(), auth.getUserId());
+
+			csv.write(project).and().write(user).and().write(firstAction).and().write(lastAction).closeEntry();
+		}
+	}
+
+	private Map<UUID, String> getUsersEmailsMap() throws PersistenceException {
+		final HashMap<UUID, String> map = new HashMap<UUID, String>();
+		for (final User user : persistenceService.retrieveAllUsers()) {
+			map.put(user.getId(), user.getName());
+		}
+		return map;
+	}
+
+	private Map<UUID, String> getProjectsNamesMap() throws PersistenceException {
+		final HashMap<UUID, String> map = new HashMap<UUID, String>();
+		for (final ProjectRepresentation project : persistenceService.retrieveAllProjectRepresentations()) {
+			map.put(project.getId(), project.getName());
+		}
+		return map;
+	}
+
 }

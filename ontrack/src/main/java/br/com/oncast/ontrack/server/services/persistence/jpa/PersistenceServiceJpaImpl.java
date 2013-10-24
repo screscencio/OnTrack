@@ -40,6 +40,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import org.apache.log4j.Logger;
 import org.hibernate.collection.PersistentBag;
 
 // TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
@@ -719,6 +720,46 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			return (List<UserAction>) TYPE_CONVERTER.convert(actions);
 		} catch (final Exception e) {
 			throw new PersistenceException("Not able to retrieve notifications.", e);
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public Date retrieveFirstActionTimestamp(final UUID projectId, final UUID userId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName()
+					+ " AS ua WHERE ua.userId = :userId AND ua.projectRepresentation.id = :projectId ORDER BY ua.timestamp ASC LIMIT 1");
+			query.setParameter("userId", userId.toString());
+			query.setParameter("projectId", projectId.toString());
+			final List resultList = query.getResultList();
+			Logger.getLogger(this.getClass()).info(resultList.size());
+			if (resultList.isEmpty()) return null;
+			return (Date) resultList.get(0);
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new PersistenceException("Not able to retrieve the first action timestamp.", e);
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public Date retrieveLastActionTimestamp(final UUID projectId, final UUID userId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName()
+					+ " AS ua WHERE ua.userId = :userId AND ua.projectRepresentation.id = :projectId ORDER BY ua.timestamp DESC LIMIT 1");
+			query.setParameter("userId", userId.toString());
+			query.setParameter("projectId", projectId.toString());
+			final List resultList = query.getResultList();
+			Logger.getLogger(this.getClass()).info(resultList.size());
+			if (resultList.isEmpty()) return null;
+			return (Date) resultList.get(0);
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new PersistenceException("Not able to retrieve the last action timestamp.", e);
 		} finally {
 			em.close();
 		}

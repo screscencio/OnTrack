@@ -53,6 +53,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -95,6 +96,9 @@ public class OnTrackMetricsPanel extends Composite {
 
 	@UiField
 	Button wipeLocalData;
+
+	@UiField
+	Anchor exportPcflCsv;
 
 	@UiField
 	FocusPanel onlineUsersPanel;
@@ -155,6 +159,8 @@ public class OnTrackMetricsPanel extends Composite {
 		usersCache = new HashMap<String, User>();
 		metricsList = ClientServices.get().storage().loadOnTrackServerMetricsList();
 		initWidget(uiBinder.createAndBindUi(this));
+
+		exportPcflCsv.setHref(GWT.getModuleBaseURL() + "metrics/csv/download");
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override

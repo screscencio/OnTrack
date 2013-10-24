@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.server.services.persistence;
 
-import java.util.Date;
-import java.util.List;
-
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
@@ -16,10 +13,12 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
+import java.util.Date;
+import java.util.List;
+
 public interface PersistenceService {
 
-	public long persistActions(final UUID projectId, final List<ModelAction> actionList, UUID userId, final Date timestamp)
-			throws PersistenceException;
+	public long persistActions(final UUID projectId, final List<ModelAction> actionList, UUID userId, final Date timestamp) throws PersistenceException;
 
 	public ProjectSnapshot retrieveProjectSnapshot(UUID projectId) throws PersistenceException, NoResultFoundException;
 
@@ -57,10 +56,14 @@ public interface PersistenceService {
 
 	/**
 	 * Returns a project authorization between an user and a project.
-	 * @param userId the user id.
-	 * @param projectId the project id.
+	 * 
+	 * @param userId
+	 *            the user id.
+	 * @param projectId
+	 *            the project id.
 	 * @return the project authorization if found, <tt>null</tt> otherwise.
-	 * @throws PersistenceException in case persistence layer fails.
+	 * @throws PersistenceException
+	 *             in case persistence layer fails.
 	 */
 	public ProjectAuthorization retrieveProjectAuthorization(UUID userId, UUID projectId) throws PersistenceException;
 
@@ -68,8 +71,7 @@ public interface PersistenceService {
 
 	public FileRepresentation retrieveFileRepresentationById(UUID fileId) throws NoResultFoundException, PersistenceException;
 
-	public List<Notification> retrieveLatestNotificationsForUser(UUID userId, int maxNotifications) throws NoResultFoundException,
-			PersistenceException;
+	public List<Notification> retrieveLatestNotificationsForUser(UUID userId, int maxNotifications) throws NoResultFoundException, PersistenceException;
 
 	public Notification persistOrUpdateNotification(Notification notification) throws PersistenceException;
 
@@ -90,5 +92,9 @@ public interface PersistenceService {
 	public long countActionsSince(Date date) throws PersistenceException;
 
 	List<UserAction> retrieveActionsSince(Date date) throws PersistenceException;
+
+	public Date retrieveFirstActionTimestamp(UUID projectId, UUID userId) throws PersistenceException;
+
+	public Date retrieveLastActionTimestamp(UUID projectId, UUID userId) throws PersistenceException;
 
 }

@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.ui.events.PendingActionsCountChangeEvent;
-import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -17,7 +16,6 @@ import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequestResponse;
-import br.com.oncast.ontrack.shared.utils.PrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +82,8 @@ class ActionQueuedDispatcher {
 		if (actionList.isEmpty()) return;
 
 		waitingServerAnswerActionList = getActionsBatch();
-		final ArrayList<ModelAction> waitingServerAnsuerReverseActionList = new ArrayList<ModelAction>(reverseActionList.subList(0, waitingServerAnswerActionList.size()));
+		final int size = waitingServerAnswerActionList.size();
+		final ArrayList<ModelAction> waitingServerAnsuerReverseActionList = new ArrayList<ModelAction>(reverseActionList.subList(0, size > reverseActionList.size() ? reverseActionList.size() : size));
 		actionList.removeAll(waitingServerAnswerActionList);
 		firePendingActionsCountChangeEvent();
 		reverseActionList.removeAll(waitingServerAnsuerReverseActionList);
@@ -142,12 +141,8 @@ class ActionQueuedDispatcher {
 
 	private ArrayList<ModelAction> getActionsBatch() {
 		final ArrayList<ModelAction> list = new ArrayList<ModelAction>();
-		for (final ModelAction action : actionList) {
-			if (!list.isEmpty() && action instanceof ScopeBindReleaseAction) {
-				SpeedTracerConsole.log("splitted " + PrettyPrinter.getSimpleName(action));
-				break;
-			}
-			SpeedTracerConsole.log("added " + PrettyPrinter.getSimpleName(action));
+		for (final ModelAction action : new ArrayList<ModelAction>(actionList)) {
+			if (!list.isEmpty() && action instanceof ScopeBindReleaseAction) break;
 			list.add(action);
 		}
 		return list;

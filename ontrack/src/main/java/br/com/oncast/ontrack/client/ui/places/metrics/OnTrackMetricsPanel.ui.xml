@@ -40,12 +40,17 @@
 			margin-bottom: 0px;
 		}
 		
+		.exportLink {
+			color: #f1f1f1;
+		}
+
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.root}">
 		Auto Update Interval (seconds): <g:TextBox ui:field="autoUpdateIntervalTextBox" width="50px" height="12px"/>
 		<g:Button ui:field="updateButton" styleName="{style.updateButton}">Update Now</g:Button>
 		<g:Button ui:field="wipeLocalData" styleName="{style.updateButton}">Clear Data</g:Button>
+		<g:Anchor ui:field="exportPcflCsv" target="_blank" styleName="{style.exportLink}">Download PCFL.csv</g:Anchor>
 		<g:HTMLPanel styleName="{style.chartsContainer}">
 			<g:FocusPanel ui:field="onlineUsersPanel" styleName="{style.chartPanel}"/>
 			<g:FocusPanel ui:field="usagePanel" styleName="{style.chartPanel}"/>
