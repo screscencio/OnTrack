@@ -185,7 +185,7 @@ public class ServerMetricsService {
 	private Map<UUID, String> getUsersEmailsMap() throws PersistenceException {
 		final HashMap<UUID, String> map = new HashMap<UUID, String>();
 		for (final User user : persistenceService.retrieveAllUsers()) {
-			map.put(user.getId(), user.getName());
+			map.put(user.getId(), user.getEmail());
 		}
 		return map;
 	}
