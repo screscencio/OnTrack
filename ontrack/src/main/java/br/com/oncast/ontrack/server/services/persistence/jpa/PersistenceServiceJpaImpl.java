@@ -40,7 +40,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
 import org.hibernate.collection.PersistentBag;
 
 // TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
@@ -734,7 +733,6 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			query.setParameter("userId", userId.toString());
 			query.setParameter("projectId", projectId.toString());
 			final List resultList = query.getResultList();
-			Logger.getLogger(this.getClass()).info(resultList.size());
 			if (resultList.isEmpty()) return null;
 			return (Date) resultList.get(0);
 		} catch (final Exception e) {

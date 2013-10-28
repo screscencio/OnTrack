@@ -171,7 +171,7 @@ public class ServerMetricsService {
 	public void exportUsageDataCsv(final OutputStream out) throws PersistenceException, IOException {
 		final Map<UUID, String> projectsNamesMap = getProjectsNamesMap();
 
-		final CsvWriter csv = new CsvWriter(out, "Project", "User", "First Action", "Last Action");
+		final CsvWriter csv = new CsvWriter(out, "User", "Project", "First Action", "Last Action");
 		for (final User user : persistenceService.retrieveAllUsers()) {
 			final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
 			for (final ProjectAuthorization auth : authorizations) {
