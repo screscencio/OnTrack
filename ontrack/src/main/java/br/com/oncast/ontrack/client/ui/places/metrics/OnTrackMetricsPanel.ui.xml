@@ -50,7 +50,8 @@
 		Auto Update Interval (seconds): <g:TextBox ui:field="autoUpdateIntervalTextBox" width="50px" height="12px"/>
 		<g:Button ui:field="updateButton" styleName="{style.updateButton}">Update Now</g:Button>
 		<g:Button ui:field="wipeLocalData" styleName="{style.updateButton}">Clear Data</g:Button>
-		<g:Anchor ui:field="exportPcflCsv" target="_blank" styleName="{style.exportLink}">Download PCFL.csv</g:Anchor>
+		<g:Anchor ui:field="exportUsageDataCsv" target="_blank" styleName="{style.exportLink}">Download Usage data</g:Anchor>
+		<g:Anchor ui:field="exportInvitationDataCsv" target="_blank" styleName="{style.exportLink}">Download Invitation data</g:Anchor>
 		<g:HTMLPanel styleName="{style.chartsContainer}">
 			<g:FocusPanel ui:field="onlineUsersPanel" styleName="{style.chartPanel}"/>
 			<g:FocusPanel ui:field="usagePanel" styleName="{style.chartPanel}"/>

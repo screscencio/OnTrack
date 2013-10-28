@@ -59,7 +59,7 @@ class ActionQueuedDispatcher {
 			@Override
 			public void onWindowClosing(final ClosingEvent event) {
 				final int nOfPendingActions = actionList.size() + waitingServerAnswerActionList.size();
-				savePendingActions();
+				if (projectRepresentationProvider.hasAvailableProjectRepresentation()) savePendingActions();
 				if (nOfPendingActions > 0) event.setMessage(messages.thereArePedingActionsWannaLeaveAnyway("" + nOfPendingActions));
 			}
 		});

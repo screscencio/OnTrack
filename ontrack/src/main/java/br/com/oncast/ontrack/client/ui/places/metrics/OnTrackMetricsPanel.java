@@ -98,7 +98,10 @@ public class OnTrackMetricsPanel extends Composite {
 	Button wipeLocalData;
 
 	@UiField
-	Anchor exportPcflCsv;
+	Anchor exportUsageDataCsv;
+
+	@UiField
+	Anchor exportInvitationDataCsv;
 
 	@UiField
 	FocusPanel onlineUsersPanel;
@@ -160,7 +163,9 @@ public class OnTrackMetricsPanel extends Composite {
 		metricsList = ClientServices.get().storage().loadOnTrackServerMetricsList();
 		initWidget(uiBinder.createAndBindUi(this));
 
-		exportPcflCsv.setHref(GWT.getModuleBaseURL() + "metrics/csv/download");
+		exportUsageDataCsv.setHref(GWT.getModuleBaseURL() + "metrics/usage/download");
+
+		exportInvitationDataCsv.setHref(GWT.getModuleBaseURL() + "metrics/invitation/download");
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override

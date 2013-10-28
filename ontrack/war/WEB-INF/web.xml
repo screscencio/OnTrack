@@ -98,12 +98,21 @@
 	
 	<!-- Metrics -->
 	<servlet>
-		<servlet-name>csvMetricsExporterServlet</servlet-name>
-		<servlet-class>br.com.oncast.ontrack.server.services.metrics.CsvMetricsExporterServlet</servlet-class>
+		<servlet-name>usageDataExporterServlet</servlet-name>
+		<servlet-class>br.com.oncast.ontrack.server.services.metrics.UsageDataExporterServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>csvMetricsExporterServlet</servlet-name>
-		<url-pattern>/application/metrics/csv/download</url-pattern>
+		<servlet-name>usageDataExporterServlet</servlet-name>
+		<url-pattern>/application/metrics/usage/download</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>invitationDataExporterServlet</servlet-name>
+		<servlet-class>br.com.oncast.ontrack.server.services.metrics.InvitationDataExporterServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>invitationDataExporterServlet</servlet-name>
+		<url-pattern>/application/metrics/invitation/download</url-pattern>
 	</servlet-mapping>
 	
 	<!-- File Storage Definitions and Mappings -->

@@ -97,4 +97,6 @@ public interface PersistenceService {
 
 	public Date retrieveLastActionTimestamp(UUID projectId, UUID userId) throws PersistenceException;
 
+	public List<UserAction> retrieveAllTeamInviteActionsAuthoredBy(UUID userId) throws PersistenceException;
+
 }

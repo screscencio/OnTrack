@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.log4j.Logger;
 
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
@@ -166,19 +168,39 @@ public class ServerMetricsService {
 		return count;
 	}
 
-	public void exportPcflCsv(final OutputStream out) throws PersistenceException, IOException {
+	public void exportUsageDataCsv(final OutputStream out) throws PersistenceException, IOException {
 		final Map<UUID, String> projectsNamesMap = getProjectsNamesMap();
-		final Map<UUID, String> usersEmailsMap = getUsersEmailsMap();
 
 		final CsvWriter csv = new CsvWriter(out, "Project", "User", "First Action", "Last Action");
-		for (final ProjectAuthorization auth : persistenceService.retrieveAllProjectAuthorizations()) {
-			final String project = projectsNamesMap.get(auth.getProjectId());
-			final String user = usersEmailsMap.get(auth.getUserId());
+		for (final User user : persistenceService.retrieveAllUsers()) {
+			final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
+			for (final ProjectAuthorization auth : authorizations) {
+				final String project = projectsNamesMap.get(auth.getProjectId());
+				final Date firstAction = persistenceService.retrieveFirstActionTimestamp(auth.getProjectId(), auth.getUserId());
+				final Date lastAction = persistenceService.retrieveLastActionTimestamp(auth.getProjectId(), auth.getUserId());
 
-			final Date firstAction = persistenceService.retrieveFirstActionTimestamp(auth.getProjectId(), auth.getUserId());
-			final Date lastAction = persistenceService.retrieveLastActionTimestamp(auth.getProjectId(), auth.getUserId());
+				csv.write(user.getEmail()).and().write(project).and().write(firstAction).and().write(lastAction).closeEntry();
+			}
+			if (authorizations.isEmpty()) {
+				csv.write(user.getEmail()).and().writeEmpty().and().writeEmpty().and().writeEmpty().closeEntry();
+			}
+		}
+	}
 
-			csv.write(project).and().write(user).and().write(firstAction).and().write(lastAction).closeEntry();
+	public void exportInvitationDataCsv(final ServletOutputStream out) throws PersistenceException, IOException {
+		final Map<UUID, String> usersEmailsMap = getUsersEmailsMap();
+
+		final CsvWriter csv = new CsvWriter(out, "User", "Invited User", "Project", "Timestamp");
+
+		for (final User user : persistenceService.retrieveAllUsers()) {
+			final List<UserAction> actions = persistenceService.retrieveAllTeamInviteActionsAuthoredBy(user.getId());
+			for (final UserAction ua : actions) {
+				final UUID invitedUserId = ua.getModelAction().getReferenceId();
+				csv.write(user.getEmail()).and().write(usersEmailsMap.get(invitedUserId)).and().write(ua.getProjectRepresentation().getName()).and().write(ua.getTimestamp()).closeEntry();
+			}
+			if (actions.isEmpty()) {
+				csv.write(user.getEmail()).and().writeEmpty().and().writeEmpty().and().writeEmpty().closeEntry();
+			}
 		}
 	}
 

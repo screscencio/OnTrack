@@ -15,38 +15,67 @@ public class CsvWriter {
 
 	private static final String CSV_ENTRY_SEPARATOR = "\r\n";
 
+	private static final String EMPTY_ITEM = "";
+
 	private final OutputStream out;
+
+	private int itemsCounter;
+
+	private final int size;
+
+	private boolean needsToBeClosed;
 
 	public CsvWriter(final OutputStream out, final String... header) throws IOException {
 		this.out = out;
-		for (int i = 0; i < header.length - 1; i++) {
+		size = header.length - 1;
+		for (int i = 0; i < size; i++) {
 			write(header[i]);
 			and();
 		}
-		write(header[header.length - 1]);
+		write(header[size]);
 		closeEntry();
 	}
 
 	public CsvWriter closeEntry() throws IOException {
+		if (itemsCounter == 0 && !needsToBeClosed) return this;
+		for (int i = itemsCounter; i < size; i++) {
+			and().writeEmpty();
+		}
 		out.write(CSV_ENTRY_SEPARATOR.getBytes());
+		itemsCounter = 0;
+		needsToBeClosed = false;
 		return this;
 	}
 
 	public CsvWriter and() throws IOException {
-		out.write(CSV_ITEM_SEPARATOR);
+		if (itemsCounter++ < size) out.write(CSV_ITEM_SEPARATOR);
+		else closeEntry();
+		needsToBeClosed = false;
+		return this;
+	}
+
+	public CsvWriter writeEmpty() throws IOException {
+		doWrite(EMPTY_ITEM);
 		return this;
 	}
 
 	public CsvWriter write(final Date date) throws IOException {
-		out.write((date == null ? "" : DATE_FORMATTER.format(date)).getBytes());
+		doWrite(date == null ? EMPTY_ITEM : DATE_FORMATTER.format(date));
 		return this;
 	}
 
 	public CsvWriter write(final String text) throws IOException {
-		out.write(CSV_TEXT_DELIMITER);
-		out.write(escapeDoubleQuotes(text).getBytes());
-		out.write(CSV_TEXT_DELIMITER);
+		if (text == null) writeEmpty();
+		else {
+			doWrite(CSV_TEXT_DELIMITER + escapeDoubleQuotes(text) + CSV_TEXT_DELIMITER);
+		}
 		return this;
+	}
+
+	private void doWrite(final String value) throws IOException {
+		if (needsToBeClosed) and();
+		out.write(value.getBytes());
+		needsToBeClosed = true;
 	}
 
 	private String escapeDoubleQuotes(final String text) {

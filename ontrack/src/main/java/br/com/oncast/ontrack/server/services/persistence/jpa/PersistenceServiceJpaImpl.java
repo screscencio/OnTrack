@@ -703,7 +703,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			queryNotification.setParameter("date", date);
 			return (Long) queryNotification.getSingleResult();
 		} catch (final Exception e) {
-			throw new PersistenceException("Not able to retrieve notifications.", e);
+			throw new PersistenceException("Failed to retrieve notifications.", e);
 		} finally {
 			em.close();
 		}
@@ -719,7 +719,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			final List<UserActionEntity> actions = query.getResultList();
 			return (List<UserAction>) TYPE_CONVERTER.convert(actions);
 		} catch (final Exception e) {
-			throw new PersistenceException("Not able to retrieve notifications.", e);
+			throw new PersistenceException("Failed to retrieve notifications.", e);
 		} finally {
 			em.close();
 		}
@@ -739,7 +739,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			return (Date) resultList.get(0);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			throw new PersistenceException("Not able to retrieve the first action timestamp.", e);
+			throw new PersistenceException("Failed to retrieve the first action timestamp.", e);
 		} finally {
 			em.close();
 		}
@@ -754,12 +754,27 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			query.setParameter("userId", userId.toString());
 			query.setParameter("projectId", projectId.toString());
 			final List resultList = query.getResultList();
-			Logger.getLogger(this.getClass()).info(resultList.size());
 			if (resultList.isEmpty()) return null;
 			return (Date) resultList.get(0);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			throw new PersistenceException("Not able to retrieve the last action timestamp.", e);
+			throw new PersistenceException("Failed to retrieve the last action timestamp.", e);
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<UserAction> retrieveAllTeamInviteActionsAuthoredBy(final UUID userId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT ua FROM " + UserActionEntity.class.getSimpleName() + " AS ua, TeamInvite as ma WHERE ua.userId = :userId AND ua.actionEntity = ma");
+			query.setParameter("userId", userId.toString());
+			return (List<UserAction>) TYPE_CONVERTER.convert(query.getResultList());
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new PersistenceException("Failed to retrieve the list of TeamInviteActions authored by the user '" + userId.toString() + "'.", e);
 		} finally {
 			em.close();
 		}
