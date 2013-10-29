@@ -48,17 +48,28 @@
 	
 	<g:HTMLPanel styleName="{style.root}">
 		Auto Update Interval (seconds): <g:TextBox ui:field="autoUpdateIntervalTextBox" width="50px" height="12px"/>
-		<g:Button ui:field="updateButton" styleName="{style.updateButton}">Update Now</g:Button>
+		<g:Button ui:field="updateRealtimeMetricsButton" styleName="{style.updateButton}">Update Realtime Metrics</g:Button>
+		<g:Button ui:field="updateServerStatisticsButton" styleName="{style.updateButton}">Update Server Statistics</g:Button>
 		<g:Button ui:field="wipeLocalData" styleName="{style.updateButton}">Clear Data</g:Button>
 		<g:Anchor ui:field="exportUsageDataCsv" target="_blank" styleName="{style.exportLink}">Download Usage data</g:Anchor>
 		<g:Anchor ui:field="exportInvitationDataCsv" target="_blank" styleName="{style.exportLink}">Download Invitation data</g:Anchor>
 		<g:HTMLPanel styleName="{style.chartsContainer}">
 			<g:FocusPanel ui:field="onlineUsersPanel" styleName="{style.chartPanel}"/>
-			<g:FocusPanel ui:field="usagePanel" styleName="{style.chartPanel}"/>
+			<g:FocusPanel ui:field="serverUsagePanel" styleName="{style.chartPanel}"/>
+			<g:FocusPanel ui:field="usersUsagePanel" styleName="{style.chartPanel}"/>
 			<g:FocusPanel ui:field="actionsPanel" styleName="{style.chartPanel}"/>
 			<div>
 				<g:SuggestBox ui:field="actionCountSuggestBox"/>
 				<g:HTMLPanel ui:field="actionCountResultsPanel"/>
+			</div>
+			<div>
+				<span>Active users</span>: <g:InlineLabel ui:field="activeUsersCount"/>
+			</div>
+			<div>
+				<span>Never used users</span>: <g:InlineLabel ui:field="neverUsedUsersCount"/>
+			</div>
+			<div>
+				<span>Stoped using users</span>: <g:InlineLabel ui:field="stopedUsingUsersCount"/>
 			</div>
 			<g:FlowPanel ui:field="projectsPanel" styleName="{style.chartPanel}"/>
 		</g:HTMLPanel>

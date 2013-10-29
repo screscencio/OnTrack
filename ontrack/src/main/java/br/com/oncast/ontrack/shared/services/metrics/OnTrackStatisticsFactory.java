@@ -5,10 +5,16 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
 public interface OnTrackStatisticsFactory extends AutoBeanFactory {
 
-	AutoBean<OnTrackServerMetrics> createOnTrackServerMetrics();
+	AutoBean<OnTrackRealTimeServerMetrics> createOnTrackRealTimeServerMetrics();
 
-	AutoBean<OnTrackServerMetricsBag> createOnTrackServerMetricsBag();
+	AutoBean<OnTrackRealTimeServerMetricsBag> createOnTrackRealTimeServerMetricsBag();
+
+	AutoBean<OnTrackServerStatistics> createOnTrackServerStatistics();
+
+	AutoBean<OnTrackServerStatisticsBag> createOnTrackServerStatisticsBag();
 
 	AutoBean<ProjectMetrics> createProjectMetrics();
+
+	AutoBean<UserUsageData> createUserUsageData();
 
 }

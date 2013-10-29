@@ -7,6 +7,7 @@ public interface ClientStorageColumnNames {
 	final String LAST_USER_EMAIL = "login.lastUserEmail";
 	final String MODIFIED_CONTAINER_STATE_RELEASES = "planning.release.containerState.modified";
 	final String DEFAULT_PLACE = "place.default";
+	final String REAL_TIME_SERVER_METRICS = "ontrack.server.realtimeMetrics";
 	final String SERVER_STATISTICS = "ontrack.server.statistics";
 	final String PENDING_ACTIONS_LIST = "actions.pending";
 

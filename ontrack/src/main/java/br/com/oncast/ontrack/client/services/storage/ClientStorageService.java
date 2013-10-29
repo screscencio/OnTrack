@@ -4,7 +4,8 @@ import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetricsBag;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetricsBag;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerStatisticsBag;
 
 import java.util.List;
 
@@ -30,12 +31,16 @@ public interface ClientStorageService {
 
 	String loadDefaultPlaceToken();
 
-	void appendOnTrackServerMetrics(OnTrackServerMetricsBag statisticsBag);
+	void storeOnTrackRealTimeServerMetricsList(OnTrackRealTimeServerMetricsBag statisticsBag);
 
-	OnTrackServerMetricsBag loadOnTrackServerMetricsList();
+	OnTrackRealTimeServerMetricsBag loadOnTrackRealTimeServerMetricsList();
 
 	void savePendingActions(List<ModelAction> pendingActions);
 
 	List<ModelAction> loadPendingActions();
+
+	OnTrackServerStatisticsBag loadOnTrackServerStatisticsList();
+
+	void storeOnTrackServerStatisticsList(OnTrackServerStatisticsBag statistics);
 
 }

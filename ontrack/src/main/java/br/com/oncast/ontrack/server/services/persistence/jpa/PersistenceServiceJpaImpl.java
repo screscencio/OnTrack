@@ -777,4 +777,69 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.close();
 		}
 	}
+
+	@Override
+	public Date retrieveInvitationTimestamp(final UUID userId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName()
+					+ " AS ua, TeamInvite as ma WHERE ua.actionEntity = ma AND ma.userId = :userId ORDER BY ua.timestamp ASC LIMIT 1");
+			query.setParameter("userId", userId.toString());
+			final List resultList = query.getResultList();
+			if (resultList.isEmpty()) return null;
+			return (Date) resultList.get(0);
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new PersistenceException("Failed to retrieve the count of the list of TeamInviteActions authored by the user '" + userId.toString() + "'.", e);
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public long retrieveAuthoredActionsCount(final UUID userId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT COUNT(ua) FROM " + UserActionEntity.class.getSimpleName() + " AS ua WHERE ua.userId = :userId");
+			query.setParameter("userId", userId.toString());
+			return (Long) query.getSingleResult();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new PersistenceException("Failed to retrieve the count of the list of TeamInviteActions authored by the user '" + userId.toString() + "'.", e);
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public Date retrieveLastActionTimestamp(final UUID userId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName() + " AS ua WHERE ua.userId = :userId ORDER BY ua.timestamp DESC LIMIT 1");
+			query.setParameter("userId", userId.toString());
+			final List resultList = query.getResultList();
+			if (resultList.isEmpty()) return null;
+			return (Date) resultList.get(0);
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new PersistenceException("Failed to retrieve the count of the list of TeamInviteActions authored by the user '" + userId.toString() + "'.", e);
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public long retrieveAllAuthoredTeamInviteActionsCount(final UUID userId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT COUNT(ua) FROM " + UserActionEntity.class.getSimpleName() + " AS ua, TeamInvite as ma WHERE ua.userId = :userId AND ua.actionEntity = ma");
+			query.setParameter("userId", userId.toString());
+			return (Long) query.getSingleResult();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new PersistenceException("Failed to retrieve the count of the list of TeamInviteActions authored by the user '" + userId.toString() + "'.", e);
+		} finally {
+			em.close();
+		}
+	}
 }

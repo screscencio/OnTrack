@@ -7,10 +7,13 @@ import br.com.oncast.ontrack.client.services.places.OpenInNewWindowPlace;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetrics;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerStatistics;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
-import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerMetricsRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerMetricsResponse;
+import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackRealTimeServerMetricsRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackRealTimeServerMetricsResponse;
+import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerStatisticsRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerStatisticsResponse;
 
 import java.util.Date;
 
@@ -35,10 +38,30 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	}
 
 	@Override
-	public void getMetrics(final Date lastMetricsUpdate, final AsyncCallback<OnTrackServerMetrics> callback) {
-		dispatchService.dispatch(new OnTrackServerMetricsRequest(lastMetricsUpdate), new DispatchCallback<OnTrackServerMetricsResponse>() {
+	public void getRealTimeMetrics(final Date lastMetricsUpdate, final AsyncCallback<OnTrackRealTimeServerMetrics> callback) {
+		dispatchService.dispatch(new OnTrackRealTimeServerMetricsRequest(lastMetricsUpdate), new DispatchCallback<OnTrackRealTimeServerMetricsResponse>() {
 			@Override
-			public void onSuccess(final OnTrackServerMetricsResponse result) {
+			public void onSuccess(final OnTrackRealTimeServerMetricsResponse result) {
+				callback.onSuccess(result.getStatistics(getFactory()));
+			}
+
+			@Override
+			public void onTreatedFailure(final Throwable caught) {
+				callback.onFailure(caught);
+			}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				callback.onFailure(caught);
+			}
+		});
+	}
+
+	@Override
+	public void getServerStatistics(final AsyncCallback<OnTrackServerStatistics> callback) {
+		dispatchService.dispatch(new OnTrackServerStatisticsRequest(), new DispatchCallback<OnTrackServerStatisticsResponse>() {
+			@Override
+			public void onSuccess(final OnTrackServerStatisticsResponse result) {
 				callback.onSuccess(result.getStatistics(getFactory()));
 			}
 

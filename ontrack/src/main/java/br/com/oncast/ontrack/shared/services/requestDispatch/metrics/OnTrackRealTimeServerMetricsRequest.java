@@ -4,13 +4,13 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 
 import java.util.Date;
 
-public class OnTrackServerMetricsRequest implements DispatchRequest<OnTrackServerMetricsResponse> {
+public class OnTrackRealTimeServerMetricsRequest implements DispatchRequest<OnTrackRealTimeServerMetricsResponse> {
 
 	private Date dateOfLastMetricsRequest;
 
-	protected OnTrackServerMetricsRequest() {}
+	protected OnTrackRealTimeServerMetricsRequest() {}
 
-	public OnTrackServerMetricsRequest(final Date dateOfLastRequest) {
+	public OnTrackRealTimeServerMetricsRequest(final Date dateOfLastRequest) {
 		this.dateOfLastMetricsRequest = dateOfLastRequest;
 	}
 

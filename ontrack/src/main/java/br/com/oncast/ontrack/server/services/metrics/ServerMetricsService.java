@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
 import br.com.oncast.ontrack.shared.services.metrics.ProjectMetrics;
+import br.com.oncast.ontrack.shared.services.metrics.UserUsageData;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
 import java.io.IOException;
@@ -76,7 +77,7 @@ public class ServerMetricsService {
 		}
 	}
 
-	public int getUsersCount() {
+	public int getTotalUsersCount() {
 		try {
 			return persistenceService.retrieveAllUsers().size();
 		} catch (final PersistenceException e) {
@@ -85,7 +86,7 @@ public class ServerMetricsService {
 		}
 	}
 
-	public int getProjectsCount() {
+	public int getTotalProjectsCount() {
 		try {
 			return persistenceService.retrieveAllProjectRepresentations().size();
 		} catch (final PersistenceException e) {
@@ -220,4 +221,31 @@ public class ServerMetricsService {
 		return map;
 	}
 
+	public List<UserUsageData> getUsersUsageData() {
+		final ArrayList<UserUsageData> list = new ArrayList<UserUsageData>();
+
+		try {
+			for (final User user : persistenceService.retrieveAllUsers()) {
+				final UserUsageData data = FACTORY.createUserUsageData().as();
+				final UUID userId = user.getId();
+				data.setUserEmail(user.getEmail());
+				data.setUserId(user.getId().toString());
+				data.setAuthorizedProjectsCount(persistenceService.retrieveProjectAuthorizations(userId).size());
+				// LOGGER.info(data.getAuthorizedProjectsCount());
+				data.setInvitationTimestamp(persistenceService.retrieveInvitationTimestamp(userId));
+				// LOGGER.info(data.getInvitationTimestamp());
+				data.setSubmittedActionsCount(persistenceService.retrieveAuthoredActionsCount(userId));
+				// LOGGER.info(data.getSubmittedActionsCount());
+				data.setLastActionTimestamp(persistenceService.retrieveLastActionTimestamp(userId));
+				// LOGGER.info(data.getLastActionTimestamp());
+				data.setInvitedUsersCount(persistenceService.retrieveAllAuthoredTeamInviteActionsCount(userId));
+				// LOGGER.info(data.getInvitedUsersCount());
+				list.add(data);
+			}
+
+		} catch (final PersistenceException e) {
+			LOGGER.error("Failed to generate Users usage data", e);
+		}
+		return list;
+	}
 }

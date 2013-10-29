@@ -99,4 +99,12 @@ public interface PersistenceService {
 
 	public List<UserAction> retrieveAllTeamInviteActionsAuthoredBy(UUID userId) throws PersistenceException;
 
+	public Date retrieveInvitationTimestamp(UUID userId) throws PersistenceException;
+
+	public long retrieveAuthoredActionsCount(UUID userId) throws PersistenceException;
+
+	public Date retrieveLastActionTimestamp(UUID userId) throws PersistenceException;
+
+	public long retrieveAllAuthoredTeamInviteActionsCount(UUID userId) throws PersistenceException;
+
 }

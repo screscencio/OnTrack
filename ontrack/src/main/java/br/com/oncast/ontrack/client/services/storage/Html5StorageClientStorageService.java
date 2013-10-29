@@ -7,8 +7,10 @@ import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetrics;
-import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetricsBag;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetricsBag;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerStatistics;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerStatisticsBag;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
 
 import java.util.ArrayList;
@@ -181,31 +183,50 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	}
 
 	@Override
-	public void appendOnTrackServerMetrics(final OnTrackServerMetricsBag metrics) {
-		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
+	public void storeOnTrackRealTimeServerMetricsList(final OnTrackRealTimeServerMetricsBag metrics) {
+		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.REAL_TIME_SERVER_METRICS);
 		setItem(key, serialize(metrics));
 	}
 
 	@Override
-	public OnTrackServerMetricsBag loadOnTrackServerMetricsList() {
-		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
+	public OnTrackRealTimeServerMetricsBag loadOnTrackRealTimeServerMetricsList() {
+		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.REAL_TIME_SERVER_METRICS);
 		final String item = getItem(key);
 		if (item == null || item.isEmpty()) {
-			final OnTrackServerMetricsBag bag = FACTORY.createOnTrackServerMetricsBag().as();
-			bag.setStatisticsList(new ArrayList<OnTrackServerMetrics>());
+			final OnTrackRealTimeServerMetricsBag bag = FACTORY.createOnTrackRealTimeServerMetricsBag().as();
+			bag.setOnTrackRealTimeServerMetricsList(new ArrayList<OnTrackRealTimeServerMetrics>());
 			return bag;
 		}
 
-		return deserialize(item);
+		return deserialize(item, OnTrackRealTimeServerMetricsBag.class);
 	}
 
-	public static String serialize(final OnTrackServerMetricsBag serializable) {
-		final AutoBean<OnTrackServerMetricsBag> bean = AutoBeanUtils.getAutoBean(serializable);
+	@Override
+	public void storeOnTrackServerStatisticsList(final OnTrackServerStatisticsBag statistics) {
+		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
+		setItem(key, serialize(statistics));
+	}
+
+	@Override
+	public OnTrackServerStatisticsBag loadOnTrackServerStatisticsList() {
+		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
+		final String item = getItem(key);
+		if (item == null || item.isEmpty()) {
+			final OnTrackServerStatisticsBag bag = FACTORY.createOnTrackServerStatisticsBag().as();
+			bag.setOnTrackServerStatisticsList(new ArrayList<OnTrackServerStatistics>());
+			return bag;
+		}
+
+		return deserialize(item, OnTrackServerStatisticsBag.class);
+	}
+
+	public static <T> String serialize(final T serializable) {
+		final AutoBean<T> bean = AutoBeanUtils.getAutoBean(serializable);
 		return AutoBeanCodex.encode(bean).getPayload();
 	}
 
-	public static OnTrackServerMetricsBag deserialize(final String json) {
-		final AutoBean<OnTrackServerMetricsBag> bean = AutoBeanCodex.decode(FACTORY, OnTrackServerMetricsBag.class, json);
+	public static <T> T deserialize(final String json, final Class<T> type) {
+		final AutoBean<T> bean = AutoBeanCodex.decode(FACTORY, type, json);
 		return bean.as();
 	}
 
@@ -234,4 +255,5 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 			return new ArrayList<ModelAction>();
 		}
 	}
+
 }
