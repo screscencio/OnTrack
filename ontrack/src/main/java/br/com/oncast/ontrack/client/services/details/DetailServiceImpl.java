@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.services.details;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
@@ -39,6 +37,8 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundExceptio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
+import java.util.List;
+
 import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -50,8 +50,8 @@ public class DetailServiceImpl implements DetailService {
 	private ActionExecutionListener actionExecutionListener;
 	private final EventBus eventBus;
 
-	public DetailServiceImpl(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
-			final ApplicationPlaceController applicationPlaceController, final EventBus eventBus) {
+	public DetailServiceImpl(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService, final ApplicationPlaceController applicationPlaceController,
+			final EventBus eventBus) {
 		this.actionExecutionService = actionExecutionService;
 		this.contextProviderService = contextProviderService;
 		this.applicationPlaceController = applicationPlaceController;
@@ -77,8 +77,8 @@ public class DetailServiceImpl implements DetailService {
 	}
 
 	@Override
-	public void createAnnotationFor(final UUID subjectId, final String message, final UUID attachmentId) {
-		doUserAction(new AnnotationCreateAction(subjectId, message, attachmentId));
+	public void createAnnotationFor(final UUID subjectId, final AnnotationType type, final String message, final UUID attachmentId) {
+		doUserAction(new AnnotationCreateAction(subjectId, type, message, attachmentId));
 	}
 
 	@Override
@@ -124,17 +124,13 @@ public class DetailServiceImpl implements DetailService {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context,
-					final ActionContext actionContext,
-					final ActionExecutionContext executionContext, final boolean isUserAction) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
+					final boolean isUserAction) {
 
 				if (action instanceof ChecklistItemAction) fireSubjectDetailUpdateEvent(((ChecklistItemAction) action).getSubjectId(), context);
 
-				else if (action instanceof AnnotationAction
-						|| action instanceof ImpedimentAction
-						|| action instanceof ChecklistAction
-						|| action instanceof DescriptionAction
-				) fireSubjectDetailUpdateEvent(action.getReferenceId(), context);
+				else if (action instanceof AnnotationAction || action instanceof ImpedimentAction || action instanceof ChecklistAction || action instanceof DescriptionAction)
+					fireSubjectDetailUpdateEvent(action.getReferenceId(), context);
 			}
 
 			private void fireSubjectDetailUpdateEvent(final UUID subjectId, final ProjectContext context) {
@@ -183,13 +179,11 @@ public class DetailServiceImpl implements DetailService {
 		try {
 			final Scope scope = context.findScope(subjectId);
 			event = addDetails(new ScopeDetailUpdateEvent(scope), context);
-		}
-		catch (final ScopeNotFoundException e) {
+		} catch (final ScopeNotFoundException e) {
 			try {
 				final Release release = context.findRelease(subjectId);
 				event = addDetails(new ReleaseDetailUpdateEvent(release), context);
-			}
-			catch (final ReleaseNotFoundException ex) {
+			} catch (final ReleaseNotFoundException ex) {
 				// It's not scope nor release so don't need to update the view
 			}
 		}
@@ -204,8 +198,7 @@ public class DetailServiceImpl implements DetailService {
 
 		try {
 			event.setDescription(context.findDescriptionFor(subjectId));
-		}
-		catch (final DescriptionNotFoundException e) {}
+		} catch (final DescriptionNotFoundException e) {}
 		return event;
 	}
 
@@ -215,10 +208,8 @@ public class DetailServiceImpl implements DetailService {
 			try {
 				final Description description = findDescriptionFor(subjectId);
 				actionExecutionService.onUserActionExecutionRequest(new DescriptionRemoveAction(subjectId, description.getId(), true));
-			}
-			catch (final DescriptionNotFoundException e) {}
-		}
-		else actionExecutionService.onUserActionExecutionRequest(new DescriptionCreateAction(subjectId, text));
+			} catch (final DescriptionNotFoundException e) {}
+		} else actionExecutionService.onUserActionExecutionRequest(new DescriptionCreateAction(subjectId, text));
 	}
 
 	private Description findDescriptionFor(final UUID subjectId) throws DescriptionNotFoundException {

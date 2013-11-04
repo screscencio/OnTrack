@@ -1,25 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
@@ -38,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
@@ -48,7 +29,28 @@ import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
 import com.google.common.io.Files;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AnnotationCreateActionTest extends ModelActionTest {
 
@@ -119,7 +121,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotCompleteWhenMessageIsEmptyAndThereIsNoAttachedFile() throws Exception {
-		new AnnotationCreateAction(subjectId, "", null).execute(context, actionContext);
+		new AnnotationCreateAction(subjectId, AnnotationType.SIMPLE, "", null).execute(context, actionContext);
 	}
 
 	@Test
@@ -135,7 +137,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldBeAbleToNotHaveAAttachmentFile() throws Exception {
-		new AnnotationCreateAction(subjectId, message, null).execute(context, actionContext);
+		new AnnotationCreateAction(subjectId, AnnotationType.SIMPLE, message, null).execute(context, actionContext);
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
 		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
@@ -194,9 +196,9 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	private XMLWriter setupWriter(final List<ProjectXMLNode> projects) {
 		final XMLWriter writer = new XMLWriter();
-		writer.setProjectList(projects);
+		writer.setProjectsList(projects);
 		writer.setVersion("z");
-		writer.setProjectAuthorizationList(new ArrayList<ProjectAuthorizationXMLNode>());
+		writer.setProjectAuthorizationsList(new ArrayList<ProjectAuthorizationXMLNode>());
 		writer.setUserList(new ArrayList<UserXMLNode>());
 		return writer;
 	}
@@ -221,7 +223,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new AnnotationCreateAction(subjectId, message, attachmentFile.getId());
+		return new AnnotationCreateAction(subjectId, AnnotationType.SIMPLE, message, attachmentFile.getId());
 	}
 
 }

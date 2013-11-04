@@ -1,14 +1,15 @@
 package br.com.oncast.ontrack.client.services.details;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.SubjectDetailUpdateEvent;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.List;
 
 public interface DetailService {
 
-	void createAnnotationFor(UUID subjectId, String message, UUID attachmentId);
+	void createAnnotationFor(UUID subjectId, AnnotationType selectedType, String message, UUID attachmentId);
 
 	void deprecateAnnotation(UUID subjectId, UUID annotationId);
 

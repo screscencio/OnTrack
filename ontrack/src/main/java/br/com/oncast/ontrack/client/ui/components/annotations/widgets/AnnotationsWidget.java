@@ -196,7 +196,7 @@ public class AnnotationsWidget extends Composite {
 		uploadWidget.submitForm(new UploadWidgetListener() {
 			@Override
 			public void onUploadCompleted(final UUID fileRepresentationId) {
-				getProvider().details().createAnnotationFor(subjectId, newAnnotationText.getHTML().trim(), fileRepresentationId);
+				getProvider().details().createAnnotationFor(subjectId, selectedType, newAnnotationText.getHTML().trim(), fileRepresentationId);
 				hideNewAnnotationContainer();
 			}
 

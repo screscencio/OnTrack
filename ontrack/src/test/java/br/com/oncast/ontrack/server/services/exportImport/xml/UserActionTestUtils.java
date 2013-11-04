@@ -579,6 +579,6 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createAnnotationCreateAction(final String message) throws Exception {
-		return createUserAction(new AnnotationCreateAction(new UUID(), message, new UUID()));
+		return createUserAction(new AnnotationCreateAction(new UUID(), AnnotationType.SIMPLE, message, new UUID()));
 	}
 }

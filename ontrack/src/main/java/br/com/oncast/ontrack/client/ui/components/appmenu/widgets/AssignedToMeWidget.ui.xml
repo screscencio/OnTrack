@@ -23,6 +23,7 @@
 		.scrollContainer {
 			overflow-y: auto;
 			overflow-x: hidden !important;
+			max-height: 600px;
 		}
 		
 		.emptyMessageContainer {

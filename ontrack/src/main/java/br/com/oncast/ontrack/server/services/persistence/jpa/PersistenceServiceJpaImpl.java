@@ -50,6 +50,7 @@ import org.hibernate.collection.PersistentBag;
 @SuppressWarnings("rawtypes")
 public class PersistenceServiceJpaImpl implements PersistenceService {
 
+	private static final int LATEST_NOTIFICATION_MAX_RESULTS = 1000;
 	private final static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ontrackPU");
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 	private final static ObjectCache<UUID, ProjectSnapshot> SNAPSHOT_CACHE = new ObjectCache<UUID, ProjectSnapshot>();
@@ -456,11 +457,11 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProjectAuthorization> retrieveAllAuthorizationsForProject(final ProjectRepresentation projectRepresentation) throws PersistenceException {
+	public List<ProjectAuthorization> retrieveProjectAuthorizationsForProject(final UUID projectId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("SELECT authorization FROM " + ProjectAuthorization.class.getSimpleName() + " AS authorization WHERE authorization.projectId = :projectId");
-			query.setParameter("projectId", projectRepresentation.getId().toString());
+			query.setParameter("projectId", projectId.toString());
 			return query.getResultList();
 		} catch (final Exception e) {
 			throw new PersistenceException("It was not possible to retrieve this project's authorizations", e);
@@ -617,6 +618,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 					+ " n WHERE n.projectId IN (:projects) AND n.timestamp > :initialdate ORDER BY n.timestamp DESC");
 			queryNotification.setParameter("projects", projectStringIds);
 			queryNotification.setParameter("initialdate", initialDate);
+			queryNotification.setMaxResults(LATEST_NOTIFICATION_MAX_RESULTS);
 			final List<NotificationEntity> resultList = queryNotification.getResultList();
 
 			return (List<Notification>) TYPE_CONVERTER.convert(resultList);
@@ -659,8 +661,8 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public List<User> retrieveProjectUsers(final ProjectRepresentation projectRepresentation) throws PersistenceException {
-		final List<ProjectAuthorization> retrieveAllAuthorizationsForProject = retrieveAllAuthorizationsForProject(projectRepresentation);
+	public List<User> retrieveUsersOfProject(final UUID projectId) throws PersistenceException {
+		final List<ProjectAuthorization> retrieveAllAuthorizationsForProject = retrieveProjectAuthorizationsForProject(projectId);
 		final List<User> projectUsers = new ArrayList<User>();
 
 		for (final ProjectAuthorization projectAuthorization : retrieveAllAuthorizationsForProject) {
@@ -729,9 +731,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName()
-					+ " AS ua WHERE ua.userId = :userId AND ua.projectRepresentation.id = :projectId ORDER BY ua.timestamp ASC LIMIT 1");
+					+ " AS ua WHERE ua.userId = :userId AND ua.projectRepresentation.id = :projectId ORDER BY ua.timestamp ASC");
 			query.setParameter("userId", userId.toString());
 			query.setParameter("projectId", projectId.toString());
+			query.setMaxResults(1);
 			final List resultList = query.getResultList();
 			if (resultList.isEmpty()) return null;
 			return (Date) resultList.get(0);
@@ -748,9 +751,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName()
-					+ " AS ua WHERE ua.userId = :userId AND ua.projectRepresentation.id = :projectId ORDER BY ua.timestamp DESC LIMIT 1");
+					+ " AS ua WHERE ua.userId = :userId AND ua.projectRepresentation.id = :projectId ORDER BY ua.timestamp DESC");
 			query.setParameter("userId", userId.toString());
 			query.setParameter("projectId", projectId.toString());
+			query.setMaxResults(1);
 			final List resultList = query.getResultList();
 			if (resultList.isEmpty()) return null;
 			return (Date) resultList.get(0);
@@ -783,8 +787,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName()
-					+ " AS ua, TeamInvite as ma WHERE ua.actionEntity = ma AND ma.userId = :userId ORDER BY ua.timestamp ASC LIMIT 1");
+					+ " AS ua, TeamInvite as ma WHERE ua.actionEntity = ma AND ma.userId = :userId ORDER BY ua.timestamp ASC");
 			query.setParameter("userId", userId.toString());
+			query.setMaxResults(1);
 			final List resultList = query.getResultList();
 			if (resultList.isEmpty()) return null;
 			return (Date) resultList.get(0);
@@ -815,8 +820,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public Date retrieveLastActionTimestamp(final UUID userId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName() + " AS ua WHERE ua.userId = :userId ORDER BY ua.timestamp DESC LIMIT 1");
+			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName() + " AS ua WHERE ua.userId = :userId ORDER BY ua.timestamp DESC");
 			query.setParameter("userId", userId.toString());
+			query.setMaxResults(1);
 			final List resultList = query.getResultList();
 			if (resultList.isEmpty()) return null;
 			return (Date) resultList.get(0);

@@ -38,13 +38,13 @@ public class XMLWriter {
 		return this;
 	}
 
-	public XMLWriter setProjectList(final List<ProjectXMLNode> projectList) {
+	public XMLWriter setProjectsList(final List<ProjectXMLNode> projectList) {
 		ontrackXML.setProjects(projectList);
 		LOGGER.debug("Projects List DONE!");
 		return this;
 	}
 
-	public XMLWriter setProjectAuthorizationList(final List<ProjectAuthorizationXMLNode> projectAuthorizations) {
+	public XMLWriter setProjectAuthorizationsList(final List<ProjectAuthorizationXMLNode> projectAuthorizations) {
 		ontrackXML.setProjectAuthorizations(projectAuthorizations);
 		LOGGER.debug("Project Authorizations DONE!");
 		return this;

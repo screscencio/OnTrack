@@ -141,7 +141,6 @@ public class BrowserKeyCodes {
 			keysRepresentations.put(KEY_DOWN, "DOWN");
 
 			// The string representation without SHIFT key pressed
-			keysRepresentations.put(KEY_C, "c");
 			keysRepresentations.put(KEY_1, "1");
 			keysRepresentations.put(KEY_2, "2");
 			keysRepresentations.put(KEY_3, "3");
@@ -150,6 +149,7 @@ public class BrowserKeyCodes {
 			keysRepresentations.put(KEY_7, "7");
 			keysRepresentations.put(KEY_SLASH, "/");
 			keysRepresentations.put(KEY_A, "a");
+			keysRepresentations.put(KEY_C, "c");
 			keysRepresentations.put(KEY_E, "e");
 			keysRepresentations.put(KEY_F, "f");
 			keysRepresentations.put(KEY_M, "m");
@@ -157,11 +157,12 @@ public class BrowserKeyCodes {
 			keysRepresentations.put(KEY_P, "p");
 			keysRepresentations.put(KEY_R, "r");
 			keysRepresentations.put(KEY_U, "u");
+			keysRepresentations.put(KEY_V, "v");
 			keysRepresentations.put(KEY_Y, "y");
 			keysRepresentations.put(KEY_Z, "z");
+			keysRepresentations.put(KEY_X, "x");
 
 			// The string representation with SHIFT key pressed
-			shiftedKeysRepresentations.put(KEY_C, "C");
 			shiftedKeysRepresentations.put(KEY_1, "!");
 			shiftedKeysRepresentations.put(KEY_2, "@");
 			shiftedKeysRepresentations.put(KEY_3, "#");
@@ -170,6 +171,7 @@ public class BrowserKeyCodes {
 			shiftedKeysRepresentations.put(KEY_7, "&");
 			shiftedKeysRepresentations.put(KEY_SLASH, "?");
 			shiftedKeysRepresentations.put(KEY_A, "A");
+			shiftedKeysRepresentations.put(KEY_C, "C");
 			shiftedKeysRepresentations.put(KEY_E, "E");
 			shiftedKeysRepresentations.put(KEY_F, "F");
 			shiftedKeysRepresentations.put(KEY_M, "M");
@@ -177,8 +179,10 @@ public class BrowserKeyCodes {
 			shiftedKeysRepresentations.put(KEY_P, "P");
 			shiftedKeysRepresentations.put(KEY_R, "R");
 			shiftedKeysRepresentations.put(KEY_U, "U");
+			shiftedKeysRepresentations.put(KEY_V, "V");
 			shiftedKeysRepresentations.put(KEY_Y, "Y");
 			shiftedKeysRepresentations.put(KEY_Z, "Z");
+			shiftedKeysRepresentations.put(KEY_X, "X");
 
 		}
 

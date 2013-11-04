@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -69,7 +70,7 @@ public class QuickAnnotationWidget extends Composite implements PopupAware, HasC
 			return;
 		}
 
-		ClientServices.get().details().createAnnotationFor(subjectId, message, null);
+		ClientServices.get().details().createAnnotationFor(subjectId, AnnotationType.SIMPLE, message, null);
 		hide();
 	}
 

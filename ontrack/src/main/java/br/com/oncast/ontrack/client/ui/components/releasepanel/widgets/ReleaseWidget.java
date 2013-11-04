@@ -262,7 +262,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		update();
 
 		setupNavigationIcon(release, kanbanSpecific);
-		setContainerState(DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE, false);
+		setContainerState(kanbanSpecific || DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE, false);
 		setVisible(true);
 	}
 

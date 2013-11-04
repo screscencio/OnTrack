@@ -44,17 +44,17 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	protected AnnotationCreateAction() {}
 
-	public AnnotationCreateAction(final UUID subjectId, final String message, final UUID attachmentId) {
+	public AnnotationCreateAction(final UUID subjectId, final AnnotationType type, final String message, final UUID attachmentId) {
 		this.message = message;
 		this.attachmentId = attachmentId;
 		this.annotationId = new UUID();
 		this.subjectId = subjectId;
-		this.annotationType = AnnotationType.SIMPLE.name();
+		this.annotationType = type.name();
 		this.subActionList = new ArrayList<ModelAction>();
 	}
 
 	protected AnnotationCreateAction(final UUID subjectId, final Annotation annotation, final List<ModelAction> subActionList) {
-		this(subjectId, annotation.getMessage(), annotation.getAttachmentFile() == null ? null : annotation.getAttachmentFile().getId());
+		this(subjectId, annotation.getType(), annotation.getMessage(), annotation.getAttachmentFile() == null ? null : annotation.getAttachmentFile().getId());
 		this.subActionList = subActionList;
 		this.annotationId = annotation.getId();
 	}

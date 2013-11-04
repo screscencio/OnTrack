@@ -360,8 +360,8 @@ public class XMLWriterTest {
 		xmlExporter
 				.setVersion(version)
 				.setUserList(userNodes)
-				.setProjectList(projectNodes)
-				.setProjectAuthorizationList(authorizationNodes)
+				.setProjectsList(projectNodes)
+				.setProjectAuthorizationsList(authorizationNodes)
 				.setNotifications(notifications)
 				.export(new FileOutputStream(ontrackFile));
 
