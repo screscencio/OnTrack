@@ -3,10 +3,15 @@ package br.com.oncast.ontrack.client.services.metrics;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.places.OpenInNewWindowPlace;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerStatistics;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
@@ -23,18 +28,17 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import static br.com.oncast.ontrack.shared.metrics.MetricsCategories.PLACE_LOAD;
 
-public class ClientMetricsServiceImpl implements ClientMetricsService {
+public class ClientMetricsServiceImpl implements ClientMetricsService, ActionExecutionListener {
+
+	private static final int ACTIONS_DIMENSION = 1;
 
 	private final DispatchService dispatchService;
 
 	private OnTrackStatisticsFactory factory;
 
-	private String trackerPrefix = "";
-
-	private Place place = null;
-
-	public ClientMetricsServiceImpl(final DispatchService requestDispatchService) {
+	public ClientMetricsServiceImpl(final DispatchService requestDispatchService, final ActionExecutionService actionExecutionService) {
 		this.dispatchService = requestDispatchService;
+		actionExecutionService.addActionExecutionListener(this);
 	}
 
 	@Override
@@ -83,15 +87,14 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 
 	@Override
 	public void onPlaceRequest(final Place place) {
-		this.place = place;
-		GoogleAnalytics.set(trackerPrefix, "page", "/" + MetricsTokenizer.getClassSimpleName(place));
+		GoogleAnalytics.set("page", "/" + MetricsTokenizer.getClassSimpleName(place));
 	}
 
 	@Override
 	public void onNewWindowPlaceRequest(final OpenInNewWindowPlace place) {
 		if (!(place instanceof Place)) throw new IllegalArgumentException("obj should be subclass of Place");
 		onPlaceRequest((Place) place);
-		GoogleAnalytics.trackPageview(trackerPrefix);
+		GoogleAnalytics.trackPageview();
 	}
 
 	@Override
@@ -101,37 +104,22 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 
 	@Override
 	public TimeTrackingEvent startPlaceLoad(final Place place) {
-		GoogleAnalytics.trackPageview(trackerPrefix);
+		GoogleAnalytics.trackPageview();
 		return new TimeTrackingEvent(this, PLACE_LOAD.getCategory(), MetricsTokenizer.getClassSimpleName(place));
 	}
 
 	void onTimeTrackingEnd(final TimeTrackingEvent event) {
-		GoogleAnalytics.trackTiming(trackerPrefix, event.getCategory(), event.getValue(), event.getTotalDuration());
+		GoogleAnalytics.trackTiming(event.getCategory(), event.getValue(), event.getTotalDuration());
 	}
 
 	@Override
 	public void onException(final String message) {
-		GoogleAnalytics.sendException(trackerPrefix, message);
+		GoogleAnalytics.sendException(message);
 	}
 
 	@Override
-	public void onUserLogin(final User user) {
-		final String userId = user.getId().toString();
-		trackerPrefix = userId.replaceAll("[^a-zA-Z0-9]+", "");
-		GoogleAnalytics.create(trackerPrefix, userId);
-		trackerPrefix += ".";
-		updateCurrentPage();
-	}
-
-	@Override
-	public void onUserLogout() {
-		trackerPrefix = "";
-		updateCurrentPage();
-	}
-
-	private void updateCurrentPage() {
-		if (place == null) return;
-		GoogleAnalytics.set(trackerPrefix, "page", "/" + MetricsTokenizer.getClassSimpleName(place));
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
+		if (isUserAction) GoogleAnalytics.sendCustomDimension(ACTIONS_DIMENSION, MetricsTokenizer.getClassSimpleName(action));
 	}
 
 }

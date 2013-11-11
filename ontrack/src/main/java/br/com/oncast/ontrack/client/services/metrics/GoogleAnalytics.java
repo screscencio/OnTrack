@@ -2,33 +2,42 @@ package br.com.oncast.ontrack.client.services.metrics;
 
 public class GoogleAnalytics {
 
-	public static native void trackPageview(String trackerPrefix) /*-{
-		$wnd.ga(trackerPrefix + 'send', 'pageview');
+	public static native void trackPageview() /*-{
+		$wnd.ga('send', 'pageview');
 	}-*/;
 
-	public static native void set(String trackerPrefix, String name, String value) /*-{
-		$wnd.ga(trackerPrefix + 'set', name, value);
+	public static native void set(String name, String value) /*-{
+		$wnd.ga('set', name, value);
 	}-*/;
 
-	public static native void trackTiming(String trackerPrefix, String category, String variable, Number time) /*-{
-		$wnd.ga(trackerPrefix + 'send', 'timing', {
+	public static native void trackTiming(String category, String variable, Number time) /*-{
+		$wnd.ga('send', 'timing', {
 			'timingCategory' : category,
 			'timingVar' : variable,
 			'timingValue' : time
 		});
 	}-*/;
 
-	public static native void sendException(String trackerPrefix, final String description) /*-{
-		$wnd.ga(trackerPrefix + 'send', 'exception', {
+	public static native void sendEvent(String category, String action) /*-{
+		$wnd.ga('send', 'event', category, action);
+	}-*/;
+
+	public static native void sendEvent(String category, String action, String label) /*-{
+		$wnd.ga('send', 'event', category, action, label);
+	}-*/;
+
+	public static native void sendEvent(String category, String action, String label, Number value) /*-{
+		$wnd.ga('send', 'event', category, action, label, value);
+	}-*/;
+
+	public static native void sendException(final String description) /*-{
+		$wnd.ga('send', 'exception', {
 			'exDescription' : description
 		});
 	}-*/;
 
-	public static native void create(final String trackerName, String clientId) /*-{
-		$wnd.ga('create', 'UA-41266386-1', {
-			'name' : trackerName,
-			'clientId' : clientId
-		});
+	public static native void sendCustomDimension(int dimensionIndex, final String value) /*-{
+		$wnd.ga('dimension' + dimensionIndex, value);
 	}-*/;
 
 }

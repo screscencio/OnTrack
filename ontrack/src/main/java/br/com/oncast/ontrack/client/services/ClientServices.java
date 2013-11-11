@@ -276,7 +276,7 @@ public class ClientServices {
 	}
 
 	public ClientMetricsService metrics() {
-		return clientMetricsService == null ? clientMetricsService = new ClientMetricsServiceImpl(request()) : clientMetricsService;
+		return clientMetricsService == null ? clientMetricsService = new ClientMetricsServiceImpl(request(), actionExecution()) : clientMetricsService;
 	}
 
 	public TimesheetService getTimesheetService() {
