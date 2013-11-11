@@ -87,14 +87,14 @@ public class ClientMetricsServiceImpl implements ClientMetricsService, ActionExe
 
 	@Override
 	public void onPlaceRequest(final Place place) {
-		GoogleAnalytics.set("page", "/" + MetricsTokenizer.getClassSimpleName(place));
+		GoogleAnalyticsNativeImpl.set("page", "/" + MetricsTokenizer.getClassSimpleName(place));
 	}
 
 	@Override
 	public void onNewWindowPlaceRequest(final OpenInNewWindowPlace place) {
 		if (!(place instanceof Place)) throw new IllegalArgumentException("obj should be subclass of Place");
 		onPlaceRequest((Place) place);
-		GoogleAnalytics.trackPageview();
+		GoogleAnalyticsNativeImpl.trackPageview();
 	}
 
 	@Override
@@ -104,22 +104,22 @@ public class ClientMetricsServiceImpl implements ClientMetricsService, ActionExe
 
 	@Override
 	public TimeTrackingEvent startPlaceLoad(final Place place) {
-		GoogleAnalytics.trackPageview();
+		GoogleAnalyticsNativeImpl.trackPageview();
 		return new TimeTrackingEvent(this, PLACE_LOAD.getCategory(), MetricsTokenizer.getClassSimpleName(place));
 	}
 
 	void onTimeTrackingEnd(final TimeTrackingEvent event) {
-		GoogleAnalytics.trackTiming(event.getCategory(), event.getValue(), event.getTotalDuration());
+		GoogleAnalyticsNativeImpl.trackTiming(event.getCategory(), event.getValue(), event.getTotalDuration());
 	}
 
 	@Override
 	public void onException(final String message) {
-		GoogleAnalytics.sendException(message);
+		GoogleAnalyticsNativeImpl.sendException(message);
 	}
 
 	@Override
 	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
-		if (isUserAction) GoogleAnalytics.sendCustomDimension(ACTIONS_DIMENSION, MetricsTokenizer.getClassSimpleName(action));
+		if (isUserAction) GoogleAnalyticsNativeImpl.sendCustomDimension(ACTIONS_DIMENSION, MetricsTokenizer.getClassSimpleName(action));
 	}
 
 }

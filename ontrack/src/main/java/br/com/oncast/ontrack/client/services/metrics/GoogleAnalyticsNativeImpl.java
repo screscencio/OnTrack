@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.services.metrics;
 
-public class GoogleAnalytics {
+public class GoogleAnalyticsNativeImpl {
 
 	public static native void trackPageview() /*-{
 		$wnd.ga('send', 'pageview');
