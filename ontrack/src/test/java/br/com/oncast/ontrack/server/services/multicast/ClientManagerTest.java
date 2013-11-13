@@ -1,15 +1,14 @@
 package br.com.oncast.ontrack.server.services.multicast;
 
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertContainsNone;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationListener;
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager.UserStatusChangeListener;
+import br.com.oncast.ontrack.server.services.serverPush.CometClientConnection;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,14 +19,19 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.services.authentication.AuthenticationListener;
-import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.multicast.ClientManager.UserStatusChangeListener;
-import br.com.oncast.ontrack.server.services.serverPush.CometClientConnection;
-import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Matchers.any;
+
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertContainsNone;
 
 public class ClientManagerTest {
 
@@ -46,10 +50,13 @@ public class ClientManagerTest {
 	@Mock
 	private AuthenticationManager authenticationManager;
 
-	private AuthenticationListener authenticationListener;
+	@Mock
+	private ServerAnalytics serverAnalytics;
 
 	@Mock
 	private UserStatusChangeListener userStatusChangeListener;
+
+	private AuthenticationListener authenticationListener;
 
 	private User user1;
 
@@ -61,7 +68,7 @@ public class ClientManagerTest {
 
 		final ArgumentCaptor<AuthenticationListener> captor = ArgumentCaptor.forClass(AuthenticationListener.class);
 		doNothing().when(authenticationManager).register(captor.capture());
-		manager = new ClientManager(authenticationManager);
+		manager = new ClientManager(authenticationManager, serverAnalytics);
 		authenticationListener = captor.getValue();
 
 		user1 = UserTestUtils.createUser();

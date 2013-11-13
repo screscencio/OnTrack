@@ -5,6 +5,7 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -218,6 +219,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	private void updateCurrentUser(final User user) {
+		ClientServices.get().metrics().onUserLogin(user);
 		currentUser = user;
 	}
 
@@ -238,6 +240,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private void resetCurrentUsetAndGoTo(final Place destinationPlace) {
 		currentUser = null;
+		ClientServices.get().metrics().onUserLogout();
 
 		notifyLogoutToUserAuthenticationListeners();
 		applicationPlaceController.goTo(destinationPlace);

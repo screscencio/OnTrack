@@ -75,6 +75,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private void notifyProjectChange() {
 		final UUID currentProjectId = getCurrentProjectId();
+		metrics.onProjectChange(currentProjectId);
 
 		for (final ContextChangeListener l : contextLoadListeners) {
 			l.onProjectChanged(currentProjectId, loadProjectRevision);

@@ -1,13 +1,14 @@
 package br.com.oncast.ontrack.shared.model.file;
 
-import java.io.Serializable;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.file.FileRepresentationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
+import java.io.Serializable;
+
+//FIXME save the file size
 @ConvertTo(FileRepresentationEntity.class)
 public class FileRepresentation implements Serializable, HasUUID {
 

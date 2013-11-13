@@ -309,6 +309,11 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/war/WEB-INF/lib/gwt-storage-1.1.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>com.brsanthu</groupId>
+			<artifactId>google-analytics-java</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>

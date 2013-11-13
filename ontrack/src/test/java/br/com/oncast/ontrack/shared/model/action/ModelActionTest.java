@@ -118,9 +118,9 @@ public abstract class ModelActionTest {
 	}
 
 	@Test
-	public void actionsNoArgumentConstructorShouldHavePublicVisiblity() throws Exception {
+	public void actionsNoArgumentConstructorShouldHaveProtectedVisiblity() throws Exception {
 		final Constructor<? extends ModelAction> noArgumentConstructor = getActionType().getDeclaredConstructor();
-		assertTrue(Modifier.isPublic(noArgumentConstructor.getModifiers()));
+		assertTrue(Modifier.isProtected(noArgumentConstructor.getModifiers()));
 	}
 
 	@Test

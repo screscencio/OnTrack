@@ -36,8 +36,8 @@ public class GoogleAnalyticsNativeImpl {
 		});
 	}-*/;
 
-	public static native void sendCustomDimension(int dimensionIndex, final String value) /*-{
-		$wnd.ga('dimension' + dimensionIndex, value);
+	public static native void setCustomDimension(int dimensionIndex, final String value) /*-{
+		$wnd.ga('set', 'dimension' + dimensionIndex, value);
 	}-*/;
 
 }

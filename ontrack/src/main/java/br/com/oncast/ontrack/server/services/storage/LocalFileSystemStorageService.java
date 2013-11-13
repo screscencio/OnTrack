@@ -67,6 +67,7 @@ public class LocalFileSystemStorageService implements StorageService {
 
 		updateInfoFile(destinationFile);
 
+		// FIXME save the file.length() into file representation
 		final FileRepresentation fileRepresentation = createFileRepresentation(fileId, projectId, file.getName(), destinationFile.getAbsolutePath());
 		businessLogic.onFileUploadCompleted(fileRepresentation);
 		LOGGER.debug("The file '" + fileHash + "'was persisted successfully.");

@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.server.services.authentication.AuthenticationManage
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.notification.NotificationServerService;
@@ -55,6 +56,7 @@ public class BusinessLogicTestFactory {
 	private ActionPostProcessmentsInitializer postProcessments;
 	private PersistenceService persistence;
 	private final IntegrationService integration;
+	private final ServerAnalytics serverAnalytics;
 
 	private BusinessLogicTestFactory() {
 		authentication = getAuthenticationMock();
@@ -67,6 +69,7 @@ public class BusinessLogicTestFactory {
 		syncronizationService = new SyncronizationService();
 		persistence = getPersistenceMock();
 		integration = mock(IntegrationService.class);
+		serverAnalytics = mock(ServerAnalytics.class);
 	}
 
 	public static BusinessLogic createDefault() {
@@ -83,7 +86,8 @@ public class BusinessLogicTestFactory {
 
 	public BusinessLogic create() {
 		try {
-			return new BusinessLogicImpl(persistence, multicast, clientManager, authentication, authorization, sessionManager, mailFactory, syncronizationService, postProcessments, integration);
+			return new BusinessLogicImpl(persistence, multicast, clientManager, authentication, authorization, sessionManager, mailFactory, syncronizationService, postProcessments, integration,
+					serverAnalytics);
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}

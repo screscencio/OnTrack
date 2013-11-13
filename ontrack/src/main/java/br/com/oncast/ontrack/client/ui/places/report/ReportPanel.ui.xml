@@ -89,6 +89,17 @@
 			padding: 9px 36px;
 		}
 		
+		.simpleModeCheck {
+			position: absolute;
+			right: 0px;
+			top: 10px;
+		}
+		
+		.simpleModeCheck > label {
+			position: relative;
+			top: -2px;
+		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel ui:field="rootPanel" styleName="{style.root} reportPanel-root">
@@ -116,6 +127,7 @@
 		</div>
 		<div ui:field="impedimentsContainer" class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Impediments">Impediments</ui:msg></g:Label>
+			<g:CheckBox ui:field="showTimingColunsCheck" styleName="{style.simpleModeCheck}"><ui:msg description="show timing columns toggle label">Show timing columns</ui:msg></g:CheckBox>
 		    <r:ImpedimentReportTable ui:field="impedimentTable" />
 		</div>
 		<div ui:field="timesheetContainer" class="{style.sectionContainer}">

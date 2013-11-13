@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
 import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -47,6 +48,9 @@ public class AuthenticationManagerTest {
 	@Mock
 	private MailFactory mailFactory;
 
+	@Mock
+	private ServerAnalytics serverAnalytics;
+
 	private List<Password> userPasswords;
 
 	private AuthenticationManager authenticationManager;
@@ -67,7 +71,7 @@ public class AuthenticationManagerTest {
 		when(requestMock.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME)).thenReturn("fakeClientId");
 
 		sessionManager.configureCurrentHttpSession(requestMock);
-		authenticationManager = new AuthenticationManager(persistenceServiceMock, sessionManager, mailFactory);
+		authenticationManager = new AuthenticationManager(persistenceServiceMock, sessionManager, mailFactory, serverAnalytics);
 
 		userPasswords = new ArrayList<Password>();
 		userPasswords.add(passwordMock);

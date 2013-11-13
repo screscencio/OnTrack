@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.server.services.authentication.AuthenticationManage
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -86,9 +87,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -126,13 +127,15 @@ public class BusinessLogicTest {
 	@Mock
 	private IntegrationService integration;
 
+	@Mock
+	private ServerAnalytics serverAnalytics;
+
 	private EntityManager entityManager;
 	private ProjectRepresentation projectRepresentation;
 	private BusinessLogic business;
 	private User authenticatedUser;
 	private User admin;
 	private UserRepresentation adminRepresentation;
-
 	private Project project;
 
 	@Before
@@ -203,7 +206,7 @@ public class BusinessLogicTest {
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
 		business = new BusinessLogicImpl(persistence, multicast, clientManager, authenticationManager, authorizationManager, sessionManager, mock(MailFactory.class), new SyncronizationService(),
-				postProcessmentsInitializer, integration);
+				postProcessmentsInitializer, integration, serverAnalytics);
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(UUID.INVALID_UUID));
@@ -637,9 +640,8 @@ public class BusinessLogicTest {
 	@Test
 	public void shouldCreateFileUploadActionWhenOnUploadCompletedWereCalled() throws Exception {
 		final FileRepresentation fileRepresentation = FileRepresentationTestUtils.create();
-		business = mock(BusinessLogicImpl.class);
+		business = spy(BusinessLogicTestFactory.createDefault());
 
-		doCallRealMethod().when(business).onFileUploadCompleted(fileRepresentation);
 		business.onFileUploadCompleted(fileRepresentation);
 
 		final ArgumentCaptor<ModelActionSyncRequest> captor = ArgumentCaptor.forClass(ModelActionSyncRequest.class);

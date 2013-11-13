@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.internet.ConnectionListener;
 import br.com.oncast.ontrack.client.services.internet.NetworkMonitoringService;
+import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -53,14 +54,15 @@ public class ActionSyncService {
 
 	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService, final ActionExecutionService actionExecutionService,
 			final ProjectRepresentationProvider projectRepresentationProvider, final ClientAlertingService alertingService, final ClientErrorMessages messages,
-			final NetworkMonitoringService networkMonitoringService, final ContextProviderService contextProviderService, final EventBus eventBus, final ClientStorageService storage) {
+			final NetworkMonitoringService networkMonitoringService, final ContextProviderService contextProviderService, final EventBus eventBus, final ClientStorageService storage,
+			final ClientMetricsService metrics) {
 		this.requestDispatchService = requestDispatchService;
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.actionExecutionService = actionExecutionService;
 		this.alertingService = alertingService;
 		this.messages = messages;
 		this.contextProviderService = contextProviderService;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, eventBus, alertingService, messages, storage);
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, eventBus, alertingService, messages, storage, metrics);
 
 		serverPushClientService.registerServerEventHandler(ModelActionSyncEvent.class, new ServerActionSyncEventHandler() {
 

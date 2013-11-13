@@ -15,8 +15,8 @@ public class TimeTrackingEvent {
 	 * for convenience it also starts the event
 	 * but you can reset the event and start again later
 	 * in case you don't want it to start right away
-	 * @param string
 	 * @param the ClientMetricsServiceImpl that will send the event to metrics server
+	 * @param the event category
 	 * @param the event name
 	 */
 	TimeTrackingEvent(final ClientMetricsServiceImpl service, final String category, final String value) {

@@ -11,4 +11,6 @@ public interface ShortcutMapping<T> {
 	public ShortcutsSet getShortcuts();
 
 	public EventProcessor getEventPostExecutionProcessor();
+
+	public String name();
 }

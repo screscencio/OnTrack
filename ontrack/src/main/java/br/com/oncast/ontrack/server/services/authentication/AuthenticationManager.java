@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
 import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -38,10 +39,13 @@ public class AuthenticationManager {
 
 	private final Set<AuthenticationListener> authenticationListeners = new HashSet<AuthenticationListener>();
 
-	public AuthenticationManager(final PersistenceService persistenceService, final SessionManager sessionManager, final MailFactory mailFactory) {
+	private final ServerAnalytics analytics;
+
+	public AuthenticationManager(final PersistenceService persistenceService, final SessionManager sessionManager, final MailFactory mailFactory, final ServerAnalytics analytics) {
 		this.persistenceService = persistenceService;
 		this.sessionManager = sessionManager;
 		this.mailFactory = mailFactory;
+		this.analytics = analytics;
 	}
 
 	public User authenticate(final String email, final String password) throws InvalidAuthenticationCredentialsException {
@@ -102,6 +106,7 @@ public class AuthenticationManager {
 			final User user = new User(id, formattedUserEmail, profile);
 			final User newUser = persistenceService.persistOrUpdateUser(user);
 			if (password != null && !password.isEmpty()) createPasswordForUser(newUser, password);
+			analytics.onNewUserCreated(user);
 			return newUser;
 		} catch (final PersistenceException e) {
 			final String message = "Could not create a new user with e-mail '" + formattedUserEmail + "'";

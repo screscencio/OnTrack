@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
+import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.ui.events.PendingActionsCountChangeEvent;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
@@ -43,14 +44,17 @@ class ActionQueuedDispatcher {
 
 	private final ClientStorageService storage;
 
+	private final ClientMetricsService metrics;
+
 	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider, final EventBus eventBus,
-			final ClientAlertingService alertingService, final ClientErrorMessages messages, final ClientStorageService clientStorageService) {
+			final ClientAlertingService alertingService, final ClientErrorMessages messages, final ClientStorageService clientStorageService, final ClientMetricsService metrics) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.requestDispatchService = requestDispatchService;
 		this.eventBus = eventBus;
 		this.alertingService = alertingService;
 		this.messages = messages;
 		storage = clientStorageService;
+		this.metrics = metrics;
 
 		actionList = new ArrayList<ModelAction>();
 		reverseActionList = new ArrayList<ModelAction>();
@@ -60,12 +64,14 @@ class ActionQueuedDispatcher {
 			public void onWindowClosing(final ClosingEvent event) {
 				final int nOfPendingActions = actionList.size() + waitingServerAnswerActionList.size();
 				if (projectRepresentationProvider.hasAvailableProjectRepresentation()) savePendingActions();
+				metrics.onClientClose(nOfPendingActions);
 				if (nOfPendingActions > 0) event.setMessage(messages.thereArePedingActionsWannaLeaveAnyway("" + nOfPendingActions));
 			}
 		});
 	}
 
 	public void dispatch(final ModelAction action, final ActionExecutionContext executionContext) {
+		metrics.onActionExecution(action, !paused);
 		actionList.add(action);
 		reverseActionList.add(executionContext.getReverseAction());
 		firePendingActionsCountChangeEvent();
@@ -178,15 +184,19 @@ class ActionQueuedDispatcher {
 		final List<ModelAction> pendingActions = new ArrayList<ModelAction>(waitingServerAnswerActionList);
 		pendingActions.addAll(actionList);
 		storage.savePendingActions(pendingActions);
+		if (!pendingActions.isEmpty()) metrics.onPendingActionsSavedLocally(pendingActions.size());
 	}
 
 	public void loadPendingActions() {
 		final List<ModelAction> pendingActions = storage.loadPendingActions();
 		if (pendingActions == null || pendingActions.isEmpty()) return;
 
+		metrics.onLocallySavedPendingActionsLoaded(pendingActions.size());
 		actionList.addAll(pendingActions);
 		tryExchange(true);
 		savePendingActions();
+
+		metrics.onLocallySavedPendingActionsSync(actionList.isEmpty(), pendingActions.size());
 		if (actionList.isEmpty()) alertingService.showSuccess(messages.pendingActionsSynced(pendingActions.size()), ClientAlertingService.DURATION_LONG);
 	}
 

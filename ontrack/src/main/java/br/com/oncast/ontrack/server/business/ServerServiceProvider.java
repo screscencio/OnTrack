@@ -10,6 +10,8 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporterService
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporterService;
 import br.com.oncast.ontrack.server.services.integration.BillingTrackIntegrationService;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
+import br.com.oncast.ontrack.server.services.metrics.GoogleAnalyticsServerAnalytics;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.metrics.ServerMetricsService;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
@@ -30,7 +32,7 @@ import br.com.oncast.ontrack.server.services.user.UsersStatusManager;
 
 public class ServerServiceProvider {
 
-	private static final ServerServiceProvider INSTANCE = new ServerServiceProvider();
+	private static ServerServiceProvider INSTANCE = new ServerServiceProvider();
 
 	private BusinessLogic businessLogic;
 	private XMLExporterService xmlExporter;
@@ -64,6 +66,8 @@ public class ServerServiceProvider {
 
 	private IntegrationService integrationService;
 
+	private GoogleAnalyticsServerAnalytics analytics;
+
 	public static ServerServiceProvider getInstance() {
 		return INSTANCE;
 	}
@@ -75,7 +79,14 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
 			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getMulticastService(), getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(),
-					getSessionManager(), getMailFactory(), getSyncronizationService(), getActionPostProcessmentsInitializer(), getIntegrationService());
+					getSessionManager(), getMailFactory(), getSyncronizationService(), getActionPostProcessmentsInitializer(), getIntegrationService(), getServerAnalytics());
+		}
+	}
+
+	ServerAnalytics getServerAnalytics() {
+		if (analytics != null) return analytics;
+		synchronized (this) {
+			return analytics == null ? analytics = new GoogleAnalyticsServerAnalytics() : analytics;
 		}
 	}
 
@@ -100,7 +111,7 @@ public class ServerServiceProvider {
 		if (authenticationManager != null) return authenticationManager;
 		synchronized (this) {
 			if (authenticationManager != null) return authenticationManager;
-			return authenticationManager = new AuthenticationManager(getPersistenceService(), getSessionManager(), getMailFactory());
+			return authenticationManager = new AuthenticationManager(getPersistenceService(), getSessionManager(), getMailFactory(), getServerAnalytics());
 		}
 	}
 
@@ -132,7 +143,7 @@ public class ServerServiceProvider {
 		if (clientManagerService != null) return clientManagerService;
 		synchronized (this) {
 			if (clientManagerService != null) return clientManagerService;
-			return clientManagerService = new ClientManager(getAuthenticationManager());
+			return clientManagerService = new ClientManager(getAuthenticationManager(), getServerAnalytics());
 		}
 	}
 

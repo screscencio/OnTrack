@@ -2,8 +2,11 @@ package br.com.oncast.ontrack.client.ui.places.loading;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
+import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
+import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
@@ -28,6 +31,7 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		validateConnection();
+		final TimeTrackingEvent trackingEvent = ClientServices.get().metrics().startTimeTracking(MetricsCategories.PLACE_LOAD, MetricsTokenizer.getClassSimpleName(this));
 
 		final ProjectMessageView view = new ProjectMessagePanel();
 		panel.setWidget(view);
@@ -38,6 +42,7 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 			public void connected() {
 				validateConnection();
 				SERVICE_PROVIDER.serverPush().removeConnectionListener(this);
+				trackingEvent.end();
 			}
 
 			@Override

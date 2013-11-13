@@ -37,6 +37,12 @@ public class ImpedimentReportTable extends Composite {
 
 	private final ReportMessages messages;
 
+	private Column<ImpedimentItem, String> startDateColumn;
+
+	private Column<ImpedimentItem, String> endDateColumn;
+
+	private Column<ImpedimentItem, String> leadTimeColumn;
+
 	public ImpedimentReportTable(final Release release, final ProjectContext context, final ReportMessages messages) {
 		this.messages = messages;
 		cellTable = new CellTable<ImpedimentItem>(ImpedimentDatabase.ImpedimentItem.KEY_PROVIDER);
@@ -51,6 +57,18 @@ public class ImpedimentReportTable extends Composite {
 		impedimentDatabase.addDataDisplay(cellTable);
 
 		initWidget(uiBinder.createAndBindUi(this));
+	}
+
+	public void setTimingColumnsVisible(final boolean visible) {
+		if (visible) {
+			cellTable.removeColumn(startDateColumn);
+			cellTable.removeColumn(endDateColumn);
+			cellTable.removeColumn(leadTimeColumn);
+		} else {
+			cellTable.addColumn(startDateColumn, new TextHeader(messages.startDate()));
+			cellTable.addColumn(endDateColumn, new TextHeader(messages.endDate()));
+			cellTable.addColumn(leadTimeColumn, new TextHeader(messages.leadTime()));
+		}
 	}
 
 	private void initTableColumns(final SelectionModel<ImpedimentItem> selectionModel, final ListHandler<ImpedimentItem> sortHandler) {
@@ -86,6 +104,7 @@ public class ImpedimentReportTable extends Composite {
 			}
 		});
 		cellTable.addColumn(descriptionColumn, new TextHeader(messages.impedimentDescription()));
+		cellTable.setColumnWidth(descriptionColumn, 100, Unit.PCT);
 
 		final Column<ImpedimentItem, String> relatedToColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
@@ -104,7 +123,7 @@ public class ImpedimentReportTable extends Composite {
 		cellTable.setColumnWidth(relatedToColumn, 72, Unit.PX);
 		cellTable.addColumn(relatedToColumn, new TextHeader(messages.related()));
 
-		final Column<ImpedimentItem, String> startDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
+		startDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ImpedimentItem object) {
 				final Date date = object.getStartDate();
@@ -122,7 +141,7 @@ public class ImpedimentReportTable extends Composite {
 		startDateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		cellTable.setColumnWidth(startDateColumn, 72, Unit.PX);
 
-		final Column<ImpedimentItem, String> endDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
+		endDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ImpedimentItem object) {
 				final Date date = object.getEndDate();
@@ -141,7 +160,7 @@ public class ImpedimentReportTable extends Composite {
 		endDateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		cellTable.setColumnWidth(endDateColumn, 72, Unit.PX);
 
-		final Column<ImpedimentItem, String> leadTimeColumn = new Column<ImpedimentItem, String>(new TextCell()) {
+		leadTimeColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ImpedimentItem object) {
 				final Long time = object.getCycletime();
@@ -163,4 +182,5 @@ public class ImpedimentReportTable extends Composite {
 	public boolean isEmpty() {
 		return impedimentDatabase.isEmpty();
 	}
+
 }

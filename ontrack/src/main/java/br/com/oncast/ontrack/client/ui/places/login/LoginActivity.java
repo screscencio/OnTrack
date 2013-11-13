@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.places.login;
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationCallback;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -46,9 +47,11 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+		final TimeTrackingEvent trackingEvent = ClientServices.get().metrics().startPlaceLoad(LoginPlace.class);
 		panel.setWidget(view.asWidget());
 		SERVICE_PROVIDER.alerting().setAlertingParentWidget(view.getAlertingContainer());
 		view.setUsername(SERVICE_PROVIDER.storage().loadLastUserEmail(""));
+		trackingEvent.end();
 	}
 
 	@Override

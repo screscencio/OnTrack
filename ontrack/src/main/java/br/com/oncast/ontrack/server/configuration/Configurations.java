@@ -61,4 +61,8 @@ public class Configurations {
 	public String integrationPassword() {
 		return properties.getProperty("integration.password");
 	}
+
+	public String getGoogleAnalyticsTrackingId() {
+		return properties.getProperty("google_analytics.tracking_id");
+	}
 }

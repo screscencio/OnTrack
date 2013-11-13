@@ -19,9 +19,11 @@ import java.util.List;
 import com.google.common.base.Joiner;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
@@ -111,6 +113,11 @@ public class ReportPanel extends Composite {
 
 		burnUpPanel.add(chart);
 		chart.updateData();
+	}
+
+	@UiHandler("showTimingColunsCheck")
+	void onShowTimingColumnsCheckValueChange(final ValueChangeEvent<Boolean> e) {
+		impedimentTable.setTimingColumnsVisible(e.getValue());
 	}
 
 	private List<Scope> getEpics(final List<Scope> scopes) {

@@ -1,13 +1,5 @@
 package br.com.oncast.ontrack.client.services.applicationState;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
@@ -16,7 +8,16 @@ import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentMatcher;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.gwt.test.GwtModule;
@@ -50,6 +51,7 @@ public class ClientApplicationStateServiceTest extends GwtTest {
 		MockitoAnnotations.initMocks(this);
 		Mockito.when(contextProviderService.getCurrent()).thenReturn(context);
 		Mockito.when(context.getProjectScope()).thenReturn(ScopeTestUtils.createScope());
+		Mockito.when(context.getProjectRelease()).thenReturn(ReleaseTestUtils.createRelease());
 
 		service = new ClientApplicationStateServiceImpl(eventBus, contextProviderService, clientStorageService, alertingService, messages);
 	}

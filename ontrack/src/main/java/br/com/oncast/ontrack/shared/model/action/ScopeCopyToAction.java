@@ -41,10 +41,10 @@ public class ScopeCopyToAction implements ScopeInsertAction, HasDestination {
 	@Element
 	private UUID newScopeId;
 
-	@ElementList
+	@ElementList(required = false)
 	private List<ModelAction> subActionList;
 
-	public ScopeCopyToAction() {}
+	protected ScopeCopyToAction() {}
 
 	public ScopeCopyToAction(final UUID sourceScopeId) {
 		this.sourceScopeId = sourceScopeId;

@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.multicast;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationListener;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -30,7 +31,10 @@ public class ClientManager {
 
 	private final Set<UserStatusChangeListener> listeners;
 
-	public ClientManager(final AuthenticationManager authenticationManager) {
+	private final ServerAnalytics analytics;
+
+	public ClientManager(final AuthenticationManager authenticationManager, final ServerAnalytics analytics) {
+		this.analytics = analytics;
 		listeners = new HashSet<UserStatusChangeListener>();
 		userSessionMapper = new UserSessionMapper();
 		authenticationManager.register(userSessionMapper);
@@ -57,6 +61,7 @@ public class ClientManager {
 		clientsByProject.put(UNBOUND_PROJECT_INDEX, connection);
 		clientsBySession.put(connection.getSessionId(), connection);
 
+		sendActiveConnectionsCountStatistics(true);
 		verifyAndNotifyUserOnline(connection);
 
 		LOGGER.debug("Client " + connection + " was registered.");
@@ -66,9 +71,14 @@ public class ClientManager {
 		removeFromPreviousProject(connection);
 		removeAllValuesInPlace(clientsBySession, connection);
 
+		sendActiveConnectionsCountStatistics(false);
 		verifyAndNotifyUserOffline(connection);
 
 		LOGGER.debug("Client " + connection + " unregistered.");
+	}
+
+	private void sendActiveConnectionsCountStatistics(final boolean connected) {
+		analytics.onActiveConnectionsCountChanged(getAllClients().size(), connected);
 	}
 
 	public Set<ServerPushConnection> getClientsAtProject(final UUID projectId) {
@@ -223,6 +233,7 @@ public class ClientManager {
 	}
 
 	private void notifyUserOnline(final UUID userId) {
+		sendOnlineUsersCountStatistics(true);
 		for (final UserStatusChangeListener l : listeners) {
 			l.onUserOnline(userId);
 		}
@@ -236,9 +247,14 @@ public class ClientManager {
 	}
 
 	private void notifyUserOffline(final UUID userId) {
+		sendOnlineUsersCountStatistics(false);
 		for (final UserStatusChangeListener l : listeners) {
 			l.onUserOffline(userId);
 		}
+	}
+
+	private void sendOnlineUsersCountStatistics(final boolean entered) {
+		analytics.onOnlineUsersCountChanged(userSessionMapper.getOnlineUsers().size(), entered);
 	}
 
 	public UUID getCurrentProject(final ServerPushConnection clientId) {

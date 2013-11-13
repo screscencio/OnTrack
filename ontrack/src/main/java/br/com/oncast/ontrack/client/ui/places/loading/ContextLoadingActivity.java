@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.loading;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
@@ -27,8 +28,8 @@ public class ContextLoadingActivity extends AbstractActivity {
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-		ClientServices.get().metrics().startTimeTracking(MetricsCategories.PLACE_LOAD, MetricsTokenizer.getClassSimpleName(this));
 		validateGatheredData();
+		final TimeTrackingEvent timeTracking = ClientServices.get().metrics().startTimeTracking(MetricsCategories.PLACE_LOAD, MetricsTokenizer.getClassSimpleName(this));
 
 		final ProjectMessageView view = new ProjectMessagePanel();
 		panel.setWidget(view);
@@ -39,6 +40,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 			@Override
 			public void onProjectContextLoaded() {
 				validateGatheredData();
+				timeTracking.end();
 			}
 
 			@Override

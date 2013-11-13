@@ -3,15 +3,13 @@ package br.com.oncast.ontrack.client.services.metrics;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.places.OpenInNewWindowPlace;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerStatistics;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
@@ -28,17 +26,22 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import static br.com.oncast.ontrack.shared.metrics.MetricsCategories.PLACE_LOAD;
 
-public class ClientMetricsServiceImpl implements ClientMetricsService, ActionExecutionListener {
+public class ClientMetricsServiceImpl implements ClientMetricsService {
 
-	private static final int ACTIONS_DIMENSION = 1;
+	private static final int DIMENSION_USER = 1;
+
+	private static final int DIMENSION_PROJECT = 2;
+
+	private static final String ANONYMOUS_USER = "Anonymous";
+
+	private static final String NO_PROJECT = "No Project";
 
 	private final DispatchService dispatchService;
 
 	private OnTrackStatisticsFactory factory;
 
-	public ClientMetricsServiceImpl(final DispatchService requestDispatchService, final ActionExecutionService actionExecutionService) {
+	public ClientMetricsServiceImpl(final DispatchService requestDispatchService) {
 		this.dispatchService = requestDispatchService;
-		actionExecutionService.addActionExecutionListener(this);
 	}
 
 	@Override
@@ -92,7 +95,7 @@ public class ClientMetricsServiceImpl implements ClientMetricsService, ActionExe
 
 	@Override
 	public void onNewWindowPlaceRequest(final OpenInNewWindowPlace place) {
-		if (!(place instanceof Place)) throw new IllegalArgumentException("obj should be subclass of Place");
+		if (!(place instanceof Place)) throw new IllegalArgumentException("the palce argument should be subclass of Place");
 		onPlaceRequest((Place) place);
 		GoogleAnalyticsNativeImpl.trackPageview();
 	}
@@ -104,8 +107,13 @@ public class ClientMetricsServiceImpl implements ClientMetricsService, ActionExe
 
 	@Override
 	public TimeTrackingEvent startPlaceLoad(final Place place) {
+		return startPlaceLoad(place.getClass());
+	}
+
+	@Override
+	public TimeTrackingEvent startPlaceLoad(final Class<? extends Place> placeType) {
 		GoogleAnalyticsNativeImpl.trackPageview();
-		return new TimeTrackingEvent(this, PLACE_LOAD.getCategory(), MetricsTokenizer.getClassSimpleName(place));
+		return new TimeTrackingEvent(this, PLACE_LOAD.getCategory(), className(placeType));
 	}
 
 	void onTimeTrackingEnd(final TimeTrackingEvent event) {
@@ -118,8 +126,62 @@ public class ClientMetricsServiceImpl implements ClientMetricsService, ActionExe
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
-		if (isUserAction) GoogleAnalyticsNativeImpl.sendCustomDimension(ACTIONS_DIMENSION, MetricsTokenizer.getClassSimpleName(action));
+	public void onActionExecution(final ModelAction action, final boolean isClientOnline) {
+		if (isClientOnline) GoogleAnalyticsNativeImpl.sendEvent("action", "client_side_execution", MetricsTokenizer.getClassSimpleName(action));
+		else GoogleAnalyticsNativeImpl.sendEvent("action", "offline_execution", MetricsTokenizer.getClassSimpleName(action));
+	}
+
+	@Override
+	public void onUserLogin(final User user) {
+		GoogleAnalyticsNativeImpl.setCustomDimension(DIMENSION_USER, user.getId().toString());
+	}
+
+	@Override
+	public void onUserLogout() {
+		GoogleAnalyticsNativeImpl.setCustomDimension(DIMENSION_USER, ANONYMOUS_USER);
+	}
+
+	@Override
+	public void onProjectChange(final UUID projectId) {
+		GoogleAnalyticsNativeImpl.setCustomDimension(DIMENSION_PROJECT, projectId == null ? NO_PROJECT : projectId.toString());
+	}
+
+	@Override
+	public void onClientClose(final int nOfPendingActions) {
+		GoogleAnalyticsNativeImpl.sendEvent("application", "close", nOfPendingActions == 0 ? "ok" : "has_pending_actions", nOfPendingActions);
+	}
+
+	@Override
+	public void onPendingActionsSavedLocally(final int savedActionsCount) {
+		GoogleAnalyticsNativeImpl.sendEvent("pending_actions", "save", null, savedActionsCount);
+	}
+
+	@Override
+	public void onLocallySavedPendingActionsLoaded(final int savedActionsCount) {
+		GoogleAnalyticsNativeImpl.sendEvent("pending_actions", "load", null, savedActionsCount);
+	}
+
+	@Override
+	public void onLocallySavedPendingActionsSync(final boolean success, final int pendingActionsCount) {
+		GoogleAnalyticsNativeImpl.sendEvent("pending_actions", "sync", success ? "success" : "failed", pendingActionsCount);
+	}
+
+	@Override
+	public void onConnectionLost() {
+		GoogleAnalyticsNativeImpl.sendEvent("application", "connection_lost");
+	}
+
+	@Override
+	public void onShortcutUsed(final ShortcutMapping<?> mapping) {
+		GoogleAnalyticsNativeImpl.sendEvent("application", "shortcut_used", shortcutName(mapping));
+	}
+
+	private String shortcutName(final ShortcutMapping<?> mapping) {
+		return className(mapping) + "." + mapping.name();
+	}
+
+	private String className(final Object placeType) {
+		return MetricsTokenizer.getClassSimpleName(placeType);
 	}
 
 }

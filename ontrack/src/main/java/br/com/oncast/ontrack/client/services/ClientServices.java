@@ -140,7 +140,7 @@ public class ClientServices {
 
 	public NetworkMonitoringService networkMonitor() {
 		if (networkMonitoringService != null) return networkMonitoringService;
-		return networkMonitoringService = new NetworkMonitoringService(request(), serverPush(), alerting(), errorMessages());
+		return networkMonitoringService = new NetworkMonitoringService(request(), serverPush(), alerting(), errorMessages(), metrics());
 	}
 
 	private AuthorizationService authorization() {
@@ -197,7 +197,7 @@ public class ClientServices {
 	private ActionSyncService actionSync() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(request(), serverPush(), actionExecution(), projectRepresentationProvider(), alerting(), errorMessages(), networkMonitor(), contextProvider(),
-				eventBus(), storage());
+				eventBus(), storage(), metrics());
 	}
 
 	public ServerPushClientService serverPush() {
@@ -276,7 +276,7 @@ public class ClientServices {
 	}
 
 	public ClientMetricsService metrics() {
-		return clientMetricsService == null ? clientMetricsService = new ClientMetricsServiceImpl(request(), actionExecution()) : clientMetricsService;
+		return clientMetricsService == null ? clientMetricsService = new ClientMetricsServiceImpl(request()) : clientMetricsService;
 	}
 
 	public TimesheetService getTimesheetService() {

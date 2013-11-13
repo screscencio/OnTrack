@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.keyeventhandler;
 
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
@@ -46,6 +47,7 @@ public class ShortcutService {
 			public void handle(final Event e) {
 				for (final ShortcutMapping<T> mapping : mappings) {
 					if (mapping.getShortcuts().accepts(e)) {
+						ClientServices.get().metrics().onShortcutUsed(mapping);
 						mapping.getEventPostExecutionProcessor().process(e);
 						mapping.execute(shortcutParameter);
 					}

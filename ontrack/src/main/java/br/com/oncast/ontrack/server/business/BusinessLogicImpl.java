@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.server.services.authentication.PasswordHash;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -79,10 +80,12 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final IntegrationService integrationService;
 	private final SyncronizationService syncronizationService;
 	private final ActionPostProcessmentsInitializer postProcessmentsControler;
+	private final ServerAnalytics analytics;
 
 	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService multicastService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager, final MailFactory mailFactory,
-			final SyncronizationService syncronizationService, final ActionPostProcessmentsInitializer postProcessmentsControler, final IntegrationService integrationService) {
+			final SyncronizationService syncronizationService, final ActionPostProcessmentsInitializer postProcessmentsControler, final IntegrationService integrationService,
+			final ServerAnalytics serverAnalytics) {
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
 		this.clientManager = clientManager;
@@ -93,6 +96,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		this.syncronizationService = syncronizationService;
 		this.postProcessmentsControler = postProcessmentsControler;
 		this.integrationService = integrationService;
+		this.analytics = serverAnalytics;
 	}
 
 	@Override
@@ -145,8 +149,14 @@ class BusinessLogicImpl implements BusinessLogic {
 			throws UnableToHandleActionException {
 		try {
 			for (final ModelAction action : actionList) {
-				ActionExecuter.verifyPermissions(action, context, actionContext);
-				ActionExecuter.executeAction(context, actionContext, action);
+				try {
+					ActionExecuter.verifyPermissions(action, context, actionContext);
+					ActionExecuter.executeAction(context, actionContext, action);
+					analytics.onActionExecuted(actionContext.getUserId(), projectId, action);
+				} catch (final UnableToCompleteActionException e) {
+					analytics.onActionConflicted(actionContext.getUserId(), projectId, action);
+					throw e;
+				}
 			}
 		} catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "Unable to process action. The incoming action is invalid.";
@@ -183,6 +193,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		if (userId.equals(DefaultAuthenticationCredentials.USER_ID)) return;
 
 		authorizationManager.removeAuthorization(projectId, userId);
+		analytics.onProjectMemberRemoved(projectId, userId, authenticatedUser);
 		LOGGER.debug("Removed authorization for user '" + userId + "' from project '" + projectId.toString() + "'");
 	}
 
@@ -190,13 +201,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	public void authorize(final String userEmail, final UUID projectId, final Profile profile, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
 			UnableToHandleActionException, AuthorizationException {
 		final Profile projectProfile = profile.compareTo(Profile.PROJECT_MANAGER) > 0 ? Profile.PROJECT_MANAGER : profile;
-		final UUID userId = authorizationManager.authorize(projectId, userEmail.toLowerCase().trim(), projectProfile, wasRequestedByTheUser);
+		final UUID invitedUserId = authorizationManager.authorize(projectId, userEmail.toLowerCase().trim(), projectProfile, wasRequestedByTheUser);
 		try {
-			handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamInviteAction(userId, projectProfile)));
+			handleIncomingActionSyncRequest(createModelActionSyncRequest(projectId, new TeamInviteAction(invitedUserId, projectProfile)));
+			analytics.onProjectMemberInvited(projectId, invitedUserId, authenticationManager.getAuthenticatedUser());
 			LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toString() + "'");
 		} catch (final UnableToHandleActionException e) {
 			try {
-				authorizationManager.removeAuthorization(projectId, userId);
+				authorizationManager.removeAuthorization(projectId, invitedUserId);
 				LOGGER.error("Failed to authorize user '" + userEmail + "' to project '" + projectId.toString() + "'", e);
 				throw e;
 			} catch (final UnableToRemoveAuthorizationException e1) {
@@ -237,6 +249,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			authorize(authenticatedUser.getEmail(), persistedProjectRepresentation.getId(), authenticatedUser.getGlobalProfile(), false);
 			if (!authenticatedUser.getId().equals(DefaultAuthenticationCredentials.USER_ID)) authorizationManager.authorizeAdmin(persistedProjectRepresentation);
 
+			analytics.onProjectCreated(authenticatedUser, persistedProjectRepresentation.getId());
 			return persistedProjectRepresentation;
 		} catch (final Exception e) {
 			final String errorMessage = "Unable to create project '" + projectName + "'.";
@@ -252,6 +265,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(projectId);
 			project.setRemoved(true);
 			persistenceService.persistOrUpdateProjectRepresentation(project);
+			analytics.onProjectRemoved(authenticationManager.getAuthenticatedUser(), projectId);
 			return project;
 		} catch (final Exception e) {
 			final String errorMessage = "Unable to remove project with id '" + projectId + "'.";
@@ -361,12 +375,16 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	@Override
 	public void sendProjectCreationQuotaRequestEmail() {
-		mailFactory.createUserQuotaRequestMail().currentUser(authenticationManager.getAuthenticatedUser().getEmail()).send();
+		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
+		analytics.onProjectCreationRequested(authenticatedUser);
+		mailFactory.createUserQuotaRequestMail().currentUser(authenticatedUser.getEmail()).send();
 	}
 
 	@Override
 	public void sendFeedbackEmail(final String feedbackMessage) {
-		mailFactory.createSendFeedbackMail().currentUser(authenticationManager.getAuthenticatedUser().getEmail()).feedbackMessage(feedbackMessage).send();
+		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
+		analytics.onFeedbackReceived(authenticatedUser, feedbackMessage);
+		mailFactory.createSendFeedbackMail().currentUser(authenticatedUser.getEmail()).feedbackMessage(feedbackMessage).send();
 
 	}
 
@@ -375,6 +393,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new FileUploadAction(fileRepresentation));
 		handleIncomingActionSyncRequest(new ModelActionSyncRequest(fileRepresentation.getProjectId(), actionList));
+		analytics.onFileUploaded(authenticationManager.getAuthenticatedUser(), fileRepresentation);
 	}
 
 	@Override
@@ -382,7 +401,9 @@ class BusinessLogicImpl implements BusinessLogic {
 	public void loadProjectForMigration(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
 		postProcessmentsControler.getNotificationCreationPostProcessor().deactivate();
 		postProcessmentsControler.getScopeBindIdPostProcessor().deactivate();
+		analytics.deactivate();
 		doLoadProject(projectId);
+		analytics.activate();
 		postProcessmentsControler.getNotificationCreationPostProcessor().activate();
 		postProcessmentsControler.getScopeBindIdPostProcessor().activate();
 	}
@@ -443,6 +464,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		try {
 			persistenceService.persistOrUpdateUser(user);
 			multicastService.multicastToUser(new UserInformationUpdateEvent(user), user);
+			analytics.onGlobalProfileUpdated(user);
 		} catch (final PersistenceException e) {
 			final String message = "Could not update the global profile of the existing new user (" + user.getEmail() + ")";
 			LOGGER.error(message, e);
