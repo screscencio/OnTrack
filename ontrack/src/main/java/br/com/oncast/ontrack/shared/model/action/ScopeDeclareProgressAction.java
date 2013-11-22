@@ -7,13 +7,6 @@
 
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareProgressActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -26,6 +19,14 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(ScopeDeclareProgressActionEntity.class)
 public class ScopeDeclareProgressAction implements ScopeAction {
@@ -44,18 +45,37 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeDeclareProgressAction() {}
+
 	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription) {
 		this(referenceId, newProgressDescription, new ArrayList<ModelAction>());
 	}
 
 	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription, final List<ModelAction> rollbackActions) {
+		this.uniqueId = new UUID();
 		this.referenceId = referenceId;
 		subActionList = rollbackActions;
 		this.newProgressDescription = newProgressDescription == null ? "" : newProgressDescription;
 	}
-
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeDeclareProgressAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
@@ -68,8 +88,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollbackActions);
 	}
 
-	private List<ModelAction> processSubActions(final ProjectContext context, final ActionContext actionContext, final Scope scope)
-			throws UnableToCompleteActionException {
+	private List<ModelAction> processSubActions(final ProjectContext context, final ActionContext actionContext, final Scope scope) throws UnableToCompleteActionException {
 		if (subActionList.isEmpty()) {
 			checkUserAssociation(context, actionContext, scope);
 			assureKanbanColumnExistence(context, scope);

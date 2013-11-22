@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeUpdateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -16,6 +9,14 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(ScopeUpdateActionEntity.class)
 public class ScopeUpdateAction implements ScopeAction {
@@ -34,7 +35,26 @@ public class ScopeUpdateAction implements ScopeAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	public ScopeUpdateAction(final UUID referenceId, final String newPattern) {
+		this.uniqueId = new UUID();
 		this.referenceId = referenceId;
 
 		final ScopeRepresentationParser parser = new ScopeRepresentationParser(newPattern);
@@ -48,6 +68,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	}
 
 	public ScopeUpdateAction(final UUID referenceId, final String newDescription, final List<ModelAction> subActionList) {
+		this.uniqueId = new UUID();
 		this.referenceId = referenceId;
 		this.newDescription = newDescription;
 		this.subActionList = subActionList;

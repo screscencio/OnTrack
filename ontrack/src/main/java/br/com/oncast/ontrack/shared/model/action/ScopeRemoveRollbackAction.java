@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -14,6 +8,13 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(ScopeRemoveRollbackActionEntity.class)
 public class ScopeRemoveRollbackAction implements ScopeInsertAction {
@@ -44,8 +45,30 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
-	public ScopeRemoveRollbackAction(final UUID parentScopeId, final UUID selectedScopeId, final String description, final int index,
-			final List<ModelAction> subActionList, final List<ScopeRemoveRollbackAction> childActionList) {
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeRemoveRollbackAction() {}
+
+	public ScopeRemoveRollbackAction(final UUID parentScopeId, final UUID selectedScopeId, final String description, final int index, final List<ModelAction> subActionList,
+			final List<ScopeRemoveRollbackAction> childActionList) {
+		this.uniqueId = new UUID();
 		this.parentScopeId = parentScopeId;
 		this.referenceId = selectedScopeId;
 		this.index = index;
@@ -53,9 +76,6 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 		this.subActionList = subActionList;
 		this.childActionList = childActionList;
 	}
-
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeRemoveRollbackAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {

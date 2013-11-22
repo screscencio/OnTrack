@@ -108,4 +108,6 @@ public interface PersistenceService {
 
 	long retrieveAllAuthoredTeamInviteActionsCount(UUID userId) throws PersistenceException;
 
+	UserAction retrieveAction(UUID projectId, UUID id) throws PersistenceException;
+
 }

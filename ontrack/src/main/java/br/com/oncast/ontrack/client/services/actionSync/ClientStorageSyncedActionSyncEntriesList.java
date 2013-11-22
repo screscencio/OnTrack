@@ -16,43 +16,44 @@ public class ClientStorageSyncedActionSyncEntriesList implements Iterable<Action
 
 	private final ClientStorageService storage;
 
-	private final List<ActionSyncEntry> entries;
+	private List<ActionSyncEntry> entries;
 
 	private final EventBus eventBus;
 
 	public ClientStorageSyncedActionSyncEntriesList(final ClientStorageService storage, final EventBus eventBus) {
 		this.storage = storage;
 		this.eventBus = eventBus;
-		this.entries = new ArrayList<ActionSyncEntry>(storage.loadActionSyncEntries());
+		this.entries = new ArrayList<ActionSyncEntry>();
+		loadEntries();
 	}
 
 	public void add(final ModelAction action, final ActionContext actionContext, final ModelAction reverseAction) {
-		entries.add(new ActionSyncEntry(action, reverseAction, actionContext));
-		save();
+		loadEntries().add(new ActionSyncEntry(action, reverseAction, actionContext));
+		saveEntries();
 	}
 
 	public ActionSyncEntry remove(final ModelAction action) {
-		for (final ActionSyncEntry entry : entries()) {
+		for (final ActionSyncEntry entry : backup()) {
 			if (!entry.getAction().equals(action)) continue;
 
-			entries.remove(entry);
-			save();
+			if (loadEntries().remove(entry)) saveEntries();
 			return entry;
 		}
 		return null;
 	}
 
 	public void clear() {
-		entries.clear();
-		save();
+		final ArrayList<ActionSyncEntry> backup = backup();
+		loadEntries().removeAll(backup);
+		saveEntries();
 	}
 
 	public int size() {
-		return entries.size();
+		return loadEntries().size();
 	}
 
 	public boolean isEmpty() {
-		return entries.isEmpty();
+		return loadEntries().isEmpty();
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class ClientStorageSyncedActionSyncEntriesList implements Iterable<Action
 	}
 
 	public List<ActionSyncEntry> entries() {
-		return new ArrayList<ActionSyncEntry>(entries);
+		return new ArrayList<ActionSyncEntry>(loadEntries());
 	}
 
 	/**
@@ -77,7 +78,18 @@ public class ClientStorageSyncedActionSyncEntriesList implements Iterable<Action
 		return copy;
 	}
 
-	private void save() {
+	private ArrayList<ActionSyncEntry> backup() {
+		return new ArrayList<ActionSyncEntry>(entries);
+	}
+
+	private List<ActionSyncEntry> loadEntries() {
+		final ArrayList<ActionSyncEntry> backup = backup();
+		entries = new ArrayList<ActionSyncEntry>(storage.loadActionSyncEntries());
+		if (backup.size() != entries.size()) eventBus.fireEvent(new PendingActionsCountChangeEvent(entries.size()));
+		return entries;
+	}
+
+	private void saveEntries() {
 		eventBus.fireEvent(new PendingActionsCountChangeEvent(entries.size()));
 		storage.storeActionSyncEntries(entries);
 	}

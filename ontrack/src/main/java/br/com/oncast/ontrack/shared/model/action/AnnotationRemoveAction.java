@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -14,6 +8,13 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(AnnotationRemoveActionEntity.class)
 public class AnnotationRemoveAction implements AnnotationAction {
@@ -29,6 +30,24 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	@Attribute
 	private boolean userAction;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected AnnotationRemoveAction() {}
 
 	public AnnotationRemoveAction(final UUID subjectId, final UUID annotationId) {
@@ -36,6 +55,7 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	}
 
 	protected AnnotationRemoveAction(final UUID subjectId, final UUID annotationId, final boolean isUserAction) {
+		this.uniqueId = new UUID();
 		this.subjectId = subjectId;
 		this.annotationId = annotationId;
 		this.userAction = isUserAction;
@@ -44,8 +64,7 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context, this);
-		if (userAction && !annotation.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(
-				this, ActionExecutionErrorMessageCode.ANNOTATION_REMOVE);
+		if (userAction && !annotation.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.ANNOTATION_REMOVE);
 
 		final List<ModelAction> rollbackSubActions = removeSubAnnotations(context, actionContext);
 

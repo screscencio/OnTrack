@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAddItemAction;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity(name = "ChecklistAddItem")
 @ConvertTo(ChecklistAddItemAction.class)
@@ -31,6 +31,18 @@ public class ChecklistAddItemActionEntity extends ModelActionEntity {
 
 	@Column(name = ActionTableColumns.BOOLEAN_1)
 	private boolean checked;
+
+	@Column(name = ActionTableColumns.UNIQUE_ID)
+	@ConvertUsing(StringToUuidConverter.class)
+	private String uniqueId;
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(final String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
 
 	public String getChecklistId() {
 		return checklistId;
@@ -68,7 +80,7 @@ public class ChecklistAddItemActionEntity extends ModelActionEntity {
 		return checked;
 	}
 
-	public void setChecked(boolean isChecked) {
+	public void setChecked(final boolean isChecked) {
 		this.checked = isChecked;
 	}
 

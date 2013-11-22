@@ -18,4 +18,9 @@ public class NullAction implements ModelAction {
 		return new UUID();
 	}
 
+	@Override
+	public UUID getId() {
+		return new UUID();
+	}
+
 }

@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -10,6 +7,9 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity(name = "ReleaseRename")
 @ConvertTo(ReleaseRenameAction.class)
@@ -23,6 +23,18 @@ public class ReleaseRenameActionEntity extends ModelActionEntity {
 	@ConversionAlias("newReleaseDescription")
 	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
 	private String newReleaseDescription;
+
+	@Column(name = ActionTableColumns.UNIQUE_ID)
+	@ConvertUsing(StringToUuidConverter.class)
+	private String uniqueId;
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(final String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
 
 	public String getReferenceId() {
 		return referenceId;

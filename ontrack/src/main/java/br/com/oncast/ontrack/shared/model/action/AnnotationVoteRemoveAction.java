@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationVoteRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -11,6 +9,9 @@ import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(AnnotationVoteRemoveActionEntity.class)
 public class AnnotationVoteRemoveAction implements AnnotationAction {
@@ -23,9 +24,28 @@ public class AnnotationVoteRemoveAction implements AnnotationAction {
 	@Element
 	private UUID annotatedObjectId;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected AnnotationVoteRemoveAction() {}
 
 	public AnnotationVoteRemoveAction(final UUID annotationId, final UUID annotatedObjectId) {
+		this.uniqueId = new UUID();
 		this.annotationId = annotationId;
 		this.annotatedObjectId = annotatedObjectId;
 	}

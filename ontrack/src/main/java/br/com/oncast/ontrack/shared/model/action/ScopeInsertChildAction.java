@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertChildActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -14,6 +9,12 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeInsertChildActionEntity.class)
 public class ScopeInsertChildAction implements ScopeInsertAction {
@@ -32,6 +33,24 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	@Element
 	private ScopeUpdateAction scopeUpdateAction;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeInsertChildAction() {}
 
@@ -40,9 +59,10 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	}
 
 	public ScopeInsertChildAction(final UUID parentScopeId, final UUID newScopeId, final String pattern) {
+		this.uniqueId = new UUID();
 		this.referenceId = parentScopeId;
 		this.newScopeId = newScopeId;
-		scopeUpdateAction = new ScopeUpdateAction(newScopeId, pattern);
+		this.scopeUpdateAction = new ScopeUpdateAction(newScopeId, pattern);
 	}
 
 	@Override

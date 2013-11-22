@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.impediments;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentRemoveAction;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity(name = "ImpedimentRemove")
 @ConvertTo(ImpedimentRemoveAction.class)
@@ -24,6 +24,18 @@ public class ImpedimentRemoveActionEntity extends ModelActionEntity {
 
 	@Column(name = ActionTableColumns.STRING_3)
 	private String previousType;
+
+	@Column(name = ActionTableColumns.UNIQUE_ID)
+	@ConvertUsing(StringToUuidConverter.class)
+	private String uniqueId;
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(final String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
 
 	public String getAnnotationId() {
 		return annotationId;
@@ -45,7 +57,7 @@ public class ImpedimentRemoveActionEntity extends ModelActionEntity {
 		return previousType;
 	}
 
-	public void setPreviousType(String previousType) {
+	public void setPreviousType(final String previousType) {
 		this.previousType = previousType;
 	}
 }

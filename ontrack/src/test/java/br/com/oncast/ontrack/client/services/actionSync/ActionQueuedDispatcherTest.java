@@ -3,13 +3,13 @@ package br.com.oncast.ontrack.client.services.actionSync;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 
-import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchListener;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchRequestServiceTestImplementation;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.ValueHolder;
-import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
+import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
+import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -26,6 +26,9 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,12 +40,6 @@ public class ActionQueuedDispatcherTest extends GwtTest {
 	private ActionDispatcher actionQueuedDispatcher;
 
 	@Mock
-	private ClientAlertingService alertingService;
-
-	@Mock
-	private ClientMessages messages;
-
-	@Mock
 	private EventBus eventBus;
 
 	@Mock
@@ -51,6 +48,7 @@ public class ActionQueuedDispatcherTest extends GwtTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
+		when(metrics.startTimeTracking(any(MetricsCategories.class), anyString())).thenReturn(mock(TimeTrackingEvent.class));
 		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
 		actionQueuedDispatcher = new ActionDispatcher(requestDispatchServiceMock, getProjectRepresentationProviderMock(), metrics, eventBus);

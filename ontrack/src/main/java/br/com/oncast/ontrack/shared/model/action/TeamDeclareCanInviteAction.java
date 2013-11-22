@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -24,9 +25,28 @@ public class TeamDeclareCanInviteAction implements TeamAction {
 	@Attribute
 	private boolean canInvite;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected TeamDeclareCanInviteAction() {}
 
 	public TeamDeclareCanInviteAction(final UUID userId, final boolean canInvite) {
+		this.uniqueId = new UUID();
 		this.userId = userId;
 		this.canInvite = canInvite;
 	}

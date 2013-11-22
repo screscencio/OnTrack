@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag.ScopeAddTagAssociationActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -13,6 +11,9 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeAddTagAssociationActionEntity.class)
 public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
@@ -28,18 +29,39 @@ public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
 	@Element
 	private UUID tagId;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected ScopeAddTagAssociationAction() {}
 
 	public ScopeAddTagAssociationAction(final UUID scopeId, final UUID tagId) {
-		this.scopeId = scopeId;
-		this.tagId = tagId;
-		this.metadataId = new UUID();
+		this(scopeId, tagId, new UUID());
 	}
 
 	protected ScopeAddTagAssociationAction(final TagAssociationMetadata metadata) {
-		this.scopeId = metadata.getSubject().getId();
-		this.tagId = metadata.getTag().getId();
-		this.metadataId = metadata.getId();
+		this(metadata.getSubject().getId(), metadata.getTag().getId(), metadata.getId());
+	}
+
+	private ScopeAddTagAssociationAction(final UUID scopeId, final UUID tagId, final UUID metadataId) {
+		this.uniqueId = new UUID();
+		this.scopeId = scopeId;
+		this.tagId = tagId;
+		this.metadataId = metadataId;
 	}
 
 	@Override

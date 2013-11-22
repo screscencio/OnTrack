@@ -39,6 +39,18 @@ public class ScopeCopyToActionEntity extends ModelActionEntity {
 	@JoinTable(name = "ScopeCopyToAction_subActionList")
 	private List<ModelActionEntity> subActionList;
 
+	@Column(name = ActionTableColumns.UNIQUE_ID)
+	@ConvertUsing(StringToUuidConverter.class)
+	private String uniqueId;
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(final String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
+
 	protected ScopeCopyToActionEntity() {}
 
 	public String getSourceScopeId() {
@@ -77,7 +89,7 @@ public class ScopeCopyToActionEntity extends ModelActionEntity {
 		return newScopeId;
 	}
 
-	public void setNewScopeId(String newScopeId) {
+	public void setNewScopeId(final String newScopeId) {
 		this.newScopeId = newScopeId;
 	}
 

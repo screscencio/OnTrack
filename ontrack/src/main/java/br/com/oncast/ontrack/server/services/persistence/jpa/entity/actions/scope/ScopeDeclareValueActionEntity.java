@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity(name = "ScopeDeclareValue")
 @ConvertTo(ScopeDeclareValueAction.class)
@@ -23,6 +23,18 @@ public class ScopeDeclareValueActionEntity extends ModelActionEntity {
 
 	@Column(name = ActionTableColumns.INT_1)
 	private float newDeclaredValue;
+
+	@Column(name = ActionTableColumns.UNIQUE_ID)
+	@ConvertUsing(StringToUuidConverter.class)
+	private String uniqueId;
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(final String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
 
 	public String getReferenceId() {
 		return referenceId;

@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,19 +30,37 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
-	public ScopeMoveLeftAction(final UUID selectedScopeId) {
-		this.referenceId = selectedScopeId;
-		this.subActionList = new ArrayList<ModelAction>();
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
 	}
 
-	// TODO Analyze the possibility of replacing the sub-action list for a single typed action.
-	public ScopeMoveLeftAction(final UUID selectedScopeId, final List<ModelAction> subActionList) {
-		this.referenceId = selectedScopeId;
-		this.subActionList = subActionList;
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeMoveLeftAction() {}
+
+	public ScopeMoveLeftAction(final UUID selectedScopeId) {
+		this(selectedScopeId, new ArrayList<ModelAction>());
+	}
+
+	// TODO Analyze the possibility of replacing the sub-action list for a single typed action.
+	public ScopeMoveLeftAction(final UUID selectedScopeId, final List<ModelAction> subActionList) {
+		this.uniqueId = new UUID();
+		this.referenceId = selectedScopeId;
+		this.subActionList = subActionList;
+	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {

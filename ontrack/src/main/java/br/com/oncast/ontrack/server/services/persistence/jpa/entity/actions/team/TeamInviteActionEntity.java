@@ -25,6 +25,18 @@ public class TeamInviteActionEntity extends ModelActionEntity {
 	@Enumerated(EnumType.STRING)
 	private Profile projectProfile;
 
+	@Column(name = ActionTableColumns.UNIQUE_ID)
+	@ConvertUsing(StringToUuidConverter.class)
+	private String uniqueId;
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(final String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
+
 	public TeamInviteActionEntity() {}
 
 	public String getUserId() {
@@ -39,7 +51,7 @@ public class TeamInviteActionEntity extends ModelActionEntity {
 		return projectProfile;
 	}
 
-	public void setProjectProfile(Profile projectProfile) {
+	public void setProjectProfile(final Profile projectProfile) {
 		this.projectProfile = projectProfile;
 	}
 

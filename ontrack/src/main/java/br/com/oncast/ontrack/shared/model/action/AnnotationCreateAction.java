@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +43,28 @@ public class AnnotationCreateAction implements AnnotationAction {
 	@Attribute(required = false)
 	private String annotationType;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected AnnotationCreateAction() {}
 
 	public AnnotationCreateAction(final UUID subjectId, final AnnotationType type, final String message, final UUID attachmentId) {
+		this.uniqueId = new UUID();
 		this.message = message;
 		this.attachmentId = attachmentId;
 		this.annotationId = new UUID();

@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.description;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.DescriptionCreateAction;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity(name = "DescriptionCreate")
 @ConvertTo(DescriptionCreateAction.class)
@@ -24,6 +24,18 @@ public class DescriptionCreateActionEntity extends ModelActionEntity {
 
 	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
 	private String description;
+
+	@Column(name = ActionTableColumns.UNIQUE_ID)
+	@ConvertUsing(StringToUuidConverter.class)
+	private String uniqueId;
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(final String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
 
 	protected DescriptionCreateActionEntity() {}
 

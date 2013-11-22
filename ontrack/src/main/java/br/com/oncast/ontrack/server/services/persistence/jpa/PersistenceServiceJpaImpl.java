@@ -71,7 +71,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			UserActionEntity lastPersistedAction = null;
 			for (final ModelAction modelAction : actionList) {
 				final ModelActionEntity entity = convertActionToEntity(modelAction);
-				final UserActionEntity container = new UserActionEntity(entity, userId.toString(), projectRepresentationEntity, timestamp);
+				final UserActionEntity container = new UserActionEntity(entity, modelAction.getId().toString(), userId.toString(), projectRepresentationEntity, timestamp);
 				em.persist(container);
 				lastPersistedAction = container;
 			}
@@ -103,6 +103,29 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			final List<UserActionEntity> actions = query.getResultList();
 
 			return (List<UserAction>) TYPE_CONVERTER.convert(actions);
+		} catch (final TypeConverterException e) {
+			throw new PersistenceException("It was not possible to convert actions.", e);
+		} catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project actions.", e);
+		} finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public UserAction retrieveAction(final UUID projectId, final UUID actionUniqueId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName()
+					+ " as action where action.projectRepresentation.id = :projectId and action.uniqueId = :actionUniqueId");
+
+			query.setParameter("projectId", projectId.toString());
+			query.setParameter("actionUniqueId", actionUniqueId.toString());
+			try {
+				return (UserAction) TYPE_CONVERTER.convert(query.getSingleResult());
+			} catch (final NoResultException e) {
+				return null;
+			}
 		} catch (final TypeConverterException e) {
 			throw new PersistenceException("It was not possible to convert actions.", e);
 		} catch (final Exception e) {
@@ -848,4 +871,5 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.close();
 		}
 	}
+
 }

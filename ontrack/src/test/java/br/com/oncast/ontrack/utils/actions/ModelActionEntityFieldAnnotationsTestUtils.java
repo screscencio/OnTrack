@@ -59,6 +59,22 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 
 		},
 
+		UNIQUE_ID(String.class) {
+
+			@Override
+			public void validade(final String actionName, final Field field) {
+				final Column column = getAnnotation(field, Column.class);
+
+				ensureColumnName(column, "The field uniqueId should have ActionTableColumns.UNIQUE_ID as name attribute of annotation @Column", ActionTableColumns.UNIQUE_ID);
+			}
+
+			@Override
+			protected boolean accepts(final Field field) {
+				return field.getName().equals("uniqueId");
+			}
+
+		},
+
 		STRING(String.class, Enum.class) {
 			@Override
 			public void validade(final String actionName, final Field field) {

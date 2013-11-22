@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +45,28 @@ public class ScopeCopyToAction implements ScopeInsertAction, HasDestination {
 	@ElementList(required = false)
 	private List<ModelAction> subActionList;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected ScopeCopyToAction() {}
 
 	public ScopeCopyToAction(final UUID sourceScopeId) {
+		this.uniqueId = new UUID();
 		this.sourceScopeId = sourceScopeId;
 		this.newScopeId = new UUID();
 	}

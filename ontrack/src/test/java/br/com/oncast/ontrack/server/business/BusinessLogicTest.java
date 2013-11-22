@@ -2,11 +2,13 @@ package br.com.oncast.ontrack.server.business;
 
 import br.com.oncast.ontrack.server.business.actionPostProcessments.ActionPostProcessmentsInitializer;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
+import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
@@ -89,6 +91,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -200,6 +203,50 @@ public class BusinessLogicTest {
 		actionList.add(new ScopeUpdateAction(new UUID("id"), "bllla"));
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void shouldDoNothingWhenHandlingAlreadyHandledActions() throws Exception {
+		business = BusinessLogicTestFactory.create(persistence);
+		final ScopeUpdateAction action = new ScopeUpdateAction(new UUID("id"), "bllla");
+		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
+		actionList.add(action);
+
+		final UserAction userAction = UserActionTestUtils.createUserAction(action);
+		when(persistence.retrieveAction(PROJECT_ID, action.getId())).thenReturn(userAction);
+		final long syncId = business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
+		verify(persistence, never()).persistActions(any(UUID.class), anyList(), any(UUID.class), any(Date.class));
+		assertEquals(userAction.getId(), syncId);
+	}
+
+	@Test
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void shouldKeepNonHandledActionsWhenHandledAndNotHandledActionsAreSentInTheSameBatchForHandling() throws Exception {
+		business = BusinessLogicTestFactory.create(persistence);
+		final TeamInviteAction action = new TeamInviteAction(new UUID(), Profile.GUEST);
+		final TeamInviteAction action2 = new TeamInviteAction(new UUID(), Profile.GUEST);
+		final TeamInviteAction action3 = new TeamInviteAction(new UUID(), Profile.GUEST);
+		final TeamInviteAction action4 = new TeamInviteAction(new UUID(), Profile.GUEST);
+		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
+		actionList.add(action);
+		actionList.add(action2);
+		actionList.add(action3);
+		actionList.add(action4);
+
+		when(persistence.retrieveAction(PROJECT_ID, action.getId())).thenReturn(UserActionTestUtils.createUserAction(action));
+		when(persistence.retrieveAction(PROJECT_ID, action2.getId())).thenReturn(UserActionTestUtils.createUserAction(action2));
+		final long lastPersistedSyncId = 123;
+		when(persistence.persistActions(eq(PROJECT_ID), anyList(), any(UUID.class), any(Date.class))).thenReturn(lastPersistedSyncId);
+		final long syncId = business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
+		final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
+		verify(persistence).persistActions(eq(PROJECT_ID), captor.capture(), any(UUID.class), any(Date.class));
+		final List<ModelAction> persistedActions = captor.getValue();
+		assertEquals(2, persistedActions.size());
+		assertEquals(action3, persistedActions.get(0));
+		assertEquals(action4, persistedActions.get(1));
+
+		assertEquals(lastPersistedSyncId, syncId);
 	}
 
 	@SuppressWarnings("unchecked")

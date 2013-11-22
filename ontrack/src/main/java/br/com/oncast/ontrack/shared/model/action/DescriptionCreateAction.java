@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.description.DescriptionCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -11,6 +9,9 @@ import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(DescriptionCreateActionEntity.class)
 public class DescriptionCreateAction implements DescriptionAction {
@@ -26,9 +27,28 @@ public class DescriptionCreateAction implements DescriptionAction {
 	@Element(required = false)
 	private UUID descriptionId;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected DescriptionCreateAction() {}
 
 	public DescriptionCreateAction(final UUID subjectId, final String description) {
+		this.uniqueId = new UUID();
 		this.subjectId = subjectId;
 		this.description = description;
 		this.descriptionId = new UUID();
@@ -42,8 +62,7 @@ public class DescriptionCreateAction implements DescriptionAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		if (description == null || description.isEmpty()) throw new UnableToCompleteActionException(
-				this, ActionExecutionErrorMessageCode.DESCRIPTION_WITH_EMPTY_MESSAGE);
+		if (description == null || description.isEmpty()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.DESCRIPTION_WITH_EMPTY_MESSAGE);
 
 		context.addDescription(getDescription(context, actionContext), subjectId);
 

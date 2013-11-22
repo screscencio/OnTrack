@@ -99,6 +99,33 @@ public abstract class ModelActionTest {
 	}
 
 	@Test
+	public void actionShouldHaveIdSetOnConstruction() throws Exception {
+		assertNotNull(getNewInstance().getId());
+	}
+
+	@Test
+	public void actionIdShouldBeDifferentForEachInstance() throws Exception {
+		final ArrayList<UUID> idList = new ArrayList<UUID>();
+		for (int i = 0; i < 15; i++) {
+			final UUID id = getNewInstance().getId();
+			assertFalse(idList.contains(id));
+			idList.add(id);
+		}
+	}
+
+	@Test
+	public void actionShouldBeEqualToItsId() throws Exception {
+		final ModelAction action = getNewInstance();
+		assertEquals(action.getId(), action);
+	}
+
+	@Test
+	public void actionShouldHaveSameHashCodeThanItsId() throws Exception {
+		final ModelAction action = getNewInstance();
+		assertEquals(action.getId().hashCode(), action.hashCode());
+	}
+
+	@Test
 	public void actionShouldHaveConvertToAnnotation() throws Exception {
 		assertHasAnnotation(getActionType(), ConvertTo.class);
 	}

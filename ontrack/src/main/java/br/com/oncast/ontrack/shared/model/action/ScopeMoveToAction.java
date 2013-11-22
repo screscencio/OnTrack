@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -25,6 +26,24 @@ public class ScopeMoveToAction implements ScopeMoveAction, HasDestination {
 	@Attribute
 	private int desiredIndex;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected ScopeMoveToAction() {}
 
 	public ScopeMoveToAction(final UUID movingScopeId, final UUID desiredParentId, final int desiredIndex) {
@@ -33,6 +52,7 @@ public class ScopeMoveToAction implements ScopeMoveAction, HasDestination {
 	}
 
 	public ScopeMoveToAction(final UUID movingScopeId) {
+		this.uniqueId = new UUID();
 		this.movingScopeId = movingScopeId;
 	}
 

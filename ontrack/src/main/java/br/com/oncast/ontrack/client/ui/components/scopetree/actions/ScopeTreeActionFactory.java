@@ -49,7 +49,6 @@ public class ScopeTreeActionFactory {
 	}
 
 	public ScopeTreeAction createEquivalentActionFor(final ModelAction action) throws ScopeNotFoundException {
-
 		if (action instanceof ScopeMoveAction) return new ScopeTreeMoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeInsertSiblingAction) return new ScopeTreeInsertSiblingAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeInsertSiblingUpRollbackAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);

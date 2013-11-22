@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -12,6 +10,9 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeInsertParentRollbackActionEntity.class)
 public class ScopeInsertParentRollbackAction implements ScopeAction {
@@ -30,14 +31,33 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 	@Element
 	private ScopeUpdateAction scopeUpdateAction;
 
-	public ScopeInsertParentRollbackAction(final UUID newScopeId, final UUID selectedScopeId, final ScopeUpdateAction updateAction) {
-		this.newScopeId = newScopeId;
-		this.referenceId = selectedScopeId;
-		this.scopeUpdateAction = updateAction;
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeInsertParentRollbackAction() {}
+
+	public ScopeInsertParentRollbackAction(final UUID newScopeId, final UUID selectedScopeId, final ScopeUpdateAction updateAction) {
+		this.uniqueId = new UUID();
+		this.newScopeId = newScopeId;
+		this.referenceId = selectedScopeId;
+		this.scopeUpdateAction = updateAction;
+	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {

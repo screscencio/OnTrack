@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRenameActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -18,6 +11,14 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 @ConvertTo(KanbanColumnRenameActionEntity.class)
 public class KanbanColumnRenameAction implements KanbanAction {
@@ -39,10 +40,29 @@ public class KanbanColumnRenameAction implements KanbanAction {
 	@ElementList(required = false)
 	private List<ModelAction> subActions;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected KanbanColumnRenameAction() {}
 
 	public KanbanColumnRenameAction(final UUID releaseId, final String columnDescription, final String newDescription) {
+		this.uniqueId = new UUID();
 		this.releaseId = releaseId;
 		this.columnDescription = columnDescription;
 		this.newDescription = newDescription;
@@ -59,13 +79,11 @@ public class KanbanColumnRenameAction implements KanbanAction {
 
 		try {
 			kanban.renameColumn(columnDescription, newDescription);
-		}
-		catch (final RuntimeException e) {
+		} catch (final RuntimeException e) {
 			throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.KANBAN_COLUMN_ALREADY_SET);
 		}
 		for (final Scope scope : release.getScopeList()) {
-			if (scope.getProgress().getDescription().equals(columnDescription)) new ScopeDeclareProgressAction(scope.getId(), newDescription).execute(context,
-					actionContext);
+			if (scope.getProgress().getDescription().equals(columnDescription)) new ScopeDeclareProgressAction(scope.getId(), newDescription).execute(context, actionContext);
 		}
 		if (subActions.isEmpty() && !kanban.isLocked()) subActions.add(new KanbanLockAction(releaseId));
 		ActionHelper.executeSubActions(subActions, context, actionContext);

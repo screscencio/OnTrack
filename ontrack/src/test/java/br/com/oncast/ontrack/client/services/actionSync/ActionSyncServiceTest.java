@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.services.actionSync;
 import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
+import br.com.oncast.ontrack.client.services.alerting.AlertRegistration;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.internet.NetworkMonitoringService;
@@ -104,6 +105,7 @@ public class ActionSyncServiceTest {
 		MockitoAnnotations.initMocks(this);
 		lastSyncedActionId = 1l;
 		projectId = new UUID();
+		when(alertingService.showInfo(anyString())).thenReturn(mock(AlertRegistration.class));
 		syncer = new ActionSyncService(dispatcher, actionExecutionService, storage, alertingService, clientMessages, networkMonitor, contextProvider, serverPush, metrics, eventBus);
 		syncer.onProjectChanged(projectId, lastSyncedActionId);
 		inOrder = inOrder(actionExecutionService, dispatcher, alertingService);

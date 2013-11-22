@@ -1,5 +1,13 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -8,14 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-
-import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
-import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 
 @Entity(name = "ScopeBindRelease")
 @ConvertTo(ScopeBindReleaseAction.class)
@@ -41,6 +41,18 @@ public class ScopeBindReleaseActionEntity extends ModelActionEntity {
 	@ConversionAlias("scopePriority")
 	@Column(name = ActionTableColumns.INT_1)
 	private int scopePriority;
+
+	@Column(name = ActionTableColumns.UNIQUE_ID)
+	@ConvertUsing(StringToUuidConverter.class)
+	private String uniqueId;
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(final String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
 
 	public String getReferenceId() {
 		return referenceId;

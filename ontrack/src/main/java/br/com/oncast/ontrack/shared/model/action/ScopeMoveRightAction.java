@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,19 +39,36 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	public ScopeMoveRightAction(final UUID selectedScopeId) {
-		this.referenceId = selectedScopeId;
+		this(selectedScopeId, -1, new ArrayList<ModelAction>());
 		this.wasIndexSet = false;
-		this.position = -1;
-		this.subActionList = new ArrayList<ModelAction>();
 	}
 
 	// TODO Analyze the possibility of replacing the sub-action list for a single typed action.
 	public ScopeMoveRightAction(final UUID selectedScopeId, final int position, final List<ModelAction> subActionList) {
+		this.uniqueId = new UUID();
 		this.referenceId = selectedScopeId;
 		this.position = position;
-		this.wasIndexSet = true;
 		this.subActionList = subActionList;
+		this.wasIndexSet = true;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.

@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseUpdatePriorityActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -12,6 +9,10 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 // TODO Change this action, so it receives the id of the target release, allowing this action to move a child release to another one.
 @ConvertTo(ReleaseUpdatePriorityActionEntity.class)
@@ -27,10 +28,29 @@ public class ReleaseUpdatePriorityAction implements ReleaseAction {
 	@Attribute
 	private int targetIndex;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ReleaseUpdatePriorityAction() {}
 
 	public ReleaseUpdatePriorityAction(final UUID releaseId, final int targetIndex) {
+		this.uniqueId = new UUID();
 		this.releaseId = releaseId;
 		this.targetIndex = targetIndex;
 	}
@@ -43,8 +63,7 @@ public class ReleaseUpdatePriorityAction implements ReleaseAction {
 		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.CHANGE_ROOT_RELEASE_PRIORITY);
 
 		final Release parentRelease = selectedRelease.getParent();
-		if (targetIndex >= parentRelease.getChildren().size()) throw new UnableToCompleteActionException(
-				this, ActionExecutionErrorMessageCode.ALREADY_THE_MOST_PRIORITARY);
+		if (targetIndex >= parentRelease.getChildren().size()) throw new UnableToCompleteActionException(this, ActionExecutionErrorMessageCode.ALREADY_THE_MOST_PRIORITARY);
 
 		final int currentIndex = parentRelease.getChildIndex(selectedRelease);
 		parentRelease.removeChild(selectedRelease);

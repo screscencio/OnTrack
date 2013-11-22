@@ -1,5 +1,13 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions;
 
+import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
+
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -10,14 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
-import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 
 @Entity
 @ConvertTo(UserAction.class)
@@ -44,11 +44,15 @@ public class UserActionEntity {
 	@ConversionAlias("userId")
 	private String userId;
 
+	@ConvertUsing(StringToUuidConverter.class)
+	@ConversionAlias("uniqueId")
+	private String uniqueId;
+
 	public UserActionEntity() {}
 
-	public UserActionEntity(final ModelActionEntity actionEntity, final String userId, final ProjectRepresentationEntity projectRepresentation,
-			final Date timestamp) {
+	public UserActionEntity(final ModelActionEntity actionEntity, final String uniqueId, final String userId, final ProjectRepresentationEntity projectRepresentation, final Date timestamp) {
 		this.actionEntity = actionEntity;
+		this.uniqueId = uniqueId;
 		this.userId = userId;
 		this.projectRepresentation = projectRepresentation;
 		this.timestamp = timestamp;
@@ -92,5 +96,13 @@ public class UserActionEntity {
 
 	public void setUserId(final String userId) {
 		this.userId = userId;
+	}
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(final String uniqueId) {
+		this.uniqueId = uniqueId;
 	}
 }

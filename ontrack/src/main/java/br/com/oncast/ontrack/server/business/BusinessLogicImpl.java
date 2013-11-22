@@ -110,18 +110,27 @@ class BusinessLogicImpl implements BusinessLogic {
 
 		synchronized (syncronizationService.getSyncLockFor(projectId)) {
 			try {
-				final List<ModelAction> actionList = actionSyncRequest.getActionList();
+				long lastApplyedActionId = 0;
 				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
+				final List<ModelAction> actionList = actionSyncRequest.getActionList();
+				for (final ModelAction action : new ArrayList<ModelAction>(actionList)) {
+					final UserAction persistedAction = persistenceService.retrieveAction(projectId, action.getId());
+					if (persistedAction == null) continue;
+					LOGGER.debug("Ignoring repeated incoming action " + PrettyPrinter.getSimpleName(action) + " from user " + authenticatedUser);
+					actionList.remove(action);
+					lastApplyedActionId = Math.max(lastApplyedActionId, persistedAction.getId());
+				}
+				if (actionList.isEmpty()) return lastApplyedActionId;
 				LOGGER.debug("Handling incoming actions " + PrettyPrinter.getSimpleNamesListString(actionList) + " from user " + authenticatedUser);
 
-				final ActionContext cachedActionContext = new ActionContext(authenticatedUser.getId(), new Date());
-				final ProjectContext cachedContext = new ProjectContext(loadProject(projectId).getProject());
+				final ActionContext actionContext = new ActionContext(authenticatedUser.getId(), new Date());
+				final ProjectContext context = new ProjectContext(loadProject(projectId).getProject());
 
-				validateIncomingActions(projectId, actionList, cachedActionContext, cachedContext);
-				final long lastApplyedActionId = persistenceService.persistActions(projectId, actionList, cachedActionContext.getUserId(), cachedActionContext.getTimestamp());
+				validateIncomingActions(projectId, actionList, actionContext, context);
+				lastApplyedActionId = persistenceService.persistActions(projectId, actionList, actionContext.getUserId(), actionContext.getTimestamp());
 				LOGGER.debug("Handled incoming actions " + PrettyPrinter.getSimpleNamesListString(actionList) + " from user " + authenticatedUser + " in " + getTimeSpent(initialTime) + " ms.");
 
-				modelActionSyncEvent = new ModelActionSyncEvent(projectId, actionList, cachedActionContext, lastApplyedActionId);
+				modelActionSyncEvent = new ModelActionSyncEvent(projectId, actionList, actionContext, lastApplyedActionId);
 				if (actionSyncRequest.shouldReturnToSender()) multicastService.multicastToAllUsersInSpecificProject(modelActionSyncEvent, projectId);
 				else multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(modelActionSyncEvent, projectId);
 

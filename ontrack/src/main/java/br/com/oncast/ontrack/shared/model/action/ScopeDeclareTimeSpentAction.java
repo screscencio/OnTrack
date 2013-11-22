@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -23,9 +24,28 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 	@Attribute
 	private Float timeSpent;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected ScopeDeclareTimeSpentAction() {}
 
 	public ScopeDeclareTimeSpentAction(final UUID scopeId, final Float timeSpent) {
+		this.uniqueId = new UUID();
 		this.scopeId = scopeId;
 		this.timeSpent = timeSpent;
 	}

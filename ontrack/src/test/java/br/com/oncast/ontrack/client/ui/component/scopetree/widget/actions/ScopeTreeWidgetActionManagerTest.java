@@ -22,10 +22,13 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.doThrow;
@@ -63,7 +66,7 @@ public class ScopeTreeWidgetActionManagerTest {
 
 		scopeTreeActionFactoryMock = mock(ScopeTreeActionFactory.class);
 		widgetExceptionActionMock = mock(ScopeTreeAction.class);
-		doThrow(new ScopeNotFoundException("")).when(widgetExceptionActionMock).execute(context, actionContext, true);
+		doThrow(ScopeNotFoundException.class).when(widgetExceptionActionMock).execute(context, actionContext, true);
 
 		rootScope = ScopeTestUtils.createScope("root");
 		newScopeDescription = "description for new scope";
@@ -82,13 +85,16 @@ public class ScopeTreeWidgetActionManagerTest {
 		assertEquals(1, rootScope.getChildren().size());
 	}
 
-	@Test(expected = UnableToCompleteActionException.class)
+	@Test
 	public void ifActionsThrowExceptionNothingHappens() throws UnableToCompleteActionException, ScopeNotFoundException {
 		exceptionAction = mock(ScopeInsertChildAction.class);
-		doThrow(new UnableToCompleteActionException(null, ActionExecutionErrorMessageCode.UNKNOWN)).when(exceptionAction).execute(Mockito.eq(context), Mockito.any(ActionContext.class));
-		when(scopeTreeActionFactoryMock.createEquivalentActionFor(exceptionAction)).thenReturn(widgetExceptionActionMock);
-
-		actionExecutionManager.doUserAction(exceptionAction, context, actionContext);
+		doThrow(UnableToCompleteActionException.class).when(exceptionAction).execute(eq(context), any(ActionContext.class));
+		try {
+			actionExecutionManager.doUserAction(exceptionAction, context, actionContext);
+			fail("should have thrown UnableToCompleteActionException");
+		} catch (final UnableToCompleteActionException e) {
+			assertEquals(0, rootScope.getChildren().size());
+		}
 	}
 
 	@Test(expected = RuntimeException.class)

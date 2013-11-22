@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.List;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindHumanIdActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
@@ -16,6 +11,12 @@ import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(ScopeBindHumanIdActionEntity.class)
 public class ScopeBindHumanIdAction implements ScopeAction {
@@ -31,18 +32,39 @@ public class ScopeBindHumanIdAction implements ScopeAction {
 	@Attribute
 	private String humanId;
 
+	@Element
+	private UUID uniqueId;
+
+	@Override
+	public UUID getId() {
+		return uniqueId;
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 	protected ScopeBindHumanIdAction() {}
 
 	public ScopeBindHumanIdAction(final UUID scopeId, final String humanId) {
-		this.scopeId = scopeId;
-		this.humanId = humanId;
-		this.metadataId = new UUID();
+		this(scopeId, humanId, new UUID());
 	}
 
 	ScopeBindHumanIdAction(final HumanIdMetadata metadata) {
-		this.scopeId = metadata.getSubject().getId();
-		this.humanId = metadata.getHumanId();
-		this.metadataId = metadata.getId();
+		this(metadata.getSubject().getId(), metadata.getHumanId(), metadata.getId());
+	}
+
+	private ScopeBindHumanIdAction(final UUID scopeId, final String humanId, final UUID metadataId) {
+		this.uniqueId = new UUID();
+		this.scopeId = scopeId;
+		this.humanId = humanId;
+		this.metadataId = metadataId;
 	}
 
 	@Override
