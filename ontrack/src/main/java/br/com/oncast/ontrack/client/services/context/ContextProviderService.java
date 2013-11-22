@@ -6,20 +6,22 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface ContextProviderService {
 
-	public ProjectContext getProjectContext(UUID projectId);
+	ProjectContext getProjectContext(UUID projectId);
 
-	public boolean isContextAvailable();
+	boolean isContextAvailable();
 
-	public boolean isContextAvailable(UUID projectId);
+	boolean isContextAvailable(UUID projectId);
 
-	public void loadProjectContext(UUID requestedProjectId, ProjectContextLoadCallback projectContextLoadCallback);
+	void loadProjectContext(UUID requestedProjectId, ProjectContextLoadCallback projectContextLoadCallback);
 
-	public ProjectContext getCurrent();
+	ProjectContext getCurrent();
 
-	public void addContextLoadListener(ContextChangeListener contextLoadListener);
+	void addContextLoadListener(ContextChangeListener contextLoadListener);
 
-	public void unloadProjectContext();
+	void unloadProjectContext();
 
-	public void revertContext(ProjectContext context);
+	void revertContext(ProjectContext context);
+
+	UUID getCurrentProjectId();
 
 }

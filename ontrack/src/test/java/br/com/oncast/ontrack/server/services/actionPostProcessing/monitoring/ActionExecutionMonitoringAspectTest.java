@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring;
 
-import static org.mockito.Mockito.mock;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -15,6 +9,12 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.mock;
 
 public class ActionExecutionMonitoringAspectTest {
 
@@ -92,19 +92,16 @@ public class ActionExecutionMonitoringAspectTest {
 	}
 
 	@DontPostProcessActions
-	private void executeActionWithoutPostProcessing(final ProjectContext projectContext, final ActionContext actionContext, final FicticiousAction action)
-			throws UnableToCompleteActionException {
+	private void executeActionWithoutPostProcessing(final ProjectContext projectContext, final ActionContext actionContext, final FicticiousAction action) throws UnableToCompleteActionException {
 		executeAction(projectContext, actionContext, action);
 	}
 
 	@PostProcessActions
-	private void executeActionWithPostProcessing(final ProjectContext projectContext, final ActionContext actionContext, final FicticiousAction action)
-			throws UnableToCompleteActionException {
+	private void executeActionWithPostProcessing(final ProjectContext projectContext, final ActionContext actionContext, final FicticiousAction action) throws UnableToCompleteActionException {
 		executeAction(projectContext, actionContext, action);
 	}
 
-	private void executeAction(final ProjectContext projectContext, final ActionContext actionContext, final FicticiousAction action)
-			throws UnableToCompleteActionException {
+	private void executeAction(final ProjectContext projectContext, final ActionContext actionContext, final FicticiousAction action) throws UnableToCompleteActionException {
 		action.execute(projectContext, actionContext);
 	}
 
@@ -121,6 +118,7 @@ public class ActionExecutionMonitoringAspectTest {
 		public UUID getReferenceId() {
 			return new UUID("");
 		}
+
 	}
 
 }

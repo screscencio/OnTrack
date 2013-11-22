@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.services.applicationState;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
@@ -39,7 +39,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	private final ContextProviderService contextProviderService;
 	private final ClientStorageService clientStorageService;
 	private final ClientAlertingService alertingService;
-	private final ClientErrorMessages messages;
+	private final ClientMessages messages;
 
 	private final Set<HandlerRegistration> handlerRegistrations;
 
@@ -49,7 +49,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	private UUID filterTagId;
 
 	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService, final ClientStorageService clientStorageService,
-			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
+			final ClientAlertingService alertingService, final ClientMessages messages) {
 		this.eventBus = eventBus;
 		this.contextProviderService = contextProviderService;
 		this.clientStorageService = clientStorageService;

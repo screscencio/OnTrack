@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.services.applicationState;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
@@ -39,7 +39,7 @@ public class ClientApplicationStateServiceTest extends GwtTest {
 	private ClientAlertingService alertingService;
 
 	@Mock
-	private ClientErrorMessages messages;
+	private ClientMessages messages;
 
 	@Mock
 	private ProjectContext context;

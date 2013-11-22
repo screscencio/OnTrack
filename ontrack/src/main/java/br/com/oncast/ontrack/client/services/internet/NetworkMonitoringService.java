@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.services.internet;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.alerting.AlertRegistration;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
@@ -25,7 +25,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class NetworkMonitoringService {
 
-	private final ClientErrorMessages messages;
+	private final ClientMessages messages;
 	private final ClientAlertingService alertingService;
 	private final ServerPushClientService serverPushClientService;
 	private final ClientMetricsService metrics;
@@ -52,7 +52,7 @@ public class NetworkMonitoringService {
 	};
 
 	public NetworkMonitoringService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService, final ClientAlertingService clientAlertingService,
-			final ClientErrorMessages clientErrorMessages, final ClientMetricsService metrics) {
+			final ClientMessages clientErrorMessages, final ClientMetricsService metrics) {
 		this.serverPushClientService = serverPushClientService;
 		alertingService = clientAlertingService;
 		messages = clientErrorMessages;

@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.services.context;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
@@ -43,10 +43,10 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	private final Set<ProjectRepresentation> availableProjectRepresentations = new HashSet<ProjectRepresentation>();
 	private boolean projectListAvailability;
 	private ProjectRepresentation currentProjectRepresentation;
-	private ClientErrorMessages messages;
+	private ClientMessages messages;
 
 	public ProjectRepresentationProviderImpl(final DispatchService dispatchService, final ServerPushClientService serverPushClientService, final AuthenticationService authenticationService,
-			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
+			final ClientAlertingService alertingService, final ClientMessages messages) {
 
 		this.dispatchService = dispatchService;
 		this.alertingService = alertingService;

@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationCallback;
 import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
@@ -32,14 +32,14 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
 				view.enable();
-				SERVICE_PROVIDER.alerting().showError(ClientServices.get().errorMessages().unexpectedError());
+				SERVICE_PROVIDER.alerting().showError(SERVICE_PROVIDER.messages().unexpectedError());
 			}
 
 			@Override
 			public void onIncorrectCredentialsFailure() {
 				view.enable();
 				view.onIncorrectCredentials();
-				SERVICE_PROVIDER.alerting().showError(ClientServices.get().errorMessages().incorrectUserOrPassword());
+				SERVICE_PROVIDER.alerting().showError(SERVICE_PROVIDER.messages().incorrectUserOrPassword());
 			}
 
 		};
@@ -68,7 +68,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 	@Override
 	public void onResetPasswordRequest(final String username) {
 		view.disable();
-		final ClientErrorMessages messages = ClientServices.get().errorMessages();
+		final ClientMessages messages = SERVICE_PROVIDER.messages();
 		SERVICE_PROVIDER.alerting().showInfo(messages.requestingNewPassword(username));
 		SERVICE_PROVIDER.authentication().resetPasswordFor(username, new ResetPasswordCallback() {
 			@Override

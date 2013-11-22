@@ -93,7 +93,7 @@ public class LoginPanel extends Composite implements LoginView {
 	private void doResetPassword() {
 		if (!isEmailValid) {
 			final ClientServices serviceProvider = ClientServices.get();
-			serviceProvider.alerting().showError(serviceProvider.errorMessages().passwordRequestNeedsUsernameInput());
+			serviceProvider.alerting().showError(serviceProvider.messages().passwordRequestNeedsUsernameInput());
 			emailArea.setFocus(true);
 			return;
 		}

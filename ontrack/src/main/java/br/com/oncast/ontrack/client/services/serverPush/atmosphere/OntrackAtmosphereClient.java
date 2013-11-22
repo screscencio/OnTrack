@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.client.services.serverPush.atmosphere;
 
+import br.com.oncast.ontrack.client.services.serverPush.ServerPushClient;
+import br.com.oncast.ontrack.shared.services.url.URLBuilder;
+
 import org.atmosphere.gwt.client.AtmosphereClient;
 import org.atmosphere.gwt.client.AtmosphereGWTSerializer;
 import org.atmosphere.gwt.client.AtmosphereListener;
-
-import br.com.oncast.ontrack.client.services.serverPush.ServerPushClient;
-import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.core.client.GWT;
 

@@ -1,21 +1,21 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
-import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
-
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.actionSync.ActionDispatcher.ActionDispatcherListener;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
+import br.com.oncast.ontrack.client.services.alerting.AlertRegistration;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
-import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.internet.ConnectionListener;
 import br.com.oncast.ontrack.client.services.internet.NetworkMonitoringService;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
+import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -24,164 +24,194 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEventHandler;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequestResponse;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class ActionSyncService {
+public class ActionSyncService implements ActionExecutionListener, ConnectionListener, ContextChangeListener, ServerActionSyncEventHandler, ActionDispatcherListener {
 
-	private final ClientErrorMessages messages;
+	private static final int NOT_SYNCED = 0;
 
-	private final ActionQueuedDispatcher actionQueuedDispatcher;
+	private final ActionDispatcher dispatcher;
+
+	private boolean paused;
+
+	private long lastSyncedActionsId;
 
 	private final ActionExecutionService actionExecutionService;
 
 	private final ClientAlertingService alertingService;
 
-	private final ProjectRepresentationProvider projectRepresentationProvider;
+	private ClientStorageSyncedActionSyncEntriesList syncList;
 
-	private final DispatchService requestDispatchService;
+	private UUID currentProjectId;
 
-	private Long lastSyncId = null;
+	private final ClientStorageService storage;
 
-	private ProjectContext lastContext = null;
+	private final ClientMetricsService metrics;
 
-	private final ContextProviderService contextProviderService;
+	private final EventBus eventBus;
 
-	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService, final ActionExecutionService actionExecutionService,
-			final ProjectRepresentationProvider projectRepresentationProvider, final ClientAlertingService alertingService, final ClientErrorMessages messages,
-			final NetworkMonitoringService networkMonitoringService, final ContextProviderService contextProviderService, final EventBus eventBus, final ClientStorageService storage,
-			final ClientMetricsService metrics) {
-		this.requestDispatchService = requestDispatchService;
-		this.projectRepresentationProvider = projectRepresentationProvider;
+	private final ClientMessages messages;
+
+	public ActionSyncService(final ActionDispatcher dispatcher, final ActionExecutionService actionExecutionService, final ClientStorageService storage, final ClientAlertingService alertingService,
+			final ClientMessages messages, final NetworkMonitoringService networkMonitoringService, final ContextProviderService contextProviderService,
+			final ServerPushClientService serverPushService, final ClientMetricsService metrics, final EventBus eventBus) {
+		this.dispatcher = dispatcher;
 		this.actionExecutionService = actionExecutionService;
+		this.storage = storage;
 		this.alertingService = alertingService;
 		this.messages = messages;
-		this.contextProviderService = contextProviderService;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, eventBus, alertingService, messages, storage, metrics);
+		this.metrics = metrics;
+		this.eventBus = eventBus;
+		this.paused = false;
+		this.lastSyncedActionsId = NOT_SYNCED;
 
-		serverPushClientService.registerServerEventHandler(ModelActionSyncEvent.class, new ServerActionSyncEventHandler() {
-
-			@Override
-			public void onEvent(final ModelActionSyncEvent event) {
-				processServerActionSyncEvent(event);
-			}
-		});
-		this.actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
-				handleActionExecution(action, executionContext, isUserAction);
-			}
-		});
-		networkMonitoringService.addConnectionListener(new ConnectionListener() {
-			@Override
-			public void onConnectionRecovered() {
-				actionQueuedDispatcher.resume();
-				requestResyncronization();
-			}
-
-			@Override
-			public void onConnectionLost() {
-				actionQueuedDispatcher.pause();
-			}
-		});
-		contextProviderService.addContextLoadListener(new ContextChangeListener() {
-			@Override
-			public void onProjectChanged(final UUID projectId, final Long loadedProjectRevision) {
-				updateLastSyncId(loadedProjectRevision);
-				if (projectId != null) actionQueuedDispatcher.loadPendingActions();
-			}
-		});
-		actionQueuedDispatcher.addDispatchCallback(new ActionQueuedDispatchCallback() {
-			@Override
-			public void onDispatch(final long applyedActionSyncId) {
-				updateLastSyncId(applyedActionSyncId);
-			}
-		});
+		dispatcher.registerListener(this);
+		actionExecutionService.addActionExecutionListener(this);
+		networkMonitoringService.addConnectionListener(this);
+		contextProviderService.addContextLoadListener(this);
+		serverPushService.registerServerEventHandler(ModelActionSyncEvent.class, this);
 	}
 
-	private void processServerActionSyncEvent(final ModelActionSyncEvent event) {
-		checkIfRequestIsPertinentToCurrentProject(event);
-
-		try {
-			final ActionContext actionContext = event.getActionContext();
-			for (final ModelAction modelAction : event.getActionList()) {
-				actionExecutionService.onNonUserActionRequest(modelAction, actionContext);
-			}
-			updateLastSyncId(event.getLastActionId());
-		} catch (final UnableToCompleteActionException e) {
-			showFatalError(messages.someChangesConflicted());
-		}
-	}
-
-	private void handleActionExecution(final ModelAction action, final ActionExecutionContext executionContext, final boolean isUserAction) {
+	@Override
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
 		if (!isUserAction) return;
-		actionQueuedDispatcher.dispatch(action, executionContext);
+
+		final ModelAction reverseAction = executionContext.getReverseAction();
+		syncList.add(action, actionContext, reverseAction);
+		metrics.onActionExecution(action, !paused);
+		if (paused) return;
+
+		dispatch(action);
 	}
 
-	private void checkIfRequestIsPertinentToCurrentProject(final ModelActionSyncEvent event) {
-		final UUID requestedProjectId = event.getProjectId();
-		final UUID currentProjectId = projectRepresentationProvider.getCurrent().getId();
-		if (!requestedProjectId.equals(currentProjectId))
-			throw new RuntimeException("This client received an action for project '" + requestedProjectId + "' but it is currently on project '" + currentProjectId + "'. Please notify OnTrack team.");
-	}
+	@Override
+	public void onConnectionRecovered() {
+		metrics.onConnectionRecovered();
+		if (!paused) return;
 
-	private void updateLastSyncId(final Long applyedActionSyncId) {
-		lastSyncId = applyedActionSyncId;
-		lastContext = applyedActionSyncId == null ? null : contextProviderService.getCurrent();
-	}
+		final AlertRegistration alertRegistration = alertingService.showInfo(messages.syncing());
+		if (!revertLocalPendingActions()) return;
+		dispatcher.retrieveAllActionsSince(currentProjectId, lastSyncedActionsId, new AsyncCallback<ModelActionSyncEvent>() {
 
-	protected void requestResyncronization() {
-		if (lastSyncId == null) {
-			actionQueuedDispatcher.tryExchange();
-			return;
-		}
-
-		revertToPeviousServerState();
-		requestDispatchService.dispatch(new ModelActionSyncEventRequest(projectRepresentationProvider.getCurrent().getId(), lastSyncId), new DispatchCallback<ModelActionSyncEventRequestResponse>() {
 			@Override
-			public void onSuccess(final ModelActionSyncEventRequestResponse result) {
-				processServerActionSyncEvent(result.getModelActionSyncEvent());
-				actionQueuedDispatcher.tryExchange(true);
-				alertingService.showSuccess(messages.resyncSuccess());
+			public void onFailure(final Throwable caught) {
+				alertRegistration.hide();
+				showFatalError(messages.couldNotRetrieveLatestModifications());
 			}
 
 			@Override
-			public void onTreatedFailure(final Throwable caught) {}
-
-			@Override
-			public void onUntreatedFailure(final Throwable caught) {
-				showFatalError(messages.connectionLost());
+			public void onSuccess(final ModelActionSyncEvent event) {
+				if (handleIncomingActions(event)) {
+					applyLocalPendingActions();
+					alertRegistration.hide();
+				}
+				paused = false;
 			}
 
 		});
 	}
 
-	private void revertToPeviousServerState() {
-		final List<ModelAction> pendingActions = actionQueuedDispatcher.getPendingReverseActions();
-		if (pendingActions.isEmpty()) return;
+	// TODO+++ instead of clearing the entire syncList, ask the user if he wants to skip the conflicted action and continue to re-sync
+	private void applyLocalPendingActions() {
 		try {
-			// IMPORTANT to revert view state
-			for (final ModelAction pendingAction : pendingActions) {
-				actionExecutionService.onNonUserActionRequest(pendingAction);
+			for (final ActionSyncEntry entry : syncList) {
+				actionExecutionService.onNonUserActionRequest(entry.getAction(), entry.getContext());
+				dispatch(entry.getAction());
 			}
-			if (lastContext != null) contextProviderService.revertContext(lastContext);
+			if (!syncList.isEmpty()) alertingService.showSuccess(messages.pendingActionsSynced(syncList.size()));
 		} catch (final UnableToCompleteActionException e) {
-			showFatalError(messages.someChangesConflicted());
+			syncList.clear();
+			showError(messages.someChangesConflicted());
 		}
 	}
 
-	private void showFatalError(final String errorMessage) {
-		alertingService.showErrorWithConfirmation(errorMessage, new AlertConfirmationListener() {
+	@Override
+	public void onConnectionLost() {
+		metrics.onConnectionLost();
+		this.paused = true;
+	}
+
+	@Override
+	public void onProjectChanged(final UUID projectId, final Long loadedProjectRevision) {
+		currentProjectId = projectId;
+		lastSyncedActionsId = loadedProjectRevision == null ? NOT_SYNCED : loadedProjectRevision;
+		syncList = new ClientStorageSyncedActionSyncEntriesList(storage, eventBus);
+		metrics.onLocallySavedPendingActionsLoaded(syncList.size());
+		applyLocalPendingActions();
+	}
+
+	private boolean revertLocalPendingActions() {
+		for (final ActionSyncEntry entry : syncList.reverse()) {
+			if (!applyLocally(entry.getReverseAction(), entry.getContext())) return false;
+		}
+		return true;
+	}
+
+	private boolean applyLocally(final ModelAction action, final ActionContext actionContext) {
+		try {
+			actionExecutionService.onNonUserActionRequest(action, actionContext);
+			return true;
+		} catch (final UnableToCompleteActionException e) {
+			metrics.onException("ActionSyncService.applyLocally(" + MetricsTokenizer.getClassSimpleName(action) + ")" + e.getMessage());
+			showFatalError(messages.projectOutOfSync());
+			return false;
+		}
+	}
+
+	private void showFatalError(final String message) {
+		alertingService.showErrorWithConfirmation(message, new AlertConfirmationListener() {
 			@Override
 			public void onConfirmation() {
 				Window.Location.reload();
 			}
 		});
 	}
+
+	private void showError(final String message) {
+		alertingService.showError(message);
+	}
+
+	private void dispatch(final ModelAction action) {
+		dispatcher.dispatch(action);
+	}
+
+	@Override
+	public void onEvent(final ModelActionSyncEvent event) {
+		handleIncomingActions(event);
+	}
+
+	private boolean handleIncomingActions(final ModelActionSyncEvent event) {
+		for (final ModelAction action : event.getActionList()) {
+			if (!applyLocally(action, event.getActionContext())) return false;
+		}
+		updateLastSyncedActionsId(event.getLastActionId());
+		return true;
+	}
+
+	@Override
+	public void onActionsAcceptedByServer(final List<ModelAction> sentActions, final long actionSyncId) {
+		for (final ModelAction action : sentActions) {
+			syncList.remove(action);
+		}
+		updateLastSyncedActionsId(actionSyncId);
+	}
+
+	private void updateLastSyncedActionsId(final long syncId) {
+		if (lastSyncedActionsId < syncId) lastSyncedActionsId = syncId;
+	}
+
+	@Override
+	public void onActionsRegectedByServer(final List<ModelAction> regectedActions, final UnableToHandleActionException error) {
+		for (final ModelAction action : Lists.reverse(regectedActions)) {
+			final ActionSyncEntry entry = syncList.remove(action);
+			applyLocally(entry.getReverseAction(), entry.getContext());
+		}
+	}
+
 }

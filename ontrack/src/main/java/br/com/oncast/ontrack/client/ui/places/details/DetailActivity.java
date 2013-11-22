@@ -32,8 +32,7 @@ public class DetailActivity extends AbstractActivity {
 	public void start() {
 		if (!setDetailPanel(place)) return;
 		final TimeTrackingEvent timeTracking = ClientServices.get().metrics().startPlaceLoad(place);
-		if (!place.hasLoadedPlace()) register = ShortcutService.register(detailPanel, ClientServices.get().actionExecution(),
-				UndoRedoShortCutMapping.values());
+		if (!place.hasLoadedPlace()) register = ShortcutService.register(detailPanel, ClientServices.get().actionExecution(), UndoRedoShortCutMapping.values());
 
 		PopupConfig.configPopup().popup(this.detailPanel).onClose(new PopupCloseListener() {
 			@Override
@@ -62,23 +61,20 @@ public class DetailActivity extends AbstractActivity {
 	}
 
 	private boolean setDetailPanel(final DetailPlace place) {
-		final ClientServices provider = ClientServices.get();
-		final ProjectContext context = provider.contextProvider().getProjectContext(place.getRequestedProjectId());
+		final ClientServices services = ClientServices.get();
+		final ProjectContext context = services.contextProvider().getProjectContext(place.getRequestedProjectId());
 
 		detailPanel = null;
 		try {
 			detailPanel = DetailsPanel.forScope(context.findScope(place.getSubjectId()));
-		}
-		catch (final ScopeNotFoundException e) {
+		} catch (final ScopeNotFoundException e) {
 			try {
 				detailPanel = DetailsPanel.forRelease(context.findRelease(place.getSubjectId()));
-			}
-			catch (final ReleaseNotFoundException e1) {
+			} catch (final ReleaseNotFoundException e1) {
 				try {
 					detailPanel = DetailsPanel.forKanbanColumn(context.findKanbanColumn(place.getSubjectId()));
-				}
-				catch (final KanbanColumnNotFoundException e2) {
-					provider.alerting().showError(ClientServices.get().errorMessages().errorShowingDetails());
+				} catch (final KanbanColumnNotFoundException e2) {
+					services.alerting().showError(services.messages().errorShowingDetails());
 					getApplicationPlaceController().goTo(place.getDestinationPlace());
 					return false;
 				}

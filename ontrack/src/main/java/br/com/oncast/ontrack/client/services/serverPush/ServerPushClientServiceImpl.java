@@ -1,17 +1,17 @@
 package br.com.oncast.ontrack.client.services.serverPush;
 
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
+import br.com.oncast.ontrack.client.services.serverPush.atmosphere.OntrackAtmosphereClient;
+import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
+import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.atmosphere.gwt.client.AtmosphereListener;
-
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
-import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
-import br.com.oncast.ontrack.client.services.serverPush.atmosphere.OntrackAtmosphereClient;
-import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
-import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -21,8 +21,9 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	private ServerPushClient serverPushClient;
 	private final List<ServerPushConnectionCallback> serverPushConnectionCallbacks = new ArrayList<ServerPushConnectionCallback>();
 	private final AtmosphereListener atmosphereListener;
+	private String connectionId;
 
-	public ServerPushClientServiceImpl(final ClientAlertingService alertingService, final ClientErrorMessages messages) {
+	public ServerPushClientServiceImpl(final ClientAlertingService alertingService, final ClientMessages messages) {
 		atmosphereListener = new AtmosphereListener() {
 			@Override
 			public void onRefresh() {}
@@ -37,9 +38,8 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 			@Override
 			public void onError(final Throwable exception, final boolean connected) {
-				serverPushClient.stop();
+				if (serverPushClient != null) serverPushClient.stop();
 				notifyError(exception);
-				exception.printStackTrace();
 			}
 
 			@Override
@@ -52,6 +52,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 			@Override
 			public void onConnected(final int heartbeat, final String connectionUUID) {
+				connectionId = connectionUUID;
 				notifyConnection();
 			}
 
@@ -63,8 +64,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	}
 
 	@Override
-	public <T extends ServerPushEvent> HandlerRegistration registerServerEventHandler(final Class<T> eventClass,
-			final ServerPushEventHandler<T> serverPushEventHandler) {
+	public <T extends ServerPushEvent> HandlerRegistration registerServerEventHandler(final Class<T> eventClass, final ServerPushEventHandler<T> serverPushEventHandler) {
 		if (!eventHandlersMap.containsKey(eventClass)) eventHandlersMap.put(eventClass, new ArrayList<ServerPushEventHandler<?>>());
 
 		final List<ServerPushEventHandler<?>> handlerList = eventHandlersMap.get(eventClass);
@@ -105,14 +105,18 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	@Override
 	public void reconnect() {
-		serverPushClient.stop();
+		try {
+			serverPushClient.stop();
+		} catch (final Exception e) {
+			// IMPORTANT Try to reconnect even when something happens in stop process
+		}
 		connect();
 	}
 
 	@Override
 	public String getConnectionID() {
-		if (serverPushClient == null) return null;
-		return serverPushClient.getConnectionId();
+		if (connectionId != null) return connectionId;
+		return serverPushClient == null ? null : serverPushClient.getConnectionId();
 	}
 
 	@Override

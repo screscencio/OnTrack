@@ -10,5 +10,6 @@ public interface ClientStorageColumnNames {
 	final String REAL_TIME_SERVER_METRICS = "ontrack.server.realtimeMetrics";
 	final String SERVER_STATISTICS = "ontrack.server.statistics";
 	final String PENDING_ACTIONS_LIST = "actions.pending";
+	final String ACTION_CONTEXTS = "actionContexts";
 
 }

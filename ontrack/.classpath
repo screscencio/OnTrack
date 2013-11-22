@@ -28,7 +28,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang3-3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/dom4j-1.6.1.jar" sourcepath="/home/guih/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1-sources.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-12.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-12.0.jar" sourcepath="/home/guih/.m2/repository/com/google/guava/guava/12.0/guava-12.0-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-gwt-12.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dnd-3.2.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-2.5.1.jar"/>
@@ -66,7 +66,7 @@
 	<classpathentry kind="lib" path="lib/gwt-test-utils-0.44.jar" sourcepath="/home/guih/.m2/repository/com/googlecode/gwt-test-utils/gwt-test-utils/0.44/gwt-test-utils-0.44-sources.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.1.jar"/>
-	<classpathentry kind="lib" path="lib/mockito-all-1.9.5.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-all-1.9.5.jar" sourcepath="/home/guih/.m2/repository/org/mockito/mockito-all/1.9.5/mockito-all-1.9.5-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-all-repackaged-2.1.88.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cglib-2.1.88.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hk2-api-2.1.88.jar"/>

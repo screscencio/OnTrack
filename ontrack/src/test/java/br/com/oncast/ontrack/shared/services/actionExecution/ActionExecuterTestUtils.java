@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.shared.services.actionExecution;
 
-import java.util.Date;
-import java.util.Set;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
@@ -11,6 +8,9 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+
+import java.util.Date;
+import java.util.Set;
 
 public class ActionExecuterTestUtils extends ScopeActionExecuter {
 
@@ -41,6 +41,7 @@ public class ActionExecuterTestUtils extends ScopeActionExecuter {
 		public boolean changesValueInference() {
 			return true;
 		}
+
 	}
 
 	public static Set<UUID> executeInferenceEnginesForTestingPurposes(final Scope scope) {

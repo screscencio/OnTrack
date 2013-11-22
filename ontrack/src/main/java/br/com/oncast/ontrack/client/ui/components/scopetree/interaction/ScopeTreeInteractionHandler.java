@@ -124,14 +124,14 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	}
 
 	@Override
-	public void onItemEditionEnd(final ScopeTreeItem item, final String value) {
+	public void onItemEditionEnd(final Scope scope, final String value) {
 		assureConfigured();
 
 		if (internalActionHandler.hasPendingAction()) {
 			final ModelAction action = internalActionHandler.getPendingActionEquivalentModelActionFor(value);
 			internalActionHandler.rollbackPendingAction();
 			applicationActionHandler.onUserActionExecutionRequest(action);
-		} else applicationActionHandler.onUserActionExecutionRequest(new ScopeUpdateAction(item.getReferencedScope().getId(), value));
+		} else applicationActionHandler.onUserActionExecutionRequest(new ScopeUpdateAction(scope.getId(), value));
 	}
 
 	@Override

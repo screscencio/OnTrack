@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController.Display;
@@ -77,7 +77,7 @@ public class ProgressPanelActionSyncControllerTest {
 		when(actionExecutionServiceMock.addActionExecutionListener(captor.capture())).thenReturn(null);
 
 		final KanbanActionSyncController actionSyncController = new KanbanActionSyncController(actionExecutionServiceMock, myRelease, display,
-				mock(ClientErrorMessages.class));
+				mock(ClientMessages.class));
 		releaseMonitor = actionSyncController.new ReleaseMonitor(myRelease);
 		ReflectionTestUtils.set(actionSyncController, "releaseMonitor", releaseMonitor);
 		actionSyncController.registerActionExecutionListener();

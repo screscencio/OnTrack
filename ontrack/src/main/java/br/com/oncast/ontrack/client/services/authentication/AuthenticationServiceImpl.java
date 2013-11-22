@@ -4,7 +4,7 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
@@ -34,7 +34,7 @@ import com.google.gwt.place.shared.Place;
 
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-	protected static final ClientErrorMessages MESSAGES = GWT.create(ClientErrorMessages.class);
+	protected static final ClientMessages MESSAGES = GWT.create(ClientMessages.class);
 
 	private final Set<UserAuthenticationListener> userAuthenticatedListeners;
 

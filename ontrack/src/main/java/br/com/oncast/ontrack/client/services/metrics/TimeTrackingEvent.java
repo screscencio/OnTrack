@@ -8,21 +8,22 @@ public class TimeTrackingEvent {
 	private long endTime;
 	private final ClientMetricsServiceImpl service;
 	private final String category;
-	private final String value;
+	private String label;
 
 	/**
-	 * It creates an Metric event with the given name,
-	 * for convenience it also starts the event
-	 * but you can reset the event and start again later
-	 * in case you don't want it to start right away
-	 * @param the ClientMetricsServiceImpl that will send the event to metrics server
-	 * @param the event category
-	 * @param the event name
+	 * It creates an Metric event with the given name, for convenience it also starts the event but you can reset the event and start again later in case you don't want it to start right away
+	 * 
+	 * @param the
+	 *            ClientMetricsServiceImpl that will send the event to metrics server
+	 * @param the
+	 *            event category
+	 * @param the
+	 *            event name
 	 */
-	TimeTrackingEvent(final ClientMetricsServiceImpl service, final String category, final String value) {
+	TimeTrackingEvent(final ClientMetricsServiceImpl service, final String category, final String label) {
 		this.service = service;
 		this.category = category;
-		this.value = value;
+		this.label = label;
 		reset().start();
 	}
 
@@ -30,12 +31,18 @@ public class TimeTrackingEvent {
 		return category;
 	}
 
-	public String getValue() {
-		return value;
+	public String getLabel() {
+		return label;
+	}
+
+	public TimeTrackingEvent setLabel(final String label) {
+		this.label = label;
+		return this;
 	}
 
 	/**
 	 * Resets the event, this erases the start time and the end time
+	 * 
 	 * @return the event itself for convenience
 	 */
 	public TimeTrackingEvent reset() {
@@ -46,8 +53,8 @@ public class TimeTrackingEvent {
 	}
 
 	/**
-	 * Starts the event if not already started
-	 * This method is safe to call several times without overriding the start time.
+	 * Starts the event if not already started This method is safe to call several times without overriding the start time.
+	 * 
 	 * @return the event start time in EPOCH
 	 */
 	public long start() {
@@ -56,8 +63,8 @@ public class TimeTrackingEvent {
 	}
 
 	/**
-	 * Ends the event if not already ended and sends the metrics to the service
-	 * This method is safe to call several times without overriding the end time nor repeating service calls.
+	 * Ends the event if not already ended and sends the metrics to the service This method is safe to call several times without overriding the end time nor repeating service calls.
+	 * 
 	 * @return the event end time in EPOCH
 	 */
 	public long end() {
@@ -70,6 +77,7 @@ public class TimeTrackingEvent {
 
 	/**
 	 * Gets the event current duration without ending it
+	 * 
 	 * @return the current event duration in milliseconds
 	 */
 	public long getCurrentDuration() {
@@ -78,6 +86,7 @@ public class TimeTrackingEvent {
 
 	/**
 	 * Gets the event total duration and ends the event in case it's not ended
+	 * 
 	 * @return the total event duration in milliseconds
 	 */
 	public long getTotalDuration() {

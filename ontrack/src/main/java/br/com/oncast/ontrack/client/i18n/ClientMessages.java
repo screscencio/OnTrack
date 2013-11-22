@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.i18n;
 
-public interface ClientErrorMessages extends BaseMessages {
+public interface ClientMessages extends BaseMessages {
 
 	@Description("message shown when server push client receives an error")
 	@DefaultMessage("No internet connection...")
@@ -15,15 +15,15 @@ public interface ClientErrorMessages extends BaseMessages {
 	String unexpectedError();
 
 	@Description("message shown when the action was not applied correctly on server")
-	@DefaultMessage("The project is out of sync. Some changes may have been reverted.")
+	@DefaultMessage("The project is out of sync. OnTrack will reload to avoid further problems.")
 	String projectOutOfSync();
 
 	@Description("message shown when there is no response from the server on action submition.")
 	@DefaultMessage("Connection lost.")
 	String connectionLost();
 
-	@Description("message shown when the last applied action conflicts.")
-	@DefaultMessage("Some of the lattest changes conflicted.")
+	@Description("message shown when the lastest applied action conflicts.")
+	@DefaultMessage("Some of the latest changes conflicted.")
 	String someChangesConflicted();
 
 	@Description("message shown when some error happens because of model inconsistency.")
@@ -93,5 +93,13 @@ public interface ClientErrorMessages extends BaseMessages {
 	@Description("shown when locally saved pending actions were sent to server")
 	@DefaultMessage("{0} pending modifications were saved")
 	String pendingActionsSynced(int actions);
+
+	@Description("shown when model action sync request fails")
+	@DefaultMessage("Could not fetch latest modifications")
+	String couldNotRetrieveLatestModifications();
+
+	@Description("shown after reconnecting to server and syncing actions")
+	@DefaultMessage("Syncing")
+	String syncing();
 
 }

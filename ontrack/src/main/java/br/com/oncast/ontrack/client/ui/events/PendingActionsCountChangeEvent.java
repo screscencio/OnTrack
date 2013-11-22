@@ -6,21 +6,14 @@ public class PendingActionsCountChangeEvent extends GwtEvent<PendingActionsCount
 
 	public static Type<PendingActionsCountChangeEventHandler> TYPE;
 
-	private final int notSentActionsCount;
+	private final int pendingActionsCount;
 
-	private final int waitingAnswerActionsCount;
-
-	public PendingActionsCountChangeEvent(final int notSentActionsCount, final int waitingAnswerActionsCount) {
-		this.notSentActionsCount = notSentActionsCount;
-		this.waitingAnswerActionsCount = waitingAnswerActionsCount;
+	public PendingActionsCountChangeEvent(final int pendingActionsCount) {
+		this.pendingActionsCount = pendingActionsCount;
 	}
 
-	public int getNotSentActionsCount() {
-		return notSentActionsCount;
-	}
-
-	public int getWaitingAnswerActionsCount() {
-		return waitingAnswerActionsCount;
+	public int getPendingActionsCount() {
+		return pendingActionsCount;
 	}
 
 	public static Type<PendingActionsCountChangeEventHandler> getType() {

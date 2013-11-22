@@ -4,9 +4,10 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchServiceDefault;
 import br.com.drycode.api.web.gwt.dispatchService.client.RequestBuilderConfigurator;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
+import br.com.oncast.ontrack.client.services.actionSync.ActionDispatcher;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateService;
@@ -99,7 +100,7 @@ public class ClientServices {
 	private UsersStatusService usersStatusService;
 	private ColorProviderService colorProviderService;
 
-	private ClientErrorMessages clientErrorMessages;
+	private ClientMessages clientErrorMessages;
 	private UserGuidService userGuidService;
 	private UserAssociationService userAssociationService;
 	private ClientMetricsService clientMetricsService;
@@ -109,6 +110,7 @@ public class ClientServices {
 	private ScopeEstimatorProvider scopeEstimatorProvider;
 	// private OnTrackAdminService onTrackAdminService;
 	private NetworkMonitoringService networkMonitoringService;
+	private ActionDispatcher actionDispatcher;
 
 	private static ClientServices instance;
 
@@ -140,7 +142,7 @@ public class ClientServices {
 
 	public NetworkMonitoringService networkMonitor() {
 		if (networkMonitoringService != null) return networkMonitoringService;
-		return networkMonitoringService = new NetworkMonitoringService(request(), serverPush(), alerting(), errorMessages(), metrics());
+		return networkMonitoringService = new NetworkMonitoringService(request(), serverPush(), alerting(), messages(), metrics());
 	}
 
 	private AuthorizationService authorization() {
@@ -160,7 +162,7 @@ public class ClientServices {
 
 	public ProjectRepresentationProvider projectRepresentationProvider() {
 		if (projectRepresentationProvider != null) return projectRepresentationProvider;
-		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(request(), serverPush(), authentication(), alerting(), errorMessages());
+		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(request(), serverPush(), authentication(), alerting(), messages());
 	}
 
 	public ClientAlertingService alerting() {
@@ -196,13 +198,18 @@ public class ClientServices {
 
 	private ActionSyncService actionSync() {
 		if (actionSyncService != null) return actionSyncService;
-		return actionSyncService = new ActionSyncService(request(), serverPush(), actionExecution(), projectRepresentationProvider(), alerting(), errorMessages(), networkMonitor(), contextProvider(),
-				eventBus(), storage(), metrics());
+		return actionSyncService = new ActionSyncService(actionDispatcher(), actionExecution(), storage(), alerting(), messages(), networkMonitor(), contextProvider(), serverPush(), metrics(),
+				eventBus());
+	}
+
+	private ActionDispatcher actionDispatcher() {
+		if (actionDispatcher != null) return actionDispatcher;
+		return actionDispatcher = new ActionDispatcher(request(), projectRepresentationProvider(), metrics(), eventBus());
 	}
 
 	public ServerPushClientService serverPush() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientServiceImpl(alerting(), errorMessages());
+		return serverPushClientService = new ServerPushClientServiceImpl(alerting(), messages());
 	}
 
 	public EventBus eventBus() {
@@ -211,7 +218,7 @@ public class ClientServices {
 	}
 
 	public ClientApplicationStateService applicationState() {
-		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(eventBus(), contextProvider(), storage(), alerting(), errorMessages())
+		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(eventBus(), contextProvider(), storage(), alerting(), messages())
 				: clientApplicationStateService;
 	}
 
@@ -251,8 +258,8 @@ public class ClientServices {
 		return colorProviderService;
 	}
 
-	public ClientErrorMessages errorMessages() {
-		return clientErrorMessages == null ? clientErrorMessages = GWT.create(ClientErrorMessages.class) : clientErrorMessages;
+	public ClientMessages messages() {
+		return clientErrorMessages == null ? clientErrorMessages = GWT.create(ClientMessages.class) : clientErrorMessages;
 	}
 
 	public UserGuidService userGuide() {

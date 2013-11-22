@@ -49,4 +49,9 @@ public class ContextProviderServiceMock implements ContextProviderService {
 	public boolean isContextAvailable() {
 		return projectContext != null;
 	}
+
+	@Override
+	public UUID getCurrentProjectId() {
+		return null;
+	}
 }

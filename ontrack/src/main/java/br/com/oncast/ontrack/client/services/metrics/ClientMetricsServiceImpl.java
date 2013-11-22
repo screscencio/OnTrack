@@ -90,7 +90,7 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 
 	@Override
 	public void onPlaceRequest(final Place place) {
-		GoogleAnalyticsNativeImpl.set("page", "/" + MetricsTokenizer.getClassSimpleName(place));
+		GoogleAnalyticsNativeImpl.set("page", "/" + className(place));
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	}
 
 	void onTimeTrackingEnd(final TimeTrackingEvent event) {
-		GoogleAnalyticsNativeImpl.trackTiming(event.getCategory(), event.getValue(), event.getTotalDuration());
+		GoogleAnalyticsNativeImpl.trackTiming(event.getCategory(), event.getLabel(), event.getTotalDuration());
 	}
 
 	@Override
@@ -127,8 +127,8 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 
 	@Override
 	public void onActionExecution(final ModelAction action, final boolean isClientOnline) {
-		if (isClientOnline) GoogleAnalyticsNativeImpl.sendEvent("action", "client_side_execution", MetricsTokenizer.getClassSimpleName(action));
-		else GoogleAnalyticsNativeImpl.sendEvent("action", "offline_execution", MetricsTokenizer.getClassSimpleName(action));
+		if (isClientOnline) GoogleAnalyticsNativeImpl.sendEvent("action", "client_side_execution", className(action));
+		else GoogleAnalyticsNativeImpl.sendEvent("action", "offline_execution", className(action));
 	}
 
 	@Override
@@ -169,6 +169,11 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	@Override
 	public void onConnectionLost() {
 		GoogleAnalyticsNativeImpl.sendEvent("application", "connection_lost");
+	}
+
+	@Override
+	public void onConnectionRecovered() {
+		GoogleAnalyticsNativeImpl.sendEvent("application", "connection_recovered");
 	}
 
 	@Override

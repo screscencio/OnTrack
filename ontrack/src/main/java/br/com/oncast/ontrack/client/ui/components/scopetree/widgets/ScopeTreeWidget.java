@@ -182,7 +182,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			private void addToCache(final ScopeTreeItem scopeTreeItem) {
 				final Scope scope = scopeTreeItem.getReferencedScope();
 				if (itemMapCache.containsKey(scope.getId()))
-					throw new RuntimeException("You are trying to Add a widget for Scope '" + scope.getDescription() + "' that the ScopeTreeWidget already has");
+					throw new RuntimeException("You are trying to Add a widget for Scope[" + scope.getId() + "] '" + scope.getDescription() + "' that the ScopeTreeWidget already has");
 
 				itemMapCache.put(scope.getId(), scopeTreeItem);
 			}
@@ -190,7 +190,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			private void removeFromCache(final ScopeTreeItem scopeTreeItem) {
 				final Scope scope = scopeTreeItem.getReferencedScope();
 				if (!itemMapCache.containsKey(scope.getId()))
-					throw new RuntimeException("You are trying to Remove a widget for Scope '" + scope.getDescription() + "' that is not present in the ScopeTreeWidget");
+					throw new RuntimeException("You are trying to Remove a widget for Scope[" + scope.getId() + "] '" + scope.getDescription() + "' that is not present in the ScopeTreeWidget");
 
 				itemMapCache.remove(scope.getId());
 			}
@@ -272,8 +272,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemEditionEndEventHandler() {
 
 			@Override
-			public void onItemEditionEnd(final ScopeTreeItem item, final String value) {
-				interactionHandler.onItemEditionEnd(item, value);
+			public void onItemEditionEnd(final Scope scope, final String value) {
+				interactionHandler.onItemEditionEnd(scope, value);
 			}
 		}, ScopeTreeItemEditionEndEvent.getType()));
 

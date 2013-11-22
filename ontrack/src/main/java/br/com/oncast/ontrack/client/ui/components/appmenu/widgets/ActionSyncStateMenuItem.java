@@ -2,6 +2,8 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.internet.ConnectionListener;
+import br.com.oncast.ontrack.client.ui.events.ActionsDispatchEvent;
+import br.com.oncast.ontrack.client.ui.events.ActionsDispatchEventHandler;
 import br.com.oncast.ontrack.client.ui.events.PendingActionsCountChangeEvent;
 import br.com.oncast.ontrack.client.ui.events.PendingActionsCountChangeEventHandler;
 
@@ -14,7 +16,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
-public class ActionSyncStateMenuItem extends Composite implements IsWidget, PendingActionsCountChangeEventHandler, ConnectionListener {
+public class ActionSyncStateMenuItem extends Composite implements IsWidget, PendingActionsCountChangeEventHandler, ConnectionListener, ActionsDispatchEventHandler {
 
 	private static final ActionSyncStateMenuItemMessages MESSAGES = GWT.create(ActionSyncStateMenuItemMessages.class);
 
@@ -24,9 +26,9 @@ public class ActionSyncStateMenuItem extends Composite implements IsWidget, Pend
 
 	private boolean connected = true;
 
-	private int notSent;
+	private boolean syncing = false;
 
-	private int waiting;
+	private int pendingActionsCount;
 
 	public ActionSyncStateMenuItem() {
 		handlerRegistrations = new HashSet<HandlerRegistration>();
@@ -65,26 +67,23 @@ public class ActionSyncStateMenuItem extends Composite implements IsWidget, Pend
 	private void updateHeader() {
 		String styleName = connected ? "icon-ok" : "icon-remove";
 		String connectionStateDescription = connected ? MESSAGES.connected() : MESSAGES.noConnection();
-		int count = notSent + waiting;
-
-		if (waiting > 0) {
+		if (syncing) {
 			styleName = "icon-refresh icon-spin";
 			connectionStateDescription = MESSAGES.syncing();
-			count = waiting;
 		}
 
-		final String actionsCountText = count > 0 ? (count + " " + (count == 1 ? MESSAGES.singleModificationNeedToBeSent() : MESSAGES.multipleModificationsNeedsToBeSent())) : MESSAGES.upToDate();
+		final String actionsCountText = pendingActionsCount > 0 ? (pendingActionsCount + " " + (pendingActionsCount == 1 ? MESSAGES.singleModificationNeedToBeSent() : MESSAGES.multipleModificationsNeedsToBeSent())) : MESSAGES
+				.upToDate();
 
 		headerWidget.setTitle(connectionStateDescription + ": " + actionsCountText);
 		headerWidget.setIcon(styleName);
-		setPendingActionsCount(count);
+		setPendingActionsCount(pendingActionsCount);
 		headerWidget.setConnected(connected);
 	}
 
 	@Override
 	public void onPendingActionsCountChange(final PendingActionsCountChangeEvent e) {
-		notSent = e.getNotSentActionsCount();
-		waiting = e.getWaitingAnswerActionsCount();
+		pendingActionsCount = e.getPendingActionsCount();
 		updateHeader();
 	}
 
@@ -98,6 +97,11 @@ public class ActionSyncStateMenuItem extends Composite implements IsWidget, Pend
 	public void onConnectionLost() {
 		connected = false;
 		updateHeader();
+	}
+
+	@Override
+	public void onActionsDispatchEvent(final ActionsDispatchEvent event) {
+		syncing = event.isDispatching();
 	}
 
 }

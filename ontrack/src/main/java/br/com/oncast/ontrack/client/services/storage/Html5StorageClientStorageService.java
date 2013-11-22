@@ -1,10 +1,13 @@
 package br.com.oncast.ontrack.client.services.storage;
 
+import br.com.oncast.ontrack.client.services.actionSync.ActionSyncEntry;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.NullAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
@@ -15,6 +18,7 @@ import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -230,9 +234,8 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		return bean.as();
 	}
 
-	@Override
-	public void savePendingActions(final List<ModelAction> pendingActions) {
-		if (gwtStorage == null) return;
+	private void storePendingActions(final List<ModelAction> pendingActions) {
+		if (gwtStorage == null || !authenticationService.isUserAvailable()) return;
 
 		final String keyName = getUserProjectStorageKey(ClientStorageColumnNames.PENDING_ACTIONS_LIST);
 		final StorageKey<ArrayList<ModelAction>> key = StorageKeyFactory.objectKey(keyName);
@@ -245,8 +248,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		}
 	}
 
-	@Override
-	public List<ModelAction> loadPendingActions() {
+	private List<ModelAction> loadPendingActions() {
 		try {
 			final String keyName = getUserProjectStorageKey(ClientStorageColumnNames.PENDING_ACTIONS_LIST);
 			final StorageKey<ArrayList<ModelAction>> key = StorageKeyFactory.objectKey(keyName);
@@ -254,6 +256,33 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		} catch (final Exception e) {
 			return new ArrayList<ModelAction>();
 		}
+	}
+
+	@Override
+	public List<ActionSyncEntry> loadActionSyncEntries() {
+		final ArrayList<ActionSyncEntry> entries = new ArrayList<ActionSyncEntry>();
+		final List<ModelAction> actions = loadPendingActions();
+		for (int i = 0; i < actions.size(); i++) {
+			final ModelAction action = actions.get(i);
+			entries.add(new ActionSyncEntry(action, new NullAction(), new ActionContext(authenticationService.getCurrentUserId(), new Date())));
+		}
+
+		return entries;
+	}
+
+	@Override
+	public void storeActionSyncEntries(final List<ActionSyncEntry> entries) {
+		if (gwtStorage == null || !authenticationService.isUserAvailable()) return;
+
+		final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
+		final ArrayList<ActionContext> contexts = new ArrayList<ActionContext>();
+		for (final ActionSyncEntry actionSyncEntry : entries) {
+			actions.add(actionSyncEntry.getAction());
+			contexts.add(actionSyncEntry.getContext());
+		}
+		storePendingActions(actions);
+
+		return;
 	}
 
 }

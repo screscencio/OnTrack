@@ -1,11 +1,13 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 import java.io.Serializable;
 import java.util.Date;
 
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ActionContext implements Serializable {
+public class ActionContext implements Serializable, IsSerializable {
 
 	private static final long serialVersionUID = 1L;
 

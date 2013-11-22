@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.shared.model;
 
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T>> {
 

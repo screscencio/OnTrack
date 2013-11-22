@@ -82,7 +82,7 @@ public class ProgressActivity extends AbstractActivity {
 				public void updateReleaseInfo() {
 					updateCustomApplicationMenus();
 				}
-			}, ClientServices.get().errorMessages());
+			}, ClientServices.get().messages());
 		} catch (final ReleaseNotFoundException e) {
 			tracking.end();
 			ClientServices.get().metrics().onException("ProgressActivity(" + this.place + "): Release not found");

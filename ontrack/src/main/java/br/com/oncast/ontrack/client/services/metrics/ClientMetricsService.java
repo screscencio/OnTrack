@@ -46,6 +46,8 @@ public interface ClientMetricsService {
 
 	void onConnectionLost();
 
+	void onConnectionRecovered();
+
 	void onActionExecution(ModelAction action, boolean isClientOnline);
 
 	void onShortcutUsed(ShortcutMapping<?> mapping);

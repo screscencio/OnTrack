@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
@@ -42,10 +42,10 @@ public class KanbanActionSyncController {
 	private final ActionExecutionService actionExecutionService;
 	private final ActionExecutionListener actionExecutionListener;
 	private ReleaseMonitor releaseMonitor;
-	private final ClientErrorMessages messages;
+	private final ClientMessages messages;
 
 	public KanbanActionSyncController(final ActionExecutionService actionExecutionService, final Release release, final Display display,
-			final ClientErrorMessages messages) {
+			final ClientMessages messages) {
 		this.messages = messages;
 		this.actionExecutionService = actionExecutionService;
 		this.actionExecutionListener = new ActionExecutionListener() {
