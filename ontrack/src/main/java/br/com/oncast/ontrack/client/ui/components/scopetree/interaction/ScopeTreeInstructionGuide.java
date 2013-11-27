@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
-import java.util.Arrays;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.generalwidgets.ShortcutLabel;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
@@ -11,6 +8,9 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.Arrays;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 

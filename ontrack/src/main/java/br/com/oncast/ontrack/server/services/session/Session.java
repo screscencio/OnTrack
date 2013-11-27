@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.server.services.session;
 
-import java.io.Serializable;
-
-import org.apache.log4j.Logger;
-
 import br.com.oncast.ontrack.server.services.serverPush.CometClientConnection;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.model.user.User;
+
+import java.io.Serializable;
+
+import org.apache.log4j.Logger;
 
 /**
  * Unique session information holder.<br/>

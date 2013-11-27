@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.release;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.SubjectDetailWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.InformationBlockWidget;
@@ -14,6 +12,8 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

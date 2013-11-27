@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
 @Root(name = "projectAuthorization")
 public class ProjectAuthorizationXMLNode {

@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
-import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getModifiedScope;
-import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getOriginalScope;
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
-import static br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils.declareEffort;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.scope.Scope;
+import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getModifiedScope;
+import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getOriginalScope;
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
+import static br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils.declareEffort;
 
 public class EffortInferenceEngineFlow2Test {
 

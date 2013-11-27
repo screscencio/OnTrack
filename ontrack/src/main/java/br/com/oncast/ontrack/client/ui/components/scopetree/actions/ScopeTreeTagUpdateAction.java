@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
@@ -10,6 +8,8 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.List;
 
 public class ScopeTreeTagUpdateAction implements ScopeTreeAction {
 
@@ -22,7 +22,7 @@ public class ScopeTreeTagUpdateAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
+	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		final List<TagAssociationMetadata> metadataList = context.getAllMetadata(TagAssociationMetadata.getType());
 
 		for (final TagAssociationMetadata metadata : metadataList) {

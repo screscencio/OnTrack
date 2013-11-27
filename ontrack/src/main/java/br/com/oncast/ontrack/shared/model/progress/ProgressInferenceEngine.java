@@ -6,20 +6,20 @@
 
 package br.com.oncast.ontrack.shared.model.progress;
 
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
 
 // TODO Possible optimization may be necessary as this algorithm does not make use of "damage-control", because the damage control implementation we had would
 // only take in account the action modification and not the modifications done by other inference engines (like EffortInferenceEngine).

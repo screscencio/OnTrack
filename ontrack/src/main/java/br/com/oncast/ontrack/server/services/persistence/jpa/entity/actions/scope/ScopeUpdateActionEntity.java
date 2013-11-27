@@ -31,18 +31,6 @@ public class ScopeUpdateActionEntity extends ModelActionEntity {
 	@JoinTable(name = "ScopeUpdateAction_subActionList")
 	private List<ModelActionEntity> subActionList;
 
-	@Column(name = ActionTableColumns.UNIQUE_ID)
-	@ConvertUsing(StringToUuidConverter.class)
-	private String uniqueId;
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(final String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-
 	public String getReferenceId() {
 		return referenceId;
 	}

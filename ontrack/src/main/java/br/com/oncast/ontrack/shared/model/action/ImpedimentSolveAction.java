@@ -10,7 +10,6 @@ import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.Date;
 
@@ -27,28 +26,9 @@ public class ImpedimentSolveAction implements ImpedimentAction {
 	@Element
 	private UUID annotationId;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ImpedimentSolveAction() {}
 
 	public ImpedimentSolveAction(final UUID subjectId, final UUID annotationId) {
-		this.uniqueId = new UUID();
 		this.subjectId = subjectId;
 		this.annotationId = annotationId;
 	}

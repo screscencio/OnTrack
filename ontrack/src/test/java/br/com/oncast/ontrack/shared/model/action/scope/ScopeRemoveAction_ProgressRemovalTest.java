@@ -1,20 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
@@ -27,6 +14,19 @@ import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
+
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Mockito.when;
 
 public class ScopeRemoveAction_ProgressRemovalTest {
 
@@ -142,15 +142,15 @@ public class ScopeRemoveAction_ProgressRemovalTest {
 		ScopeTestUtils.setProgress(removedScope, "Done");
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 
-		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ScopeRemoveAction(removedScope.getId()), context, actionContext);
+		final ActionExecutionManager actionExecutionManager = ActionExecutionTestUtils.createManager(context);
+		actionExecutionManager.doUserAction(UserActionTestUtils.create(new ScopeRemoveAction(removedScope.getId()), actionContext));
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertFalse(removedScope.getProgress().hasDeclared());
 		assertFalse(removedScope.getProgress().isDone());
 		assertEquals(ProgressState.NOT_STARTED, removedScope.getProgress().getState());
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context, actionContext);
+			actionExecutionManager.undoUserAction();
 
 			assertEquals(3, rootScope.getChildren().size());
 			assertTrue(rootScope.getChild(1).getProgress().isDone());
@@ -158,7 +158,7 @@ public class ScopeRemoveAction_ProgressRemovalTest {
 			assertEquals(ProgressState.DONE, rootScope.getChild(1).getProgress().getState());
 
 			removedScope = rootScope.getChild(1);
-			actionExecutionManager.redoUserAction(context, actionContext);
+			actionExecutionManager.redoUserAction();
 
 			assertEquals(2, rootScope.getChildren().size());
 			assertFalse(removedScope.getProgress().hasDeclared());

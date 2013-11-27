@@ -11,7 +11,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Element;
 
@@ -29,24 +28,6 @@ public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
 	@Element
 	private UUID tagId;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ScopeAddTagAssociationAction() {}
 
 	public ScopeAddTagAssociationAction(final UUID scopeId, final UUID tagId) {
@@ -58,7 +39,6 @@ public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
 	}
 
 	private ScopeAddTagAssociationAction(final UUID scopeId, final UUID tagId, final UUID metadataId) {
-		this.uniqueId = new UUID();
 		this.scopeId = scopeId;
 		this.tagId = tagId;
 		this.metadataId = metadataId;

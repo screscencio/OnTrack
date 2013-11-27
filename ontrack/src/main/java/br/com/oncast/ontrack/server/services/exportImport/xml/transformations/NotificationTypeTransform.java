@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.transformations;
 
-import org.simpleframework.xml.transform.Transform;
-
 import br.com.oncast.ontrack.shared.services.notification.NotificationType;
+
+import org.simpleframework.xml.transform.Transform;
 
 public class NotificationTypeTransform implements Transform<NotificationType> {
 

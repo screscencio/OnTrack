@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet.widgets;
 
-import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentUser;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.selection.SelectionControllerDefault;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
@@ -16,6 +11,9 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -29,6 +27,8 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.services.ClientServices.getCurrentUser;
 
 public class TimesheetWidget extends Composite {
 

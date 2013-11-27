@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.client.ui.components.report;
 
-import java.util.Comparator;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.components.report.ScopeDatabase.ScopeItem;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.Comparator;
+import java.util.List;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;

@@ -1,16 +1,16 @@
 package br.com.oncast.ontrack.server.services.serverPush.atmosphere;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.gwt.server.GwtAtmosphereResource;
-
 import br.com.oncast.ontrack.server.services.serverPush.CometClientConnection;
 import br.com.oncast.ontrack.server.services.serverPush.InternalConnectionListener;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushApi;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.gwt.server.GwtAtmosphereResource;
 
 public class OntrackAtmospherePushServer implements ServerPushApi {
 

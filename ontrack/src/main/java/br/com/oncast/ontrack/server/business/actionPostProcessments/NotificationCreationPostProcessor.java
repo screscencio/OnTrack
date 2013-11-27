@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.server.business.actionPostProcessments;
 
-import org.apache.log4j.Logger;
-
 import br.com.oncast.ontrack.server.business.notification.NotificationFactory;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.notification.NotificationServerService;
@@ -12,6 +10,8 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+
+import org.apache.log4j.Logger;
 
 public class NotificationCreationPostProcessor implements ActionPostProcessor<ModelAction> {
 

@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

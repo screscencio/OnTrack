@@ -10,7 +10,6 @@ import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,28 +31,9 @@ public class KanbanLockAction implements KanbanAction {
 	@ElementList(required = false)
 	private List<String> columnIds;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected KanbanLockAction() {}
 
 	public KanbanLockAction(final UUID releaseId) {
-		this.uniqueId = new UUID();
 		this.releaseId = releaseId;
 		columnDescriptions = new ArrayList<String>();
 		columnIds = new ArrayList<String>();

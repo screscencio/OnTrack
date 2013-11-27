@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.server.business;
 
 import br.com.oncast.ontrack.server.business.actionPostProcessments.ActionPostProcessmentsInitializer;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
@@ -40,6 +39,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.TeamRevogueInvitationAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -51,6 +51,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
+import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
@@ -62,6 +63,7 @@ import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -79,12 +81,14 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
@@ -206,42 +210,53 @@ public class BusinessLogicTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
-	public void shouldDoNothingWhenHandlingAlreadyHandledActions() throws Exception {
-		business = BusinessLogicTestFactory.create(persistence);
-		final ScopeUpdateAction action = new ScopeUpdateAction(new UUID("id"), "bllla");
-		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(action);
+	public void shouldSetReceiptTimestampToHandledActions() throws Exception {
+		business = BusinessLogicTestFactory.businessLogic().with(persistence).with(multicast).create();
+		final ModelAction action = new TeamInviteAction(new UUID(), Profile.CONTRIBUTOR);
 
-		final UserAction userAction = UserActionTestUtils.createUserAction(action);
-		when(persistence.retrieveAction(PROJECT_ID, action.getId())).thenReturn(userAction);
-		final long syncId = business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
-		verify(persistence, never()).persistActions(any(UUID.class), anyList(), any(UUID.class), any(Date.class));
-		assertEquals(userAction.getId(), syncId);
+		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(Arrays.asList(action)));
+		final UserAction persistedAction = capturePersistedActions().get(0);
+		final Date persistedReceiptTimestamp = persistedAction.getReceiptTimestamp();
+		assertNotNull(persistedReceiptTimestamp);
+		final ModelActionSyncEvent syncEvent = captureMulticastedModelActionSyncEvent(projectRepresentation.getId());
+		final Date multicastedReceiptTimestamp = syncEvent.getActionList().get(0).getReceiptTimestamp();
+		assertNotNull(multicastedReceiptTimestamp);
+		assertEquals(persistedReceiptTimestamp, multicastedReceiptTimestamp);
 	}
 
 	@Test
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void shouldDoNothingWhenHandlingAlreadyHandledActions() throws Exception {
+		business = BusinessLogicTestFactory.create(persistence);
+		final UserAction action = UserActionTestUtils.create(new ScopeUpdateAction(new UUID("id"), "bllla"));
+		final ArrayList<UserAction> actionList = new ArrayList<UserAction>();
+		actionList.add(action);
+
+		when(persistence.retrieveAction(PROJECT_ID, action.getId())).thenReturn(action);
+		final long syncId = business.handleIncomingActionSyncRequest(createModelActionSyncRequestFromUserActions(actionList));
+		verify(persistence, never()).persistActions(anyListOf(UserAction.class));
+		assertEquals(action.getSequencialId(), syncId);
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
 	public void shouldKeepNonHandledActionsWhenHandledAndNotHandledActionsAreSentInTheSameBatchForHandling() throws Exception {
 		business = BusinessLogicTestFactory.create(persistence);
-		final TeamInviteAction action = new TeamInviteAction(new UUID(), Profile.GUEST);
-		final TeamInviteAction action2 = new TeamInviteAction(new UUID(), Profile.GUEST);
-		final TeamInviteAction action3 = new TeamInviteAction(new UUID(), Profile.GUEST);
-		final TeamInviteAction action4 = new TeamInviteAction(new UUID(), Profile.GUEST);
-		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
+		final UserAction action = UserActionTestUtils.create(new TeamInviteAction(new UUID(), Profile.GUEST), admin.getId());
+		final UserAction action2 = UserActionTestUtils.create(new TeamInviteAction(new UUID(), Profile.GUEST), admin.getId());
+		final UserAction action3 = UserActionTestUtils.create(new TeamInviteAction(new UUID(), Profile.GUEST), admin.getId());
+		final UserAction action4 = UserActionTestUtils.create(new TeamInviteAction(new UUID(), Profile.GUEST), admin.getId());
+		final ArrayList<UserAction> actionList = new ArrayList<UserAction>();
 		actionList.add(action);
 		actionList.add(action2);
 		actionList.add(action3);
 		actionList.add(action4);
 
-		when(persistence.retrieveAction(PROJECT_ID, action.getId())).thenReturn(UserActionTestUtils.createUserAction(action));
-		when(persistence.retrieveAction(PROJECT_ID, action2.getId())).thenReturn(UserActionTestUtils.createUserAction(action2));
+		when(persistence.retrieveAction(PROJECT_ID, action.getId())).thenReturn(action);
+		when(persistence.retrieveAction(PROJECT_ID, action2.getId())).thenReturn(action2);
 		final long lastPersistedSyncId = 123;
-		when(persistence.persistActions(eq(PROJECT_ID), anyList(), any(UUID.class), any(Date.class))).thenReturn(lastPersistedSyncId);
-		final long syncId = business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
-		final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-		verify(persistence).persistActions(eq(PROJECT_ID), captor.capture(), any(UUID.class), any(Date.class));
-		final List<ModelAction> persistedActions = captor.getValue();
+		when(persistence.persistActions(anyList())).thenReturn(lastPersistedSyncId);
+		final long syncId = business.handleIncomingActionSyncRequest(createModelActionSyncRequestFromUserActions(actionList));
+		final List<UserAction> persistedActions = capturePersistedActions();
 		assertEquals(2, persistedActions.size());
 		assertEquals(action3, persistedActions.get(0));
 		assertEquals(action4, persistedActions.get(1));
@@ -260,7 +275,7 @@ public class BusinessLogicTest {
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
-		verify(persistence, times(0)).persistActions(any(UUID.class), anyList(), any(UUID.class), any(Date.class));
+		verify(persistence, times(0)).persistActions(anyList());
 	}
 
 	@Test
@@ -269,12 +284,12 @@ public class BusinessLogicTest {
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext context = createContext(project);
 
-		final List<ModelAction> someActions = createSomeActionsWithRequiredUsers();
-		for (final ModelAction action : someActions) {
-			ActionExecuter.executeAction(context, actionContext, action);
+		final List<UserAction> someActions = userAction(createSomeActionsWithRequiredUsers());
+		for (final UserAction action : someActions) {
+			ActionExecuter.executeAction(context, action);
 		}
 
-		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(someActions));
+		business.handleIncomingActionSyncRequest(createModelActionSyncRequestFromUserActions(someActions));
 		final Scope projectScope = loadProject().getProjectScope();
 
 		DeepEqualityTestUtils.assertObjectEquality(project.getProjectScope(), projectScope);
@@ -295,22 +310,17 @@ public class BusinessLogicTest {
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext context = createContext(project);
 
-		final List<ModelAction> rollbackActions = new ArrayList<ModelAction>();
-		final List<ModelAction> actions = createSomeActionsWithRequiredUsers();
-		for (final ModelAction action : actions) {
-			final ModelAction reverseAction = ActionExecuter.executeAction(context, actionContext, action).getReverseAction();
+		final List<UserAction> rollbackActions = new ArrayList<UserAction>();
+		final List<UserAction> actions = userAction(createSomeActionsWithRequiredUsers());
+		for (final UserAction action : actions) {
+			final UserAction reverseAction = ActionExecuter.executeAction(context, action).getReverseUserAction();
 			if (reverseAction != null) rollbackActions.add(reverseAction);
 		}
 
-		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actions));
+		business.handleIncomingActionSyncRequest(createModelActionSyncRequestFromUserActions(actions));
 
 		Collections.reverse(rollbackActions);
-		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(rollbackActions));
-	}
-
-	private List<ModelAction> createSomeActionsWithRequiredUsers() {
-		final List<ModelAction> actions = ActionTestUtils.createSomeActions(UserTestUtils.getAdmin(), authenticatedUser);
-		return actions;
+		business.handleIncomingActionSyncRequest(createModelActionSyncRequestFromUserActions(rollbackActions));
 	}
 
 	@Test
@@ -318,15 +328,15 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestFactory.createWithJpaPersistence();
 		final Project project1 = loadProject();
 
-		final ModelAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
+		final List<UserAction> actionList = new ArrayList<UserAction>();
+		actionList.add(userAction(new TeamInviteAction(admin.getId(), Profile.PROJECT_MANAGER)));
+		final UserAction action = userAction(new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son"));
+		actionList.add(action);
 		final ProjectContext context = new ProjectContext(project1);
 		context.addUser(adminRepresentation);
-		action.execute(context, actionContext);
+		action.execute(context);
 
-		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(admin.getId(), Profile.PROJECT_MANAGER));
-		actionList.add(action);
-		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
+		business.handleIncomingActionSyncRequest(createModelActionSyncRequestFromUserActions(actionList));
 
 		final Project project2 = loadProject();
 
@@ -437,7 +447,7 @@ public class BusinessLogicTest {
 		final List<ModelAction> actions2 = ActionTestUtils.getActions2();
 		actions2.add(0, new TeamInviteAction(admin.getId(), Profile.PROJECT_MANAGER));
 		final List<ModelAction> actionList2 = executeActionsToProject(project2, actions2);
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectRepresentation2, actionList2));
+		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList2, projectRepresentation2));
 
 		final Project loadedProject1 = loadProject();
 		final Project loadedProject2 = loadProject(OTHER_PROJECT_ID);
@@ -492,7 +502,7 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestFactory.create(BusinessLogicTestFactory.businessLogic().with(persistence).with(authenticationManager).with(authorizationManager).with(postProcessingService));
 
 		final List<ModelAction> actions = createSomeActionsWithRequiredUsers();
-		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
+		final ModelActionSyncRequest actionSyncRequest = createModelActionSyncRequest(actions);
 
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
@@ -571,9 +581,9 @@ public class BusinessLogicTest {
 		final ArgumentCaptor<ModelActionSyncRequest> captor = ArgumentCaptor.forClass(ModelActionSyncRequest.class);
 		verify(business).handleIncomingActionSyncRequest(captor.capture());
 		final ModelActionSyncRequest request = captor.getValue();
-		assertTrue(request.getActionList().get(0) instanceof TeamInviteAction);
-		assertEquals(projectId, request.getProjectId());
-		assertEquals(authenticatedUser.getId(), request.getActionList().get(0).getReferenceId());
+		assertTrue(request.getActionList().get(0).getModelAction() instanceof TeamInviteAction);
+		assertEquals(projectId, request.getActionList().get(0).getProjectId());
+		assertEquals(authenticatedUser.getId(), request.getActionList().get(0).getModelAction().getReferenceId());
 	}
 
 	@Test
@@ -605,7 +615,7 @@ public class BusinessLogicTest {
 		business.handleIncomingActionSyncRequest(request);
 
 		verify(authorizationManager, atLeastOnce()).assureActiveProjectAccessAuthorization(request.getProjectId());
-		verify(persistence).persistActions(eq(request.getProjectId()), eq(request.getActionList()), eq(authenticatedUser.getId()), any(Date.class));
+		verify(persistence).persistActions(eq(request.getActionList()));
 	}
 
 	@Test
@@ -660,10 +670,10 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestFactory.create(persistence, authenticationManager, authorizationManager);
 
 		final List<ModelAction> actions = createSomeActionsWithRequiredUsers();
-		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
+		final ModelActionSyncRequest actionSyncRequest = createModelActionSyncRequest(actions);
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
-		verify(persistence).persistActions(eq(PROJECT_ID), eq(actions), eq(authenticatedUser.getId()), any(Date.class));
+		verify(persistence).persistActions(eq(actionSyncRequest.getActionList()));
 	}
 
 	@Test
@@ -674,14 +684,14 @@ public class BusinessLogicTest {
 
 		final UUID userId = new UUID();
 		final User createdUser = UserTestUtils.createUser(userId);
-		final List<ModelAction> actions = ActionTestUtils.createSomeActions(UserTestUtils.getAdmin(), createdUser);
-		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
+		final List<UserAction> actions = UserActionTestUtils.create(ActionTestUtils.createSomeActions(admin, createdUser), userId, PROJECT_ID);
+		final ModelActionSyncRequest actionSyncRequest = createModelActionSyncRequestFromUserActions(actions);
 
 		authenticateAndAuthorizeUser(createdUser, PROJECT_ID);
 
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
-		verify(persistence).persistActions(eq(PROJECT_ID), eq(actions), eq(userId), any(Date.class));
+		verify(persistence).persistActions(eq(actions));
 	}
 
 	@Test
@@ -696,7 +706,7 @@ public class BusinessLogicTest {
 
 		final ModelActionSyncRequest request = captor.getValue();
 		assertEquals(fileRepresentation.getProjectId(), request.getProjectId());
-		final ModelAction action = request.getActionList().get(0);
+		final ModelAction action = request.getActionList().get(0).getModelAction();
 		assertTrue(action instanceof FileUploadAction);
 		assertEquals(fileRepresentation.getId(), action.getReferenceId());
 	}
@@ -723,7 +733,7 @@ public class BusinessLogicTest {
 		final ModelActionSyncRequest actionSyncRequest = captor.getValue();
 		assertEquals(projectId, actionSyncRequest.getProjectId());
 		assertEquals(1, actionSyncRequest.getActionList().size());
-		final ModelAction action = actionSyncRequest.getActionList().get(0);
+		final ModelAction action = actionSyncRequest.getActionList().get(0).getModelAction();
 		assertTrue(action instanceof TeamRevogueInvitationAction);
 		assertEquals(userId, action.getReferenceId());
 	}
@@ -766,6 +776,19 @@ public class BusinessLogicTest {
 		}
 	}
 
+	private ModelActionSyncEvent captureMulticastedModelActionSyncEvent(final UUID projectId) {
+		final ArgumentCaptor<ModelActionSyncEvent> eventCaptor = ArgumentCaptor.forClass(ModelActionSyncEvent.class);
+		verify(multicast).multicastToAllUsersButCurrentUserClientInSpecificProject(eventCaptor.capture(), eq(projectId));
+		return eventCaptor.getValue();
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List<UserAction> capturePersistedActions() throws PersistenceException {
+		final ArgumentCaptor<List> persistenceCaptor = ArgumentCaptor.forClass(List.class);
+		verify(persistence).persistActions(persistenceCaptor.capture());
+		return persistenceCaptor.getValue();
+	}
+
 	private ProjectRepresentation setupMocksToCreateProjectWithId(final UUID projectId) throws PersistenceException, NoResultFoundException {
 		final ProjectRepresentation projectRepresentation = ProjectTestUtils.createRepresentation(projectId);
 		authenticateAndAuthorizeUser(authenticatedUser, projectId);
@@ -789,7 +812,40 @@ public class BusinessLogicTest {
 	}
 
 	private ModelActionSyncRequest createModelActionSyncRequest(final List<ModelAction> actionList) {
-		return new ModelActionSyncRequest(projectRepresentation, actionList);
+		return createModelActionSyncRequest(actionList, projectRepresentation);
+	}
+
+	private ModelActionSyncRequest createModelActionSyncRequest(final List<ModelAction> actionList, final ProjectRepresentation project) {
+		return new ModelActionSyncRequest(project.getId(), userAction(actionList, project, admin));
+	}
+
+	private List<UserAction> userAction(final List<ModelAction> modelActions, final ProjectRepresentation project, final User user) {
+		final List<UserAction> list = new ArrayList<UserAction>();
+		for (final ModelAction action : modelActions) {
+			list.add(userAction(action, project, user));
+		}
+		return list;
+	}
+
+	private List<UserAction> userAction(final List<ModelAction> modelActions) {
+		return userAction(modelActions, projectRepresentation, admin);
+	}
+
+	private List<ModelAction> createSomeActionsWithRequiredUsers() {
+		final List<ModelAction> actions = ActionTestUtils.createSomeActions(admin, authenticatedUser);
+		return actions;
+	}
+
+	private UserAction userAction(final ModelAction modelAction, final ProjectRepresentation project, final User user) {
+		return UserActionTestUtils.create(modelAction, user.getId(), project.getId());
+	}
+
+	private UserAction userAction(final ModelAction modelAction) {
+		return userAction(modelAction, projectRepresentation, admin);
+	}
+
+	private ModelActionSyncRequest createModelActionSyncRequestFromUserActions(final List<UserAction> actionList) {
+		return new ModelActionSyncRequest(projectRepresentation.getId(), actionList);
 	}
 
 	private Project loadProject() throws UnableToLoadProjectException, ProjectNotFoundException {

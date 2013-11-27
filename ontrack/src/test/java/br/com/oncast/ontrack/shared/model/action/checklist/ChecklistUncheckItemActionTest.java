@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.checklist;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistUncheckItemActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ChecklistUncheckItemAction;
@@ -16,6 +9,13 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ChecklistUncheckItemActionTest extends ModelActionTest {
 

@@ -1,10 +1,11 @@
 package br.com.oncast.ontrack.shared.services.requestDispatch.metrics;
 
-import java.io.Serializable;
-
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
+
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
+
+import java.io.Serializable;
 
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;

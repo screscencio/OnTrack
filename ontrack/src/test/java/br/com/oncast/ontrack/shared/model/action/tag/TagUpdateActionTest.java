@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.tag;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag.TagUpdateActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -17,6 +10,14 @@ import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.tag.exception.TagNotFoundException;
 import br.com.oncast.ontrack.utils.TagTestUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class TagUpdateActionTest extends ModelActionTest {
 

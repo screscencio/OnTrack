@@ -21,18 +21,6 @@ public class ReleaseDeclareEstimatedVelocityActionEntity extends ModelActionEnti
 	@Column(name = ActionTableColumns.FLOAT_1, nullable = true)
 	private Float estimatedVelocity;
 
-	@Column(name = ActionTableColumns.UNIQUE_ID)
-	@ConvertUsing(StringToUuidConverter.class)
-	private String uniqueId;
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(final String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-
 	public String getReleaseId() {
 		return releaseId;
 	}

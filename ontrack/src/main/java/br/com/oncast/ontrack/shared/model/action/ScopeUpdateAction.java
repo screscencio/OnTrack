@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,26 +34,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	public ScopeUpdateAction(final UUID referenceId, final String newPattern) {
-		this.uniqueId = new UUID();
 		this.referenceId = referenceId;
 
 		final ScopeRepresentationParser parser = new ScopeRepresentationParser(newPattern);
@@ -68,7 +48,6 @@ public class ScopeUpdateAction implements ScopeAction {
 	}
 
 	public ScopeUpdateAction(final UUID referenceId, final String newDescription, final List<ModelAction> subActionList) {
-		this.uniqueId = new UUID();
 		this.referenceId = referenceId;
 		this.newDescription = newDescription;
 		this.subActionList = subActionList;

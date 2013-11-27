@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.shared.places;
 
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class PlaceTokenParserTest {
 

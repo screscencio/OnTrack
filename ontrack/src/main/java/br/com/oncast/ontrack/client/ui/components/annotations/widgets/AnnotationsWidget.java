@@ -12,7 +12,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -238,8 +237,8 @@ public class AnnotationsWidget extends Composite {
 		return actionsListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
 				if (action instanceof AnnotationAction && action.getReferenceId().equals(subjectId)) update();
 				if (action instanceof ImpedimentAction && action.getReferenceId().equals(subjectId)) update();
 			}

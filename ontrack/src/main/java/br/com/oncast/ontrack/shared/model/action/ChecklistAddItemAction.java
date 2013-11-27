@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -33,28 +32,9 @@ public class ChecklistAddItemAction implements ChecklistItemAction {
 	@Attribute
 	private boolean checked;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ChecklistAddItemAction() {}
 
 	public ChecklistAddItemAction(final UUID subjectId, final UUID checklistId, final String itemDescription) {
-		this.uniqueId = new UUID();
 		this.checklistId = checklistId;
 		this.itemId = new UUID();
 		this.subjectId = subjectId;

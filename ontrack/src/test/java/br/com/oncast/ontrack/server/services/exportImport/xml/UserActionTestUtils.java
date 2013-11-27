@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
@@ -72,13 +72,13 @@ import br.com.oncast.ontrack.shared.model.action.TeamDeclareCanInviteAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareProfileAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareReadOnlyAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
 import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
@@ -99,7 +99,14 @@ public class UserActionTestUtils {
 	private static long actionCount = 0;
 	private static UUID userId = DEFAULT_USER_ID;
 	private static UUID projectId = DEFAULT_PROJECT_ID;
-	private static String projectName = DEFAULT_PROJECT_NAME;
+
+	public static UserAction create(final ModelAction action, final ActionContext actionContext) {
+		return new UserAction(action, actionContext.getUserId(), projectId, actionContext.getTimestamp());
+	}
+
+	public static UserAction create(final ModelAction action) {
+		return new UserAction(action, userId, projectId, new Date());
+	}
 
 	public static List<User> createUserList() throws Exception {
 		return UserTestUtils.createList(2);
@@ -276,7 +283,7 @@ public class UserActionTestUtils {
 	private static void changeEachActionIdToItsIndex(final List<UserAction> actionList) throws Exception {
 		for (int i = 0; i < actionList.size(); i++) {
 			final UserAction userAction = actionList.get(i);
-			set(userAction, "id", i);
+			set(userAction, "sequencialId", i);
 		}
 	}
 
@@ -286,9 +293,7 @@ public class UserActionTestUtils {
 		return actionList;
 	}
 
-	public static List<UserAction> createRandomUserActionList(final UUID projectId, final String projectName) throws Exception {
-		setProjectName(projectName);
-
+	public static List<UserAction> createRandomUserActionList(final UUID projectId) throws Exception {
 		final List<UserAction> actionList = createCompleteUserActionList(projectId);
 		shuffle(actionList);
 
@@ -543,17 +548,12 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createUserAction(final ModelAction action) throws Exception {
-		final UserAction userAction = new UserAction();
-		set(userAction, "projectRepresentation", ProjectTestUtils.createRepresentation(projectId, projectName));
-		set(userAction, "id", ++actionCount);
-		set(userAction, "userId", userId);
+		final Date timestamp = new Date(new Random().nextInt(1000000));
 		// Generate a different time stamp so it is like an id, so time stamp equality is like action equality.
-		set(userAction, "timestamp", new Date(new Random().nextInt(1000000)));
-		return set(userAction, "action", action);
-	}
-
-	private static void setProjectName(final String projectName) {
-		UserActionTestUtils.projectName = projectName;
+		final UserAction userAction = new UserAction(action, userId, projectId, timestamp);
+		userAction.setReceiptTimestamp(new Date(timestamp.getTime()));
+		userAction.setSequencialId(++actionCount);
+		return userAction;
 	}
 
 	private static void setProjectId(final UUID projectId) {
@@ -566,7 +566,6 @@ public class UserActionTestUtils {
 
 	private static void resetProperties() {
 		UserActionTestUtils.projectId = DEFAULT_PROJECT_ID;
-		UserActionTestUtils.projectName = DEFAULT_PROJECT_NAME;
 		UserActionTestUtils.userId = DEFAULT_USER_ID;
 	}
 
@@ -581,4 +580,43 @@ public class UserActionTestUtils {
 	public static UserAction createAnnotationCreateAction(final String message) throws Exception {
 		return createUserAction(new AnnotationCreateAction(new UUID(), AnnotationType.SIMPLE, message, new UUID()));
 	}
+
+	public static List<UserAction> create(final List<ModelAction> actions) {
+		final ArrayList<UserAction> list = new ArrayList<UserAction>();
+		for (final ModelAction action : actions) {
+			list.add(create(action));
+		}
+		return list;
+	}
+
+	public static List<UserAction> create(final List<ModelAction> modelActions, final UUID userId) {
+		setUserId(userId);
+		final List<UserAction> list = create(modelActions);
+		resetProperties();
+		return list;
+	}
+
+	public static List<UserAction> create(final List<ModelAction> modelActions, final UUID userId, final UUID projectId) {
+		setUserId(userId);
+		setProjectId(projectId);
+		final List<UserAction> list = create(modelActions);
+		resetProperties();
+		return list;
+	}
+
+	public static UserAction create(final ModelAction modelAction, final UUID userId) {
+		setUserId(userId);
+		final UserAction userAction = create(modelAction);
+		resetProperties();
+		return userAction;
+	}
+
+	public static UserAction create(final ModelAction modelAction, final UUID userId, final UUID projectId) {
+		setProjectId(projectId);
+		setUserId(userId);
+		final UserAction userAction = create(modelAction);
+		resetProperties();
+		return userAction;
+	}
+
 }

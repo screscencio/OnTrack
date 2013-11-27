@@ -16,7 +16,6 @@ import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.jquery.JQuery;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveAction;
@@ -307,7 +306,8 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
+	public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+		final ModelAction action = execution.getModelAction();
 		if (action instanceof ScopeUpdateAction || action instanceof ScopeInsertAction || action instanceof ScopeRemoveAction || action instanceof ScopeMoveAction) shouldUpdate = true;
 	}
 }

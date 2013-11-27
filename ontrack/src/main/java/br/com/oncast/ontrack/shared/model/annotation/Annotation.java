@@ -1,10 +1,5 @@
 package br.com.oncast.ontrack.shared.model.annotation;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.oncast.ontrack.shared.model.ModelState;
 import br.com.oncast.ontrack.shared.model.ModelStateManager;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
@@ -12,6 +7,11 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Annotation implements Serializable, HasUUID {
 

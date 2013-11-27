@@ -19,7 +19,7 @@ public class ScopeTreeParentRollbackAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope grandParentScope = scope.getParent();
 

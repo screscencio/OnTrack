@@ -1,9 +1,10 @@
 package br.com.oncast.ontrack.shared.model.project;
 
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.Metadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 
 import java.util.List;
 
@@ -12,11 +13,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
-import br.com.oncast.ontrack.shared.model.metadata.Metadata;
-import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Mockito.when;
+
+import static junit.framework.Assert.assertEquals;
 
 public class ProjectTest {
 

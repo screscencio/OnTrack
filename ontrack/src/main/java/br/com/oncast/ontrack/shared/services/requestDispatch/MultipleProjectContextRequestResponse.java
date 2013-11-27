@@ -1,11 +1,12 @@
 package br.com.oncast.ontrack.shared.services.requestDispatch;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
+
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MultipleProjectContextRequestResponse implements DispatchResponse {
 

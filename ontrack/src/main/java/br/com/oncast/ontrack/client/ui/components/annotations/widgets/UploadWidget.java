@@ -6,7 +6,6 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.utils.forms.ResponseParser;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.messageCode.UploadMessages;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -247,8 +246,8 @@ public class UploadWidget extends Composite {
 	private ActionExecutionListener getActionExecutionListener(final UUID uuid, final UploadWidgetListener listener) {
 		return actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
 				if (action instanceof FileUploadAction && action.getReferenceId().equals(uuid)) {
 					getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
 					ClientServices.get().alerting().showSuccess(messages.uploadCompleted());

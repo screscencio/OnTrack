@@ -15,7 +15,6 @@ import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
@@ -116,8 +115,8 @@ public class ProgressActivity extends AbstractActivity {
 
 		registrations.add(SERVICE_PROVIDER.actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
 				if (action instanceof ScopeRemoveAction && currSelectedScope.getId().equals(action.getReferenceId())) {
 					deselectCurrentScopeWidget();
 					view.getProgressDetailWidget().setSelected(null);

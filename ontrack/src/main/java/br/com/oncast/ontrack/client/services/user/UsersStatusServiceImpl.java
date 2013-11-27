@@ -1,12 +1,8 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -21,6 +17,11 @@ import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOfflineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOnlineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOpenProjectEvent;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;

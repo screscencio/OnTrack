@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
-
 import com.google.gwt.place.shared.Place;
+
+import static org.junit.Assert.assertTrue;
 
 public class LoginPlaceTest {
 

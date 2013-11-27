@@ -1,20 +1,5 @@
 package br.com.oncast.ontrack.server.services.notification;
 
-import static br.com.oncast.ontrack.utils.model.UserTestUtils.createUser;
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -29,6 +14,22 @@ import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
 import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import static br.com.oncast.ontrack.utils.model.UserTestUtils.createUser;
+import static junit.framework.Assert.assertEquals;
 
 public class NotificationServerServiceTest {
 

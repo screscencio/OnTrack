@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet;
 
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -9,7 +8,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandle
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.TimesheetWidget;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
@@ -91,8 +89,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			updateOpacity(timesheet, 0);
 			updatePosition(timesheet, -1000);
 
-			if (timesheetContainer.getOffsetWidth() <= contentContainer.getOffsetWidth()) contentContainer.getElement().getStyle()
-					.setOverflowX(Overflow.HIDDEN);
+			if (timesheetContainer.getOffsetWidth() <= contentContainer.getOffsetWidth()) contentContainer.getElement().getStyle().setOverflowX(Overflow.HIDDEN);
 
 			if (animation.isSlideDirectionToRight()) timesheetContainer.insert(timesheet, 0);
 			else timesheetContainer.add(timesheet);
@@ -135,8 +132,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			if (duration <= 0) {
 				timesheetContainer.add(timesheet);
 				onComplete();
-			}
-			else Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			} else Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
 					run(duration);
@@ -260,11 +256,9 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		return actionExecutionListener == null ? actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
-
-				if (action instanceof ScopeDeclareTimeSpentAction) timesheet.updateTimeSpent(action.getReferenceId(), actionContext.getUserId());
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
+				if (action instanceof ScopeDeclareTimeSpentAction) timesheet.updateTimeSpent(action.getReferenceId(), execution.getUserId());
 				else if (action instanceof ScopeBindReleaseAction && (isRemovingFromMyRelease(action) || isAddingToMyRelease((ScopeBindReleaseAction) action))) update();
 				else if (action instanceof TeamAction) update();
 				else if (action instanceof ReleaseRenameAction) updateReleaseTitle();
@@ -274,8 +268,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			private boolean isAddingToMyRelease(final ScopeBindReleaseAction action) {
 				try {
 					return release.equals(getContext().findRelease(action.getNewReleaseDescription()));
-				}
-				catch (final ReleaseNotFoundException e) {
+				} catch (final ReleaseNotFoundException e) {
 					return false;
 				}
 			}
@@ -287,8 +280,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 				return false;
 			}
 
-		}
-				: actionExecutionListener;
+		} : actionExecutionListener;
 	}
 
 	@Override
@@ -307,8 +299,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 				try {
 					projectContext.findRelease(release.getId());
 					actionExecutionService.onUserActionExecutionRequest(new ReleaseRenameAction(release.getId(), text));
-				}
-				catch (final ReleaseNotFoundException e1) {
+				} catch (final ReleaseNotFoundException e1) {
 					throw new RuntimeException("Impossible to create an editable label for this annotation.");
 				}
 				return true;

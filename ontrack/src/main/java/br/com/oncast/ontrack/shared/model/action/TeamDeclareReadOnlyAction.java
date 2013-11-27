@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -25,28 +24,9 @@ public class TeamDeclareReadOnlyAction implements TeamAction {
 	@Attribute
 	private boolean readOnly;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected TeamDeclareReadOnlyAction() {}
 
 	public TeamDeclareReadOnlyAction(final UUID userId, final boolean readOnly) {
-		this.uniqueId = new UUID();
 		this.userId = userId;
 		this.readOnly = readOnly;
 	}

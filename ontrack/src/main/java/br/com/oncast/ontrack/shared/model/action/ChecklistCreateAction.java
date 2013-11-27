@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,28 +32,9 @@ public class ChecklistCreateAction implements ChecklistAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ChecklistCreateAction() {}
 
 	protected ChecklistCreateAction(final UUID subjectId, final Checklist checklist) {
-		this.uniqueId = new UUID();
 		this.subjectId = subjectId;
 		this.checklistId = checklist.getId();
 		this.title = checklist.getTitle();
@@ -65,7 +45,6 @@ public class ChecklistCreateAction implements ChecklistAction {
 	}
 
 	public ChecklistCreateAction(final UUID subjectId, final String title) {
-		this.uniqueId = new UUID();
 		this.subjectId = subjectId;
 		this.title = title;
 		checklistId = new UUID();

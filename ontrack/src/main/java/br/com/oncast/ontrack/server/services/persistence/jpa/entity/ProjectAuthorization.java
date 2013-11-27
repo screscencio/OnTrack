@@ -1,15 +1,15 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity;
 
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "userId", "projectId" }))

@@ -1,19 +1,5 @@
 package br.com.oncast.ontrack.shared.model.release;
 
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
-import java.util.Calendar;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import br.com.oncast.ontrack.shared.model.release.Release.Condition;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -23,6 +9,22 @@ import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.TestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import java.util.Calendar;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import static junit.framework.Assert.assertEquals;
 
 public class ReleaseTest {
 

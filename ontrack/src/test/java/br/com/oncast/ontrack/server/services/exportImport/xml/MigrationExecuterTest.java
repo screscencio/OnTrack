@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import static org.junit.Assert.assertEquals;
-
 import java.lang.reflect.Method;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class MigrationExecuterTest {
 

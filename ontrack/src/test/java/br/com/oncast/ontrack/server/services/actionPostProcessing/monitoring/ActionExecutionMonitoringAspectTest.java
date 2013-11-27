@@ -119,11 +119,6 @@ public class ActionExecutionMonitoringAspectTest {
 			return new UUID("");
 		}
 
-		@Override
-		public UUID getId() {
-			return new UUID("");
-		}
-
 	}
 
 }

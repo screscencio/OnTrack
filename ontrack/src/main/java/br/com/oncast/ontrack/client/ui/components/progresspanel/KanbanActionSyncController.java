@@ -1,13 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
@@ -37,6 +33,9 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KanbanActionSyncController {
 
 	private final ActionExecutionService actionExecutionService;
@@ -44,16 +43,14 @@ public class KanbanActionSyncController {
 	private ReleaseMonitor releaseMonitor;
 	private final ClientMessages messages;
 
-	public KanbanActionSyncController(final ActionExecutionService actionExecutionService, final Release release, final Display display,
-			final ClientMessages messages) {
+	public KanbanActionSyncController(final ActionExecutionService actionExecutionService, final Release release, final Display display, final ClientMessages messages) {
 		this.messages = messages;
 		this.actionExecutionService = actionExecutionService;
 		this.actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext influencedScopes, final boolean isUserAction) {
-				handleActionExecution(display, action, context);
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				handleActionExecution(display, execution.getModelAction(), context);
 			}
 		};
 		setMonitoredRelease(release);
@@ -76,12 +73,10 @@ public class KanbanActionSyncController {
 
 		try {
 			ActionMapper.handleAction(context, action, releaseMonitor, display);
-		}
-		catch (final ModelBeanNotFoundException e) {
+		} catch (final ModelBeanNotFoundException e) {
 			// TODO ++Resync and Redraw the entire structure to eliminate inconsistencies
 			throw new RuntimeException(messages.modelInconsistency(), e);
-		}
-		finally {
+		} finally {
 			releaseMonitor.updateMonitoredReleaseState();
 		}
 	}
@@ -97,8 +92,7 @@ public class KanbanActionSyncController {
 	private enum ActionMapper {
 		KANBAN_ACTIONS {
 			@Override
-			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
-					throws ModelBeanNotFoundException {
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display) throws ModelBeanNotFoundException {
 				if (releaseMonitor.getRelease().equals(context.findRelease(action.getReferenceId()))) display.update();
 			}
 
@@ -110,8 +104,7 @@ public class KanbanActionSyncController {
 		SCOPE_INSERTION_ACTIONS {
 
 			@Override
-			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
-					throws ModelBeanNotFoundException {
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display) throws ModelBeanNotFoundException {
 				final Scope scope = context.findScope(((ScopeInsertAction) action).getNewScopeId());
 				if (releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope)) display.update();
 
@@ -129,15 +122,13 @@ public class KanbanActionSyncController {
 		SCOPE_GENERAL_ACTION {
 
 			@Override
-			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
-					throws ModelBeanNotFoundException {
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display) throws ModelBeanNotFoundException {
 				try {
 					final Scope scope = context.findScope(action.getReferenceId());
 					if (releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope)) {
 						display.update();
 					}
-				}
-				catch (final ModelBeanNotFoundException e) {
+				} catch (final ModelBeanNotFoundException e) {
 					if (releaseMonitor.releaseContainedScope(action.getReferenceId())) display.update();
 				}
 			}
@@ -162,8 +153,7 @@ public class KanbanActionSyncController {
 		RELEASE_GENERAL_ACTION {
 
 			@Override
-			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
-					throws ModelBeanNotFoundException {
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display) throws ModelBeanNotFoundException {
 				if (releaseMonitor.getRelease().getId().equals(action.getReferenceId())) display.update();
 			}
 
@@ -176,8 +166,7 @@ public class KanbanActionSyncController {
 		},
 		RELEASE_RENAMING_ACTION {
 			@Override
-			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
-					throws ModelBeanNotFoundException {
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display) throws ModelBeanNotFoundException {
 				if (releaseMonitor.getRelease().getId().equals(action.getReferenceId())) display.updateReleaseInfo();
 			}
 
@@ -190,13 +179,11 @@ public class KanbanActionSyncController {
 		},
 		RELEASE_REMOVAL_ACTION {
 			@Override
-			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
-					throws ModelBeanNotFoundException {
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display) throws ModelBeanNotFoundException {
 				final Release kanbanRelease = releaseMonitor.getRelease();
 				try {
 					context.findRelease(kanbanRelease.getId());
-				}
-				catch (final ModelBeanNotFoundException e) {
+				} catch (final ModelBeanNotFoundException e) {
 					display.exit();
 				}
 
@@ -211,8 +198,7 @@ public class KanbanActionSyncController {
 		},
 		IGNORED_ACTIONS {
 			@Override
-			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
-					throws ModelBeanNotFoundException {}
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display) throws ModelBeanNotFoundException {}
 
 			@Override
 			protected boolean isHandlerFor(final ModelAction action) {
@@ -227,8 +213,7 @@ public class KanbanActionSyncController {
 			}
 		};
 
-		private static void handleAction(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
-				throws ModelBeanNotFoundException {
+		private static void handleAction(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display) throws ModelBeanNotFoundException {
 			for (final ActionMapper mapper : values()) {
 				if (mapper.isHandlerFor(action)) {
 					mapper.handleActionImpl(context, action, releaseMonitor, display);
@@ -237,8 +222,7 @@ public class KanbanActionSyncController {
 			}
 		}
 
-		protected abstract void handleActionImpl(ProjectContext context, ModelAction action, ReleaseMonitor releaseMonitor, Display display)
-				throws ModelBeanNotFoundException;
+		protected abstract void handleActionImpl(ProjectContext context, ModelAction action, ReleaseMonitor releaseMonitor, Display display) throws ModelBeanNotFoundException;
 
 		protected abstract boolean isHandlerFor(ModelAction action);
 	}

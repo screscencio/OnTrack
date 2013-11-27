@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.utils.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserTestUtils {
 

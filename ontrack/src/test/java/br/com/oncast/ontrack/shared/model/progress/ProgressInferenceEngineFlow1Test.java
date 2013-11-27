@@ -1,14 +1,5 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -23,6 +14,15 @@ import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
+
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.mockito.Mockito.when;
 
 public class ProgressInferenceEngineFlow1Test {
 
@@ -150,8 +150,8 @@ public class ProgressInferenceEngineFlow1Test {
 		final Scope parent = rootScope;
 		final Scope scope = parent.getChild(1);
 
-		new ScopeInsertChildAction(scope.getId(), "b1 " + StringRepresentationSymbolsProvider.EFFORT_SYMBOL + "5 "
-				+ StringRepresentationSymbolsProvider.PROGRESS_SYMBOL + "DONE").execute(getProjectContext(), actionContext);
+		new ScopeInsertChildAction(scope.getId(), "b1 " + StringRepresentationSymbolsProvider.EFFORT_SYMBOL + "5 " + StringRepresentationSymbolsProvider.PROGRESS_SYMBOL + "DONE").execute(
+				getProjectContext(), actionContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 5), rootScope);

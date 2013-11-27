@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.shared.services.notification;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.Date;
 
 public class NotificationBuilder {
 

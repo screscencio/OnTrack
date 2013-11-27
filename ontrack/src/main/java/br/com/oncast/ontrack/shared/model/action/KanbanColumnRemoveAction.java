@@ -11,7 +11,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -41,30 +40,11 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 	@ElementList(required = false)
 	private List<ModelAction> subActions;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	public KanbanColumnRemoveAction(final UUID releaseReferenceId, final String columnDescription) {
 		this(releaseReferenceId, columnDescription, true);
 	}
 
 	public KanbanColumnRemoveAction(final UUID releaseReferenceId, final String columnDescription, final boolean shouldLockKanban) {
-		this.uniqueId = new UUID();
 		this.referenceId = releaseReferenceId;
 		this.columnDescription = columnDescription;
 		this.shouldLockKanban = shouldLockKanban;

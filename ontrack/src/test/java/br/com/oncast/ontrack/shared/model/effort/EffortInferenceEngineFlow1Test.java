@@ -1,20 +1,21 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
-import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getModifiedScope;
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
-import static org.junit.Assert.assertEquals;
-
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getModifiedScope;
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 
 public class EffortInferenceEngineFlow1Test {
 

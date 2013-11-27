@@ -9,8 +9,8 @@ import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.client.ui.events.ActionsDispatchEvent;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequest;
@@ -25,28 +25,28 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class ActionDispatcher {
+public class QueuedActionsDispatcher {
 
 	private final DispatchService dispatcher;
 
 	private final List<ActionDispatcherListener> listeners;
 
-	private final List<ModelAction> waitingToBeDispatched;
-	private List<ModelAction> waitingForAcknowledgement;
-
-	private final ProjectRepresentationProvider projectRepresentationProvider;
+	private final List<UserAction> waitingToBeDispatched;
+	private List<UserAction> waitingForAcknowledgement;
 
 	private final ClientMetricsService metrics;
 
 	private final EventBus eventBus;
 
-	public ActionDispatcher(final DispatchService dispatchService, final ProjectRepresentationProvider projectRepresentationProvider, final ClientMetricsService metrics, final EventBus eventBus) {
+	private final ProjectRepresentationProvider projectRepresentationProvider;
+
+	public QueuedActionsDispatcher(final DispatchService dispatchService, final ProjectRepresentationProvider projectRepresentationProvider, final ClientMetricsService metrics, final EventBus eventBus) {
 		this.dispatcher = dispatchService;
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.metrics = metrics;
 		this.eventBus = eventBus;
-		this.waitingToBeDispatched = new ArrayList<ModelAction>();
-		this.waitingForAcknowledgement = new ArrayList<ModelAction>();
+		this.waitingToBeDispatched = new ArrayList<UserAction>();
+		this.waitingForAcknowledgement = new ArrayList<UserAction>();
 		this.listeners = new ArrayList<ActionDispatcherListener>();
 	}
 
@@ -60,7 +60,7 @@ public class ActionDispatcher {
 		};
 	}
 
-	public void dispatch(final ModelAction action) {
+	public void dispatch(final UserAction action) {
 		waitingToBeDispatched.add(action);
 		tryExchange();
 	}
@@ -100,7 +100,7 @@ public class ActionDispatcher {
 			}
 
 			private void resetPendingActions() {
-				for (final ModelAction pendingAction : waitingForAcknowledgement) {
+				for (final UserAction pendingAction : waitingForAcknowledgement) {
 					waitingToBeDispatched.add(0, pendingAction);
 				}
 				clearWaitingForAcknowledgementList();
@@ -113,17 +113,17 @@ public class ActionDispatcher {
 		});
 	}
 
-	private ArrayList<ModelAction> getActionsBatch() {
-		final ArrayList<ModelAction> list = new ArrayList<ModelAction>();
-		for (final ModelAction action : new ArrayList<ModelAction>(waitingToBeDispatched)) {
-			if (!list.isEmpty() && action instanceof ScopeBindReleaseAction) break;
+	private UUID getCurrentProjectId() {
+		return projectRepresentationProvider.getCurrent().getId();
+	}
+
+	private ArrayList<UserAction> getActionsBatch() {
+		final ArrayList<UserAction> list = new ArrayList<UserAction>();
+		for (final UserAction action : new ArrayList<UserAction>(waitingToBeDispatched)) {
+			if (!list.isEmpty() && action.getModelAction() instanceof ScopeBindReleaseAction) break;
 			list.add(action);
 		}
 		return list;
-	}
-
-	private UUID getCurrentProjectId() {
-		return projectRepresentationProvider.getCurrent().getId();
 	}
 
 	public void retrieveAllActionsSince(final UUID projectId, final long lastSyncedActionsId, final AsyncCallback<ModelActionSyncEvent> callback) {
@@ -148,23 +148,23 @@ public class ActionDispatcher {
 		});
 	}
 
-	private void notifyCallbackForSuccess(final List<ModelAction> sentActions, final ModelActionSyncRequestResponse response) {
+	private void notifyCallbackForSuccess(final List<UserAction> sentActions, final ModelActionSyncRequestResponse response) {
 		for (final ActionDispatcherListener listener : listeners) {
-			listener.onActionsAcceptedByServer(new ArrayList<ModelAction>(sentActions), response.getLastApplyedActionId());
+			listener.onActionsAcceptedByServer(new ArrayList<UserAction>(sentActions), response.getLastApplyedActionId());
 		}
 	}
 
-	private void notifyCallbackForConflicts(final List<ModelAction> conflictedActions, final UnableToHandleActionException exception) {
+	private void notifyCallbackForConflicts(final List<UserAction> conflictedActions, final UnableToHandleActionException exception) {
 		for (final ActionDispatcherListener listener : listeners) {
-			listener.onActionsRegectedByServer(new ArrayList<ModelAction>(conflictedActions), exception);
+			listener.onActionsRegectedByServer(new ArrayList<UserAction>(conflictedActions), exception);
 		}
 	}
 
 	public interface ActionDispatcherListener {
 
-		void onActionsAcceptedByServer(List<ModelAction> sentActions, long actionSyncId);
+		void onActionsAcceptedByServer(List<UserAction> sentActions, long actionSyncId);
 
-		void onActionsRegectedByServer(List<ModelAction> regectedActions, UnableToHandleActionException error);
+		void onActionsRegectedByServer(List<UserAction> regectedActions, UnableToHandleActionException error);
 
 	}
 

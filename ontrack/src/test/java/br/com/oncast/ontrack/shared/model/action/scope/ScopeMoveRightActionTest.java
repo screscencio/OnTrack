@@ -1,13 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveRightActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -20,6 +14,11 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ScopeMoveRightActionTest extends ModelActionTest {
 
@@ -88,18 +87,18 @@ public class ScopeMoveRightActionTest extends ModelActionTest {
 	@Test
 	public void shouldHandleScopeHierarchyCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException {
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
-		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(moveRightScopeAction, context, actionContext);
+		final ActionExecutionManager actionExecutionManager = ActionExecutionTestUtils.createManager(context);
+		actionExecutionManager.doUserAction(UserActionTestUtils.create(moveRightScopeAction, actionContext));
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context, actionContext);
+			actionExecutionManager.undoUserAction();
 
 			assertEquals(2, rootScope.getChildren().size());
 			assertEquals(0, firstChild.getChildren().size());
 			assertEquals(firstChild, rootScope.getChildren().get(0));
 			assertEquals(lastChild, rootScope.getChildren().get(1));
 
-			actionExecutionManager.redoUserAction(context, actionContext);
+			actionExecutionManager.redoUserAction();
 
 			assertEquals(1, rootScope.getChildren().size());
 			assertEquals(1, firstChild.getChildren().size());

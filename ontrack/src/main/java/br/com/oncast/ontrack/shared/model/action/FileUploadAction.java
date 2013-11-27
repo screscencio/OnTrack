@@ -6,7 +6,6 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -25,24 +24,6 @@ public class FileUploadAction implements FileAction {
 	@Attribute
 	private String filePath;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected FileUploadAction() {}
 
 	public FileUploadAction(final FileRepresentation fileRepresentation) {
@@ -50,7 +31,6 @@ public class FileUploadAction implements FileAction {
 	}
 
 	public FileUploadAction(final UUID fileRepresentationId, final String fileName, final String filePath) {
-		this.uniqueId = new UUID();
 		this.fileName = fileName;
 		this.fileRepresentationId = fileRepresentationId;
 		this.filePath = filePath;

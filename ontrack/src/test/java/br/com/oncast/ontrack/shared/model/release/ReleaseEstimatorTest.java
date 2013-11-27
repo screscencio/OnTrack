@@ -1,14 +1,15 @@
 package br.com.oncast.ontrack.shared.model.release;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import br.com.oncast.ontrack.utils.TestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import br.com.oncast.ontrack.utils.TestUtils;
-import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Mockito.when;
 
 public class ReleaseEstimatorTest {
 

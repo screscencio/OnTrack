@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
+import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.shared.model.user.User;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
-
-import br.com.oncast.ontrack.server.services.authentication.Password;
-import br.com.oncast.ontrack.shared.model.user.User;
 
 @Root(name = "user")
 public class UserXMLNode {

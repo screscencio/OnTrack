@@ -2,28 +2,36 @@ package br.com.oncast.ontrack.shared.model.action.release;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseCreateActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.fail;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -38,15 +46,22 @@ public class ReleaseCreateActionTest extends ModelActionTest {
 
 	private Release rootRelease;
 
+	private ContextProviderService contextProvider;
+
+	private ActionExecutionManager actionExecutionManager;
+
 	@Before
 	public void setUp() {
 		actionContext = Mockito.mock(ActionContext.class);
 		Mockito.when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
+		contextProvider = mock(ContextProviderService.class);
 		rootScope = ScopeTestUtils.getScope();
 		rootRelease = ReleaseTestUtils.getRelease();
 		context = ProjectTestUtils.createProjectContext(rootScope, rootRelease);
+		when(contextProvider.getCurrent()).thenReturn(context);
 
 		assertEquals(3, rootRelease.getChildren().size());
+		actionExecutionManager = new ActionExecutionManager(contextProvider, Mockito.mock(ActionExecutionListener.class));
 	}
 
 	@Test
@@ -168,8 +183,7 @@ public class ReleaseCreateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldHandleRemovalCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException, ReleaseNotFoundException {
-		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ReleaseCreateAction("R4/It1"), context, actionContext);
+		doUserAction(new ReleaseCreateAction("R4/It1"));
 
 		assertEquals(4, rootRelease.getChildren().size());
 		assertEquals("R4", rootRelease.getChild(3).getDescription());
@@ -180,7 +194,7 @@ public class ReleaseCreateActionTest extends ModelActionTest {
 
 		for (int i = 0; i < 20; i++) {
 			// Undo
-			actionExecutionManager.undoUserAction(context, actionContext);
+			actionExecutionManager.undoUserAction();
 
 			assertEquals(3, rootRelease.getChildren().size());
 			try {
@@ -193,7 +207,7 @@ public class ReleaseCreateActionTest extends ModelActionTest {
 			} catch (final ReleaseNotFoundException e) {}
 
 			// Redo
-			actionExecutionManager.redoUserAction(context, actionContext);
+			actionExecutionManager.redoUserAction();
 
 			assertEquals(4, rootRelease.getChildren().size());
 			assertEquals("R4", rootRelease.getChild(3).getDescription());
@@ -204,12 +218,15 @@ public class ReleaseCreateActionTest extends ModelActionTest {
 		}
 	}
 
+	private void doUserAction(final ModelAction action) throws UnableToCompleteActionException {
+		actionExecutionManager.doUserAction(new UserAction(action, UserTestUtils.getAdmin().getId(), new UUID(), new Date()));
+	}
+
 	@Test
 	public void shouldHandleRemovalCorrectlyAfterMultipleUndosAndRedos2() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release releaseR2 = rootRelease.getChild(1);
 
-		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ReleaseCreateAction("R2/It5/Week1"), context, actionContext);
+		doUserAction(new ReleaseCreateAction("R2/It5/Week1"));
 
 		// Do not create a new release for 'R2', because it already exists.
 		assertEquals(3, rootRelease.getChildren().size());
@@ -225,7 +242,7 @@ public class ReleaseCreateActionTest extends ModelActionTest {
 
 		for (int i = 0; i < 20; i++) {
 			// Undo
-			actionExecutionManager.undoUserAction(context, actionContext);
+			actionExecutionManager.undoUserAction();
 
 			assertEquals(3, rootRelease.getChildren().size());
 			assertEquals("R2", releaseR2.getDescription());
@@ -241,7 +258,7 @@ public class ReleaseCreateActionTest extends ModelActionTest {
 			} catch (final ReleaseNotFoundException e) {}
 
 			// Redo
-			actionExecutionManager.redoUserAction(context, actionContext);
+			actionExecutionManager.redoUserAction();
 
 			assertEquals(3, rootRelease.getChildren().size());
 			assertEquals("R2", releaseR2.getDescription());

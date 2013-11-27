@@ -1,7 +1,11 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -9,12 +13,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
-import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
-import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EffortInferenceEngineTest {
 

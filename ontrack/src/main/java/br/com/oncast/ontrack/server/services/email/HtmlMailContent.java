@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.server.services.email;
 
+import br.com.oncast.ontrack.server.services.CustomUrlGenerator;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+
 import java.io.StringWriter;
 import java.io.Writer;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-
-import br.com.oncast.ontrack.server.services.CustomUrlGenerator;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 // TODO+ refactor this removing duplication and modularizing better
 public class HtmlMailContent {

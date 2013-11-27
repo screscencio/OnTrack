@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.shared.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class UUIDUtilsTest {
 

@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDet
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.SubjectDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
@@ -124,9 +123,8 @@ public class DetailServiceImpl implements DetailService {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
-
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
 				if (action instanceof ChecklistItemAction) fireSubjectDetailUpdateEvent(((ChecklistItemAction) action).getSubjectId(), context);
 
 				else if (action instanceof AnnotationAction || action instanceof ImpedimentAction || action instanceof ChecklistAction || action instanceof DescriptionAction)

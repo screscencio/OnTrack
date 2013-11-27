@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.events;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.AbstractSubjectDetailUpdateEvent;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.List;
 
 public class ScopeDetailUpdateEvent extends AbstractSubjectDetailUpdateEvent<Scope, ScopeDetailUpdateEventHandler> {
 

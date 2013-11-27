@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.server.services.api.bean;
 
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import java.io.Serializable;
@@ -20,18 +20,18 @@ public class ActionExecutionApiRequest implements Serializable {
 
 	@XmlElementWrapper(name = "actionList")
 	@XmlAnyElement
-	private List<ModelAction> actionList;
+	private List<UserAction> actionList;
 
 	private UUID projectId;
 
 	ActionExecutionApiRequest() {}
 
-	public ActionExecutionApiRequest(final UUID projectId, final List<ModelAction> actionList) {
+	public ActionExecutionApiRequest(final UUID projectId, final List<UserAction> actionList) {
 		this.projectId = projectId;
 		this.actionList = actionList;
 	}
 
-	public List<ModelAction> getActionList() {
+	public List<UserAction> getActionList() {
 		return actionList;
 	}
 

@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.client.services.instruction;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.instructions.WarnningTipWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.instructions.WarnningTipWidget.DismissListener;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;

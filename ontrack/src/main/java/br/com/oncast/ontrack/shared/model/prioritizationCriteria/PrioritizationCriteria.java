@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.shared.model.prioritizationCriteria;
 
-import java.io.Serializable;
-
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
+
+import java.io.Serializable;
 
 public abstract class PrioritizationCriteria implements Serializable {
 

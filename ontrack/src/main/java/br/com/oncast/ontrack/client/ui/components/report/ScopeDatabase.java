@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.report;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.List;
 
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.view.client.ListDataProvider;

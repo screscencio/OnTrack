@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.shared.services.notification;
 
-import java.io.Serializable;
-
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationRecipientEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.io.Serializable;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 @ConvertTo(NotificationRecipientEntity.class)
 public class NotificationRecipient implements Serializable {

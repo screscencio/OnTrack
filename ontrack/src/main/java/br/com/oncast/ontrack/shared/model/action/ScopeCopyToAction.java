@@ -13,7 +13,6 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +20,9 @@ import java.util.List;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
-import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findActionAuthor;
 import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findDescription;
 import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findScope;
+import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findUser;
 
 @ConvertTo(ScopeCopyToActionEntity.class)
 public class ScopeCopyToAction implements ScopeInsertAction, HasDestination {
@@ -45,28 +44,9 @@ public class ScopeCopyToAction implements ScopeInsertAction, HasDestination {
 	@ElementList(required = false)
 	private List<ModelAction> subActionList;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ScopeCopyToAction() {}
 
 	public ScopeCopyToAction(final UUID sourceScopeId) {
-		this.uniqueId = new UUID();
 		this.sourceScopeId = sourceScopeId;
 		this.newScopeId = new UUID();
 	}
@@ -98,7 +78,7 @@ public class ScopeCopyToAction implements ScopeInsertAction, HasDestination {
 
 	private void addNewScope(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope targetedParent = findScope(targetedParentId, context, this);
-		final UserRepresentation author = findActionAuthor(actionContext, context, this);
+		final UserRepresentation author = findUser(actionContext.getUserId(), context, this);
 		targetedParent.add(targetIndex, new Scope("", newScopeId, author, actionContext.getTimestamp()));
 	}
 

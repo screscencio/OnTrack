@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
-import java.io.File;
-
 import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindImporter;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.io.File;
 
 public class EffortInferenceTestUtils {
 	public static Scope getOriginalScope(final String fileName) {

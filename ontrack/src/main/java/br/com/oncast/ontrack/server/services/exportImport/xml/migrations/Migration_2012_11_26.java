@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+
 import java.util.List;
 
 import org.dom4j.Element;
-
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 
 /**
  * Changes:

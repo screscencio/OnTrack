@@ -7,12 +7,13 @@ import br.com.oncast.ontrack.server.services.api.bean.ProjectsRemoveApiRequest;
 import br.com.oncast.ontrack.server.services.api.bean.ProjectsRemoveApiResponse;
 import br.com.oncast.ontrack.server.services.api.bean.VoidApiResponse;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRemoveProjectException;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareProfileAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -66,8 +67,9 @@ public class OnTrackProjectResource {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public VoidApiResponse updateProjectMemberProfile(final ProjectMemberProfileUpdateApiRequest request) {
 		try {
-			final List<ModelAction> list = new ArrayList<ModelAction>();
-			list.add(new TeamDeclareProfileAction(request.getUserId(), request.getProjectProfile()));
+			final List<UserAction> list = new ArrayList<UserAction>();
+			list.add(new UserAction(new TeamDeclareProfileAction(request.getUserId(), request.getProjectProfile()), ServerServiceProvider.getInstance().getAuthenticationManager()
+					.getAuthenticatedUser().getId(), request.getProjectId(), new Date()));
 			final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(request.getProjectId(), list);
 			ServerServiceProvider.getInstance().getBusinessLogic().handleIncomingActionSyncRequest(actionSyncRequest);
 			return VoidApiResponse.success();

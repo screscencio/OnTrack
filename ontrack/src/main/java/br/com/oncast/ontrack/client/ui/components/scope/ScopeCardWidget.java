@@ -30,7 +30,6 @@ import br.com.oncast.ontrack.client.utils.date.HumanDateUnit;
 import br.com.oncast.ontrack.client.utils.date.TimeDifferenceFormat;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -454,7 +453,8 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
+	public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+		final ModelAction action = execution.getModelAction();
 		if (action instanceof ScopeAction && action.getReferenceId().equals(scope.getId())) update();
 	}
 

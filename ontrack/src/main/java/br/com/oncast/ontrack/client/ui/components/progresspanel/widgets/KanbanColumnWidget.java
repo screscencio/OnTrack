@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
-import static br.com.oncast.ontrack.shared.model.progress.Progress.DEFAULT_NOT_STARTED_NAME;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanPositioningDropControllerFactory;
@@ -21,6 +15,9 @@ import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -33,6 +30,9 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.shared.model.progress.Progress.DEFAULT_NOT_STARTED_NAME;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
 
 public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanColumn> {
 

@@ -1,16 +1,5 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Set;
-
-import org.junit.Test;
-
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -20,6 +9,18 @@ import br.com.oncast.ontrack.utils.TestUtils;
 import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
 import br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import java.util.Set;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
 
 public class ProgressInferenceEngineTest {
 

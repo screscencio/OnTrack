@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,28 +28,9 @@ public class TagRemoveAction implements TagAction {
 	@ElementList(required = false)
 	private List<UUID> removedScopes;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected TagRemoveAction() {}
 
 	public TagRemoveAction(final UUID tagId) {
-		this.uniqueId = new UUID();
 		this.tagId = tagId;
 	}
 

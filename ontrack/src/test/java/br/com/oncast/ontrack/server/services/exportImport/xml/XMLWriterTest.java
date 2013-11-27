@@ -1,8 +1,26 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.transform.CustomMatcher;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
+import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.mocks.xml.XMLNodeTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,27 +37,10 @@ import org.junit.Test;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.Password;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
-import br.com.oncast.ontrack.server.services.exportImport.xml.transform.CustomMatcher;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.notification.Notification;
-import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
-import br.com.oncast.ontrack.shared.services.notification.NotificationType;
-import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
-import br.com.oncast.ontrack.utils.mocks.xml.XMLNodeTestUtils;
-import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
 
 public class XMLWriterTest {
 
@@ -218,9 +219,9 @@ public class XMLWriterTest {
 	public void shouldWriteActionsSeparatedByProjectsToXML() throws Exception {
 		final ArrayList<UserAction> actionList = new ArrayList<UserAction>();
 
-		actionList.addAll(UserActionTestUtils.createRandomUserActionList(new UUID(), "Project 1"));
-		actionList.addAll(UserActionTestUtils.createRandomUserActionList(new UUID(), "Project 2"));
-		actionList.addAll(UserActionTestUtils.createRandomUserActionList(new UUID(), "Project 3"));
+		actionList.addAll(UserActionTestUtils.createRandomUserActionList(new UUID()));
+		actionList.addAll(UserActionTestUtils.createRandomUserActionList(new UUID()));
+		actionList.addAll(UserActionTestUtils.createRandomUserActionList(new UUID()));
 
 		assertEquality(actionList, generateXMLAndReadWithCustomActions(actionList));
 	}
@@ -234,7 +235,7 @@ public class XMLWriterTest {
 
 		final ProjectXMLNode project = xml.getProjects().get(0);
 		for (int i = 0; i < project.getActions().size(); i++) {
-			assertEquals(actionList.get(i).getTimestamp(), project.getActions().get(i).getTimestamp());
+			assertEquals(actionList.get(i).getExecutionTimestamp(), project.getActions().get(i).getExecutionTimestamp());
 		}
 	}
 
@@ -274,9 +275,8 @@ public class XMLWriterTest {
 	private Notification createNotification(final String description, final NotificationType type) {
 		final UserRepresentation user1 = UserRepresentationTestUtils.createUser();
 		final UserRepresentation user2 = UserRepresentationTestUtils.createUser();
-		final Notification notification = new NotificationBuilder(type, ProjectTestUtils.createRepresentation(new UUID("1")), new UUID())
-				.setDescription(description).addReceipient(user1.getId()).addReceipient(user2.getId())
-				.getNotification();
+		final Notification notification = new NotificationBuilder(type, ProjectTestUtils.createRepresentation(new UUID("1")), new UUID()).setDescription(description).addReceipient(user1.getId())
+				.addReceipient(user2.getId()).getNotification();
 		return notification;
 	}
 
@@ -290,15 +290,15 @@ public class XMLWriterTest {
 	}
 
 	private List<ProjectXMLNode> separateByProject(final List<UserAction> userActions) {
-		final Map<ProjectRepresentation, List<UserAction>> map = new HashMap<ProjectRepresentation, List<UserAction>>();
+		final Map<UUID, List<UserAction>> map = new HashMap<UUID, List<UserAction>>();
 		for (final UserAction userAction : userActions) {
-			final ProjectRepresentation projectRepresentation = userAction.getProjectRepresentation();
-			if (!map.containsKey(projectRepresentation)) map.put(projectRepresentation, new ArrayList<UserAction>());
-			map.get(projectRepresentation).add(userAction);
+			final UUID projectId = userAction.getProjectId();
+			if (!map.containsKey(projectId)) map.put(projectId, new ArrayList<UserAction>());
+			map.get(projectId).add(userAction);
 		}
 		final List<ProjectXMLNode> list = new ArrayList<ProjectXMLNode>();
-		for (final ProjectRepresentation projectRepresentation : map.keySet()) {
-			list.add(new ProjectXMLNode(projectRepresentation, map.get(projectRepresentation)));
+		for (final UUID projectId : map.keySet()) {
+			list.add(new ProjectXMLNode(new ProjectRepresentation(projectId, projectId.toString()), map.get(projectId)));
 		}
 		return list;
 	}
@@ -335,8 +335,7 @@ public class XMLWriterTest {
 	private void assertContainsPassword(final Password password) {
 		boolean contains = false;
 		for (final Password passwordFromList : passwordList) {
-			if (passwordFromList.getPasswordHash().equals(password.getPasswordHash()) &&
-					passwordFromList.getPasswordSalt().equals(password.getPasswordSalt())) {
+			if (passwordFromList.getPasswordHash().equals(password.getPasswordHash()) && passwordFromList.getPasswordSalt().equals(password.getPasswordSalt())) {
 				contains = true;
 				break;
 			}
@@ -352,17 +351,12 @@ public class XMLWriterTest {
 		return generateXMLAndRead(projects, users, authorizations, new ArrayList<Notification>());
 	}
 
-	private OntrackXML generateXMLAndRead(final List<ProjectXMLNode> projectNodes, final List<UserXMLNode> userNodes,
-			final List<ProjectAuthorizationXMLNode> authorizationNodes, final List<Notification> notifications) throws FileNotFoundException, Exception {
+	private OntrackXML generateXMLAndRead(final List<ProjectXMLNode> projectNodes, final List<UserXMLNode> userNodes, final List<ProjectAuthorizationXMLNode> authorizationNodes,
+			final List<Notification> notifications) throws FileNotFoundException, Exception {
 
 		final File ontrackFile = new File(ONTRACK_XML);
 
-		xmlExporter
-				.setVersion(version)
-				.setUserList(userNodes)
-				.setProjectsList(projectNodes)
-				.setProjectAuthorizationsList(authorizationNodes)
-				.setNotifications(notifications)
+		xmlExporter.setVersion(version).setUserList(userNodes).setProjectsList(projectNodes).setProjectAuthorizationsList(authorizationNodes).setNotifications(notifications)
 				.export(new FileOutputStream(ontrackFile));
 
 		final Serializer serializer = new Persister(new CustomMatcher());
@@ -390,8 +384,7 @@ public class XMLWriterTest {
 			for (final User user : users) {
 				userXMLNodeList.add(associatePasswordTo(user));
 			}
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			e.printStackTrace();
 		}
 

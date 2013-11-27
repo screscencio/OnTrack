@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.client.services.user.UserHasGravatarCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.action.TeamDeclareCanInviteAction;
@@ -231,8 +230,8 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 
 		registrations.add(ClientServices.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
 				if (action instanceof TeamAction && action.getReferenceId().equals(userRepresentation.getId())) updateCheckBoxesValues();
 			}
 

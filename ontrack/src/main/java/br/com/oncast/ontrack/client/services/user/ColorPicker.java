@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.client.services.user;
 
+import br.com.oncast.ontrack.shared.model.color.Color;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import br.com.oncast.ontrack.shared.model.color.Color;
 
 import com.google.gwt.user.client.Random;
 

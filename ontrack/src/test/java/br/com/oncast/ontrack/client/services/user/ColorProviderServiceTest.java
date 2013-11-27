@@ -1,16 +1,7 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import static br.com.oncast.ontrack.client.utils.date.DateUnit.DAY;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.estimator.ScopeEstimatorProvider;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -22,7 +13,19 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.ScopeEstimator;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import com.google.web.bindery.event.shared.EventBus;
+
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import static br.com.oncast.ontrack.client.utils.date.DateUnit.DAY;
 
 public class ColorProviderServiceTest {
 

@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.server.business;
 
 import br.com.oncast.ontrack.server.business.actionPostProcessments.ActionPostProcessmentsInitializer;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
@@ -18,7 +17,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.server.services.threadSync.SyncronizationService;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -233,13 +232,13 @@ public class BusinessLogicTestFactory {
 			doAnswer(new Answer() {
 				@Override
 				public Object answer(final InvocationOnMock invocation) throws Throwable {
-					final List<ModelAction> actions = (List<ModelAction>) invocation.getArguments()[1];
-					for (final ModelAction modelAction : new ArrayList<ModelAction>(actions)) {
+					final List<UserAction> actions = (List<UserAction>) invocation.getArguments()[0];
+					for (final UserAction modelAction : new ArrayList<UserAction>(actions)) {
 						actions.add(modelAction);
 					}
 					return null;
 				}
-			}).when(mock).persistActions(any(UUID.class), anyList(), any(UUID.class), any(Date.class));
+			}).when(mock).persistActions(anyList());
 
 			when(mock.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenAnswer(new Answer<ProjectRepresentation>() {
 

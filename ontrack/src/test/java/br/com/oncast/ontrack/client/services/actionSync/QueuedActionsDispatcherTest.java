@@ -3,12 +3,13 @@ package br.com.oncast.ontrack.client.services.actionSync;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 
-import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchListener;
-import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchRequestServiceTestImplementation;
-import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.ValueHolder;
+import br.com.oncast.ontrack.client.services.actionSync.QueuedActionsDispatcherTestUtils.DispatchListener;
+import br.com.oncast.ontrack.client.services.actionSync.QueuedActionsDispatcherTestUtils.DispatchRequestServiceTestImplementation;
+import br.com.oncast.ontrack.client.services.actionSync.QueuedActionsDispatcherTestUtils.ValueHolder;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
 import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -33,11 +34,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @GwtModule("br.com.oncast.ontrack.Application")
-public class ActionQueuedDispatcherTest extends GwtTest {
+public class QueuedActionsDispatcherTest extends GwtTest {
 
-	private ActionQueuedDispatcherTestUtils actionSyncServiceTestUtils;
+	private QueuedActionsDispatcherTestUtils actionSyncServiceTestUtils;
 	private DispatchRequestServiceTestImplementation requestDispatchServiceMock;
-	private ActionDispatcher actionQueuedDispatcher;
+	private QueuedActionsDispatcher actionQueuedDispatcher;
 
 	@Mock
 	private EventBus eventBus;
@@ -49,9 +50,9 @@ public class ActionQueuedDispatcherTest extends GwtTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		when(metrics.startTimeTracking(any(MetricsCategories.class), anyString())).thenReturn(mock(TimeTrackingEvent.class));
-		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
+		actionSyncServiceTestUtils = new QueuedActionsDispatcherTestUtils();
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
-		actionQueuedDispatcher = new ActionDispatcher(requestDispatchServiceMock, getProjectRepresentationProviderMock(), metrics, eventBus);
+		actionQueuedDispatcher = new QueuedActionsDispatcher(requestDispatchServiceMock, getProjectRepresentationProviderMock(), metrics, eventBus);
 	}
 
 	@Test
@@ -61,7 +62,7 @@ public class ActionQueuedDispatcherTest extends GwtTest {
 
 			@Override
 			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
-				if (callbackHolder.getValue() != null) Assert.fail(ActionDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
+				if (callbackHolder.getValue() != null) Assert.fail(QueuedActionsDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
 				callbackHolder.setValue(callback);
 			}
 		});
@@ -76,7 +77,7 @@ public class ActionQueuedDispatcherTest extends GwtTest {
 
 			@Override
 			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
-				if (callbackHolder.getValue() != null) Assert.fail(ActionDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
+				if (callbackHolder.getValue() != null) Assert.fail(QueuedActionsDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
 				callbackHolder.setValue(callback);
 			}
 		});
@@ -106,7 +107,7 @@ public class ActionQueuedDispatcherTest extends GwtTest {
 
 			@Override
 			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
-				if (callbackHolder.getValue() != null) Assert.fail(ActionDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
+				if (callbackHolder.getValue() != null) Assert.fail(QueuedActionsDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
 				callbackHolder.setValue(callback);
 				request.setValue(modelActionSyncRequest);
 			}
@@ -155,7 +156,7 @@ public class ActionQueuedDispatcherTest extends GwtTest {
 	}
 
 	private void dispatch() {
-		actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""));
+		actionQueuedDispatcher.dispatch(UserActionTestUtils.create(new ScopeUpdateAction(new UUID(), "")));
 	}
 
 	private ProjectRepresentationProvider getProjectRepresentationProviderMock() {

@@ -1,16 +1,16 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ProgressDefinitionManagerTest {
 

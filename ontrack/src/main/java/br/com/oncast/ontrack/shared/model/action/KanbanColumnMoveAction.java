@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,29 +36,10 @@ public class KanbanColumnMoveAction implements KanbanAction {
 	@ElementList(required = false)
 	private List<ModelAction> subActions;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected KanbanColumnMoveAction() {}
 
 	public KanbanColumnMoveAction(final UUID releaseId, final String kanbanColumnDescription, final int desiredIndex) {
-		this.uniqueId = new UUID();
 		this.releaseId = releaseId;
 		this.columnDescription = kanbanColumnDescription;
 		this.desiredIndex = desiredIndex;

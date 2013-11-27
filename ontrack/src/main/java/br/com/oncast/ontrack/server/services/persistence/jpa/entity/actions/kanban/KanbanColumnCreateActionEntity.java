@@ -44,18 +44,6 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 	@JoinTable(name = "KanbanColumnCreate_subActionList")
 	private List<ModelActionEntity> subActionList;
 
-	@Column(name = ActionTableColumns.UNIQUE_ID)
-	@ConvertUsing(StringToUuidConverter.class)
-	private String uniqueId;
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(final String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-
 	@ConversionAlias("columnIndex")
 	@Column(name = ActionTableColumns.INT_1)
 	private int columnIndex;

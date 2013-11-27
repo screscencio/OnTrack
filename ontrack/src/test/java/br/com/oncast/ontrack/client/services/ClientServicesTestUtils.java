@@ -1,13 +1,5 @@
 package br.com.oncast.ontrack.client.services;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
@@ -17,7 +9,15 @@ import br.com.oncast.ontrack.shared.model.metadata.Metadata;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+
+import org.mockito.Mockito;
+
 import com.google.gwt.event.shared.EventBus;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ClientServicesTestUtils {
 

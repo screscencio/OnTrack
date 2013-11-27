@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
@@ -151,8 +150,8 @@ public class ImpedimentListWidget extends Composite implements PopupAware, HasCl
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
-
+	public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+		final ModelAction action = execution.getModelAction();
 		if ((action instanceof AnnotationAction || action instanceof ImpedimentAction) && action.getReferenceId().equals(subjectId)) update();
 
 	}

@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.model.description;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.io.Serializable;
+import java.util.Date;
 
 public class Description implements Serializable, HasUUID {
 

@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.EFFORT_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.PROGRESS_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.RELEASE_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.VALUE_SYMBOL;
-
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * Parse a description and translate it into a scope description, release description, effort and progress.

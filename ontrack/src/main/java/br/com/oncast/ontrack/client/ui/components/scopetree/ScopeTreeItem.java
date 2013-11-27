@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ActivateTagFilterEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
@@ -20,6 +16,10 @@ import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.Tree;

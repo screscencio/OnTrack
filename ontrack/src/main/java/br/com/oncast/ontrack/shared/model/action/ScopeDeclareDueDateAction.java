@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.Date;
 
@@ -25,28 +24,9 @@ public class ScopeDeclareDueDateAction implements ScopeAction {
 	@Attribute(required = false)
 	private Date dueDate;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ScopeDeclareDueDateAction() {}
 
 	public ScopeDeclareDueDateAction(final UUID scopeId, final Date dueDate) {
-		this.uniqueId = new UUID();
 		this.scopeId = scopeId;
 		this.dueDate = dueDate;
 	}

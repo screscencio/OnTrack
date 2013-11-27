@@ -1,12 +1,11 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions;
 
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 
 import java.util.Date;
 
@@ -14,7 +13,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,35 +26,26 @@ public class UserActionEntity {
 	@ConversionAlias("id")
 	private long id;
 
+	@ConvertUsing(StringToUuidConverter.class)
+	private String uniqueId;
+
+	@ConvertUsing(StringToUuidConverter.class)
+	private String projectId;
+
+	@ConvertUsing(StringToUuidConverter.class)
+	private String userId;
+
 	@Temporal(TemporalType.TIMESTAMP)
-	@ConversionAlias("timestamp")
-	private Date timestamp;
+	private Date executionTimestamp;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date receiptTimestamp;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@ConversionAlias("action")
 	private ModelActionEntity actionEntity;
 
-	@ManyToOne(optional = false)
-	@ConversionAlias("projectRepresentation")
-	private ProjectRepresentationEntity projectRepresentation;
-
-	@ConvertUsing(StringToUuidConverter.class)
-	@ConversionAlias("userId")
-	private String userId;
-
-	@ConvertUsing(StringToUuidConverter.class)
-	@ConversionAlias("uniqueId")
-	private String uniqueId;
-
-	public UserActionEntity() {}
-
-	public UserActionEntity(final ModelActionEntity actionEntity, final String uniqueId, final String userId, final ProjectRepresentationEntity projectRepresentation, final Date timestamp) {
-		this.actionEntity = actionEntity;
-		this.uniqueId = uniqueId;
-		this.userId = userId;
-		this.projectRepresentation = projectRepresentation;
-		this.timestamp = timestamp;
-	}
+	protected UserActionEntity() {}
 
 	public long getId() {
 		return id;
@@ -64,6 +53,22 @@ public class UserActionEntity {
 
 	public void setId(final long id) {
 		this.id = id;
+	}
+
+	public Date getExecutionTimestamp() {
+		return executionTimestamp;
+	}
+
+	public void setExecutionTimestamp(final Date executionTimestamp) {
+		this.executionTimestamp = executionTimestamp;
+	}
+
+	public Date getReceiptTimestamp() {
+		return receiptTimestamp;
+	}
+
+	public void setReceiptTimestamp(final Date receiptTimestamp) {
+		this.receiptTimestamp = receiptTimestamp;
 	}
 
 	public ModelActionEntity getActionEntity() {
@@ -74,20 +79,12 @@ public class UserActionEntity {
 		this.actionEntity = actionEntity;
 	}
 
-	public void setTimestamp(final Date timestamp) {
-		this.timestamp = timestamp;
+	public String getProjectId() {
+		return projectId;
 	}
 
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
-	public ProjectRepresentationEntity getProjectRepresentation() {
-		return projectRepresentation;
-	}
-
-	public void setProjectRepresentation(final ProjectRepresentationEntity projectRepresentation) {
-		this.projectRepresentation = projectRepresentation;
+	public void setProjectId(final String projectId) {
+		this.projectId = projectId;
 	}
 
 	public String getUserId() {
@@ -105,4 +102,5 @@ public class UserActionEntity {
 	public void setUniqueId(final String uniqueId) {
 		this.uniqueId = uniqueId;
 	}
+
 }

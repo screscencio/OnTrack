@@ -1,13 +1,19 @@
 package br.com.oncast.ontrack.server.services.storage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import br.com.oncast.ontrack.server.business.BusinessLogic;
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
+import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,23 +33,18 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
-import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
-import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
-import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class StorageServiceTest {
 

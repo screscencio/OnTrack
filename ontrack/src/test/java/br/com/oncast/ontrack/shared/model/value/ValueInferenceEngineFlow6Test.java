@@ -1,17 +1,5 @@
 package br.com.oncast.ontrack.shared.model.value;
 
-import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getModifiedScope;
-import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getOriginalScope;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
-import java.util.Stack;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
@@ -26,6 +14,19 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
+
+import java.util.Date;
+import java.util.Stack;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import static org.mockito.Mockito.when;
+
+import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getModifiedScope;
+import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getOriginalScope;
 
 public class ValueInferenceEngineFlow6Test {
 

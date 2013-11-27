@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Element;
 import org.dom4j.tree.DOMTreeHelper;
-
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 /**
  * Changes:

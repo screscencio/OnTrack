@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.Date;
 
 public class InsertFatherInternalAction implements TwoStepInternalAction {
 

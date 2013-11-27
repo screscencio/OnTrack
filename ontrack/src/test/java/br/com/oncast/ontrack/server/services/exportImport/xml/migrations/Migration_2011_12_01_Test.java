@@ -1,11 +1,6 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertAttributeDoesntExist;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertAttributeExists;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementDoesntExist;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementExists;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.getElements;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.readXMLFromFile;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 
 import java.util.List;
 
@@ -14,7 +9,12 @@ import org.dom4j.Element;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertAttributeDoesntExist;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertAttributeExists;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementDoesntExist;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementExists;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.getElements;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.readXMLFromFile;
 
 public class Migration_2011_12_01_Test {
 

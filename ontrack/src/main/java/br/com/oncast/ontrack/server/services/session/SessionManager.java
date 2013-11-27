@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.server.services.session;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import br.com.oncast.ontrack.server.services.session.exceptions.SessionUnavailableException;
 import br.com.oncast.ontrack.shared.config.RequestConfigurations;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Manager for {@link Session} localization and persistence.<br />

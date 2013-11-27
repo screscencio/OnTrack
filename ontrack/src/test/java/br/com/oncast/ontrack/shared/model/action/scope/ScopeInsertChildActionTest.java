@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertChildActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -22,6 +15,13 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestU
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ScopeInsertChildActionTest extends ModelActionTest {
 
@@ -73,8 +73,7 @@ public class ScopeInsertChildActionTest extends ModelActionTest {
 
 	@Test
 	public void mustAssociateScopeWithARelease() throws UnableToCompleteActionException {
-		new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription + " @" + newReleaseDescription).execute(context,
-				actionContext);
+		new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription + " @" + newReleaseDescription).execute(context, actionContext);
 
 		assertEquals(selectedScope.getChildren().get(1).getDescription(), newScopeDescription);
 		assertEquals(selectedScope.getChildren().get(1).getRelease().getDescription(), newReleaseDescription);
@@ -82,8 +81,7 @@ public class ScopeInsertChildActionTest extends ModelActionTest {
 
 	@Test
 	public void mustDisassociateScopeFromReleaseAfterUndo() throws UnableToCompleteActionException {
-		final ScopeInsertChildAction insertChildAction = new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription + " @"
-				+ newReleaseDescription);
+		final ScopeInsertChildAction insertChildAction = new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription + " @" + newReleaseDescription);
 		final ModelAction rollbackAction = insertChildAction.execute(context, actionContext);
 
 		final Scope insertedScope = selectedScope.getChildren().get(1);

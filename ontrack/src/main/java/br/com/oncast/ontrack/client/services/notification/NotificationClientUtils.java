@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.client.services.notification;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationRecipient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotificationClientUtils {
 

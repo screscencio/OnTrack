@@ -15,10 +15,10 @@
  */
 package com.google.gwt.user.client.ui;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.ItemSelectionHandler;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.oncast.ontrack.client.ui.generalwidgets.ItemSelectionHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;

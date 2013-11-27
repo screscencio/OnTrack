@@ -1,14 +1,15 @@
 package br.com.oncast.ontrack.server.services.requestDispatch;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import br.com.drycode.api.web.gwt.dispatchService.server.RequestHandler;
+
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.requestDispatch.MultipleProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.MultipleProjectContextRequestResponse;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MultipleProjectContextRequestHandler implements RequestHandler<MultipleProjectContextRequest, MultipleProjectContextRequestResponse> {
 

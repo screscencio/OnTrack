@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.checklist;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistRenameActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRenameAction;
@@ -16,6 +10,13 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ChecklistTestUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Mockito.when;
 
 public class ChecklistRenameActionTest extends ModelActionTest {
 

@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.utils;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeBindReleaseActionHelperMessages;
@@ -10,6 +7,9 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.google.gwt.core.client.GWT;
 

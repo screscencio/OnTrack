@@ -1,12 +1,10 @@
 package br.com.oncast.ontrack.client.ui.places;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+
+import java.util.List;
 
 public class ActivityActionExecutionListener implements ActionExecutionListener {
 
@@ -15,11 +13,10 @@ public class ActivityActionExecutionListener implements ActionExecutionListener 
 	public ActivityActionExecutionListener() {}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final ActionExecutionContext executionContext, final boolean isUserAction) {
+	public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
 		if (actionExecutionSuccessListeners == null) return;
 		for (final ActionExecutionListener listener : actionExecutionSuccessListeners)
-			listener.onActionExecution(action, context, actionContext, executionContext, isUserAction);
+			listener.onActionExecution(execution, context, isUserAction);
 	}
 
 	public void setActionExecutionListeners(final List<ActionExecutionListener> actionExecutionSuccessListeners) {

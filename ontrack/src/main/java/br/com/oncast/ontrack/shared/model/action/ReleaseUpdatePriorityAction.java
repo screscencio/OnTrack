@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -28,29 +27,10 @@ public class ReleaseUpdatePriorityAction implements ReleaseAction {
 	@Attribute
 	private int targetIndex;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ReleaseUpdatePriorityAction() {}
 
 	public ReleaseUpdatePriorityAction(final UUID releaseId, final int targetIndex) {
-		this.uniqueId = new UUID();
 		this.releaseId = releaseId;
 		this.targetIndex = targetIndex;
 	}

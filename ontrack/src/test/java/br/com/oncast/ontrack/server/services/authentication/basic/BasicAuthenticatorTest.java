@@ -1,7 +1,8 @@
 package br.com.oncast.ontrack.server.services.authentication.basic;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import br.com.oncast.ontrack.server.services.authentication.BasicRequestAuthenticator;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,9 +12,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.services.authentication.BasicRequestAuthenticator;
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
-import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
+import static org.mockito.Matchers.anyString;
+
+import static org.mockito.Mockito.when;
 
 public class BasicAuthenticatorTest {
 

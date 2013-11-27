@@ -15,7 +15,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
@@ -114,9 +113,8 @@ public class ReleasePanelWidget extends Composite {
 
 		actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
-
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
 				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction || action instanceof ScopeInsertAction || action instanceof ScopeInsertParentRollbackAction
 						|| action instanceof ScopeInsertChildRollbackAction || action instanceof ScopeInsertSiblingUpRollbackAction || action instanceof ScopeInsertSiblingDownRollbackAction
 						|| action instanceof ScopeMoveLeftAction || action instanceof ScopeMoveRightAction || action instanceof ScopeRemoveRollbackAction

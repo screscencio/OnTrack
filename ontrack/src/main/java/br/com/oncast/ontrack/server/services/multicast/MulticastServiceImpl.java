@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.server.services.multicast;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionListener;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
@@ -15,6 +9,12 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 import br.com.oncast.ontrack.shared.utils.PrettyPrinter;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 public class MulticastServiceImpl implements MulticastService {
 

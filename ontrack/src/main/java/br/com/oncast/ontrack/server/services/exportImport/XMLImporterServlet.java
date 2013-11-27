@@ -1,5 +1,11 @@
 package br.com.oncast.ontrack.server.services.exportImport;
 
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
+import br.com.oncast.ontrack.server.services.authentication.BasicRequestAuthenticator;
+import br.com.oncast.ontrack.server.services.exportImport.xml.XMLUtils;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -15,12 +21,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-
-import br.com.oncast.ontrack.server.business.ServerServiceProvider;
-import br.com.oncast.ontrack.server.services.authentication.BasicRequestAuthenticator;
-import br.com.oncast.ontrack.server.services.exportImport.xml.XMLUtils;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 
 public class XMLImporterServlet extends HttpServlet {
 

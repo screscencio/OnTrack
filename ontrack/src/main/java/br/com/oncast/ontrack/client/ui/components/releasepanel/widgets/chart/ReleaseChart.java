@@ -1,5 +1,18 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart;
 
+import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,20 +43,6 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
 import org.moxieapps.gwt.highcharts.client.plotOptions.Marker.Symbol;
 import org.moxieapps.gwt.highcharts.client.plotOptions.PlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
-
-import br.com.oncast.ontrack.client.services.ClientServices;
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
-import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -120,8 +119,7 @@ public class ReleaseChart extends Composite {
 	}
 
 	public void setRelease(final Release release) {
-		setRelease(release, new ReleaseChartDataProvider(release, ClientServices.get().releaseEstimator().get(),
-				ClientServices.get().actionExecution()));
+		setRelease(release, new ReleaseChartDataProvider(release, ClientServices.get().releaseEstimator().get(), ClientServices.get().actionExecution()));
 	}
 
 	public void setRelease(final Release release, final ReleaseChartDataProvider dataProvider) {
@@ -155,28 +153,11 @@ public class ReleaseChart extends Composite {
 		accomplishedValueSeries = createValueLine(releaseDays, dataProvider.getAccomplishedValuePointsByDate());
 		chart.addSeries(accomplishedValueSeries, false, false);
 		if (dataProvider.getValueSum() == 0f) accomplishedValueSeries.hide();
-		chart.addSeries(
-				createIdealLine(
-						SERIES_IDEAL_BURN_UP_LINE,
-						IDEAL_EFFORT_COLOR,
-						DashStyle.SHORT_DASH,
-						releaseDays,
-						dataProvider.getEstimatedEndDay(),
-						dataProvider.getEffortSum()),
-				false,
-				false);
+		chart.addSeries(createIdealLine(SERIES_IDEAL_BURN_UP_LINE, IDEAL_EFFORT_COLOR, DashStyle.SHORT_DASH, releaseDays, dataProvider.getEstimatedEndDay(), dataProvider.getEffortSum()), false, false);
 		if (completeMode && !dataProvider.getEstimatedEndDay().equals(dataProvider.getInferedEstimatedEndDay())) {
-			final Series inferedIdealLine = createIdealLine(
-					SERIES_INFERED_IDEAL_BURN_UP_LINE,
-					INFERED_IDEAL_EFFORT_COLOR,
-					DashStyle.LONG_DASH,
-					releaseDays,
-					dataProvider.getInferedEstimatedEndDay(),
+			final Series inferedIdealLine = createIdealLine(SERIES_INFERED_IDEAL_BURN_UP_LINE, INFERED_IDEAL_EFFORT_COLOR, DashStyle.LONG_DASH, releaseDays, dataProvider.getInferedEstimatedEndDay(),
 					dataProvider.getEffortSum());
-			chart.addSeries(
-					inferedIdealLine,
-					false,
-					false);
+			chart.addSeries(inferedIdealLine, false, false);
 			inferedIdealLine.hide();
 		}
 
@@ -191,65 +172,27 @@ public class ReleaseChart extends Composite {
 	}
 
 	private Chart createBasicChart() {
-		final Chart newChart = new Chart()
-				.setAnimation(false)
-				.setType(Series.Type.LINE)
-				.setChartTitleText("")
-				.setLegend(new Legend()
-						.setEnabled(completeMode)
-						.setAlign(Legend.Align.LEFT)
-						.setVerticalAlign(Legend.VerticalAlign.TOP)
-						.setY(-8)
-						.setFloating(true)
-						.setBorderWidth(0)
-				)
-				.setMarginTop(completeMode ? 25 : 5)
-				.setMarginLeft(completeMode ? 30 : null)
-				.setMarginRight(completeMode ? 30 : null)
-				.setBorderRadius(0)
-				.setCredits(new Credits().setEnabled(false))
-				.setSeriesPlotOptions(new SeriesPlotOptions()
-						.setCursor(PlotOptions.Cursor.POINTER)
-						.setMarker(new Marker().setLineWidth(1))
-				)
-				.setLinePlotOptions(new LinePlotOptions()
-						.setDataLabels(new DataLabels()
-								.setEnabled(true)
-								.setAlign(Align.RIGHT)
-								.setFormatter(new ShowOnlyLastPointFormatter())
-						)
-				)
-				.setToolTip(new ToolTip()
-						.setCrosshairs(true)
-						.setFormatter(new ToolTipFormatter() {
-							@Override
-							public String format(final ToolTipData toolTipData) {
-								final boolean isValuePoints = toolTipData.getSeriesName().equals(SERIES_ACCOMPLISHED_VALUE);
+		final Chart newChart = new Chart().setAnimation(false).setType(Series.Type.LINE).setChartTitleText("")
+				.setLegend(new Legend().setEnabled(completeMode).setAlign(Legend.Align.LEFT).setVerticalAlign(Legend.VerticalAlign.TOP).setY(-8).setFloating(true).setBorderWidth(0))
+				.setMarginTop(completeMode ? 25 : 5).setMarginLeft(completeMode ? 30 : null).setMarginRight(completeMode ? 30 : null).setBorderRadius(0).setCredits(new Credits().setEnabled(false))
+				.setSeriesPlotOptions(new SeriesPlotOptions().setCursor(PlotOptions.Cursor.POINTER).setMarker(new Marker().setLineWidth(1)))
+				.setLinePlotOptions(new LinePlotOptions().setDataLabels(new DataLabels().setEnabled(true).setAlign(Align.RIGHT).setFormatter(new ShowOnlyLastPointFormatter())))
+				.setToolTip(new ToolTip().setCrosshairs(true).setFormatter(new ToolTipFormatter() {
+					@Override
+					public String format(final ToolTipData toolTipData) {
+						final boolean isValuePoints = toolTipData.getSeriesName().equals(SERIES_ACCOMPLISHED_VALUE);
 
-								final float currentPoints = (float) toolTipData.getYAsDouble();
-								final int currentDayCount = toolTipData.getPoint().getX().intValue() + 1;
+						final float currentPoints = (float) toolTipData.getYAsDouble();
+						final int currentDayCount = toolTipData.getPoint().getX().intValue() + 1;
 
-								final String toolTipText = toolTipData.getXAsString() + "<br>"
-										+ round(currentPoints) + " "
-										+ (isValuePoints ? messages.valuePoints() : messages.effortPoints()) + "<br>"
-										+ messages.velocity()
-										+ round(currentPoints / currentDayCount) + " "
-										+ (isValuePoints ? "vp" : "ep") + "/" + messages.day();
-								return toolTipText;
-							}
+						final String toolTipText = toolTipData.getXAsString() + "<br>" + round(currentPoints) + " " + (isValuePoints ? messages.valuePoints() : messages.effortPoints()) + "<br>"
+								+ messages.velocity() + round(currentPoints / currentDayCount) + " " + (isValuePoints ? "vp" : "ep") + "/" + messages.day();
+						return toolTipText;
+					}
 
-						})
-				);
+				}));
 
-		newChart.getXAxis(0)
-				.setType(Type.LINEAR)
-				.setTickWidth(0)
-				.setLabels(new XAxisLabels()
-						.setEnabled(completeMode)
-						.setAlign(Align.CENTER)
-						.setRotation(-45)
-						.setX(-16)
-						.setY(27));
+		newChart.getXAxis(0).setType(Type.LINEAR).setTickWidth(0).setLabels(new XAxisLabels().setEnabled(completeMode).setAlign(Align.CENTER).setRotation(-45).setX(-16).setY(27));
 
 		newChart.getYAxis(0)
 				.setGridLineWidth(completeMode ? 1 : 0)
@@ -259,21 +202,14 @@ public class ReleaseChart extends Composite {
 				.setShowLastLabel(true)
 				.setOpposite(true)
 				.setMin(0)
-				.setLabels(new YAxisLabels()
-						.setAlign(Labels.Align.RIGHT)
-						.setEnabled(completeMode)
-						.setX(27)
-						.setY(13)
-						.setStyle(new Style()
-								.setColor(EFFORT_COLOR)
-								.setFontWeight("bold")
-						)
-						.setFormatter(new AxisLabelsFormatter() {
-							@Override
-							public String format(final AxisLabelsData axisLabelsData) {
-								return round((float) axisLabelsData.getValueAsDouble());
-							}
-						}));
+				.setLabels(
+						new YAxisLabels().setAlign(Labels.Align.RIGHT).setEnabled(completeMode).setX(27).setY(13).setStyle(new Style().setColor(EFFORT_COLOR).setFontWeight("bold"))
+								.setFormatter(new AxisLabelsFormatter() {
+									@Override
+									public String format(final AxisLabelsData axisLabelsData) {
+										return round((float) axisLabelsData.getValueAsDouble());
+									}
+								}));
 
 		newChart.getYAxis(1)
 				.setAxisTitleText("")
@@ -281,21 +217,14 @@ public class ReleaseChart extends Composite {
 				.setShowLastLabel(true)
 				.setGridLineWidth(0)
 				.setMin(0)
-				.setLabels(new YAxisLabels()
-						.setEnabled(completeMode)
-						.setAlign(Labels.Align.LEFT)
-						.setX(-28)
-						.setY(16)
-						.setStyle(new Style()
-								.setColor(VALUE_COLOR)
-								.setFontWeight("bold")
-						)
-						.setFormatter(new AxisLabelsFormatter() {
-							@Override
-							public String format(final AxisLabelsData axisLabelsData) {
-								return round((float) axisLabelsData.getValueAsDouble());
-							}
-						}));
+				.setLabels(
+						new YAxisLabels().setEnabled(completeMode).setAlign(Labels.Align.LEFT).setX(-28).setY(16).setStyle(new Style().setColor(VALUE_COLOR).setFontWeight("bold"))
+								.setFormatter(new AxisLabelsFormatter() {
+									@Override
+									public String format(final AxisLabelsData axisLabelsData) {
+										return round((float) axisLabelsData.getValueAsDouble());
+									}
+								}));
 
 		return newChart;
 	}
@@ -307,63 +236,39 @@ public class ReleaseChart extends Composite {
 		for (int i = 0; i < numberOfDays; i++)
 			array[i] = workingDays.get(i).getDayMonthShortYearString();
 
-		chart.getXAxis(0)
-				.setTickInterval(Math.ceil(((float) numberOfDays) / MAX_NUMBER_OF_TICKS))
-				.setCategories(array);
+		chart.getXAxis(0).setTickInterval(Math.ceil(((float) numberOfDays) / MAX_NUMBER_OF_TICKS)).setCategories(array);
 	}
 
 	private Series createBurnUpLine(final List<WorkingDay> releaseDays, final Map<WorkingDay, Float> values) {
-		final Series newSerie = chart.createSeries()
-				.setName(SERIES_ACCOMPLISHED_EFFORT)
-				.setYAxis(0)
-				.setPlotOptions(new LinePlotOptions()
-						.setLineWidth(2)
-						.setZIndex(2)
-						.setShadow(false)
-						.setColor(EFFORT_COLOR)
-						.setMarker(new Marker()
-								.setSymbol(Symbol.CIRCLE)
-								.setRadius(3)));
+		final Series newSerie = chart.createSeries().setName(SERIES_ACCOMPLISHED_EFFORT).setYAxis(0)
+				.setPlotOptions(new LinePlotOptions().setLineWidth(2).setZIndex(2).setShadow(false).setColor(EFFORT_COLOR).setMarker(new Marker().setSymbol(Symbol.CIRCLE).setRadius(3)));
 
 		return populateSeries(values, releaseDays, newSerie);
 	}
 
 	private Series createValueLine(final List<WorkingDay> releaseDays, final Map<WorkingDay, Float> values) {
-		final Series newSerie = chart.createSeries()
+		final Series newSerie = chart
+				.createSeries()
 				.setName(SERIES_ACCOMPLISHED_VALUE)
 				.setYAxis(1)
-				.setPlotOptions(new LinePlotOptions()
-						.setLineWidth(1)
-						.setShadow(false)
-						.setZIndex(1)
-						.setColor(VALUE_COLOR)
-						.setMarker(new Marker()
-								.setSymbol(Symbol.DIAMOND)
-								.setLineColor(VALUE_COLOR)
-								.setRadius(2)));
+				.setPlotOptions(
+						new LinePlotOptions().setLineWidth(1).setShadow(false).setZIndex(1).setColor(VALUE_COLOR)
+								.setMarker(new Marker().setSymbol(Symbol.DIAMOND).setLineColor(VALUE_COLOR).setRadius(2)));
 
 		return populateSeries(values, releaseDays, newSerie);
 	}
 
-	private Series createIdealLine(final String seriesName,
-			final String seriesColor, final DashStyle dashStyle, final List<WorkingDay> releaseDays, final WorkingDay estimatedEndDay, final float maxValue) {
-		final Series idealLine = chart.createSeries()
+	private Series createIdealLine(final String seriesName, final String seriesColor, final DashStyle dashStyle, final List<WorkingDay> releaseDays, final WorkingDay estimatedEndDay,
+			final float maxValue) {
+		final Series idealLine = chart
+				.createSeries()
 				.setName(seriesName)
 				.setYAxis(0)
-				.setPlotOptions(new LinePlotOptions()
-						.setLineWidth(1)
-						.setEnableMouseTracking(true)
-						.setHoverStateEnabled(false)
-						.setShadow(false)
-						.setZIndex(0)
-						.setDashStyle(dashStyle)
-						.setColor(seriesColor)
-						.setMarker(new Marker()
-								.setSymbol(Symbol.CIRCLE)
-								.setRadius(1)))
+				.setPlotOptions(
+						new LinePlotOptions().setLineWidth(1).setEnableMouseTracking(true).setHoverStateEnabled(false).setShadow(false).setZIndex(0).setDashStyle(dashStyle).setColor(seriesColor)
+								.setMarker(new Marker().setSymbol(Symbol.CIRCLE).setRadius(1)))
 
-				.addPoint(0, 0)
-				.addPoint(createLastPoint(releaseDays.indexOf(estimatedEndDay), maxValue, seriesName));
+				.addPoint(0, 0).addPoint(createLastPoint(releaseDays.indexOf(estimatedEndDay), maxValue, seriesName));
 
 		return idealLine;
 	}
@@ -387,8 +292,7 @@ public class ReleaseChart extends Composite {
 			points.add(new Point(releaseDays.indexOf(workingDay), values.get(workingDay)));
 		}
 		if (lastDayAccounted != null) {
-			points.add(createLastPoint(releaseDays.indexOf(lastDayAccounted), values.get(lastDayAccounted), serie.getOptions().get("name")
-					.toString()));
+			points.add(createLastPoint(releaseDays.indexOf(lastDayAccounted), values.get(lastDayAccounted), serie.getOptions().get("name").toString()));
 		}
 		return points.toArray(new Point[points.size()]);
 	}
@@ -415,11 +319,9 @@ public class ReleaseChart extends Composite {
 	private ActionExecutionListener getActionExecutionListener() {
 		return actionExecutionListener == null ? actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext, final boolean isUserAction) {
-				if (action instanceof ReleaseDeclareStartDayAction ||
-						action instanceof ReleaseDeclareEndDayAction ||
-						action instanceof ReleaseDeclareEstimatedVelocityAction) updateData();
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
+				if (action instanceof ReleaseDeclareStartDayAction || action instanceof ReleaseDeclareEndDayAction || action instanceof ReleaseDeclareEstimatedVelocityAction) updateData();
 
 				else updateAmountSeries();
 			}
@@ -439,15 +341,13 @@ public class ReleaseChart extends Composite {
 
 			private void updateValueSeries() {
 				accomplishedValueSeries.remove();
-				chart.addSeries(accomplishedValueSeries = createValueLine(dataProvider.getReleaseDays(), dataProvider.getAccomplishedValuePointsByDate()),
-						false, false);
+				chart.addSeries(accomplishedValueSeries = createValueLine(dataProvider.getReleaseDays(), dataProvider.getAccomplishedValuePointsByDate()), false, false);
 				previousValue = release.getAccomplishedValueSum();
 			}
 
 			private void updateEffortSeries() {
 				accomplishedEffortSeries.remove();
-				chart.addSeries(accomplishedEffortSeries = createBurnUpLine(dataProvider.getReleaseDays(), dataProvider.getAccomplishedEffortPointsByDate()),
-						false, false);
+				chart.addSeries(accomplishedEffortSeries = createBurnUpLine(dataProvider.getReleaseDays(), dataProvider.getAccomplishedEffortPointsByDate()), false, false);
 				previousEffort = release.getAccomplishedEffortSum();
 			}
 

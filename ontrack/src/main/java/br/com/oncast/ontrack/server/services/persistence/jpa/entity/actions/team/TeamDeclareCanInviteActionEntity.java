@@ -21,18 +21,6 @@ public class TeamDeclareCanInviteActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.BOOLEAN_1)
 	private boolean canInvite;
 
-	@Column(name = ActionTableColumns.UNIQUE_ID)
-	@ConvertUsing(StringToUuidConverter.class)
-	private String uniqueId;
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(final String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-
 	public String getUserId() {
 		return userId;
 	}

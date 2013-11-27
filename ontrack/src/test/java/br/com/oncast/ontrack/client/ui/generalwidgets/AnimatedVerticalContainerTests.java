@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgetsa.animation.AnimationMockFactory;
+
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgetsa.animation.AnimationMockFactory;
 
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.IsWidget;

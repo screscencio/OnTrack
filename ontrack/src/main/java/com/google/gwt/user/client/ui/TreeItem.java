@@ -33,10 +33,11 @@ import com.google.gwt.user.client.Element;
  * {@example com.google.gwt.examples.TreeExample}
  * </p>
  */
+// FIXME update Tree for GWT 2.5.1 implementation
+@SuppressWarnings("deprecation")
 public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasHTML, HasSafeHtml {
 	/*
-	 * For compatibility with UiBinder interface HasTreeItems should be declared before HasHTML, so that children items and widgets are processed before
-	 * interpreting HTML.
+	 * For compatibility with UiBinder interface HasTreeItems should be declared before HasHTML, so that children items and widgets are processed before interpreting HTML.
 	 */
 
 	/**
@@ -115,8 +116,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	}
 
 	/**
-	 * An {@link Animation} used to open the child elements. If a {@link TreeItem} is in the process of opening, it will immediately be opened and the new
-	 * {@link TreeItem} will use this animation.
+	 * An {@link Animation} used to open the child elements. If a {@link TreeItem} is in the process of opening, it will immediately be opened and the new {@link TreeItem} will use this animation.
 	 */
 	private static class TreeItemAnimation extends Animation {
 
@@ -138,8 +138,10 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		/**
 		 * Open the specified {@link TreeItem}.
 		 * 
-		 * @param item the {@link TreeItem} to open
-		 * @param animate true to animate, false to open instantly
+		 * @param item
+		 *            the {@link TreeItem} to open
+		 * @param animate
+		 *            true to animate, false to open instantly
 		 */
 		public void setItemState(final TreeItem item, final boolean animate) {
 			// Immediately complete previous open
@@ -150,8 +152,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 				curItem = item;
 				opening = item.open;
 				run(Math.min(ANIMATION_DURATION, ANIMATION_DURATION_PER_ITEM * curItem.getChildCount()));
-			}
-			else {
+			} else {
 				UIObject.setVisible(item.childSpanElem, item.open);
 			}
 		}
@@ -163,8 +164,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 					UIObject.setVisible(curItem.childSpanElem, true);
 					onUpdate(1.0);
 					DOM.setStyleAttribute(curItem.childSpanElem, "height", "auto");
-				}
-				else {
+				} else {
 					UIObject.setVisible(curItem.childSpanElem, false);
 				}
 				DOM.setStyleAttribute(curItem.childSpanElem, "overflow", "visible");
@@ -230,8 +230,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	private static final int ANIMATION_DURATION = 200;
 
 	/**
-	 * The duration of the animation per child {@link TreeItem}. If the per item duration times the number of child items is less than the duration above, the
-	 * smaller duration will be used.
+	 * The duration of the animation per child {@link TreeItem}. If the per item duration times the number of child items is less than the duration above, the smaller duration will be used.
 	 */
 	private static final int ANIMATION_DURATION_PER_ITEM = 75;
 
@@ -282,7 +281,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Constructs a tree item with the given HTML.
 	 * 
-	 * @param html the item's HTML
+	 * @param html
+	 *            the item's HTML
 	 */
 	public TreeItem(final String html) {
 		this();
@@ -292,7 +292,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Constructs a tree item with the given HTML.
 	 * 
-	 * @param html the item's HTML
+	 * @param html
+	 *            the item's HTML
 	 */
 	public TreeItem(final SafeHtml html) {
 		this(html.asString());
@@ -301,7 +302,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Constructs a tree item with the given <code>Widget</code>.
 	 * 
-	 * @param widget the item's widget
+	 * @param widget
+	 *            the item's widget
 	 */
 	public TreeItem(final Widget widget) {
 		this();
@@ -311,7 +313,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Creates an empty tree item.
 	 * 
-	 * @param isRoot true if this item is the root of a tree
+	 * @param isRoot
+	 *            true if this item is the root of a tree
 	 */
 	TreeItem(final boolean isRoot) {
 		this.isRoot = isRoot;
@@ -329,7 +332,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Adds a child tree item containing the specified html.
 	 * 
-	 * @param itemHtml the text to be added
+	 * @param itemHtml
+	 *            the text to be added
 	 * @return the item that was added
 	 */
 	public TreeItem addItem(final String itemHtml) {
@@ -341,7 +345,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Adds a child tree item containing the specified html.
 	 * 
-	 * @param itemHtml the item's HTML
+	 * @param itemHtml
+	 *            the item's HTML
 	 * @return the item that was added
 	 */
 	@Override
@@ -354,7 +359,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Adds another item as a child to this one.
 	 * 
-	 * @param item the item to be added
+	 * @param item
+	 *            the item to be added
 	 */
 	@Override
 	public void addItem(final TreeItem item) {
@@ -367,7 +373,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Adds another item as a child to this one.
 	 * 
-	 * @param isItem the wrapper of item to be added
+	 * @param isItem
+	 *            the wrapper of item to be added
 	 */
 	@Override
 	public void addItem(final IsTreeItem isItem) {
@@ -378,7 +385,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Adds a child tree item containing the specified widget.
 	 * 
-	 * @param widget the widget to be added
+	 * @param widget
+	 *            the widget to be added
 	 * @return the item that was added
 	 */
 	@Override
@@ -391,7 +399,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Adds a child tree item containing the specified text.
 	 * 
-	 * @param itemText the text of the item to be added
+	 * @param itemText
+	 *            the text of the item to be added
 	 * @return the item that was added
 	 */
 	@Override
@@ -410,7 +419,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Gets the child at the specified index.
 	 * 
-	 * @param index the index to be retrieved
+	 * @param index
+	 *            the index to be retrieved
 	 * @return the item at that index
 	 */
 
@@ -434,7 +444,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Gets the index of the specified child item.
 	 * 
-	 * @param child the child item to be found
+	 * @param child
+	 *            the child item to be found
 	 * @return the child's index, or <code>-1</code> if none is found
 	 */
 
@@ -501,10 +512,13 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Inserts a child tree item at the specified index containing the specified text.
 	 * 
-	 * @param beforeIndex the index where the item will be inserted
-	 * @param itemText the text to be added
+	 * @param beforeIndex
+	 *            the index where the item will be inserted
+	 * @param itemText
+	 *            the text to be added
 	 * @return the item that was added
-	 * @throws IndexOutOfBoundsException if the index is out of range
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is out of range
 	 */
 	public TreeItem insertItem(final int beforeIndex, final String itemText) throws IndexOutOfBoundsException {
 		final TreeItem ret = new TreeItem(itemText);
@@ -515,10 +529,13 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Inserts a child tree item at the specified index containing the specified text.
 	 * 
-	 * @param beforeIndex the index where the item will be inserted
-	 * @param itemHtml the item's HTML
+	 * @param beforeIndex
+	 *            the index where the item will be inserted
+	 * @param itemHtml
+	 *            the item's HTML
 	 * @return the item that was added
-	 * @throws IndexOutOfBoundsException if the index is out of range
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is out of range
 	 */
 	public TreeItem insertItem(final int beforeIndex, final SafeHtml itemHtml) throws IndexOutOfBoundsException {
 		final TreeItem ret = new TreeItem(itemHtml);
@@ -529,9 +546,12 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Inserts an item as a child to this one.
 	 * 
-	 * @param beforeIndex the index where the item will be inserted
-	 * @param item the item to be added
-	 * @throws IndexOutOfBoundsException if the index is out of range
+	 * @param beforeIndex
+	 *            the index where the item will be inserted
+	 * @param item
+	 *            the item to be added
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is out of range
 	 */
 	public void insertItem(final int beforeIndex, final TreeItem item) throws IndexOutOfBoundsException {
 		// Detach item from existing parent.
@@ -550,8 +570,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		final double margin = isRoot ? 0.0 : CHILD_MARGIN;
 		if (LocaleInfo.getCurrentLocale().isRTL()) {
 			item.getElement().getStyle().setMarginRight(margin, Unit.PX);
-		}
-		else {
+		} else {
 			item.getElement().getStyle().setMarginLeft(margin, Unit.PX);
 		}
 
@@ -559,8 +578,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		final Element childContainer = isRoot ? tree.getElement() : childSpanElem;
 		if (beforeIndex == childCount) {
 			childContainer.appendChild(item.getElement());
-		}
-		else {
+		} else {
 			final Element beforeElem = getChild(beforeIndex).getElement();
 			childContainer.insertBefore(item.getElement(), beforeElem);
 		}
@@ -581,10 +599,13 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Inserts a child tree item at the specified index containing the specified widget.
 	 * 
-	 * @param beforeIndex the index where the item will be inserted
-	 * @param widget the widget to be added
+	 * @param beforeIndex
+	 *            the index where the item will be inserted
+	 * @param widget
+	 *            the widget to be added
 	 * @return the item that was added
-	 * @throws IndexOutOfBoundsException if the index is out of range
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is out of range
 	 */
 	public TreeItem insertItem(final int beforeIndex, final Widget widget) throws IndexOutOfBoundsException {
 		final TreeItem ret = new TreeItem(widget);
@@ -608,8 +629,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		if (parent != null) {
 			// If this item has a parent, remove self from it.
 			parent.removeItem(this);
-		}
-		else if (tree != null) {
+		} else if (tree != null) {
 			// If the item has no parent, but is in the Tree, it must be a top-level
 			// element.
 			tree.removeItem(this);
@@ -619,7 +639,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Removes one of this item's children.
 	 * 
-	 * @param item the item to be removed
+	 * @param item
+	 *            the item to be removed
 	 */
 	@Override
 	public void removeItem(final TreeItem item) {
@@ -633,8 +654,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		// Physical detach.
 		if (isRoot) {
 			oldTree.getElement().removeChild(item.getElement());
-		}
-		else {
+		} else {
 			childSpanElem.removeChild(item.getElement());
 		}
 
@@ -651,7 +671,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Removes one of this item's children.
 	 * 
-	 * @param isItem the wrapper of item to be removed
+	 * @param isItem
+	 *            the wrapper of item to be removed
 	 */
 	@Override
 	public void removeItem(final IsTreeItem isItem) {
@@ -685,7 +706,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Selects or deselects this item.
 	 * 
-	 * @param selected <code>true</code> to select the item, <code>false</code> to deselect it
+	 * @param selected
+	 *            <code>true</code> to select the item, <code>false</code> to deselect it
 	 */
 	public void setSelected(final boolean selected) {
 		if (this.selected == selected) { return; }
@@ -696,7 +718,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Sets whether this item's children are displayed.
 	 * 
-	 * @param open whether the item is open
+	 * @param open
+	 *            whether the item is open
 	 */
 	public void setState(final boolean open) {
 		setState(open, true);
@@ -705,8 +728,10 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Sets whether this item's children are displayed.
 	 * 
-	 * @param open whether the item is open
-	 * @param fireEvents <code>true</code> to allow open/close events to be
+	 * @param open
+	 *            whether the item is open
+	 * @param fireEvents
+	 *            <code>true</code> to allow open/close events to be
 	 */
 	public void setState(final boolean open, final boolean fireEvents) {
 		if (open && getChildCount() == 0) { return; }
@@ -731,7 +756,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Sets the user-defined object associated with this item.
 	 * 
-	 * @param userObj the item's user-defined object
+	 * @param userObj
+	 *            the item's user-defined object
 	 */
 	public void setUserObject(final Object userObj) {
 		userObject = userObj;
@@ -740,7 +766,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Sets the current widget. Any existing child widget will be removed.
 	 * 
-	 * @param newWidget Widget to set
+	 * @param newWidget
+	 *            Widget to set
 	 */
 	public void setWidget(final Widget newWidget) {
 		// Detach new child from old parent.
@@ -754,8 +781,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 				if (tree != null) {
 					tree.orphan(widget);
 				}
-			}
-			finally {
+			} finally {
 				// Physical detach old child.
 				contentElem.removeChild(widget.getElement());
 				widget = null;
@@ -787,8 +813,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	}
 
 	/**
-	 * Returns a suggested {@link Focusable} instance to use when this tree item is selected. The tree maintains focus if this method returns null. By default,
-	 * if the tree item contains a focusable widget, that widget is returned.
+	 * Returns a suggested {@link Focusable} instance to use when this tree item is selected. The tree maintains focus if this method returns null. By default, if the tree item contains a focusable
+	 * widget, that widget is returned.
 	 * 
 	 * Note, the {@link Tree} will ignore this value if the user clicked on an input element such as a button or text area when selecting this item.
 	 * 
@@ -816,8 +842,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		final Widget w = getWidget();
 		if (w instanceof HasFocus) {
 			return (HasFocus) w;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -892,7 +917,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	/**
 	 * Remove a tree item from its parent if it has one.
 	 * 
-	 * @param item the tree item to remove from its parent
+	 * @param item
+	 *            the tree item to remove from its parent
 	 */
 	void maybeRemoveItemFromParent(final TreeItem item) {
 		if ((item.getParentItem() != null) || (item.getTree() != null)) {
@@ -957,16 +983,14 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		// or the children will always take up space.
 		if (animate && (tree != null) && (tree.isAttached())) {
 			itemAnimation.setItemState(this, tree.isAnimationEnabled());
-		}
-		else {
+		} else {
 			itemAnimation.setItemState(this, false);
 		}
 
 		// Change the status image
 		if (open) {
 			tree.showOpenImage(this);
-		}
-		else {
+		} else {
 			tree.showClosedImage(this);
 		}
 

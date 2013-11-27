@@ -49,18 +49,6 @@ public class ReleaseRemoveRollbackActionEntity extends ModelActionEntity {
 	@JoinTable(name = "ReleaseRemoveRollbackActionEntity_SubActionRollbackList")
 	private List<ScopeBindReleaseActionEntity> subActionRollbackList;
 
-	@Column(name = ActionTableColumns.UNIQUE_ID)
-	@ConvertUsing(StringToUuidConverter.class)
-	private String uniqueId;
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(final String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-
 	public String getReferenceId() {
 		return referenceId;
 	}

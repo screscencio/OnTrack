@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.metrics;
 import br.com.oncast.ontrack.server.configuration.Configurations;
 import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -39,13 +40,13 @@ public class GoogleAnalyticsServerAnalytics implements ServerAnalytics {
 	}
 
 	@Override
-	public void onActionExecuted(final UUID authorId, final UUID projectId, final ModelAction action) {
-		send(authorId, projectId, new EventHit("action", "server_side_execution").eventLabel(className(action)));
+	public void onActionExecuted(final UserAction action) {
+		send(action.getUserId(), action.getProjectId(), new EventHit("action", "server_side_execution").eventLabel(className(action.getModelAction())));
 	}
 
 	@Override
-	public void onActionConflicted(final UUID authorId, final UUID projectId, final ModelAction action) {
-		send(authorId, projectId, new EventHit("action", "confict").eventLabel(className(action)));
+	public void onActionConflicted(final UserAction action) {
+		send(action.getUserId(), action.getProjectId(), new EventHit("action", "confict").eventLabel(className(action.getModelAction())));
 	}
 
 	@Override

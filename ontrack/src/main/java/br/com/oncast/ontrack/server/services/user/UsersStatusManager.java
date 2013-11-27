@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.server.services.user;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager.UserStatusChangeListener;
@@ -21,6 +14,13 @@ import br.com.oncast.ontrack.shared.services.user.UserOnlineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOpenProjectEvent;
 import br.com.oncast.ontrack.shared.services.user.UserSelectedScopeEvent;
 import br.com.oncast.ontrack.shared.services.user.UserStatusEvent;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;

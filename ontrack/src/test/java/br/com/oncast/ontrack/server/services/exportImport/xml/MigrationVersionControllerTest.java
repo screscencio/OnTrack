@@ -1,13 +1,5 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import org.junit.Test;
-
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations.Migration_2011_10_01;
 import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations.Migration_2011_10_05;
@@ -15,6 +7,14 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations.
 import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.Migration2_2011_08_01;
 import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.Migration2_2011_08_05;
 import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.subPackage.Migration2_2011_08_10;
+
+import java.util.List;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MigrationVersionControllerTest {
 

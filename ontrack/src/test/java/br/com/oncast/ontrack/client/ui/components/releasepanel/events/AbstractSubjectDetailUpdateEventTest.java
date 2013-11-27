@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.events;
 
-import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_IMPEDIMENT;
-import static br.com.oncast.ontrack.shared.model.annotation.DeprecationState.DEPRECATED;
-import static br.com.oncast.ontrack.shared.model.annotation.DeprecationState.VALID;
-import static br.com.oncast.ontrack.utils.model.AnnotationTestUtils.createAnnotation;
-import static org.junit.Assert.assertFalse;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +14,12 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
-import br.com.oncast.ontrack.shared.model.annotation.Annotation;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import static org.junit.Assert.assertFalse;
+
+import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_IMPEDIMENT;
+import static br.com.oncast.ontrack.shared.model.annotation.DeprecationState.DEPRECATED;
+import static br.com.oncast.ontrack.shared.model.annotation.DeprecationState.VALID;
+import static br.com.oncast.ontrack.utils.model.AnnotationTestUtils.createAnnotation;
 
 public class AbstractSubjectDetailUpdateEventTest {
 

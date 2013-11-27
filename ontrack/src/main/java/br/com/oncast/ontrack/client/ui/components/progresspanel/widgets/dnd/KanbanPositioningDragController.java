@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
 import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.List;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;

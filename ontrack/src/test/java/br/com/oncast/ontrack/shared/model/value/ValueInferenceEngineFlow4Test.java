@@ -1,11 +1,5 @@
 package br.com.oncast.ontrack.shared.model.value;
 
-import java.util.Stack;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
@@ -17,6 +11,12 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestU
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
+
+import java.util.Stack;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 public class ValueInferenceEngineFlow4Test {
 

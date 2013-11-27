@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.services.storage;
 
-import br.com.oncast.ontrack.client.services.actionSync.ActionSyncEntry;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetricsBag;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerStatisticsBag;
 
@@ -39,8 +39,8 @@ public interface ClientStorageService {
 
 	void storeOnTrackServerStatisticsList(OnTrackServerStatisticsBag statistics);
 
-	List<ActionSyncEntry> loadActionSyncEntries();
+	List<ActionExecutionContext> loadPendingActionExecutionContexts(UUID projectId);
 
-	void storeActionSyncEntries(List<ActionSyncEntry> entries);
+	void storePendingActionExecutionContexts(UUID projectId, List<ActionExecutionContext> executionContexts);
 
 }

@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
+
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 

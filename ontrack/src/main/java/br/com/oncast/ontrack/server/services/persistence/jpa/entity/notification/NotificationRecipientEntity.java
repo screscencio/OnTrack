@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.services.notification.NotificationRecipient;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 @ConvertTo(NotificationRecipient.class)

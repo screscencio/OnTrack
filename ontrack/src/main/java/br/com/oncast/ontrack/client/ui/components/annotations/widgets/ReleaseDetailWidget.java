@@ -1,14 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import static br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat.roundFloat;
-
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -23,6 +19,8 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat.roundFloat;
 
 public class ReleaseDetailWidget extends Composite implements SubjectDetailWidget {
 
@@ -85,8 +83,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 	public ReleaseDetailWidget setSubject(final Release release) {
 		this.release = release;
 		final ClientServices serviceProvider = ClientServices.get();
-		this.dataProvider = new ReleaseChartDataProvider(release, serviceProvider.releaseEstimator().get(),
-				serviceProvider.actionExecution());
+		this.dataProvider = new ReleaseChartDataProvider(release, serviceProvider.releaseEstimator().get(), serviceProvider.actionExecution());
 		update();
 		return this;
 	}
@@ -108,8 +105,8 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 	private ActionExecutionListener getActionExecutionListener() {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext, final boolean isUserAction) {
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
 				if (action instanceof ReleaseRenameAction && action.getReferenceId().equals(release.getId())) update();
 			}
 		};

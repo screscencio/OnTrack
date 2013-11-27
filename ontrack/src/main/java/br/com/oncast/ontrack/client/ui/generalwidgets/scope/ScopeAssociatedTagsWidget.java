@@ -1,12 +1,10 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
@@ -58,11 +56,9 @@ public class ScopeAssociatedTagsWidget extends Composite implements ActionExecut
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final ActionExecutionContext executionContext,
-			final boolean isUserAction) {
-		if ((action instanceof ScopeAddTagAssociationAction || action instanceof ScopeRemoveTagAssociationAction)
-				&& action.getReferenceId().equals(scope.getId())) {
+	public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+		final ModelAction action = execution.getModelAction();
+		if ((action instanceof ScopeAddTagAssociationAction || action instanceof ScopeRemoveTagAssociationAction) && action.getReferenceId().equals(scope.getId())) {
 			update();
 		}
 	}

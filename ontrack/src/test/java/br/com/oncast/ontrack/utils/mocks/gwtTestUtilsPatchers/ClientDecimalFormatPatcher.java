@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.utils.mocks.gwtTestUtilsPatchers;
 
-import java.text.DecimalFormat;
-
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+
+import java.text.DecimalFormat;
 
 import com.googlecode.gwt.test.patchers.PatchClass;
 import com.googlecode.gwt.test.patchers.PatchMethod;

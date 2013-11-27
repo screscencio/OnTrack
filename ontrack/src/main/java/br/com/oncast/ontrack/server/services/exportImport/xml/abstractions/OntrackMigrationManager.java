@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
-import org.dom4j.Document;
-
 import br.com.oncast.ontrack.server.services.exportImport.xml.MigrationExecuter;
 import br.com.oncast.ontrack.server.services.exportImport.xml.MigrationVersionController;
+
+import org.dom4j.Document;
 
 public class OntrackMigrationManager {
 

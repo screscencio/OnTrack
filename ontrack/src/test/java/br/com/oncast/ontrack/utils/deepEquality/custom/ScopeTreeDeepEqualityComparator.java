@@ -1,10 +1,11 @@
 package br.com.oncast.ontrack.utils.deepEquality.custom;
 
-import junit.framework.Assert;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityException;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+
+import junit.framework.Assert;
 
 public class ScopeTreeDeepEqualityComparator implements DeepEqualityComparator<ScopeTree> {
 

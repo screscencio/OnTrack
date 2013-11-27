@@ -7,18 +7,15 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationExcept
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -57,9 +54,8 @@ public class ScopeBindHumanIdPostProcessor implements ActionPostProcessor<ScopeB
 	}
 
 	private void launchAction(final ScopeBindHumanIdAction action, final UUID projectId, final ActionContext actionContext) throws UnableToHandleActionException, AuthorizationException {
-		final List<ModelAction> list = new ArrayList<ModelAction>();
-		list.add(action);
-		ServerServiceProvider.getInstance().getBusinessLogic().handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, list).setShouldReturnToSender(true));
+		final UserAction ua = new UserAction(action, actionContext.getUserId(), projectId, actionContext.getTimestamp());
+		ServerServiceProvider.getInstance().getBusinessLogic().handleIncomingActionSyncRequest(new ModelActionSyncRequest(ua).setShouldReturnToSender(true));
 	}
 
 	public void deactivate() {

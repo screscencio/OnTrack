@@ -7,8 +7,8 @@ import br.com.drycode.api.web.gwt.dispatchService.client.RequestBuilderConfigura
 import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
-import br.com.oncast.ontrack.client.services.actionSync.ActionDispatcher;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
+import br.com.oncast.ontrack.client.services.actionSync.QueuedActionsDispatcher;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateServiceImpl;
@@ -38,6 +38,8 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.services.storage.Html5StorageClientStorageService;
+import br.com.oncast.ontrack.client.services.time.TimeProviderService;
+import br.com.oncast.ontrack.client.services.time.TimeProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.timesheet.TimesheetService;
 import br.com.oncast.ontrack.client.services.timesheet.TimesheetServiceImpl;
 import br.com.oncast.ontrack.client.services.user.ColorPackPicker;
@@ -110,7 +112,8 @@ public class ClientServices {
 	private ScopeEstimatorProvider scopeEstimatorProvider;
 	// private OnTrackAdminService onTrackAdminService;
 	private NetworkMonitoringService networkMonitoringService;
-	private ActionDispatcher actionDispatcher;
+	private QueuedActionsDispatcher actionDispatcher;
+	private TimeProviderServiceImpl timeProvider;
 
 	private static ClientServices instance;
 
@@ -172,7 +175,11 @@ public class ClientServices {
 
 	public ActionExecutionService actionExecution() {
 		if (actionExecutionService != null) return actionExecutionService;
-		return actionExecutionService = new ActionExecutionServiceImpl(contextProvider(), alerting(), projectRepresentationProvider(), placeController(), authentication());
+		return actionExecutionService = new ActionExecutionServiceImpl(contextProvider(), alerting(), projectRepresentationProvider(), placeController(), authentication(), timeProvider());
+	}
+
+	private TimeProviderService timeProvider() {
+		return timeProvider == null ? timeProvider = new TimeProviderServiceImpl() : timeProvider;
 	}
 
 	public ContextProviderService contextProvider() {
@@ -202,9 +209,9 @@ public class ClientServices {
 				eventBus());
 	}
 
-	private ActionDispatcher actionDispatcher() {
+	private QueuedActionsDispatcher actionDispatcher() {
 		if (actionDispatcher != null) return actionDispatcher;
-		return actionDispatcher = new ActionDispatcher(request(), projectRepresentationProvider(), metrics(), eventBus());
+		return actionDispatcher = new QueuedActionsDispatcher(request(), projectRepresentationProvider(), metrics(), eventBus());
 	}
 
 	public ServerPushClientService serverPush() {

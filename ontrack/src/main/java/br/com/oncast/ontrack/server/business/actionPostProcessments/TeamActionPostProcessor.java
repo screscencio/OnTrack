@@ -7,15 +7,13 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.user.UserInformationUpdateEvent;
-
-import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +34,7 @@ public class TeamActionPostProcessor implements ActionPostProcessor<TeamAction> 
 				+ action.getReferenceId().toString());
 
 		final UUID projectId = projectContext.getProjectRepresentation().getId();
-		final ModelActionSyncEvent syncEvent = new ModelActionSyncEvent(projectId, Arrays.asList((ModelAction) action), actionContext, -1);
+		final ModelActionSyncEvent syncEvent = new ModelActionSyncEvent(new UserAction(action, actionContext.getUserId(), projectId, actionContext.getTimestamp()));
 
 		multicastService.multicastToCurrentUserClientInSpecificProject(syncEvent, projectId);
 

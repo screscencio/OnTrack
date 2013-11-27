@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.ui.places.metrics.widgets;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.services.metrics.ProjectMetrics;
+
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ParagraphElement;

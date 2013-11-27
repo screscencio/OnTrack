@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.shared.model.action.helper;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
@@ -100,8 +101,8 @@ public class ActionHelper {
 		}
 	}
 
-	public static UserRepresentation findActionAuthor(final ActionContext actionContext, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
-		return findUser(actionContext.getUserId(), context, action);
+	public static UserRepresentation findActionAuthor(final ProjectContext context, final UserAction action) throws UnableToCompleteActionException {
+		return findUser(action.getUserId(), context, action.getModelAction());
 	}
 
 	public static UserRepresentation findUser(final UUID userId, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
@@ -129,17 +130,24 @@ public class ActionHelper {
 		}
 	}
 
-	public static Profile verifyPermission(final ProjectContext context, final ActionContext actionContext, final Profile neededProfile, final ModelAction action)
-			throws UnableToCompleteActionException {
-		if (shouldIgnorePermissionVerification(context, actionContext)) return Profile.SYSTEM_ADMIN;
+	public static Profile verifyPermission(final ProjectContext context, final Profile neededProfile, final UserAction action) throws UnableToCompleteActionException {
+		return verifyPermission(action.getUserId(), context, neededProfile, action.getModelAction());
+	}
 
-		final Profile projectProfile = ActionHelper.findActionAuthor(actionContext, context, action).getProjectProfile();
+	public static Profile verifyPermission(final UUID userId, final ProjectContext context, final Profile neededProfile, final ModelAction action) throws UnableToCompleteActionException {
+		if (shouldIgnorePermissionVerification(userId, context)) return Profile.SYSTEM_ADMIN;
+
+		final Profile projectProfile = findUser(userId, context, action).getProjectProfile();
 		if (!projectProfile.hasPermissionsOf(neededProfile)) throw new UnableToCompleteActionException(action, ActionExecutionErrorMessageCode.PERMISSION_DENIED);
 		return projectProfile;
 	}
 
-	public static boolean shouldIgnorePermissionVerification(final ProjectContext context, final ActionContext actionContext) {
-		return context.getUsers().isEmpty() || ADMIN_ID.equals(actionContext.getUserId());
+	public static boolean shouldIgnorePermissionVerification(final UUID userId, final ProjectContext context) {
+		return context.getUsers().isEmpty() || ADMIN_ID.equals(userId);
+	}
+
+	public static UserRepresentation findActionAuthor(final ActionContext actionContext, final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
+		return findUser(actionContext.getUserId(), context, action);
 	}
 
 }

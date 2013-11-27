@@ -1,22 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController.Display;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController.ReleaseMonitor;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
@@ -52,6 +40,17 @@ import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class ProgressPanelActionSyncControllerTest {
 
 	private ActionExecutionListener actionExecutionListener;
@@ -59,7 +58,6 @@ public class ProgressPanelActionSyncControllerTest {
 	private ProjectContext context;
 	private Release myRelease;
 	private ReleaseMonitor releaseMonitor;
-	private ActionContext actionContext;
 	private Scope rootScope;
 	private ActionExecutionContext actionExecutionContext;
 
@@ -67,7 +65,6 @@ public class ProgressPanelActionSyncControllerTest {
 	public void setUp() throws Exception {
 		display = Mockito.mock(Display.class);
 		context = mock(ProjectContext.class);
-		actionContext = mock(ActionContext.class);
 		actionExecutionContext = mock(ActionExecutionContext.class);
 		myRelease = createRelease();
 		rootScope = createScope();
@@ -76,8 +73,7 @@ public class ProgressPanelActionSyncControllerTest {
 		final ArgumentCaptor<ActionExecutionListener> captor = ArgumentCaptor.forClass(ActionExecutionListener.class);
 		when(actionExecutionServiceMock.addActionExecutionListener(captor.capture())).thenReturn(null);
 
-		final KanbanActionSyncController actionSyncController = new KanbanActionSyncController(actionExecutionServiceMock, myRelease, display,
-				mock(ClientMessages.class));
+		final KanbanActionSyncController actionSyncController = new KanbanActionSyncController(actionExecutionServiceMock, myRelease, display, mock(ClientMessages.class));
 		releaseMonitor = actionSyncController.new ReleaseMonitor(myRelease);
 		ReflectionTestUtils.set(actionSyncController, "releaseMonitor", releaseMonitor);
 		actionSyncController.registerActionExecutionListener();
@@ -586,7 +582,8 @@ public class ProgressPanelActionSyncControllerTest {
 	}
 
 	private void onActionExecution(final ModelAction action) throws UnableToCompleteActionException {
-		actionExecutionListener.onActionExecution(action, context, actionContext, actionExecutionContext, true);
+		when(actionExecutionContext.getModelAction()).thenReturn(action);
+		actionExecutionListener.onActionExecution(actionExecutionContext, context, true);
 	}
 
 	private void addToContext(final Release release) throws ReleaseNotFoundException {
@@ -603,8 +600,7 @@ public class ProgressPanelActionSyncControllerTest {
 		return mock;
 	}
 
-	private <T extends ScopeInsertAction> ScopeInsertAction createScopeInsertionAction(final Class<T> clazz, final UUID scopeReferenceId,
-			final UUID releaseReferenceId) {
+	private <T extends ScopeInsertAction> ScopeInsertAction createScopeInsertionAction(final Class<T> clazz, final UUID scopeReferenceId, final UUID releaseReferenceId) {
 		final T mock = Mockito.mock(clazz);
 		when(mock.getNewScopeId()).thenReturn(scopeReferenceId);
 		when(mock.getReferenceId()).thenReturn(releaseReferenceId);

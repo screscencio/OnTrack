@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Element;
 
@@ -22,30 +21,11 @@ public class ScopeMoveDownAction implements ScopeMoveAction {
 	@Element
 	private UUID referenceId;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeMoveDownAction() {}
 
 	public ScopeMoveDownAction(final UUID referenceId) {
 		this.referenceId = referenceId;
-		this.uniqueId = new UUID();
 	}
 
 	@Override

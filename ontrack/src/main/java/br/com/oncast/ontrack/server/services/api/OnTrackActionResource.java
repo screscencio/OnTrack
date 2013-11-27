@@ -3,7 +3,10 @@ package br.com.oncast.ontrack.server.services.api;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.api.bean.ActionExecutionApiRequest;
 import br.com.oncast.ontrack.server.services.api.bean.ActionExecutionApiResponse;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -20,7 +23,8 @@ public class OnTrackActionResource {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public ActionExecutionApiResponse executeAction(final ActionExecutionApiRequest request) {
 		try {
-			final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(request.getProjectId(), request.getActionList()).setShouldReturnToSender(true);
+			final List<UserAction> actionList = request.getActionList();
+			final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(request.getProjectId(), actionList).setShouldReturnToSender(true);
 			final long projectRevision = ServerServiceProvider.getInstance().getBusinessLogic().handleIncomingActionSyncRequest(modelActionSyncRequest);
 			return new ActionExecutionApiResponse(projectRevision);
 		} catch (final Exception e) {

@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
@@ -10,6 +7,9 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction
 import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserAssociationServiceImpl implements UserAssociationService {
 

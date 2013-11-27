@@ -1,16 +1,6 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-
 import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
@@ -20,11 +10,18 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.transform.CustomMa
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
 
 public class XMLImporter {
 
@@ -48,8 +45,7 @@ public class XMLImporter {
 			ontrackXML = serializer.read(OntrackXML.class, file);
 			persisted = false;
 			LOGGER.debug("Finished XML Serialization in " + getTimeSpent(initialTime) + " ms");
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			throw new UnableToImportXMLException("Unable to deserialize xml file.", e);
 		}
 		return this;
@@ -66,8 +62,7 @@ public class XMLImporter {
 
 			this.persisted = true;
 			return this;
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			throw new UnableToImportXMLException("The xml import was not concluded. Some operations may be changed the database, but was not rolledback. ", e);
 		}
 	}
@@ -100,19 +95,14 @@ public class XMLImporter {
 			final ProjectRepresentation representation = projectNode.getProjectRepresentation();
 			persistenceService.persistOrUpdateProjectRepresentation(representation);
 			final List<UserAction> actions = projectNode.getActions();
-			persistActions(representation.getId(), actions);
-			LOGGER.info("Persisted project " + representation + " and it's " + actions.size() + " actions in " + getTimeSpent(initialTime)
-					+ " ms.");
+			persistActions(actions);
+			LOGGER.info("Persisted project " + representation + " and it's " + actions.size() + " actions in " + getTimeSpent(initialTime) + " ms.");
 		}
 		LOGGER.debug("Persisted " + projectNodes.size() + " projects in " + getTimeSpent(startTime) + " ms");
 	}
 
-	private void persistActions(final UUID projectId, final List<UserAction> userActions) throws PersistenceException {
-		for (final UserAction userAction : userActions) {
-			final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
-			actions.add(userAction.getModelAction());
-			persistenceService.persistActions(projectId, actions, userAction.getUserId(), userAction.getTimestamp());
-		}
+	private void persistActions(final List<UserAction> userActions) throws PersistenceException {
+		persistenceService.persistActions(userActions);
 	}
 
 	private void persistAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizationNodes) throws PersistenceException, NoResultFoundException {
@@ -134,13 +124,10 @@ public class XMLImporter {
 			try {
 				businessLogic.loadProjectForMigration(representation.getId());
 				LOGGER.info("Loaded project " + representation + " in " + getTimeSpent(initialTime) + " ms.");
-			}
-			catch (final Exception e) {
+			} catch (final Exception e) {
 				final String message = "Unable to load project '" + representation + "' after import.";
 				LOGGER.error(message, e);
-				throw new UnableToImportXMLException(
-						"The xml import was not concluded. Some operations may be changed the database, but was not rolled back. Reason: "
-								+ message, e);
+				throw new UnableToImportXMLException("The xml import was not concluded. Some operations may be changed the database, but was not rolled back. Reason: " + message, e);
 			}
 		}
 	}

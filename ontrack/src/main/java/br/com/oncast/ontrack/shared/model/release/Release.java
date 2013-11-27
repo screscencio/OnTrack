@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.shared.model.release;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -13,6 +9,10 @@ import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Release implements Serializable, HasUUID {
 

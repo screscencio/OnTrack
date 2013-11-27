@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.cache.ObjectCache;
@@ -10,7 +9,6 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.UserEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.file.FileRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
@@ -21,7 +19,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.custom.CollectionToListC
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.ColorConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.UUIDConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -63,20 +61,19 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public long persistActions(final UUID projectId, final List<ModelAction> actionList, final UUID userId, final Date timestamp) throws PersistenceException {
+	public long persistActions(final List<UserAction> actionList) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			final ProjectRepresentationEntity projectRepresentationEntity = convertProjectRepresentationToEntity(retrieveProjectRepresentation(projectId));
-			UserActionEntity lastPersistedAction = null;
-			for (final ModelAction modelAction : actionList) {
-				final ModelActionEntity entity = convertActionToEntity(modelAction);
-				final UserActionEntity container = new UserActionEntity(entity, modelAction.getId().toString(), userId.toString(), projectRepresentationEntity, timestamp);
-				em.persist(container);
-				lastPersistedAction = container;
+			long lastPersistedActionId = 0;
+			for (final UserAction action : actionList) {
+				final UserActionEntity entity = convert(action);
+				em.persist(entity);
+				action.setSequencialId(entity.getId());
+				lastPersistedActionId = entity.getId();
 			}
 			em.getTransaction().commit();
-			return (lastPersistedAction == null) ? 0 : lastPersistedAction.getId();
+			return lastPersistedActionId;
 		} catch (final Exception e) {
 			try {
 				em.getTransaction().rollback();
@@ -96,7 +93,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName()
-					+ " as action where action.projectRepresentation.id = :projectId and action.id > :lastActionId order by action.id asc");
+					+ " as action where action.projectId = :projectId and action.id > :lastActionId order by action.id asc");
 
 			query.setParameter("projectId", projectId.toString());
 			query.setParameter("lastActionId", actionId);
@@ -116,8 +113,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public UserAction retrieveAction(final UUID projectId, final UUID actionUniqueId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName()
-					+ " as action where action.projectRepresentation.id = :projectId and action.uniqueId = :actionUniqueId");
+			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName() + " as action where action.projectId = :projectId and action.uniqueId = :actionUniqueId");
 
 			query.setParameter("projectId", projectId.toString());
 			query.setParameter("actionUniqueId", actionUniqueId.toString());
@@ -528,24 +524,14 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		return password;
 	}
 
-	private ModelActionEntity convertActionToEntity(final ModelAction modelAction) throws PersistenceException {
-		ModelActionEntity entity;
+	@SuppressWarnings("unchecked")
+	private <T> T convert(final Object model) throws PersistenceException {
 		try {
-			entity = (ModelActionEntity) TYPE_CONVERTER.convert(modelAction);
-		} catch (final TypeConverterException e) {
-			throw new PersistenceException("It was not possible to convert the action to its entity", e);
+			return (T) TYPE_CONVERTER.convert(model);
+		} catch (final Exception e) {
+			throw new PersistenceException("It was not possible to convert " + model + ": " + e.toString(), e);
 		}
-		return entity;
-	}
 
-	private ProjectRepresentationEntity convertProjectRepresentationToEntity(final ProjectRepresentation representation) throws PersistenceException {
-		ProjectRepresentationEntity entity;
-		try {
-			entity = (ProjectRepresentationEntity) TYPE_CONVERTER.convert(representation);
-		} catch (final TypeConverterException e) {
-			throw new PersistenceException("It was not possible to convert the projectRepresentation to its entity", e);
-		}
-		return entity;
 	}
 
 	@Override
@@ -754,7 +740,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName()
-					+ " AS ua WHERE ua.userId = :userId AND ua.projectRepresentation.id = :projectId ORDER BY ua.timestamp ASC");
+					+ " AS ua WHERE ua.userId = :userId AND ua.projectId = :projectId ORDER BY ua.timestamp ASC");
 			query.setParameter("userId", userId.toString());
 			query.setParameter("projectId", projectId.toString());
 			query.setMaxResults(1);
@@ -774,7 +760,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("SELECT ua.timestamp FROM " + UserActionEntity.class.getSimpleName()
-					+ " AS ua WHERE ua.userId = :userId AND ua.projectRepresentation.id = :projectId ORDER BY ua.timestamp DESC");
+					+ " AS ua WHERE ua.userId = :userId AND ua.projectId = :projectId ORDER BY ua.timestamp DESC");
 			query.setParameter("userId", userId.toString());
 			query.setParameter("projectId", projectId.toString());
 			query.setMaxResults(1);

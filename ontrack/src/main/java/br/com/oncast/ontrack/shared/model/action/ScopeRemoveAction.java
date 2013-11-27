@@ -14,7 +14,6 @@ import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,29 +29,10 @@ public class ScopeRemoveAction implements ScopeAction, ShowsUndoAlertAfterAction
 	@Element
 	private UUID referenceId;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeRemoveAction() {}
 
 	public ScopeRemoveAction(final UUID selectedScopeId) {
-		this.uniqueId = new UUID();
 		this.referenceId = selectedScopeId;
 	}
 

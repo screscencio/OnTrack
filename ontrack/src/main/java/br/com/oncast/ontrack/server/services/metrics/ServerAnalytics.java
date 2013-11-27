@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.server.services.metrics;
 
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -11,9 +11,9 @@ public interface ServerAnalytics {
 
 	void deactivate();
 
-	void onActionExecuted(UUID userId, UUID projectId, ModelAction action);
+	void onActionExecuted(UserAction action);
 
-	void onActionConflicted(UUID authorId, UUID projectId, ModelAction action);
+	void onActionConflicted(UserAction action);
 
 	void onProjectMemberRemoved(UUID projectId, UUID userId, User remover);
 

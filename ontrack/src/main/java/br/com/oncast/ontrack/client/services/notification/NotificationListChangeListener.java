@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.services.notification;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+
+import java.util.List;
 
 public interface NotificationListChangeListener {
 

@@ -19,7 +19,7 @@ public class ScopeTreeTagAssociationAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
+	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		final Scope scope = context.findScope(action.getReferenceId());
 
 		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);

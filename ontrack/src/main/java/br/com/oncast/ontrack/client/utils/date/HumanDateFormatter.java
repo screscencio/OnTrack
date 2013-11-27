@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.client.utils.date;
 
-import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.getDifferenceUnit;
-import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.getRelativeUnit;
-
 import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
+
+import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.getDifferenceUnit;
+import static br.com.oncast.ontrack.client.utils.date.HumanDateUnit.getRelativeUnit;
 
 public class HumanDateFormatter {
 

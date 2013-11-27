@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

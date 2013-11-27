@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import java.util.SortedSet;
-
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UserSpecificStatusChangeListener;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+
+import java.util.SortedSet;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 

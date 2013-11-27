@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.notification.NotificationClientUtils;
 import br.com.oncast.ontrack.client.services.notification.NotificationListChangeListener;
@@ -12,6 +9,9 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ScrollEvent;

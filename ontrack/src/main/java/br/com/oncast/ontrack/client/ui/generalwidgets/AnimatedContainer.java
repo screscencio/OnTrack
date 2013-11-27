@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlideAndFadeAnimation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;

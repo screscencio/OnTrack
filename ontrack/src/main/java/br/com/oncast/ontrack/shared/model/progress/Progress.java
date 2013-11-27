@@ -3,14 +3,6 @@
 
 package br.com.oncast.ontrack.shared.model.progress;
 
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Iterator;
-
 import br.com.oncast.ontrack.shared.model.ModelState;
 import br.com.oncast.ontrack.shared.model.ModelStateManager;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -19,6 +11,14 @@ import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityByGetter;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Iterator;
+
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
 
 public class Progress implements Serializable, Iterable<ModelState<ProgressState>> {
 

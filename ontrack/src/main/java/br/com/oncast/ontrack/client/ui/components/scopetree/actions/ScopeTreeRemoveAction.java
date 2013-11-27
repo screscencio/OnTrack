@@ -41,7 +41,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 						((parentItem.getChildCount() > 0) ? parentItem.getChild((parentItem.getChildCount() - 1 < childIndex) ? parentItem.getChildCount() - 1 : childIndex) : parentItem), true);
 			}
 		} catch (final UnableToCompleteActionException e) {
-			throw new UserNotFoundException(ClientServices.get().messages().userNotFound(actionContext.getUserId().toString()));
+			throw new UserNotFoundException(ClientServices.get().messages().userNotFound(actionContext.toString()));
 		}
 	}
 }

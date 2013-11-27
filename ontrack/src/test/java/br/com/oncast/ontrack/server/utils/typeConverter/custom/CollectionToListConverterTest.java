@@ -1,7 +1,10 @@
 package br.com.oncast.ontrack.server.utils.typeConverter.custom;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
+import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,11 +15,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
-import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
-import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
-import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("rawtypes")
 public class CollectionToListConverterTest {

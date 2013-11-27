@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
@@ -14,6 +12,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlideAndFadeAnim
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseOutEvent;

@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareTimeSpentActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -16,6 +12,10 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 public class ScopeDeclareTimeSpentActionTest extends ModelActionTest {
 

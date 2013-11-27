@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.server.services.serverPush;
 
-import java.util.Set;
-
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+
+import java.util.Set;
 
 public interface ServerPushServerService {
 

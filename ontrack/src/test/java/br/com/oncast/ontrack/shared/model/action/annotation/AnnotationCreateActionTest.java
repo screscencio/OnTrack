@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
 import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporter;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLWriter;
@@ -16,6 +15,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.mode
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
@@ -34,7 +34,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -155,20 +154,20 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		final PersistenceService persistenceService = mock(PersistenceService.class);
 		readXml(file, persistenceService);
 
-		final List<ModelAction> capturedActions = getPersistedActions(persistenceService);
+		final List<UserAction> capturedActions = getPersistedActions(persistenceService);
 
 		assertEquals(1, capturedActions.size());
-		final ModelAction action = capturedActions.get(0);
+		final ModelAction action = capturedActions.get(0).getModelAction();
 
 		assertTrue(action instanceof AnnotationCreateAction);
 		assertEquals(message, ReflectionTestUtils.<String> get(action, "message"));
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List<ModelAction> getPersistedActions(final PersistenceService persistenceService) throws PersistenceException {
+	private List<UserAction> getPersistedActions(final PersistenceService persistenceService) throws PersistenceException {
 		final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-		verify(persistenceService).persistActions(Mockito.any(UUID.class), captor.capture(), Mockito.any(UUID.class), Mockito.any(Date.class));
-		final List<ModelAction> capturedActions = captor.getValue();
+		verify(persistenceService).persistActions(captor.capture());
+		final List<UserAction> capturedActions = captor.getValue();
 		return capturedActions;
 	}
 

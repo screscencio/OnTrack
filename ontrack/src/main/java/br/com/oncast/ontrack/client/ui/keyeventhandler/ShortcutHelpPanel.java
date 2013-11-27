@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.client.ui.keyeventhandler;
 
-import java.util.LinkedHashSet;
-
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ShortcutLabel;
 import br.com.oncast.ontrack.client.ui.keyeventhandlers.ShortcutHelpPanelShortcutMappings;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+
+import java.util.LinkedHashSet;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyDownEvent;

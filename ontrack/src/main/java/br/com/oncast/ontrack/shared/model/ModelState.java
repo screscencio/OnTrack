@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.shared.model;
 
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+
 import java.io.Serializable;
 import java.util.Date;
-
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class ModelState<T> implements Serializable {
 

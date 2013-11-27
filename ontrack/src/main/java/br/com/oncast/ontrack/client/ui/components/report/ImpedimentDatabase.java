@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.report;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -11,6 +7,10 @@ import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;

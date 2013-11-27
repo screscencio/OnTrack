@@ -1,15 +1,15 @@
 package br.com.oncast.ontrack.shared.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ModelStateManagerTest {
 
@@ -42,7 +42,7 @@ public class ModelStateManagerTest {
 	}
 
 	@Test
-	public void itsPossibleToSetAsInitialStateAStateThatIsAlreadtCreated() throws Exception {
+	public void itsPossibleToSetAsInitialStateAStateThatIsAlreadCreated() throws Exception {
 		final ModelState<Boolean> state = ModelState.create(false, initialAuthor, initialTimestamp);
 		final ModelStateManager<Boolean> manager = new ModelStateManager<Boolean>(state);
 		assertEquals(state, manager.getCurrentState());
@@ -74,8 +74,8 @@ public class ModelStateManagerTest {
 		manager.setState(secondState);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void itShouldNotBeAbleToSetAStateWithEarlierTimeStampThanThePreviousState() throws Exception {
+	@Test
+	public void settingAStateEarliestThanTheInitialStateShouldReplaceTheInitialState() throws Exception {
 		manager.setState("earlierState", initialAuthor, new Date(500));
 	}
 

@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 
 public class ProgressDefinitionManager {
 

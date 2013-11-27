@@ -42,11 +42,6 @@ public class ActionExecuterTestUtils extends ScopeActionExecuter {
 			return true;
 		}
 
-		@Override
-		public UUID getId() {
-			return null;
-		}
-
 	}
 
 	public static Set<UUID> executeInferenceEnginesForTestingPurposes(final Scope scope) {

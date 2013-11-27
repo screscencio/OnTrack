@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.services.actionExecution;
 
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
@@ -39,14 +39,13 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 	}
 
 	@Override
-	public ActionExecutionContext executeAction(final ProjectContext context, final ActionContext actionContext, final ModelAction action) throws UnableToCompleteActionException {
-		final Scope scope = getInferenceBaseScope(context, action);
+	public ActionExecutionContext executeAction(final ProjectContext context, final UserAction action) throws UnableToCompleteActionException {
+		final Scope scope = getInferenceBaseScope(context, action.getModelAction());
 
-		final ModelAction reverseAction = action.execute(context, actionContext);
-		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action, scope, ActionHelper.findUser(actionContext.getUserId(), context, action),
-				actionContext.getTimestamp());
+		final ModelAction reverseAction = action.execute(context);
+		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action, scope, ActionHelper.findActionAuthor(context, action), action.getExecutionTimestamp());
 
-		return new ActionExecutionContext(reverseAction, inferenceInfluencedScopeSet);
+		return new ActionExecutionContext(action, reverseAction, inferenceInfluencedScopeSet);
 	}
 
 	protected static Set<UUID> executeInferenceEngines(final ScopeAction action, final Scope scope, final UserRepresentation author, final Date timestamp) {

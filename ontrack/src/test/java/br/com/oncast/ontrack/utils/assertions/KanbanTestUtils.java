@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.utils.assertions;
 
-import java.util.ArrayList;
-
-import org.junit.Assert;
-
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+
+import java.util.ArrayList;
+
+import org.junit.Assert;
 
 public class KanbanTestUtils {
 

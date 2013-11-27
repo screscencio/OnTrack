@@ -11,9 +11,8 @@ import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.NullAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -29,6 +28,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.event.shared.EventBus;
@@ -36,10 +37,12 @@ import com.google.web.bindery.event.shared.EventBus;
 import static org.junit.Assert.assertEquals;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -53,19 +56,13 @@ public class ActionSyncServiceTest {
 	private ActionSyncService syncer;
 
 	@Mock
-	private ModelAction action;
+	private UserAction action;
 
 	@Mock
 	private ProjectContext context;
 
 	@Mock
-	private ActionContext actionContext;
-
-	@Mock
-	private ActionExecutionContext executionContext;
-
-	@Mock
-	private ActionDispatcher dispatcher;
+	private QueuedActionsDispatcher dispatcher;
 
 	@Mock
 	private ActionExecutionService actionExecutionService;
@@ -111,6 +108,16 @@ public class ActionSyncServiceTest {
 		inOrder = inOrder(actionExecutionService, dispatcher, alertingService);
 		inOrder.verify(dispatcher).registerListener(syncer);
 		inOrder.verify(actionExecutionService).addActionExecutionListener(syncer);
+		doAnswer(new Answer<Void>() {
+			@Override
+			@SuppressWarnings({ "unchecked" })
+			public Void answer(final InvocationOnMock invocation) throws Throwable {
+				final UUID projectId = (UUID) invocation.getArguments()[0];
+				final List<ActionExecutionContext> list = (List<ActionExecutionContext>) invocation.getArguments()[1];
+				when(storage.loadPendingActionExecutionContexts(projectId)).thenReturn(list);
+				return null;
+			}
+		}).when(storage).storePendingActionExecutionContexts(any(UUID.class), anyListOf(ActionExecutionContext.class));
 	}
 
 	@Test
@@ -134,14 +141,14 @@ public class ActionSyncServiceTest {
 
 	@Test
 	public void shouldNotDispatchNonUserAction() throws Exception {
-		syncer.onActionExecution(action, context, actionContext, executionContext, false);
+		syncer.onActionExecution(mock(ActionExecutionContext.class), context, false);
 		verifyNoMoreInteractions();
 	}
 
 	@Test
 	public void shouldNotDispatchActionsWhenThereIsNoConnection() throws Exception {
 		syncer.onConnectionLost();
-		for (final ModelAction action : createActionsList(5)) {
+		for (final UserAction action : createActionsList(5)) {
 			onUserAction(action);
 		}
 		verifyNoMoreInteractions();
@@ -150,8 +157,8 @@ public class ActionSyncServiceTest {
 	@Test
 	public void shouldStoreActionsWhenThereIsNoConnection() throws Exception {
 		syncer.onConnectionLost();
-		final List<ModelAction> actions = createActionsList(5);
-		for (final ModelAction action : actions) {
+		final List<UserAction> actions = createActionsList(5);
+		for (final UserAction action : actions) {
 			onUserAction(action);
 		}
 		assertStored(actions);
@@ -167,12 +174,12 @@ public class ActionSyncServiceTest {
 
 	@Test
 	public void shouldApplyAllActionsThatHappenedSinceLastSuccessfullySentActionOnRequestSuccess() throws Exception {
-		final List<ModelAction> serverSideActionList = createActionsList(5);
+		final List<UserAction> serverSideActionList = createActionsList(5);
 
 		syncer.onConnectionLost();
 		syncer.onConnectionRecovered();
 		verifyRetrievedAllServerActionsSince(lastSyncedActionId).andReturnWithSuccess(serverSideActionList);
-		for (final ModelAction action : serverSideActionList) {
+		for (final UserAction action : serverSideActionList) {
 			verifyExecutedLocally(action);
 		}
 	}
@@ -213,7 +220,7 @@ public class ActionSyncServiceTest {
 
 	@Test
 	public void shouldRevertConflictedActions() throws Exception {
-		final ModelAction reverseAction = onUserAction(action);
+		final UserAction reverseAction = onUserAction(action);
 		verifyDispatched(action);
 		syncer.onActionsRegectedByServer(asList(action), new UnableToHandleActionException());
 		verifyExecutedLocally(reverseAction);
@@ -221,7 +228,7 @@ public class ActionSyncServiceTest {
 
 	@Test
 	public void shouldShowFatalErrorWhenConflictRevertFails() throws Exception {
-		final ModelAction reverseAction = onUserAction(action);
+		final UserAction reverseAction = onUserAction(action);
 		verifyDispatched(action);
 		doFailWhenExecuted(reverseAction);
 		syncer.onActionsRegectedByServer(asList(action), new UnableToHandleActionException());
@@ -266,16 +273,16 @@ public class ActionSyncServiceTest {
 
 	@Test
 	public void shouldRevertClientSidePendingActionsBeforeRetrievingServerSidePendingActionsOnReconnection() throws Exception {
-		final List<ModelAction> pendingActions = createActionsList(8);
-		final List<ModelAction> reversePendingActions = new ArrayList<ModelAction>();
+		final List<UserAction> pendingActions = createActionsList(8);
+		final List<UserAction> reversePendingActions = new ArrayList<UserAction>();
 
 		syncer.onConnectionLost();
-		for (final ModelAction action : pendingActions) {
+		for (final UserAction action : pendingActions) {
 			reversePendingActions.add(0, onUserAction(action));
 		}
 		syncer.onConnectionRecovered();
 
-		for (final ModelAction reveseAction : reversePendingActions) {
+		for (final UserAction reveseAction : reversePendingActions) {
 			verifyExecutedLocally(reveseAction);
 		}
 		verifyRetrievedAllServerActionsSince(lastSyncedActionId);
@@ -283,16 +290,16 @@ public class ActionSyncServiceTest {
 
 	@Test
 	public void shouldDispatchClientSidePendingActionsAfterRetrievingServerSidePendingActionsOnReconnection() throws Exception {
-		final List<ModelAction> pendingActions = createActionsList(8);
+		final List<UserAction> pendingActions = createActionsList(8);
 
 		syncer.onConnectionLost();
-		for (final ModelAction action : pendingActions) {
+		for (final UserAction action : pendingActions) {
 			onUserAction(action);
 		}
 		syncer.onConnectionRecovered();
 		verifyRetrievedAllServerActionsSince(lastSyncedActionId).andReturnWithSuccess();
 
-		for (final ModelAction action : pendingActions) {
+		for (final UserAction action : pendingActions) {
 			verifyExecutedLocally(action);
 			verifyDispatched(action);
 		}
@@ -300,11 +307,11 @@ public class ActionSyncServiceTest {
 
 	@Test
 	public void shouldApplyAllActionsPushedFromServer() throws Exception {
-		final List<ModelAction> actionList = createActionsList(12);
+		final List<UserAction> actionList = createActionsList(12);
 		final long serverSyncId = lastSyncedActionId + actionList.size();
 
-		syncer.onEvent(new ModelActionSyncEvent(projectId, actionList, actionContext, serverSyncId));
-		for (final ModelAction modelAction : actionList) {
+		syncer.onEvent(modelActionSyncEvent(projectId, actionList, serverSyncId));
+		for (final UserAction modelAction : actionList) {
 			verifyExecutedLocally(modelAction);
 		}
 
@@ -320,7 +327,7 @@ public class ActionSyncServiceTest {
 		final Long newProjectSyncId = 9l;
 
 		syncer.onConnectionLost();
-		for (final ModelAction action : createActionsList(pendingActionsFromPreviousProject)) {
+		for (final UserAction action : createActionsList(pendingActionsFromPreviousProject)) {
 			onUserAction(action);
 		}
 		syncer.onProjectChanged(newProjectId, newProjectSyncId);
@@ -332,27 +339,27 @@ public class ActionSyncServiceTest {
 	@Test
 	public void whenThereArePendingActionsForNewlyLoadedProjectItShouldBeAppliedAndSentToServer() throws Exception {
 		final UUID newProjectId = new UUID();
-		final List<ActionSyncEntry> pendingEntriesList = createEntriesList(6);
-		when(storage.loadActionSyncEntries()).thenReturn(pendingEntriesList);
+		final List<ActionExecutionContext> pendingEntriesList = createEntriesList(6);
+		when(storage.loadPendingActionExecutionContexts(newProjectId)).thenReturn(pendingEntriesList);
 
 		syncer.onProjectChanged(newProjectId, 1l);
 
-		for (final ActionSyncEntry entry : pendingEntriesList) {
+		for (final ActionExecutionContext entry : pendingEntriesList) {
 			verifyAppliedLocally(entry);
-			verifyDispatched(entry.getAction());
+			verifyDispatched(entry.getUserAction());
 		}
 	}
 
 	@Test
 	public void shouldNotClearPendingActionsWhenLocalPendingActionRevertFails() throws Exception {
 		syncer.onConnectionLost();
-		final List<ModelAction> reverseActions = new ArrayList<ModelAction>();
-		final List<ModelAction> pendingActions = createActionsList(5);
-		for (final ModelAction action : pendingActions) {
+		final List<UserAction> reverseActions = new ArrayList<UserAction>();
+		final List<UserAction> pendingActions = createActionsList(5);
+		for (final UserAction action : pendingActions) {
 			reverseActions.add(0, onUserAction(action));
 		}
 
-		final ModelAction failingReveseAction = reverseActions.get(3);
+		final UserAction failingReveseAction = reverseActions.get(3);
 		doFailWhenExecuted(failingReveseAction);
 		syncer.onConnectionRecovered();
 		for (int i = 0; i <= reverseActions.indexOf(failingReveseAction); i++) {
@@ -361,28 +368,28 @@ public class ActionSyncServiceTest {
 		verifyFatalErrorShown();
 		verifyNoMoreInteractions();
 
-		final List<ActionSyncEntry> lastEntries = captureLastStoredEntriesList();
+		final List<ActionExecutionContext> lastEntries = captureLastStoredEntriesList();
 		assertEquals(pendingActions.size(), lastEntries.size());
 		for (int i = 0; i < pendingActions.size(); i++) {
-			final ModelAction expected = pendingActions.get(i);
-			final ModelAction actual = lastEntries.get(i).getAction();
+			final UserAction expected = pendingActions.get(i);
+			final UserAction actual = lastEntries.get(i).getUserAction();
 			assertEquals(expected, actual);
 		}
 	}
 
 	@Test
 	public void shouldClearPendingActionsListWhenSavedPendingActionResyncFails() throws Exception {
-		final List<ActionSyncEntry> pendingEntriesList = createEntriesList(6);
-		when(storage.loadActionSyncEntries()).thenReturn(pendingEntriesList);
+		final List<ActionExecutionContext> pendingEntriesList = createEntriesList(6);
+		when(storage.loadPendingActionExecutionContexts(projectId)).thenReturn(pendingEntriesList);
 
-		final ActionSyncEntry failingEntry = pendingEntriesList.get(2);
+		final ActionExecutionContext failingEntry = pendingEntriesList.get(2);
 		doFailWhenExecuted(failingEntry);
 		syncer.onProjectChanged(projectId, lastSyncedActionId);
 
 		for (int i = 0; i < 2; i++) {
-			final ActionSyncEntry entry = pendingEntriesList.get(i);
+			final ActionExecutionContext entry = pendingEntriesList.get(i);
 			verifyAppliedLocally(entry);
-			verifyDispatched(entry.getAction());
+			verifyDispatched(entry.getUserAction());
 		}
 		verifyAppliedLocally(failingEntry);
 		verifyErrorShown();
@@ -394,44 +401,44 @@ public class ActionSyncServiceTest {
 		verifyNoMoreInteractions();
 	}
 
-	private void doFailWhenExecuted(final ActionSyncEntry entry) throws UnableToCompleteActionException {
-		doThrow(UnableToCompleteActionException.class).when(actionExecutionService).onNonUserActionRequest(entry.getAction(), entry.getContext());
+	private void doFailWhenExecuted(final ActionExecutionContext entry) throws UnableToCompleteActionException {
+		doThrow(UnableToCompleteActionException.class).when(actionExecutionService).onNonUserActionRequest(entry.getUserAction());
 	}
 
-	private void doFailWhenExecuted(final ModelAction action) throws UnableToCompleteActionException {
-		doThrow(UnableToCompleteActionException.class).when(actionExecutionService).onNonUserActionRequest(action, actionContext);
+	private void doFailWhenExecuted(final UserAction action) throws UnableToCompleteActionException {
+		doThrow(UnableToCompleteActionException.class).when(actionExecutionService).onNonUserActionRequest(action);
 	}
 
-	private List<ActionSyncEntry> createEntriesList(final int size) {
-		final List<ActionSyncEntry> entries = new ArrayList<ActionSyncEntry>();
-		for (final ModelAction action : createActionsList(size)) {
-			entries.add(new ActionSyncEntry(action, new NullAction(), mock(ActionContext.class)));
+	private List<ActionExecutionContext> createEntriesList(final int size) {
+		final List<ActionExecutionContext> entries = new ArrayList<ActionExecutionContext>();
+		for (final UserAction action : createActionsList(size)) {
+			entries.add(new ActionExecutionContext(action, new NullAction()));
 		}
 		return entries;
 	}
 
-	private void assertStored(final ModelAction... expectedActions) {
+	private void assertStored(final UserAction... expectedActions) {
 		assertStored(asList(expectedActions));
 	}
 
-	private void assertStored(final List<ModelAction> expectedActions) {
-		final List<ActionSyncEntry> storedEntries = captureLastStoredEntriesList();
+	private void assertStored(final List<UserAction> expectedActions) {
+		final List<ActionExecutionContext> storedEntries = captureLastStoredEntriesList();
 		assertEquals(expectedActions.size(), storedEntries.size());
 		for (int i = 0; i < expectedActions.size(); i++) {
-			assertEquals(expectedActions.get(i), storedEntries.get(i).getAction());
+			assertEquals(expectedActions.get(i), storedEntries.get(i).getUserAction());
 		}
 	}
 
-	private void verifyDispatched(final ModelAction action) {
+	private void verifyDispatched(final UserAction action) {
 		inOrder.verify(dispatcher).dispatch(action);
 	}
 
-	private void verifyExecutedLocally(final ModelAction action) throws UnableToCompleteActionException {
-		inOrder.verify(actionExecutionService).onNonUserActionRequest(action, actionContext);
+	private void verifyExecutedLocally(final UserAction action) throws UnableToCompleteActionException {
+		inOrder.verify(actionExecutionService).onNonUserActionRequest(action);
 	}
 
-	private void verifyAppliedLocally(final ActionSyncEntry entry) throws UnableToCompleteActionException {
-		inOrder.verify(actionExecutionService).onNonUserActionRequest(entry.getAction(), entry.getContext());
+	private void verifyAppliedLocally(final ActionExecutionContext entry) throws UnableToCompleteActionException {
+		inOrder.verify(actionExecutionService).onNonUserActionRequest(entry.getUserAction());
 	}
 
 	private void verifyErrorShown() {
@@ -447,12 +454,10 @@ public class ActionSyncServiceTest {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List<ActionSyncEntry> captureLastStoredEntriesList() {
+	private List<ActionExecutionContext> captureLastStoredEntriesList() {
 		final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-		verify(storage, atLeastOnce()).storeActionSyncEntries(captor.capture());
-		final List<List> savedEntries = captor.getAllValues();
-		final List<ActionSyncEntry> lastEntries = savedEntries.get(savedEntries.size() - 1);
-		return lastEntries;
+		verify(storage, atLeastOnce()).storePendingActionExecutionContexts(eq(projectId), captor.capture());
+		return captor.getValue();
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -462,10 +467,20 @@ public class ActionSyncServiceTest {
 		return new ModelActionSyncEventCallbackTestHelper(captor.getValue());
 	}
 
-	private ModelAction onUserAction(final ModelAction action) {
-		final ModelAction reverseAction = mock(ModelAction.class);
-		when(executionContext.getReverseAction()).thenReturn(reverseAction);
-		syncer.onActionExecution(action, context, actionContext, executionContext, true);
+	private ModelActionSyncEvent modelActionSyncEvent(final UUID projectId, final List<UserAction> actionList, final long serverSyncId) {
+		final ModelActionSyncEvent event = mock(ModelActionSyncEvent.class);
+		when(event.getActionList()).thenReturn(actionList);
+		when(event.getLastActionId()).thenReturn(serverSyncId);
+		when(event.getProjectId()).thenReturn(projectId);
+		return event;
+	}
+
+	private UserAction onUserAction(final UserAction action) {
+		final UserAction reverseAction = mock(UserAction.class);
+		final ActionExecutionContext executionContext = mock(ActionExecutionContext.class);
+		when(executionContext.getReverseUserAction()).thenReturn(reverseAction);
+		when(executionContext.getUserAction()).thenReturn(action);
+		syncer.onActionExecution(executionContext, context, true);
 		return reverseAction;
 	}
 
@@ -473,10 +488,10 @@ public class ActionSyncServiceTest {
 		inOrder.verifyNoMoreInteractions();
 	}
 
-	private List<ModelAction> createActionsList(final int size) {
-		final List<ModelAction> actions = new ArrayList<ModelAction>();
+	private List<UserAction> createActionsList(final int size) {
+		final List<UserAction> actions = new ArrayList<UserAction>();
 		for (int i = 0; i < size; i++) {
-			actions.add(mock(ModelAction.class));
+			actions.add(mock(UserAction.class));
 		}
 		return actions;
 	}
@@ -484,7 +499,7 @@ public class ActionSyncServiceTest {
 	private class ModelActionSyncEventCallbackTestHelper {
 
 		private final AsyncCallback<ModelActionSyncEvent> callback;
-		private List<ModelAction> actionsList;
+		private List<UserAction> actionsList;
 		private long lastSyncedActionId;
 
 		public ModelActionSyncEventCallbackTestHelper(final AsyncCallback<ModelActionSyncEvent> callback) {
@@ -493,7 +508,7 @@ public class ActionSyncServiceTest {
 			this.lastSyncedActionId = ActionSyncServiceTest.this.lastSyncedActionId;
 		}
 
-		public ModelActionSyncEventCallbackTestHelper setActionsList(final List<ModelAction> actionsList) {
+		public ModelActionSyncEventCallbackTestHelper setActionsList(final List<UserAction> actionsList) {
 			this.actionsList = actionsList;
 			return this;
 		}
@@ -503,7 +518,7 @@ public class ActionSyncServiceTest {
 			return this;
 		}
 
-		public void andReturnWithSuccess(final List<ModelAction> actions) {
+		public void andReturnWithSuccess(final List<UserAction> actions) {
 			setActionsList(actions).setLastSyncedActionId(lastSyncedActionId + actions.size()).andReturnWithSuccess();
 		}
 
@@ -512,7 +527,7 @@ public class ActionSyncServiceTest {
 		}
 
 		public void andReturnWithSuccess() {
-			callback.onSuccess(new ModelActionSyncEvent(projectId, actionsList, actionContext, lastSyncedActionId));
+			callback.onSuccess(modelActionSyncEvent(projectId, actionsList, lastSyncedActionId));
 		}
 
 		public void andReturnWithFailure() {

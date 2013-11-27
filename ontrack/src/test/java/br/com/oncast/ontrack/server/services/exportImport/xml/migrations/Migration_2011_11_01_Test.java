@@ -1,15 +1,6 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementAttributeValueIs;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementDoesntExist;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementExists;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementHasTheseAttributesAndNothingElse;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementsType;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.getElement;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.readXMLFromFile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,7 +12,17 @@ import org.dom4j.Element;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementAttributeValueIs;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementDoesntExist;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementExists;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementHasTheseAttributesAndNothingElse;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementsType;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.getElement;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.readXMLFromFile;
 
 @SuppressWarnings("rawtypes")
 public class Migration_2011_11_01_Test {

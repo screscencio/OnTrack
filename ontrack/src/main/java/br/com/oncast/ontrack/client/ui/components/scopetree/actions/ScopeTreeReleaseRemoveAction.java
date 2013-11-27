@@ -20,7 +20,7 @@ public class ScopeTreeReleaseRemoveAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
 		for (final UUID scopeId : action.getDissociatedScopes()) {
 			final Scope scope = context.findScope(scopeId);
 			final ScopeTreeItem item = tree.findScopeTreeItem(scope);

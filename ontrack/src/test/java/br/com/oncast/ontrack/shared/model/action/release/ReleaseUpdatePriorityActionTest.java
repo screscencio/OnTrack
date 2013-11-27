@@ -2,6 +2,8 @@ package br.com.oncast.ontrack.shared.model.action.release;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseUpdatePriorityActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -20,6 +22,9 @@ import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -147,19 +152,21 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 	public void shouldHandlePriorityUpdateCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0);
 
-		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ReleaseUpdatePriorityAction(release.getId(), 1), context, actionContext);
+		final ContextProviderService contextProvider = mock(ContextProviderService.class);
+		when(contextProvider.getCurrent()).thenReturn(context);
+		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(contextProvider, Mockito.mock(ActionExecutionListener.class));
+		actionExecutionManager.doUserAction(UserActionTestUtils.create(new ReleaseUpdatePriorityAction(release.getId(), 1), actionContext));
 
 		assertEquals(1, rootRelease.getChildIndex(release));
 		assertEquals(rootRelease.getChild(1), release);
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context, actionContext);
+			actionExecutionManager.undoUserAction();
 
 			assertEquals(0, rootRelease.getChildIndex(release));
 			assertEquals(rootRelease.getChild(0), release);
 
-			actionExecutionManager.redoUserAction(context, actionContext);
+			actionExecutionManager.redoUserAction();
 
 			assertEquals(1, rootRelease.getChildIndex(release));
 			assertEquals(rootRelease.getChild(1), release);

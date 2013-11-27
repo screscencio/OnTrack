@@ -1,10 +1,20 @@
 package br.com.oncast.ontrack.client.services.context;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
+import br.com.oncast.ontrack.client.i18n.ClientMessages;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
+import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
+import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
+import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectAddedEventHandler;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
+import br.com.oncast.ontrack.utils.mocks.callback.DispatchCallbackMock;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,20 +28,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
-import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
-import br.com.oncast.ontrack.client.i18n.ClientMessages;
-import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
-import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
-import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
-import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
-import br.com.oncast.ontrack.shared.services.context.ProjectAddedEventHandler;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
-import br.com.oncast.ontrack.utils.mocks.callback.DispatchCallbackMock;
-import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ProjectRepresentationProviderTest {
 

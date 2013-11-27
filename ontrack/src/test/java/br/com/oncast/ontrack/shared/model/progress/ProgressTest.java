@@ -1,20 +1,20 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
+import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
-import br.com.oncast.ontrack.shared.utils.WorkingDay;
-import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 
 public class ProgressTest {
 

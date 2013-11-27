@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.utils.mocks.callback;
 
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
+import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
+
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.Stubber;
-
-import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
-import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
 
 @SuppressWarnings("rawtypes")
 public class DispatchCallbackMock {

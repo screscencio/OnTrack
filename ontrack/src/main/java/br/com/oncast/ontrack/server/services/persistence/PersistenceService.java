@@ -1,12 +1,11 @@
 package br.com.oncast.ontrack.server.services.persistence;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -19,7 +18,7 @@ import java.util.List;
 //TODO++++ Rename methods
 public interface PersistenceService {
 
-	long persistActions(final UUID projectId, final List<ModelAction> actionList, UUID userId, final Date timestamp) throws PersistenceException;
+	long persistActions(final List<UserAction> actionList) throws PersistenceException;
 
 	ProjectSnapshot retrieveProjectSnapshot(UUID projectId) throws PersistenceException, NoResultFoundException;
 

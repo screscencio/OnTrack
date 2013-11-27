@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.client.services.places.OpenInNewWindowPlace;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
@@ -126,9 +126,9 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final boolean isClientOnline) {
-		if (isClientOnline) GoogleAnalyticsNativeImpl.sendEvent("action", "client_side_execution", className(action));
-		else GoogleAnalyticsNativeImpl.sendEvent("action", "offline_execution", className(action));
+	public void onActionExecution(final UserAction action, final boolean isClientOnline) {
+		if (isClientOnline) GoogleAnalyticsNativeImpl.sendEvent("action", "client_side_execution", className(action.getModelAction()));
+		else GoogleAnalyticsNativeImpl.sendEvent("action", "offline_execution", className(action.getModelAction()));
 	}
 
 	@Override

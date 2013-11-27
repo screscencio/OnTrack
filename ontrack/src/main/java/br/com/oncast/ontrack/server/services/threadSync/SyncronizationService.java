@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.server.services.threadSync;
 
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class SyncronizationService {
 

@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.shared.model.release;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReleaseEstimator {
 

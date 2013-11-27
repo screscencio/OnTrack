@@ -1,21 +1,9 @@
 package br.com.oncast.ontrack.shared.model.action.release;
 
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRemoveActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -38,17 +26,38 @@ import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import static junit.framework.Assert.assertEquals;
+
 public class ReleaseRemoveActionTest extends ModelActionTest {
 
 	private ProjectContext context;
 	private Scope rootScope;
 	private Release rootRelease;
+	private ActionExecutionManager actionExecutionManager;
 
 	@Before
 	public void setUp() {
 		rootScope = ScopeTestUtils.getScope();
 		rootRelease = ReleaseTestUtils.getRelease();
 		context = ProjectTestUtils.createProjectContext(rootScope, rootRelease);
+		final ContextProviderService contextProvider = mock(ContextProviderService.class);
+		when(contextProvider.getCurrent()).thenReturn(context);
+		actionExecutionManager = new ActionExecutionManager(contextProvider, Mockito.mock(ActionExecutionListener.class));
 
 		assertEquals(3, rootRelease.getChildren().size());
 	}
@@ -110,8 +119,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 			try {
 				context.findRelease(release.getId());
 				fail();
-			}
-			catch (final ReleaseNotFoundException e) {}
+			} catch (final ReleaseNotFoundException e) {}
 		}
 	}
 
@@ -239,8 +247,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		try {
 			context.findRelease(removedRelease.getId());
 			fail();
-		}
-		catch (final ReleaseNotFoundException e) {}
+		} catch (final ReleaseNotFoundException e) {}
 
 		rollbackAction.execute(context, actionContext);
 
@@ -256,8 +263,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 			try {
 				context.findRelease(childRelease.getId());
 				fail();
-			}
-			catch (final ReleaseNotFoundException e) {}
+			} catch (final ReleaseNotFoundException e) {}
 		}
 
 		rollbackAction.execute(context, actionContext);
@@ -306,19 +312,17 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		final Release childRelease1 = removedRelease.getChild(1);
 		final Release childRelease2 = removedRelease.getChild(2);
 
-		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ReleaseRemoveAction(removedRelease.getId()), context, actionContext);
+		actionExecutionManager.doUserAction(UserActionTestUtils.create(new ReleaseRemoveAction(removedRelease.getId()), actionContext));
 
 		try {
 			context.findRelease(removedRelease.getId());
 			fail();
-		}
-		catch (final ReleaseNotFoundException e) {
+		} catch (final ReleaseNotFoundException e) {
 			// Removed release should not be in context anymore. This exception is expected. If it is not thrown, the test fails.
 		}
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context, actionContext);
+			actionExecutionManager.undoUserAction();
 
 			assertEquals(3, rootRelease.getChildren().size());
 			assertEquals(0, rootRelease.getChildren().indexOf(removedRelease));
@@ -331,7 +335,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 			assertEquals(childRelease1, context.findRelease(childRelease1.getId()));
 			assertEquals(childRelease2, context.findRelease(childRelease2.getId()));
 
-			actionExecutionManager.redoUserAction(context, actionContext);
+			actionExecutionManager.redoUserAction();
 
 			assertEquals(2, rootRelease.getChildren().size());
 			assertFalse(rootRelease.getChildren().contains(removedRelease));

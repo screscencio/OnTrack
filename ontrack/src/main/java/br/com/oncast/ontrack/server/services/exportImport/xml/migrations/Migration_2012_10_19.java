@@ -1,15 +1,15 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
-
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 /**
  * Changes:

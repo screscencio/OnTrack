@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.server.services.serverPush;
 
+import br.com.oncast.ontrack.server.services.serverPush.atmosphere.OntrackAtmospherePushServer;
+import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-
-import br.com.oncast.ontrack.server.services.serverPush.atmosphere.OntrackAtmospherePushServer;
-import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 // TODO Should this service be asynchronous? (Run in another thread so that it does not affect this client´s thread)
 public class ServerPushServerServiceImpl implements ServerPushServerService {

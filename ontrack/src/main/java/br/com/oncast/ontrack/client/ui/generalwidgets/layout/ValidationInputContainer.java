@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.layout;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
-
 import java.util.Iterator;
 
 import com.google.gwt.core.client.GWT;
@@ -28,6 +26,8 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 
 public class ValidationInputContainer extends Composite implements HasWidgets, HasText, HasKeyDownHandlers, HasKeyUpHandlers {
 

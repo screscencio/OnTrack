@@ -23,18 +23,6 @@ public class ScopeDeclareDueDateActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.DATE_1)
 	private Date dueDate;
 
-	@Column(name = ActionTableColumns.UNIQUE_ID)
-	@ConvertUsing(StringToUuidConverter.class)
-	private String uniqueId;
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(final String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-
 	public String getScopeId() {
 		return scopeId;
 	}

@@ -1,16 +1,5 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
-import static br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils.declareEffort;
-import static org.junit.Assert.assertEquals;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -20,6 +9,18 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.junit.Assert.assertEquals;
+
+import static br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils.declareEffort;
 
 public class EffortInferenceEngineScopeInfluenceTest {
 

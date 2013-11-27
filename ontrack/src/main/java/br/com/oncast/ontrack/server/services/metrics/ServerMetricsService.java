@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.server.services.metrics;
 
 import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -190,6 +190,7 @@ public class ServerMetricsService {
 
 	public void exportInvitationDataCsv(final ServletOutputStream out) throws PersistenceException, IOException {
 		final Map<UUID, String> usersEmailsMap = getUsersEmailsMap();
+		final Map<UUID, String> projectsMap = getProjectsNamesMap();
 
 		final CsvWriter csv = new CsvWriter(out, "User", "Invited User", "Project", "Timestamp");
 
@@ -197,7 +198,7 @@ public class ServerMetricsService {
 			final List<UserAction> actions = persistenceService.retrieveAllTeamInviteActionsAuthoredBy(user.getId());
 			for (final UserAction ua : actions) {
 				final UUID invitedUserId = ua.getModelAction().getReferenceId();
-				csv.write(user.getEmail()).and().write(usersEmailsMap.get(invitedUserId)).and().write(ua.getProjectRepresentation().getName()).and().write(ua.getTimestamp()).closeEntry();
+				csv.write(user.getEmail()).and().write(usersEmailsMap.get(invitedUserId)).and().write(projectsMap.get(ua.getProjectId())).and().write(ua.getExecutionTimestamp()).closeEntry();
 			}
 			if (actions.isEmpty()) {
 				csv.write(user.getEmail()).and().writeEmpty().and().writeEmpty().and().writeEmpty().closeEntry();
@@ -231,15 +232,10 @@ public class ServerMetricsService {
 				data.setUserEmail(user.getEmail());
 				data.setUserId(user.getId().toString());
 				data.setAuthorizedProjectsCount(persistenceService.retrieveProjectAuthorizations(userId).size());
-				// LOGGER.info(data.getAuthorizedProjectsCount());
 				data.setInvitationTimestamp(persistenceService.retrieveInvitationTimestamp(userId));
-				// LOGGER.info(data.getInvitationTimestamp());
 				data.setSubmittedActionsCount(persistenceService.retrieveAuthoredActionsCount(userId));
-				// LOGGER.info(data.getSubmittedActionsCount());
 				data.setLastActionTimestamp(persistenceService.retrieveLastActionTimestamp(userId));
-				// LOGGER.info(data.getLastActionTimestamp());
 				data.setInvitedUsersCount(persistenceService.retrieveAllAuthoredTeamInviteActionsCount(userId));
-				// LOGGER.info(data.getInvitedUsersCount());
 				list.add(data);
 			}
 

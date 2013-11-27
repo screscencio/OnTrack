@@ -1,20 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -40,6 +27,19 @@ import br.com.oncast.ontrack.utils.model.ChecklistTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Mockito.when;
 
 public class ScopeRemoveActionTest extends ModelActionTest {
 
@@ -213,11 +213,11 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldHandleRemovalCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException {
-		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ScopeRemoveAction(child1Level1.getId()), context, actionContext);
+		final ActionExecutionManager actionExecutionManager = ActionExecutionTestUtils.createManager(context);
+		actionExecutionManager.doUserAction(UserActionTestUtils.create(new ScopeRemoveAction(child1Level1.getId()), actionContext));
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context, actionContext);
+			actionExecutionManager.undoUserAction();
 
 			assertEquals(2, rootScope.getChildren().size());
 			assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -225,7 +225,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 			assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
 			assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
-			actionExecutionManager.redoUserAction(context, actionContext);
+			actionExecutionManager.redoUserAction();
 
 			assertEquals(1, rootScope.getChildren().size());
 			assertEquals(child2Level1, rootScope.getChildren().get(0));

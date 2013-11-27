@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -26,28 +25,9 @@ public class ChecklistRenameAction implements ChecklistAction {
 	@Element
 	private UUID subjectId;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ChecklistRenameAction() {}
 
 	public ChecklistRenameAction(final UUID subjectId, final UUID checklistId, final String newTitle) {
-		this.uniqueId = new UUID();
 		this.subjectId = subjectId;
 		this.checklistId = checklistId;
 		this.newTitle = newTitle;

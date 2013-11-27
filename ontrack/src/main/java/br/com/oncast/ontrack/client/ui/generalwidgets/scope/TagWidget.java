@@ -1,10 +1,8 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
 import br.com.oncast.ontrack.shared.model.color.ColorPack;
@@ -83,9 +81,8 @@ public class TagWidget extends Composite implements ModelWidget<Tag>, ActionExec
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final ActionExecutionContext executionContext,
-			final boolean isUserAction) {
+	public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+		final ModelAction action = execution.getModelAction();
 		if (action instanceof TagUpdateAction && action.getReferenceId().equals(tag.getId())) update();
 	};
 

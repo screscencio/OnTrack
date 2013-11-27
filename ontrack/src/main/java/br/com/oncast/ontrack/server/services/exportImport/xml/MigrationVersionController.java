@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import org.reflections.Reflections;
-
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 
 public class MigrationVersionController {
 

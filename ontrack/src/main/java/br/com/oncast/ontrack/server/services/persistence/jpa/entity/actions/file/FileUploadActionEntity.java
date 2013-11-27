@@ -24,18 +24,6 @@ public class FileUploadActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_3)
 	private String filePath;
 
-	@Column(name = ActionTableColumns.UNIQUE_ID)
-	@ConvertUsing(StringToUuidConverter.class)
-	private String uniqueId;
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(final String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-
 	public String getFileRepresentationId() {
 		return fileRepresentationId;
 

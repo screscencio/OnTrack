@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
+
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;

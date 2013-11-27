@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.server.business.actionPostProcessments;
 
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
@@ -13,6 +10,9 @@ import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotF
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.junit.Test;
+import org.mockito.Mockito;
 
 public class FileUploadPostProcessingTest {
 

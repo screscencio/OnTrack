@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.shared.model.tag;
 
-import java.io.Serializable;
-
 import br.com.oncast.ontrack.shared.model.color.ColorPack;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.io.Serializable;
 
 public class Tag implements HasUUID, Serializable {
 

@@ -22,7 +22,7 @@ public class ScopeTreeReleaseRenameAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
+	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		final Release release = context.findRelease(action.getReferenceId());
 
 		final List<Scope> scopesIncludingDescendantReleases = release.getAllScopesIncludingDescendantReleases();

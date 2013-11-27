@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.server.services.email;
 
-import javax.mail.MessagingException;
-
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+
+import javax.mail.MessagingException;
 
 public class ProjectAuthorizationMail {
 

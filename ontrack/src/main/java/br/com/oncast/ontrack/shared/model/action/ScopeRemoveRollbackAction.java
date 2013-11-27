@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.List;
 
@@ -45,30 +44,11 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeRemoveRollbackAction() {}
 
 	public ScopeRemoveRollbackAction(final UUID parentScopeId, final UUID selectedScopeId, final String description, final int index, final List<ModelAction> subActionList,
 			final List<ScopeRemoveRollbackAction> childActionList) {
-		this.uniqueId = new UUID();
 		this.parentScopeId = parentScopeId;
 		this.referenceId = selectedScopeId;
 		this.index = index;

@@ -13,7 +13,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -180,8 +179,8 @@ public class UserWidget extends Composite {
 
 		registrationListener.add(ClientServices.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
+			public void onActionExecution(final ActionExecutionContext executionContext, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = executionContext.getModelAction();
 				if (action instanceof TeamAction && action.getReferenceId().equals(userRepresentation.getId())) updateRemoved();
 			}
 

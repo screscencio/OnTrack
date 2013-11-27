@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.model.scope;
 
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
+import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
-import br.com.oncast.ontrack.shared.utils.WorkingDay;
-import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
 public class ScopeComparator {
 

@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.server.services.session;
 
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
+import br.com.oncast.ontrack.server.services.log.RequestLogger;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -9,9 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-
-import br.com.oncast.ontrack.server.business.ServerServiceProvider;
-import br.com.oncast.ontrack.server.services.log.RequestLogger;
 
 public class SessionFilter implements Filter {
 

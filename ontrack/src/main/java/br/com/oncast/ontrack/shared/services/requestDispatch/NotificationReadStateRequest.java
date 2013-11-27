@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.services.requestDispatch;
 
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
+
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 public class NotificationReadStateRequest implements DispatchRequest<NotificationReadStateResponse> {

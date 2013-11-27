@@ -1,5 +1,13 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification;
 
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,14 +21,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
-import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
-import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.services.notification.Notification;
-import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 
 @Entity
 @ConvertTo(Notification.class)

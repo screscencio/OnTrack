@@ -1,12 +1,8 @@
 package br.com.oncast.ontrack.client.services.notification;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
@@ -20,6 +16,11 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListReq
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationReadStateRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationReadStateResponse;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class NotificationService {
 

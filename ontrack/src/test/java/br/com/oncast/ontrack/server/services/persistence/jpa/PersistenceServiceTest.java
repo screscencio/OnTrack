@@ -1,13 +1,39 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
-import static br.com.oncast.ontrack.utils.ListUtils.lastOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
+import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
+import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
+import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+import br.com.oncast.ontrack.shared.model.progress.Progress;
+import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
+import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
+import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,48 +49,21 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
-import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.Password;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
-import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.project.Project;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.notification.Notification;
-import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
-import br.com.oncast.ontrack.shared.services.notification.NotificationType;
-import br.com.oncast.ontrack.shared.utils.WorkingDay;
-import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
-import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
-import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
-import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import static org.mockito.Mockito.when;
 
 public class PersistenceServiceTest {
 
 	private static final UUID PROJECT_ID = new UUID();
-
-	private static final UUID USER_ID = UserTestUtils.getAdmin().getId();
 
 	private PersistenceService persistenceService;
 
@@ -85,20 +84,42 @@ public class PersistenceServiceTest {
 	}
 
 	@Test
-	public void shouldOnlyReturnActionsAfterAGivenId() throws Exception {
-		persistenceService.persistActions(PROJECT_ID, ActionTestUtils.createSomeActions(), USER_ID, new Date());
+	public void shouldBeAbleToPersistUserActions() throws Exception {
+		final List<UserAction> userActions = toUserActionsList(ActionTestUtils.createSomeActions());
+		persistenceService.persistActions(userActions);
 
-		final List<UserAction> userActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
+		final List<UserAction> persistedUserActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
+		AssertTestUtils.assertCollectionEquality(userActions, persistedUserActions);
+	}
 
-		final List<ModelAction> secondWaveOfActions = ActionTestUtils.getActions2();
-		persistenceService.persistActions(PROJECT_ID, secondWaveOfActions, USER_ID, new Date());
+	@Test
+	public void shouldReturnTheLastPersistedActionIdWhenActionsArePersisted() throws Exception {
+		final List<UserAction> userActions = toUserActionsList(ActionTestUtils.createSomeActions());
+		final long lastPersistedActionId = persistenceService.persistActions(userActions);
+		assertEquals(userActions.size(), lastPersistedActionId);
+	}
 
-		final List<UserAction> actionsReceived = persistenceService.retrieveActionsSince(PROJECT_ID, userActions.get(userActions.size() - 1).getId());
-		assertEquals(secondWaveOfActions.size(), actionsReceived.size());
-
-		for (int i = 0; i < secondWaveOfActions.size(); i++) {
-			assertEquals(secondWaveOfActions.get(i).getReferenceId(), actionsReceived.get(i).getModelAction().getReferenceId());
+	@Test
+	public void shouldUpdateTheUserActionsSequencialId() throws Exception {
+		final List<UserAction> userActions = toUserActionsList(ActionTestUtils.createSomeActions());
+		for (final UserAction action : userActions) {
+			assertEquals(0, action.getSequencialId());
 		}
+		persistenceService.persistActions(userActions);
+		for (int i = 0; i < userActions.size(); i++) {
+			assertEquals(i + 1, userActions.get(i).getSequencialId());
+		}
+	}
+
+	@Test
+	public void shouldOnlyReturnActionsAfterAGivenId() throws Exception {
+		final long actionId = persistenceService.persistActions(toUserActionsList(ActionTestUtils.createSomeActions()));
+
+		final List<UserAction> secondWaveOfActions = toUserActionsList(ActionTestUtils.getActions2());
+		persistenceService.persistActions(secondWaveOfActions);
+
+		final List<UserAction> retrievedActions = persistenceService.retrieveActionsSince(PROJECT_ID, actionId);
+		AssertTestUtils.assertCollectionEquality(secondWaveOfActions, retrievedActions);
 	}
 
 	@Test
@@ -317,8 +338,7 @@ public class PersistenceServiceTest {
 		assertNull(persistenceService.retrieveProjectAuthorization(user2, project1.getId()));
 	}
 
-	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorization> authorizations) throws PersistenceException,
-			NoResultFoundException {
+	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorization> authorizations) throws PersistenceException, NoResultFoundException {
 		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
 		for (final ProjectAuthorization authorization : authorizations) {
 			projects.add(persistenceService.retrieveProjectRepresentation(authorization.getProjectId()));
@@ -348,32 +368,10 @@ public class PersistenceServiceTest {
 			reached = true;
 			persistenceService.authorize(user, project.getId());
 			fail();
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			assertTrue(reached);
 		}
 
-	}
-
-	@Test
-	public void userIdShouldBeBoundToUserActionCotainer() throws Exception {
-		final UUID userId = new UUID();
-		persistenceService.persistActions(PROJECT_ID, ActionTestUtils.createSomeActions(), userId, new Date());
-		final List<UserAction> retrievedActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
-
-		assertEquals(userId, lastOf(retrievedActions).getUserId());
-	}
-
-	@Test
-	@Ignore("Run only when you want to generate data to test the release burn up chart")
-	public void generateDataForBurnUp() throws Exception {
-		final ProjectSnapshot snapshot1 = loadProjectSnapshot();
-		final Project project1 = snapshot1.getProject();
-		ScopeTestUtils.populateWithTestData(project1);
-
-		snapshot1.setProject(project1);
-		snapshot1.setTimestamp(new Date());
-		persistenceService.persistProjectSnapshot(snapshot1);
 	}
 
 	@Test
@@ -409,8 +407,7 @@ public class PersistenceServiceTest {
 		persistenceService.persistOrUpdateProjectRepresentation(project);
 
 		if (author == null) author = createAndPersistUser();
-		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, project, author)
-				.setDescription(desc);
+		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, project, author).setDescription(desc);
 	}
 
 	@Test
@@ -439,8 +436,7 @@ public class PersistenceServiceTest {
 		persistenceService.persistOrUpdateNotification(notification2);
 
 		final UUID user3 = createAndPersistUser();
-		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
-				.getNotification();
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1).getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
 
 		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user1, 50);
@@ -452,20 +448,15 @@ public class PersistenceServiceTest {
 	@Test
 	public void shouldPersistAndRetrieveMultipleUserNotificationsInTheCorrectOrder() throws Exception {
 		final UUID user1 = createAndPersistUser();
-		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1))
-				.getNotification();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1)).getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
 		final UUID user2 = createAndPersistUser();
-		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
-				.setTimestamp(new Date(1000))
-				.getNotification();
+		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2).setTimestamp(new Date(1000)).getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
 		final UUID user3 = createAndPersistUser();
-		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
-				.setTimestamp(new Date(100))
-				.getNotification();
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1).setTimestamp(new Date(100)).getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
 
 		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user1, 50);
@@ -479,20 +470,15 @@ public class PersistenceServiceTest {
 	@Test
 	public void shouldPersistAndRetrieveMultipleUserNotificationsLimitedByMaxRequested() throws Exception {
 		final UUID user1 = createAndPersistUser();
-		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1))
-				.getNotification();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1)).getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
 		final UUID user2 = createAndPersistUser();
-		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
-				.setTimestamp(new Date(1000))
-				.getNotification();
+		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2).setTimestamp(new Date(1000)).getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
 		final UUID user3 = createAndPersistUser();
-		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
-				.setTimestamp(new Date(100))
-				.getNotification();
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1).setTimestamp(new Date(100)).getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
 
 		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user1, 2);
@@ -505,20 +491,15 @@ public class PersistenceServiceTest {
 	@Test
 	public void shouldPersistAndRetrieveLatestNotificationsLimitedByDate() throws Exception {
 		final UUID user1 = createAndPersistUser();
-		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date())
-				.getNotification();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date()).getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
 		final UUID user2 = createAndPersistUser();
-		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
-				.setTimestamp(getInitialFetchDate(1))
-				.getNotification();
+		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2).setTimestamp(getInitialFetchDate(1)).getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
 		final UUID user3 = createAndPersistUser();
-		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
-				.setTimestamp(getInitialFetchDate(3))
-				.getNotification();
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1).setTimestamp(getInitialFetchDate(3)).getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
 
 		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotifications(getInitialFetchDate(2));
@@ -535,26 +516,21 @@ public class PersistenceServiceTest {
 		final ProjectRepresentation projectRepresentation3 = ProjectTestUtils.createRepresentation(new UUID("3"));
 
 		final UUID user1 = createAndPersistUser();
-		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date())
-				.setProjectRepresentation(projectRepresentation3)
-				.getNotification();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date()).setProjectRepresentation(projectRepresentation3).getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
 		final UUID user2 = createAndPersistUser();
-		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
-				.setTimestamp(getInitialFetchDate(1)).setProjectRepresentation(projectRepresentation2)
+		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2).setTimestamp(getInitialFetchDate(1)).setProjectRepresentation(projectRepresentation2)
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
 		final UUID user3 = createAndPersistUser();
-		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
-				.setTimestamp(getInitialFetchDate(3)).setProjectRepresentation(projectRepresentation1)
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1).setTimestamp(getInitialFetchDate(3)).setProjectRepresentation(projectRepresentation1)
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
 
 		final UUID user4 = createAndPersistUser();
-		final Notification notification4 = getBuilder("msg4").addReceipient(user4).addReceipient(user1)
-				.setTimestamp(getInitialFetchDate(0)).setProjectRepresentation(projectRepresentation1)
+		final Notification notification4 = getBuilder("msg4").addReceipient(user4).addReceipient(user1).setTimestamp(getInitialFetchDate(0)).setProjectRepresentation(projectRepresentation1)
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification4);
 
@@ -593,6 +569,10 @@ public class PersistenceServiceTest {
 
 	}
 
+	private List<UserAction> toUserActionsList(final List<ModelAction> modelActions) {
+		return UserActionTestUtils.create(modelActions, UserTestUtils.getAdmin().getId(), PROJECT_ID);
+	}
+
 	private UUID createAndPersistUser() throws Exception {
 		final User user = persistenceService.persistOrUpdateUser(UserTestUtils.createUser());
 		return user.getId();
@@ -612,8 +592,7 @@ public class PersistenceServiceTest {
 		ProjectSnapshot snapshot;
 		try {
 			snapshot = persistenceService.retrieveProjectSnapshot(PROJECT_ID);
-		}
-		catch (final NoResultFoundException e) {
+		} catch (final NoResultFoundException e) {
 			snapshot = createBlankProject();
 		}
 		return snapshot;
@@ -624,21 +603,15 @@ public class PersistenceServiceTest {
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {
-			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(ProjectTestUtils.createProject(
-					persistenceService.retrieveProjectRepresentation(PROJECT_ID), projectScope,
-					projectRelease), new Date(0));
+			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(ProjectTestUtils.createProject(persistenceService.retrieveProjectRepresentation(PROJECT_ID), projectScope, projectRelease),
+					new Date(0));
 			return projectSnapshot;
-		}
-		catch (final IOException e) {
+		} catch (final IOException e) {
 			throw new UnableToLoadProjectException("It was not possible to create a blank project.");
-		}
-		catch (final PersistenceException e) {
-			throw new UnableToLoadProjectException("It was not possible to create a blank project, because the project with id '" + PROJECT_ID
-					+ "' was not found.");
-		}
-		catch (final NoResultFoundException e) {
-			throw new ProjectNotFoundException("It was not possible to create a blank project, because the project representation with id '" + PROJECT_ID
-					+ "' was not found.");
+		} catch (final PersistenceException e) {
+			throw new UnableToLoadProjectException("It was not possible to create a blank project, because the project with id '" + PROJECT_ID + "' was not found.");
+		} catch (final NoResultFoundException e) {
+			throw new ProjectNotFoundException("It was not possible to create a blank project, because the project representation with id '" + PROJECT_ID + "' was not found.");
 		}
 	}
 

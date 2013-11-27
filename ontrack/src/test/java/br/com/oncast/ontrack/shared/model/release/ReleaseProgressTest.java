@@ -1,19 +1,20 @@
 package br.com.oncast.ontrack.shared.model.release;
 
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+
+import static junit.framework.Assert.assertEquals;
 
 public class ReleaseProgressTest {
 

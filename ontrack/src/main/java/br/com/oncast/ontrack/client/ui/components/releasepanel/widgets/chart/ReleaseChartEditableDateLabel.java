@@ -1,12 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
-
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
@@ -27,6 +25,8 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DatePicker;
+
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 
 public class ReleaseChartEditableDateLabel extends Composite implements HasText, HasValue<Date> {
 

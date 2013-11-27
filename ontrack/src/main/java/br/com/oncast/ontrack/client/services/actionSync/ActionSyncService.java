@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.services.actionSync;
 import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.services.actionSync.ActionDispatcher.ActionDispatcherListener;
+import br.com.oncast.ontrack.client.services.actionSync.QueuedActionsDispatcher.ActionDispatcherListener;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.AlertRegistration;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
@@ -16,8 +16,7 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -36,7 +35,7 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 
 	private static final int NOT_SYNCED = 0;
 
-	private final ActionDispatcher dispatcher;
+	private final QueuedActionsDispatcher dispatcher;
 
 	private boolean paused;
 
@@ -46,7 +45,7 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 
 	private final ClientAlertingService alertingService;
 
-	private ClientStorageSyncedActionSyncEntriesList syncList;
+	private PersistedActionExecutionContextsList syncList;
 
 	private UUID currentProjectId;
 
@@ -58,8 +57,8 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 
 	private final ClientMessages messages;
 
-	public ActionSyncService(final ActionDispatcher dispatcher, final ActionExecutionService actionExecutionService, final ClientStorageService storage, final ClientAlertingService alertingService,
-			final ClientMessages messages, final NetworkMonitoringService networkMonitoringService, final ContextProviderService contextProviderService,
+	public ActionSyncService(final QueuedActionsDispatcher dispatcher, final ActionExecutionService actionExecutionService, final ClientStorageService storage,
+			final ClientAlertingService alertingService, final ClientMessages messages, final NetworkMonitoringService networkMonitoringService, final ContextProviderService contextProviderService,
 			final ServerPushClientService serverPushService, final ClientMetricsService metrics, final EventBus eventBus) {
 		this.dispatcher = dispatcher;
 		this.actionExecutionService = actionExecutionService;
@@ -79,11 +78,11 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
+	public void onActionExecution(final ActionExecutionContext executionContext, final ProjectContext context, final boolean isUserAction) {
 		if (!isUserAction) return;
 
-		final ModelAction reverseAction = executionContext.getReverseAction();
-		syncList.add(action, actionContext, reverseAction);
+		syncList.add(executionContext);
+		final UserAction action = executionContext.getUserAction();
 		metrics.onActionExecution(action, !paused);
 		if (paused) return;
 
@@ -120,9 +119,9 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 	// TODO+++ instead of clearing the entire syncList, ask the user if he wants to skip the conflicted action and continue to re-sync
 	private void applyLocalPendingActions() {
 		try {
-			for (final ActionSyncEntry entry : syncList) {
-				actionExecutionService.onNonUserActionRequest(entry.getAction(), entry.getContext());
-				dispatch(entry.getAction());
+			for (final ActionExecutionContext entry : syncList) {
+				actionExecutionService.onNonUserActionRequest(entry.getUserAction());
+				dispatch(entry.getUserAction());
 			}
 			if (!syncList.isEmpty()) alertingService.showSuccess(messages.pendingActionsSynced(syncList.size()));
 		} catch (final UnableToCompleteActionException e) {
@@ -141,21 +140,21 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 	public void onProjectChanged(final UUID projectId, final Long loadedProjectRevision) {
 		currentProjectId = projectId;
 		lastSyncedActionsId = loadedProjectRevision == null ? NOT_SYNCED : loadedProjectRevision;
-		syncList = new ClientStorageSyncedActionSyncEntriesList(storage, eventBus);
+		syncList = new PersistedActionExecutionContextsList(projectId, storage, eventBus);
 		metrics.onLocallySavedPendingActionsLoaded(syncList.size());
 		applyLocalPendingActions();
 	}
 
 	private boolean revertLocalPendingActions() {
-		for (final ActionSyncEntry entry : syncList.reverse()) {
-			if (!applyLocally(entry.getReverseAction(), entry.getContext())) return false;
+		for (final ActionExecutionContext entry : syncList.reverse()) {
+			if (!applyLocally(entry.getReverseUserAction())) return false;
 		}
 		return true;
 	}
 
-	private boolean applyLocally(final ModelAction action, final ActionContext actionContext) {
+	private boolean applyLocally(final UserAction action) {
 		try {
-			actionExecutionService.onNonUserActionRequest(action, actionContext);
+			actionExecutionService.onNonUserActionRequest(action);
 			return true;
 		} catch (final UnableToCompleteActionException e) {
 			metrics.onException("ActionSyncService.applyLocally(" + MetricsTokenizer.getClassSimpleName(action) + ")" + e.getMessage());
@@ -177,7 +176,7 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 		alertingService.showError(message);
 	}
 
-	private void dispatch(final ModelAction action) {
+	private void dispatch(final UserAction action) {
 		dispatcher.dispatch(action);
 	}
 
@@ -187,16 +186,16 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 	}
 
 	private boolean handleIncomingActions(final ModelActionSyncEvent event) {
-		for (final ModelAction action : event.getActionList()) {
-			if (!applyLocally(action, event.getActionContext())) return false;
+		for (final UserAction action : event.getActionList()) {
+			if (!applyLocally(action)) return false;
 		}
 		updateLastSyncedActionsId(event.getLastActionId());
 		return true;
 	}
 
 	@Override
-	public void onActionsAcceptedByServer(final List<ModelAction> sentActions, final long actionSyncId) {
-		for (final ModelAction action : sentActions) {
+	public void onActionsAcceptedByServer(final List<UserAction> sentActions, final long actionSyncId) {
+		for (final UserAction action : sentActions) {
 			syncList.remove(action);
 		}
 		updateLastSyncedActionsId(actionSyncId);
@@ -207,10 +206,10 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 	}
 
 	@Override
-	public void onActionsRegectedByServer(final List<ModelAction> regectedActions, final UnableToHandleActionException error) {
-		for (final ModelAction action : Lists.reverse(regectedActions)) {
-			final ActionSyncEntry entry = syncList.remove(action);
-			applyLocally(entry.getReverseAction(), entry.getContext());
+	public void onActionsRegectedByServer(final List<UserAction> regectedActions, final UnableToHandleActionException error) {
+		for (final UserAction action : Lists.reverse(regectedActions)) {
+			final ActionExecutionContext entry = syncList.remove(action);
+			applyLocally(entry.getReverseUserAction());
 		}
 	}
 

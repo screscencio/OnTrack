@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.server.util.converter.mocks;
 
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 
 @ConvertTo(ModelActionMockWithListOfActions.class)
 public class ModelActionEntityMockWithListOfActions {

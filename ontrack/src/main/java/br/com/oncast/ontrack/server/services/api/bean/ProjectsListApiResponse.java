@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.server.services.api.bean;
 
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

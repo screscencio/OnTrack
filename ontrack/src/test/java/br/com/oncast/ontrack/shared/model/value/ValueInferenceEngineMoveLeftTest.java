@@ -1,14 +1,5 @@
 package br.com.oncast.ontrack.shared.model.value;
 
-import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getModifiedScope;
-import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getOriginalScope;
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
-
-import java.util.Date;
-
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -16,6 +7,15 @@ import br.com.oncast.ontrack.shared.model.prioritizationCriteria.ValueInferenceE
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+
+import java.util.Date;
+
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getModifiedScope;
+import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getOriginalScope;
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 
 public class ValueInferenceEngineMoveLeftTest {
 
@@ -33,5 +33,4 @@ public class ValueInferenceEngineMoveLeftTest {
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
-
 }

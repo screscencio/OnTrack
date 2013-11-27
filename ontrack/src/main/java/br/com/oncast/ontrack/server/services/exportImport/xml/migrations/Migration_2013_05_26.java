@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
-import org.dom4j.Element;
-
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.dom4j.Element;
 
 /**
  * Changes:

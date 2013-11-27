@@ -15,8 +15,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlideAndFadeAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
@@ -163,11 +161,8 @@ public class DraggableMembersListWidget extends Composite {
 	private void setupActionExecutionListener() {
 		handlerRegistrations.add(ClientServices.get().actionExecution().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
-				if (action instanceof TeamAction) {
-					update();
-				}
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				if (execution.getModelAction() instanceof TeamAction) update();
 			}
 
 		}));

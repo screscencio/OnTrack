@@ -1,11 +1,11 @@
 package br.com.oncast.ontrack.shared.model.metadata;
 
-import java.io.Serializable;
-
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.io.Serializable;
 
 public class TagAssociationMetadata implements Metadata, Serializable {
 

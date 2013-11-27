@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
+import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
+
 import java.util.ArrayList;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
 
 public class KanbanFactoryTest {
 

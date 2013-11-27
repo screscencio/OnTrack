@@ -1,16 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.kanban;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRenameActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -26,6 +15,18 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class KanbanColumnRenameActionTest extends ModelActionTest {
 
@@ -49,7 +50,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		final String columnDescription = "B";
 
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context, Mockito.mock(ActionContext.class));
+		action.execute(context,  Mockito.mock(ActionContext.class));
 
 		verify(kanban).renameColumn(columnDescription, newDescription);
 	}
@@ -60,7 +61,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		final String columnDescription = "B";
 
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context, Mockito.mock(ActionContext.class));
+		action.execute(context,  Mockito.mock(ActionContext.class));
 
 		verify(kanban).renameColumn(columnDescription, newDescription);
 	}
@@ -72,7 +73,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 
 		doThrow(new RuntimeException("any exception")).when(kanban).renameColumn(columnDescription, newDescription);
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context, Mockito.mock(ActionContext.class));
+		action.execute(context,  Mockito.mock(ActionContext.class));
 
 		verify(kanban).renameColumn(columnDescription, newDescription);
 	}

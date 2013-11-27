@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -36,7 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
@@ -96,33 +94,6 @@ public abstract class ModelActionTest {
 		verify(context).removeMetadata(captor.capture());
 		final Metadata value = captor.getValue();
 		return (T) value;
-	}
-
-	@Test
-	public void actionShouldHaveIdSetOnConstruction() throws Exception {
-		assertNotNull(getNewInstance().getId());
-	}
-
-	@Test
-	public void actionIdShouldBeDifferentForEachInstance() throws Exception {
-		final ArrayList<UUID> idList = new ArrayList<UUID>();
-		for (int i = 0; i < 15; i++) {
-			final UUID id = getNewInstance().getId();
-			assertFalse(idList.contains(id));
-			idList.add(id);
-		}
-	}
-
-	@Test
-	public void actionShouldBeEqualToItsId() throws Exception {
-		final ModelAction action = getNewInstance();
-		assertEquals(action.getId(), action);
-	}
-
-	@Test
-	public void actionShouldHaveSameHashCodeThanItsId() throws Exception {
-		final ModelAction action = getNewInstance();
-		assertEquals(action.getId().hashCode(), action.hashCode());
 	}
 
 	@Test
@@ -270,7 +241,7 @@ public abstract class ModelActionTest {
 	@Test
 	public void actionShouldBeMappedOnActionExecuter() throws Exception {
 		try {
-			ActionExecuter.executeAction(mock(ProjectContext.class), Mockito.mock(ActionContext.class), getNewInstance());
+			ActionExecuter.executeAction(mock(ProjectContext.class), UserActionTestUtils.create(getNewInstance()));
 		} catch (final UnableToCompleteActionException e) {
 			assertFalse(e.getMessage(), e.getMessage().contains("There is no mapped action executer"));
 		} catch (final Exception e) {}

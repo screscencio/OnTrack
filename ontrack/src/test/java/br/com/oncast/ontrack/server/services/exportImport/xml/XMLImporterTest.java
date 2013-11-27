@@ -1,19 +1,25 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import static br.com.oncast.ontrack.utils.model.UserTestUtils.createUser;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import br.com.oncast.ontrack.server.business.BusinessLogic;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
+import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -26,25 +32,20 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
-import br.com.oncast.ontrack.server.services.authentication.Password;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
-import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.eq;
+
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import static br.com.oncast.ontrack.utils.model.UserTestUtils.createUser;
 
 public class XMLImporterTest {
 
@@ -120,7 +121,7 @@ public class XMLImporterTest {
 
 		final InOrder inOrder = inOrder(persistenceService);
 		inOrder.verify(persistenceService).persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class));
-		inOrder.verify(persistenceService, atLeast(1)).persistActions(any(UUID.class), anyListOf(ModelAction.class), any(UUID.class), any(Date.class));
+		inOrder.verify(persistenceService, atLeast(1)).persistActions(anyListOf(UserAction.class));
 	}
 
 	@Test
@@ -229,6 +230,7 @@ public class XMLImporterTest {
 		verify(persistenceService).authorize(user1.getId(), project1.getId());
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void userIdShouldBeThePersistedWhenImportingActions() throws Exception {
 		final UUID projectId = new UUID();
@@ -238,13 +240,14 @@ public class XMLImporterTest {
 		final ProjectXMLNode node = addProjectWithActions(projectId, exportedUserId);
 
 		when(persistenceService.retrieveUserByEmail(Mockito.anyString())).thenThrow(new NoResultFoundException("", null));
-		when(persistenceService.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(
-				ProjectTestUtils.createRepresentation(projectId));
+		when(persistenceService.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(ProjectTestUtils.createRepresentation(projectId));
 
 		importer.persistObjects();
 
-		verify(persistenceService, times(node.getActions().size())).persistActions(eq(projectId), anyListOf(ModelAction.class), eq(exportedUserId),
-				any(Date.class));
+		final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
+		verify(persistenceService).persistActions(captor.capture());
+		final List<UserAction> persistedActions = captor.getValue();
+		assertEquals(node.getActions().size(), persistedActions.size());
 	}
 
 	@Test
@@ -330,12 +333,15 @@ public class XMLImporterTest {
 		}
 	}
 
-	private void assertActionsWerePersistedRelatedToThisProject(final List<UserAction> actions, final UUID projectId)
-			throws PersistenceException {
-		final ArgumentCaptor<UUID> argument = ArgumentCaptor.forClass(UUID.class);
-		verify(persistenceService, times(actions.size())).persistActions(argument.capture(), anyListOf(ModelAction.class), any(UUID.class),
-				any(Date.class));
-		assertEquals(argument.getValue(), projectId);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void assertActionsWerePersistedRelatedToThisProject(final List<UserAction> actions, final UUID projectId) throws PersistenceException {
+		final ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
+		verify(persistenceService).persistActions(argument.capture());
+		final List<UserAction> value = argument.getValue();
+		assertEquals(actions.size(), value.size());
+		for (final UserAction userAction : value) {
+			assertEquals(projectId, userAction.getProjectId());
+		}
 	}
 
 }

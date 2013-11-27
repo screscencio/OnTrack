@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Element;
 
@@ -24,28 +23,9 @@ public class TeamInviteAction implements TeamAction {
 	@Element
 	private Profile projectProfile;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected TeamInviteAction() {}
 
 	public TeamInviteAction(final UUID userId, final Profile projectProfile) {
-		this.uniqueId = new UUID();
 		this.userId = userId;
 		this.projectProfile = projectProfile;
 	}
@@ -56,7 +36,7 @@ public class TeamInviteAction implements TeamAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		ActionHelper.verifyPermission(context, actionContext, Profile.PEOPLE_MANAGER, this);
+		ActionHelper.verifyPermission(actionContext.getUserId(), context, Profile.PEOPLE_MANAGER, this);
 
 		try {
 			context.findUser(userId).setValid(true);

@@ -24,18 +24,6 @@ public class ScopeDeclareValueActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.INT_1)
 	private float newDeclaredValue;
 
-	@Column(name = ActionTableColumns.UNIQUE_ID)
-	@ConvertUsing(StringToUuidConverter.class)
-	private String uniqueId;
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(final String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-
 	public String getReferenceId() {
 		return referenceId;
 	}

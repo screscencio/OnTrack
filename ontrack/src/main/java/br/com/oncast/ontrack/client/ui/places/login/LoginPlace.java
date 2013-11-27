@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
-import static br.com.oncast.ontrack.client.ApplicationEntryPoint.DEFAULT_APP_PLACE;
-
 import com.google.gwt.place.shared.Place;
+
+import static br.com.oncast.ontrack.client.ApplicationEntryPoint.DEFAULT_APP_PLACE;
 
 public class LoginPlace extends Place {
 

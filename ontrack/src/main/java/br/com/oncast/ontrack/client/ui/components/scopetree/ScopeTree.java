@@ -13,7 +13,6 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeIte
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -56,12 +55,12 @@ public class ScopeTree implements Component {
 		actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isUserAction) {
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
 				try {
-					treeActionFactory.createEquivalentActionFor(action).execute(context, actionContext, isUserAction);
+					final ModelAction action = execution.getModelAction();
+					treeActionFactory.createEquivalentActionFor(action).execute(context, execution.createActionContext(), isUserAction);
 					final HashSet<Scope> inferenceInfluencedScopes = new HashSet<Scope>();
-					for (final UUID id : executionContext.getInferenceInfluencedScopeSet())
+					for (final UUID id : execution.getInferenceInfluencedScopeSet())
 						inferenceInfluencedScopes.add(context.findScope(id));
 
 					for (final Scope scope : inferenceInfluencedScopes) {

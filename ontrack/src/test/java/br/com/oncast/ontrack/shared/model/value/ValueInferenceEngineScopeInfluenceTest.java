@@ -1,15 +1,5 @@
 package br.com.oncast.ontrack.shared.model.value;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -19,6 +9,16 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.junit.Assert.assertEquals;
 
 public class ValueInferenceEngineScopeInfluenceTest {
 
@@ -144,8 +144,7 @@ public class ValueInferenceEngineScopeInfluenceTest {
 		new ValueInferenceEngine().process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		scope.getChild(2).getChild(1).getChild(0).getValue().setDeclared(10);
-		final Set<UUID> actualInfluencedScopes = new ValueInferenceEngine().process(scope.getChild(2).getChild(1), UserRepresentationTestUtils.getAdmin(),
-				new Date());
+		final Set<UUID> actualInfluencedScopes = new ValueInferenceEngine().process(scope.getChild(2).getChild(1), UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}

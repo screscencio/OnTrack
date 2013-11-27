@@ -7,15 +7,15 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.places.PlaceChangeListener;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.client.services.time.TimeProviderService;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ShowsUndoAlertAfterActionExecution;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
@@ -34,32 +34,35 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	private final ClientAlertingService alertingService;
 	private final AuthenticationService authenticationService;
 
+	private TimeProviderService timeProvider;
+
 	public ActionExecutionServiceImpl(final ContextProviderService contextService, final ClientAlertingService alertingService, final ProjectRepresentationProvider projectRepresentationProvider,
-			final ApplicationPlaceController applicationPlaceController, final AuthenticationService authenticationService) {
+			final ApplicationPlaceController applicationPlaceController, final AuthenticationService authenticationService, final TimeProviderService timeProvider) {
 		this.alertingService = alertingService;
 		this.authenticationService = authenticationService;
+		this.timeProvider = timeProvider;
 		this.actionExecutionListeners = new ArrayList<ActionExecutionListener>();
 		this.contextService = contextService;
-		this.actionManager = new ActionExecutionManager(new ActionExecutionListener() {
+		this.actionManager = new ActionExecutionManager(contextService, new ActionExecutionListener() {
 
 			private AlertRegistration alertRegistration;
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-					final boolean isClientAction) {
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isClientAction) {
 
-				notifyActionExecutionListeners(action, context, actionContext, executionContext, isClientAction);
-				if (!isClientAction || !(action instanceof ShowsUndoAlertAfterActionExecution)) return;
+				notifyActionExecutionListeners(execution, context, isClientAction);
+				if (!isClientAction || !(execution.getUserAction() instanceof ShowsUndoAlertAfterActionExecution)) return;
 
 				hideAlert();
 
-				final String warningMessage = ((ShowsUndoAlertAfterActionExecution) action).getAlertMessage(MESSAGES);
+				final String warningMessage = ((ShowsUndoAlertAfterActionExecution) execution.getModelAction()).getAlertMessage(MESSAGES);
 				alertRegistration = alertingService.showInfoWithButton(warningMessage, MESSAGES.undo(), new ClickHandler() {
 					@Override
 					public void onClick(final ClickEvent event) {
 						hideAlert();
-						onUserActionExecutionRequest(executionContext.getReverseAction());
+						undo(execution);
 					}
+
 				});
 			}
 
@@ -75,20 +78,24 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 		});
 	}
 
-	@Override
-	public void onNonUserActionRequest(final ModelAction action) throws UnableToCompleteActionException {
-		onNonUserActionRequest(action, createActionContext());
+	private void undo(final ActionExecutionContext executionContext) {
+		try {
+			actionManager.undo(executionContext);
+		} catch (final UnableToCompleteActionException e) {
+			alertingService.showWarning(e.getLocalizedMessage());
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public void onNonUserActionRequest(final ModelAction action, final ActionContext actionContext) throws UnableToCompleteActionException {
-		actionManager.doNonUserAction(action, contextService.getCurrent(), actionContext);
+	public void onNonUserActionRequest(final UserAction action) throws UnableToCompleteActionException {
+		actionManager.doNonUserAction(action);
 	}
 
 	@Override
 	public void onUserActionExecutionRequest(final ModelAction action) {
 		try {
-			actionManager.doUserAction(action, contextService.getCurrent(), createActionContext());
+			actionManager.doUserAction(new UserAction(action, authenticationService.getCurrentUserId(), contextService.getCurrentProjectId(), timeProvider.now()));
 		} catch (final UnableToCompleteActionException e) {
 			alertingService.showWarning(e.getLocalizedMessage());
 			throw new RuntimeException(e);
@@ -98,7 +105,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	@Override
 	public void onUserActionUndoRequest() {
 		try {
-			actionManager.undoUserAction(contextService.getCurrent(), createActionContext());
+			actionManager.undoUserAction();
 		} catch (final UnableToCompleteActionException e) {
 			alertingService.showWarning(e.getLocalizedMessage());
 			throw new RuntimeException(e);
@@ -108,22 +115,17 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	@Override
 	public void onUserActionRedoRequest() {
 		try {
-			actionManager.redoUserAction(contextService.getCurrent(), createActionContext());
+			actionManager.redoUserAction();
 		} catch (final UnableToCompleteActionException e) {
 			alertingService.showWarning(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void notifyActionExecutionListeners(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext,
-			final boolean isUserAction) {
+	private void notifyActionExecutionListeners(final ActionExecutionContext executionContext, final ProjectContext context, final boolean isUserAction) {
 		for (final ActionExecutionListener handler : new ArrayList<ActionExecutionListener>(actionExecutionListeners)) {
-			handler.onActionExecution(action, context, actionContext, executionContext, isUserAction);
+			handler.onActionExecution(executionContext, context, isUserAction);
 		}
-	}
-
-	private ActionContext createActionContext() {
-		return new ActionContext(authenticationService.getCurrentUserId(), new Date());
 	}
 
 	@Override

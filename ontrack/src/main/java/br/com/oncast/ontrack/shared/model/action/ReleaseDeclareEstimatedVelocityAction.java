@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -24,28 +23,9 @@ public class ReleaseDeclareEstimatedVelocityAction implements ReleaseAction {
 	@Attribute(required = false)
 	private Float estimatedVelocity;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ReleaseDeclareEstimatedVelocityAction() {}
 
 	public ReleaseDeclareEstimatedVelocityAction(final UUID releaseId, final Float decalredEstimatedVelocity) {
-		this.uniqueId = new UUID();
 		this.releaseId = releaseId;
 		this.estimatedVelocity = decalredEstimatedVelocity;
 	}

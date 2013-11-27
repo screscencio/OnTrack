@@ -39,7 +39,7 @@ public class ScopeTreeActionFactory {
 
 	private static final ScopeTreeAction IGNORE_ACTION = new ScopeTreeAction() {
 		@Override
-		public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {}
+		public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {}
 	};
 
 	private final ScopeTreeWidget tree;

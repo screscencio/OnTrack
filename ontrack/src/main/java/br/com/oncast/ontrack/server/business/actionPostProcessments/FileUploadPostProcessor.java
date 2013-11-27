@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.server.business.actionPostProcessments;
 
-import org.apache.log4j.Logger;
-
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -10,6 +8,8 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+
+import org.apache.log4j.Logger;
 
 public class FileUploadPostProcessor implements ActionPostProcessor<FileUploadAction> {
 

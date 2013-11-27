@@ -1,13 +1,9 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.estimator.ScopeEstimatorProvider;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -28,6 +24,11 @@ import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserScopeSelectionMulticastRequest;
 import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
 import br.com.oncast.ontrack.shared.services.user.UserSelectedScopeEvent;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.web.bindery.event.shared.EventBus;

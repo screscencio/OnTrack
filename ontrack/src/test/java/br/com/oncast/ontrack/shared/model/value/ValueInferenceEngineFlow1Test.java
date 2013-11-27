@@ -1,19 +1,20 @@
 package br.com.oncast.ontrack.shared.model.value;
 
-import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getModifiedScope;
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
-import static org.junit.Assert.assertEquals;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.ValueInferenceEngine;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.prioritizationCriteria.ValueInferenceEngine;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
-import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import static org.junit.Assert.assertEquals;
+
+import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getModifiedScope;
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 
 public class ValueInferenceEngineFlow1Test {
 

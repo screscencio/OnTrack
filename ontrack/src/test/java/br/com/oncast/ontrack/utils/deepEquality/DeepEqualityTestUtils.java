@@ -1,5 +1,14 @@
 package br.com.oncast.ontrack.utils.deepEquality;
 
+import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
+import br.com.oncast.ontrack.server.utils.introspector.IntrospectionEngine;
+import br.com.oncast.ontrack.server.utils.introspector.IntrospectionException;
+import br.com.oncast.ontrack.server.utils.introspector.Introspector;
+import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
+import br.com.oncast.ontrack.utils.deepEquality.custom.ScopeTreeDeepEqualityComparator;
+import br.com.oncast.ontrack.utils.identedLogger.ErrorOnlyIdentedLogger;
+import br.com.oncast.ontrack.utils.identedLogger.IdentedLogger;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -10,15 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
-
-import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
-import br.com.oncast.ontrack.server.utils.introspector.IntrospectionEngine;
-import br.com.oncast.ontrack.server.utils.introspector.IntrospectionException;
-import br.com.oncast.ontrack.server.utils.introspector.Introspector;
-import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
-import br.com.oncast.ontrack.utils.deepEquality.custom.ScopeTreeDeepEqualityComparator;
-import br.com.oncast.ontrack.utils.identedLogger.ErrorOnlyIdentedLogger;
-import br.com.oncast.ontrack.utils.identedLogger.IdentedLogger;
 
 // TODO Implement a logger that informs where the error occurred.
 public class DeepEqualityTestUtils {

@@ -1,11 +1,12 @@
 package br.com.oncast.ontrack.shared.services.requestDispatch;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
+
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDataRequest implements DispatchRequest<UserDataRequestResponse> {
 

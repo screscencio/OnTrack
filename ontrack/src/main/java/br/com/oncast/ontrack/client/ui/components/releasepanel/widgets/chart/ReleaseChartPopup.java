@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart.ReleaseChartUpdateListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
@@ -11,6 +9,8 @@ import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
+
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.model.scope;
 
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 public class ScopeTest {
 

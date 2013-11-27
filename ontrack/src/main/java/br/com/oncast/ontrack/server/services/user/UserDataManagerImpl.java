@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.server.services.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -12,6 +9,9 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.user.UserInformationUpdateEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDataManagerImpl implements UserDataManager {
 

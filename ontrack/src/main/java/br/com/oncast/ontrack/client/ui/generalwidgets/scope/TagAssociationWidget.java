@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
@@ -9,7 +8,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.Horizon
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
 import br.com.oncast.ontrack.shared.model.color.ColorPack;
@@ -58,11 +56,9 @@ public class TagAssociationWidget extends Composite implements ModelWidget<TagAs
 	private final Timer editTimer = new Timer() {
 		@Override
 		public void run() {
-			PopupConfig.configPopup()
-					.popup(new TagAssociationWidgetEditMenu(association))
+			PopupConfig.configPopup().popup(new TagAssociationWidgetEditMenu(association))
 					.alignVertical(VerticalAlignment.TOP, new AlignmentReference(TagAssociationWidget.this, VerticalAlignment.BOTTOM, 2))
-					.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(TagAssociationWidget.this, HorizontalAlignment.LEFT))
-					.pop();
+					.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(TagAssociationWidget.this, HorizontalAlignment.LEFT)).pop();
 		}
 	};
 
@@ -134,9 +130,8 @@ public class TagAssociationWidget extends Composite implements ModelWidget<TagAs
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-			final ActionExecutionContext executionContext,
-			final boolean isUserAction) {
+	public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+		final ModelAction action = execution.getModelAction();
 		if (action instanceof TagUpdateAction && action.getReferenceId().equals(association.getTag().getId())) update();
 	};
 

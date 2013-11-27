@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO +++ Incorporate SimpleKanban into this class for efficiency and to remove duplications.
 public class Kanban extends SimpleKanban implements Serializable {

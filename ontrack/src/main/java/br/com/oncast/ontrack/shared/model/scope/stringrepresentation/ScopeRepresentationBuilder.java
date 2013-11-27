@@ -1,10 +1,11 @@
 package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.EFFORT_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.PROGRESS_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.RELEASE_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.VALUE_SYMBOL;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ScopeRepresentationBuilder {
 

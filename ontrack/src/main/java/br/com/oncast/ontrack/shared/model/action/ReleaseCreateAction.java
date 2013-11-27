@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import org.simpleframework.xml.Attribute;
@@ -37,30 +36,11 @@ public class ReleaseCreateAction implements ReleaseAction {
 	@IgnoredByDeepEquality
 	private ReleaseCreateAction subReleaseCreateAction;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ReleaseCreateAction() {}
 
 	// The new release id must be created in constructors. If it is not created here, the actions cannot be executed correctly in the server side.
 	public ReleaseCreateAction(final String releaseDescription) {
-		this.uniqueId = new UUID();
 		this.description = releaseDescription;
 		newReleaseId = new UUID();
 	}

@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.organization.widgets;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.events.ReleaseSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
@@ -11,6 +9,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;

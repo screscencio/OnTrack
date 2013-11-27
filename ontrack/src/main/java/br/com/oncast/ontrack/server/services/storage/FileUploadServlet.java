@@ -1,5 +1,10 @@
 package br.com.oncast.ontrack.server.services.storage;
 
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
+import br.com.oncast.ontrack.server.configuration.Configurations;
+import br.com.oncast.ontrack.server.services.storage.upload.UploadResponseFactory;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,11 +22,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-
-import br.com.oncast.ontrack.server.business.ServerServiceProvider;
-import br.com.oncast.ontrack.server.configuration.Configurations;
-import br.com.oncast.ontrack.server.services.storage.upload.UploadResponseFactory;
-import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 
 import com.google.common.io.Files;
 

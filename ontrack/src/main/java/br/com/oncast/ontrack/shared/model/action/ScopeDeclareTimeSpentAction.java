@@ -5,12 +5,10 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
-import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findActionAuthor;
 import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findScope;
 
 @ConvertTo(ScopeDeclareTimeSpentActionEntity.class)
@@ -24,28 +22,9 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 	@Attribute
 	private Float timeSpent;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ScopeDeclareTimeSpentAction() {}
 
 	public ScopeDeclareTimeSpentAction(final UUID scopeId, final Float timeSpent) {
-		this.uniqueId = new UUID();
 		this.scopeId = scopeId;
 		this.timeSpent = timeSpent;
 	}
@@ -53,7 +32,7 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		findScope(scopeId, context, this);
-		final UUID currentUserId = findActionAuthor(actionContext, context, this).getId();
+		final UUID currentUserId = actionContext.getUserId();// FIXME ActionHelper.findUser(actionContext.getUserId(), context, this).getId();
 
 		final Float previousTimespent = context.getDeclaredTimeSpent(scopeId, currentUserId);
 		context.declareTimeSpent(scopeId, currentUserId, timeSpent);

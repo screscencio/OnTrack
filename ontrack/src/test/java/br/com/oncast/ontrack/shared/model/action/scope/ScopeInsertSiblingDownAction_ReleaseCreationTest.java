@@ -1,20 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownAction;
@@ -28,6 +15,20 @@ import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
+
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import static org.mockito.Mockito.when;
+
+import static junit.framework.Assert.assertTrue;
 
 public class ScopeInsertSiblingDownAction_ReleaseCreationTest {
 
@@ -90,8 +91,7 @@ public class ScopeInsertSiblingDownAction_ReleaseCreationTest {
 		assertThatReleaseIsNotInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(2);
-		final ModelAction rollbackAction = new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context,
-				actionContext);
+		final ModelAction rollbackAction = new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context, actionContext);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(3)));
@@ -106,8 +106,7 @@ public class ScopeInsertSiblingDownAction_ReleaseCreationTest {
 		assertThatReleaseIsInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(2);
-		final ModelAction rollbackAction = new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context,
-				actionContext);
+		final ModelAction rollbackAction = new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context, actionContext);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(3)));
@@ -124,18 +123,17 @@ public class ScopeInsertSiblingDownAction_ReleaseCreationTest {
 
 		final Scope scope = rootScope.getChild(2);
 
-		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription), context,
-				actionContext);
+		final ActionExecutionManager actionExecutionManager = ActionExecutionTestUtils.createManager(context);
+		actionExecutionManager.doUserAction(UserActionTestUtils.create(new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription), actionContext));
 
 		Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(3)));
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context, actionContext);
+			actionExecutionManager.undoUserAction();
 			assertThatReleaseIsNotInContext(releaseDescription);
 
-			actionExecutionManager.redoUserAction(context, actionContext);
+			actionExecutionManager.redoUserAction();
 			newRelease = assertThatReleaseIsInContext(releaseDescription);
 			assertTrue(newRelease.getScopeList().contains(rootScope.getChild(3)));
 		}
@@ -150,8 +148,7 @@ public class ScopeInsertSiblingDownAction_ReleaseCreationTest {
 		try {
 			context.findRelease(releaseDescription);
 			fail("The release should not exist in project context.");
-		}
-		catch (final ReleaseNotFoundException e) {}
+		} catch (final ReleaseNotFoundException e) {}
 	}
 
 }

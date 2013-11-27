@@ -1,12 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.description;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.description.DescriptionRemoveActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -16,6 +9,13 @@ import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.DescriptionTestUtils;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class DescriptionRemoveActionTest extends ModelActionTest {
 
@@ -45,7 +45,7 @@ public class DescriptionRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldRecreateTheSameDescriptionOnUndo() throws Exception {
-		executeAction().execute(context, Mockito.mock(ActionContext.class));
+		executeAction().execute(context,  Mockito.mock(ActionContext.class));
 		verify(context).addDescription(description, subjectId);
 	}
 

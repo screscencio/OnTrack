@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
-import static java.util.regex.Pattern.quote;
-
 import java.util.List;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
+
+import static java.util.regex.Pattern.quote;
 
 public abstract class Migration implements Comparable<Migration> {
 

@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
@@ -31,6 +30,8 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 
 public class ReleaseChartEditableLabel extends Composite implements HasValue<Float>, HasText, HasMouseOverHandlers, HasMouseOutHandlers {
 

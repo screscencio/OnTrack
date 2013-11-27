@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;

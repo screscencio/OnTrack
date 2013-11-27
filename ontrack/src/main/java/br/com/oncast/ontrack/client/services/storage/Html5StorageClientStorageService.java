@@ -1,15 +1,15 @@
 package br.com.oncast.ontrack.client.services.storage;
 
-import br.com.oncast.ontrack.client.services.actionSync.ActionSyncEntry;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.NullAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetricsBag;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerStatistics;
@@ -18,7 +18,6 @@ import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ import com.seanchenxi.gwt.storage.client.StorageKey;
 import com.seanchenxi.gwt.storage.client.StorageKeyFactory;
 import com.seanchenxi.gwt.storage.client.StorageQuotaExceededException;
 
-import static br.com.oncast.ontrack.client.services.storage.ClientStorageColumnNames.SELECTED_SCOPE_ID;
+import static br.com.oncast.ontrack.client.services.storage.ClientStorageKeyNames.SELECTED_SCOPE_ID;
 
 public class Html5StorageClientStorageService implements ClientStorageService {
 
@@ -82,18 +81,18 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 	@Override
 	public String loadLastUserEmail(final String defaultValue) {
-		final String item = getItem(ClientStorageColumnNames.LAST_USER_EMAIL);
+		final String item = getItem(ClientStorageKeyNames.LAST_USER_EMAIL);
 		return item == null ? defaultValue : item;
 	}
 
 	@Override
 	public void storeLastUserEmail(final String email) {
-		setItem(ClientStorageColumnNames.LAST_USER_EMAIL, email);
+		setItem(ClientStorageKeyNames.LAST_USER_EMAIL, email);
 	}
 
 	@Override
 	public void storeReleaseContainerState(final Release release, final boolean containerState) {
-		final String userProjectSpecificKey = getUserProjectStorageKey(ClientStorageColumnNames.MODIFIED_CONTAINER_STATE_RELEASES);
+		final String userProjectSpecificKey = getUserProjectStorageKey(ClientStorageKeyNames.MODIFIED_CONTAINER_STATE_RELEASES);
 		final List<String> modifiedReleases = getList(userProjectSpecificKey);
 
 		final boolean hasBeenModified = containerState != DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE;
@@ -111,7 +110,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	public List<UUID> loadModifiedContainerStateReleases() {
 		final List<UUID> modifiedReleases = new ArrayList<UUID>();
 
-		for (final String idString : getList(getUserProjectStorageKey(ClientStorageColumnNames.MODIFIED_CONTAINER_STATE_RELEASES))) {
+		for (final String idString : getList(getUserProjectStorageKey(ClientStorageKeyNames.MODIFIED_CONTAINER_STATE_RELEASES))) {
 			modifiedReleases.add(new UUID(idString));
 		}
 
@@ -120,12 +119,12 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 	@Override
 	public void storeDefaultPlaceToken(final String placeToken) {
-		setItem(ClientStorageColumnNames.DEFAULT_PLACE, placeToken);
+		setItem(ClientStorageKeyNames.DEFAULT_PLACE, placeToken);
 	}
 
 	@Override
 	public String loadDefaultPlaceToken() {
-		return getItem(ClientStorageColumnNames.DEFAULT_PLACE);
+		return getItem(ClientStorageKeyNames.DEFAULT_PLACE);
 	}
 
 	private List<String> getList(final String key) {
@@ -145,7 +144,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	}
 
 	private String getScopeTreeColumnVisibilityKey(final ScopeTreeColumn column) {
-		return ClientStorageColumnNames.SCOPE_TREE_COLUMN_VISIBILITY + SEPARATOR + column.name();
+		return ClientStorageKeyNames.SCOPE_TREE_COLUMN_VISIBILITY + SEPARATOR + column.name();
 	}
 
 	private String getUserProjectSpecificItem(final String key) {
@@ -188,13 +187,13 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 	@Override
 	public void storeOnTrackRealTimeServerMetricsList(final OnTrackRealTimeServerMetricsBag metrics) {
-		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.REAL_TIME_SERVER_METRICS);
+		final String key = getCurrentUserStorageKey(ClientStorageKeyNames.REAL_TIME_SERVER_METRICS);
 		setItem(key, serialize(metrics));
 	}
 
 	@Override
 	public OnTrackRealTimeServerMetricsBag loadOnTrackRealTimeServerMetricsList() {
-		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.REAL_TIME_SERVER_METRICS);
+		final String key = getCurrentUserStorageKey(ClientStorageKeyNames.REAL_TIME_SERVER_METRICS);
 		final String item = getItem(key);
 		if (item == null || item.isEmpty()) {
 			final OnTrackRealTimeServerMetricsBag bag = FACTORY.createOnTrackRealTimeServerMetricsBag().as();
@@ -207,13 +206,13 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 	@Override
 	public void storeOnTrackServerStatisticsList(final OnTrackServerStatisticsBag statistics) {
-		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
+		final String key = getCurrentUserStorageKey(ClientStorageKeyNames.SERVER_STATISTICS);
 		setItem(key, serialize(statistics));
 	}
 
 	@Override
 	public OnTrackServerStatisticsBag loadOnTrackServerStatisticsList() {
-		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
+		final String key = getCurrentUserStorageKey(ClientStorageKeyNames.SERVER_STATISTICS);
 		final String item = getItem(key);
 		if (item == null || item.isEmpty()) {
 			final OnTrackServerStatisticsBag bag = FACTORY.createOnTrackServerStatisticsBag().as();
@@ -234,13 +233,13 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		return bean.as();
 	}
 
-	private void storePendingActions(final List<ModelAction> pendingActions) {
+	private void storeUserActions(final String key, final List<UserAction> pendingActions) {
 		if (gwtStorage == null || !authenticationService.isUserAvailable()) return;
 
-		final String keyName = getUserProjectStorageKey(ClientStorageColumnNames.PENDING_ACTIONS_LIST);
-		final StorageKey<ArrayList<ModelAction>> key = StorageKeyFactory.objectKey(keyName);
+		final String keyName = getUserProjectStorageKey(key);
+		final StorageKey<ArrayList<UserAction>> storageKey = StorageKeyFactory.objectKey(keyName);
 		try {
-			gwtStorage.put(key, new ArrayList<ModelAction>(pendingActions));
+			gwtStorage.put(storageKey, new ArrayList<UserAction>(pendingActions));
 		} catch (final SerializationException e) {
 			e.printStackTrace();
 		} catch (final StorageQuotaExceededException e) {
@@ -248,39 +247,65 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		}
 	}
 
-	private List<ModelAction> loadPendingActions() {
+	private <T> void storeModelActions(final String key, final List<T> actions) {
+		if (gwtStorage == null || !authenticationService.isUserAvailable()) return;
+
+		final String keyName = getUserProjectStorageKey(key);
+		final StorageKey<ArrayList<T>> storageKey = StorageKeyFactory.objectKey(keyName);
 		try {
-			final String keyName = getUserProjectStorageKey(ClientStorageColumnNames.PENDING_ACTIONS_LIST);
-			final StorageKey<ArrayList<ModelAction>> key = StorageKeyFactory.objectKey(keyName);
-			return new ArrayList<ModelAction>(gwtStorage.get(key));
+			gwtStorage.put(storageKey, new ArrayList<T>(actions));
+		} catch (final SerializationException e) {
+			e.printStackTrace();
+		} catch (final StorageQuotaExceededException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private <T> List<T> loadList(final String key) {
+		try {
+			final String keyName = getUserProjectStorageKey(key);
+			final StorageKey<ArrayList<T>> storageKey = StorageKeyFactory.objectKey(keyName);
+			return new ArrayList<T>(gwtStorage.get(storageKey));
 		} catch (final Exception e) {
-			return new ArrayList<ModelAction>();
+			return new ArrayList<T>();
+		}
+	}
+
+	private List<UserAction> loadUserActions(final String key) {
+		try {
+			final String keyName = getUserProjectStorageKey(key);
+			final StorageKey<ArrayList<UserAction>> storageKey = StorageKeyFactory.objectKey(keyName);
+			return new ArrayList<UserAction>(gwtStorage.get(storageKey));
+		} catch (final Exception e) {
+			return new ArrayList<UserAction>();
 		}
 	}
 
 	@Override
-	public List<ActionSyncEntry> loadActionSyncEntries() {
-		final ArrayList<ActionSyncEntry> entries = new ArrayList<ActionSyncEntry>();
-		final List<ModelAction> actions = loadPendingActions();
+	public List<ActionExecutionContext> loadPendingActionExecutionContexts(UUID projectId) {
+		final ArrayList<ActionExecutionContext> entries = new ArrayList<ActionExecutionContext>();
+		final List<UserAction> actions = loadUserActions(ClientStorageKeyNames.PENDING_ACTIONS);
+		final List<ModelAction> reverseActions = loadList(ClientStorageKeyNames.PENDING_REVERSE_ACTIONS);
 		for (int i = 0; i < actions.size(); i++) {
-			final ModelAction action = actions.get(i);
-			entries.add(new ActionSyncEntry(action, new NullAction(), new ActionContext(authenticationService.getCurrentUserId(), new Date())));
+			final ModelAction reverseAction = i < reverseActions.size() ? reverseActions.get(i) : new NullAction();
+			entries.add(new ActionExecutionContext(actions.get(i), reverseAction));
 		}
 
 		return entries;
 	}
 
 	@Override
-	public void storeActionSyncEntries(final List<ActionSyncEntry> entries) {
+	public void storePendingActionExecutionContexts(UUID projectId, final List<ActionExecutionContext> entries) {
 		if (gwtStorage == null || !authenticationService.isUserAvailable()) return;
 
-		final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
-		final ArrayList<ActionContext> contexts = new ArrayList<ActionContext>();
-		for (final ActionSyncEntry actionSyncEntry : entries) {
-			actions.add(actionSyncEntry.getAction());
-			contexts.add(actionSyncEntry.getContext());
+		final ArrayList<UserAction> actions = new ArrayList<UserAction>();
+		final ArrayList<ModelAction> reverseActions = new ArrayList<ModelAction>();
+		for (final ActionExecutionContext actionSyncEntry : entries) {
+			actions.add(actionSyncEntry.getUserAction());
+			reverseActions.add(actionSyncEntry.getReverseModelAction());
 		}
-		storePendingActions(actions);
+		storeUserActions(ClientStorageKeyNames.PENDING_ACTIONS, actions);
+		storeModelActions(ClientStorageKeyNames.PENDING_REVERSE_ACTIONS, reverseActions);
 
 		return;
 	}

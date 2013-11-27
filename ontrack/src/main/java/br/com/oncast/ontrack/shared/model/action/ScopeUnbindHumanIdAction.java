@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.metadata.HumanIdMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Element;
 
@@ -24,28 +23,9 @@ public class ScopeUnbindHumanIdAction implements ScopeAction {
 	@Element
 	private UUID metadataId;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ScopeUnbindHumanIdAction() {}
 
 	public ScopeUnbindHumanIdAction(final HumanIdMetadata metadata) {
-		this.uniqueId = new UUID();
 		this.metadataId = metadata.getId();
 		this.scopeId = metadata.getSubject().getId();
 	}

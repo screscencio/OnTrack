@@ -1,11 +1,9 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations.Migration_2011_10_01;
+import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.Migration2_2011_08_01;
+import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.Migration2_2011_10_01;
+import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.subPackage.Migration2_2011_11_10;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -14,10 +12,12 @@ import org.dom4j.Element;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations.Migration_2011_10_01;
-import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.Migration2_2011_08_01;
-import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.Migration2_2011_10_01;
-import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.subPackage.Migration2_2011_11_10;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class MigrationTest {
 

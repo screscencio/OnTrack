@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import java.io.File;
-
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+
+import java.io.File;
 
 public class XMLImporterService {
 

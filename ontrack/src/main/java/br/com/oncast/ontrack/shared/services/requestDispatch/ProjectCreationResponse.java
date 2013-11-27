@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.services.requestDispatch;
 
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
+
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 public class ProjectCreationResponse implements DispatchResponse {

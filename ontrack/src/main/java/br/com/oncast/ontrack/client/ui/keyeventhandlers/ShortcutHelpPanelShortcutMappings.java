@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
-
 import com.google.gwt.core.client.GWT;
 
 public enum ShortcutHelpPanelShortcutMappings implements ShortcutMapping<Void> {

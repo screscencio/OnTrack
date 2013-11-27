@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -8,8 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.dom4j.Element;
-
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 
 import com.google.common.collect.HashMultimap;
 

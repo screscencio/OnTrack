@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.List;
 
@@ -45,30 +44,11 @@ public class ReleaseRemoveRollbackAction implements ReleaseAction {
 	@ElementList
 	private List<ModelAction> subActionRollbackList;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ReleaseRemoveRollbackAction() {}
 
 	public ReleaseRemoveRollbackAction(final UUID parentReleaseId, final UUID newReleaseId, final String description, final int index, final List<ReleaseRemoveRollbackAction> childActionList,
 			final List<ModelAction> subActionRollbackList) {
-		this.uniqueId = new UUID();
 		this.parentReleaseId = parentReleaseId;
 		this.newReleaseId = newReleaseId;
 		this.description = description;

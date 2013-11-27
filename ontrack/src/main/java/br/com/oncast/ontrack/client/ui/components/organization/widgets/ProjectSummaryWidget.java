@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.organization.widgets;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
@@ -27,6 +23,10 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;

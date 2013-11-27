@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.model.checklist;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Checklist implements Serializable, HasUUID {
 

@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
@@ -28,28 +27,9 @@ public class ReleaseDeclareEndDayAction implements ReleaseAction {
 	@IgnoredByDeepEquality
 	private Date endDay;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected ReleaseDeclareEndDayAction() {}
 
 	public ReleaseDeclareEndDayAction(final UUID referenceId, final Date endDay) {
-		this.uniqueId = new UUID();
 		this.referenceId = referenceId;
 		this.endDay = endDay;
 	}

@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Element;
 
@@ -26,29 +25,10 @@ public class ReleaseRenameAction implements ReleaseAction {
 	@Element
 	private String newReleaseDescription;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ReleaseRenameAction() {}
 
 	public ReleaseRenameAction(final UUID releaseId, final String newReleaseDescription) {
-		this.uniqueId = new UUID();
 		this.referenceId = releaseId;
 		this.newReleaseDescription = newReleaseDescription;
 	}

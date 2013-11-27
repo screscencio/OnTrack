@@ -1,5 +1,12 @@
 package br.com.oncast.ontrack.client.utils.date;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import com.google.common.base.Joiner;
+import com.google.gwt.i18n.client.DateTimeFormat;
+
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.DAY;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.HOUR;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.MINUTE;
@@ -9,13 +16,6 @@ import static br.com.oncast.ontrack.client.utils.date.DateUnit.WEEK;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.YEAR;
 import static br.com.oncast.ontrack.client.utils.date.HumanDateFormatter.MESSAGES;
 import static com.google.gwt.i18n.client.DateTimeFormat.getFormat;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import com.google.common.base.Joiner;
-import com.google.gwt.i18n.client.DateTimeFormat;
 
 public enum HumanDateUnit {
 	SECONDS(MINUTE, SECOND, "", MESSAGES.second(), MESSAGES.seconds(), MESSAGES.now(), MESSAGES.lessThanASecond()) {

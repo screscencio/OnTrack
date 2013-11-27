@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
-import java.io.Serializable;
-
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import java.io.Serializable;
 
 public class KanbanColumn implements Serializable {
 

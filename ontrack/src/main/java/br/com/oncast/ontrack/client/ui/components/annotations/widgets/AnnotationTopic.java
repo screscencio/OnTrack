@@ -11,9 +11,7 @@ import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.html.HTMLTextUtils;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
@@ -120,8 +118,8 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final ActionExecutionContext executionContext, final boolean isUserAction) {
-		if (action instanceof AnnotationAction && action.getReferenceId().equals(annotation.getId())) update();
+	public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+		if (execution.getModelAction() instanceof AnnotationAction && execution.getModelAction().getReferenceId().equals(annotation.getId())) update();
 	}
 
 	@UiHandler("closedDeprecatedLabel")

@@ -1,9 +1,14 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-import static java.lang.Math.abs;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
+import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.prioritizationCriteria.PrioritizationCriteria;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -17,19 +22,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.services.ClientServicesTestUtils;
-import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
-import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
-import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
-import br.com.oncast.ontrack.shared.model.prioritizationCriteria.PrioritizationCriteria;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
-import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-
 import com.google.gwt.dom.client.Element;
 import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import static java.lang.Math.abs;
 
 @GwtModule("br.com.oncast.ontrack.Application")
 public class ScopeTreeItemWidgetTest extends GwtTest {

@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.shared.model.scope;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.utils.date.DateUnit;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+
+import java.util.Date;
 
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 

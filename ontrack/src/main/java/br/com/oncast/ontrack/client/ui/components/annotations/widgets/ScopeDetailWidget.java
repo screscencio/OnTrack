@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -20,7 +18,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembe
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.TagAssociationWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.date.TimeDifferenceFormat;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -36,6 +33,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
+
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -126,10 +125,8 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 				config.hidePopup();
 			}
 		});
-		config.popup(pickerPopup)
-				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(dueDate, HorizontalAlignment.CENTER))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(dueDate, VerticalAlignment.BOTTOM, 3))
-				.pop();
+		config.popup(pickerPopup).alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(dueDate, HorizontalAlignment.CENTER))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(dueDate, VerticalAlignment.BOTTOM, 3)).pop();
 	}
 
 	@Override
@@ -149,21 +146,13 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	private ActionExecutionListener getActionExecutionListener() {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
-					final ActionExecutionContext executionContext, final boolean isUserAction) {
-				if ((action instanceof ScopeUpdateAction
-						|| action instanceof ScopeAddTagAssociationAction
-						|| action instanceof ScopeRemoveTagAssociationAction
-						|| action instanceof ScopeBindReleaseAction
-						|| action instanceof ScopeRemoveAssociatedUserAction
-						|| action instanceof ScopeDeclareDueDateAction)
-						&& (action.getReferenceId().equals(scope.getId())
-						|| executionContext.getInferenceInfluencedScopeSet().contains(scope.getId()))) update();
-				else if ((action instanceof ScopeDeclareProgressAction
-						|| action instanceof ImpedimentAction
-						|| action instanceof AnnotationCreateAction)
-						&& action.getReferenceId().equals(scope.getId())) timeline
-						.setScope(scope);
+			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isUserAction) {
+				final ModelAction action = execution.getModelAction();
+				if ((action instanceof ScopeUpdateAction || action instanceof ScopeAddTagAssociationAction || action instanceof ScopeRemoveTagAssociationAction
+						|| action instanceof ScopeBindReleaseAction || action instanceof ScopeRemoveAssociatedUserAction || action instanceof ScopeDeclareDueDateAction)
+						&& (action.getReferenceId().equals(scope.getId()) || execution.getInferenceInfluencedScopeSet().contains(scope.getId()))) update();
+				else if ((action instanceof ScopeDeclareProgressAction || action instanceof ImpedimentAction || action instanceof AnnotationCreateAction)
+						&& action.getReferenceId().equals(scope.getId())) timeline.setScope(scope);
 			}
 		};
 		return actionExecutionListener;

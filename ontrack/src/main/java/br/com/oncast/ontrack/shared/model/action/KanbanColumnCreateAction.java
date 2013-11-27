@@ -11,7 +11,6 @@ import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,24 +48,6 @@ public class KanbanColumnCreateAction implements KanbanAction {
 	@Attribute
 	private int columnIndex = -1;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	public KanbanColumnCreateAction(final UUID releaseReferenceId, final String columnDescription, final boolean shouldLockKanban) {
 		this(releaseReferenceId, columnDescription, shouldLockKanban, null);
 	}
@@ -82,7 +63,6 @@ public class KanbanColumnCreateAction implements KanbanAction {
 	}
 
 	private KanbanColumnCreateAction(final UUID releaseReferenceId, final String columnDescription, final boolean shouldLockKanban, final List<ModelAction> rollbackActions) {
-		this.uniqueId = new UUID();
 		this.referenceId = releaseReferenceId;
 		this.columnDescription = columnDescription;
 		this.shouldLockKanban = shouldLockKanban;

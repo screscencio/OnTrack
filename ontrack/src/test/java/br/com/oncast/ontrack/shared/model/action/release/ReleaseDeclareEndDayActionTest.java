@@ -1,15 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.release;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseDeclareEndDayActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -23,6 +13,16 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.DateTestUtils;
+
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 
@@ -47,7 +47,7 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 	public void shouldThrowExceptionWhenReferenceIdIsNull() throws Exception {
 		when(context.findRelease(Mockito.any(UUID.class))).thenThrow(new ReleaseNotFoundException());
 
-		new ReleaseDeclareEndDayAction(null, null).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseDeclareEndDayAction(null, null).execute(context,  Mockito.mock(ActionContext.class));
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 		final ModelAction undoAction = executeAction();
 		verify(release).declareEndDay(Mockito.any(WorkingDay.class));
 
-		undoAction.execute(context, Mockito.mock(ActionContext.class));
+		undoAction.execute(context,  Mockito.mock(ActionContext.class));
 		verify(release).declareEndDay((WorkingDay) Mockito.isNull());
 	}
 
@@ -88,12 +88,12 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 		final ModelAction undoAction = executeAction();
 		verify(release).declareEndDay(Mockito.any(WorkingDay.class));
 
-		undoAction.execute(context, Mockito.mock(ActionContext.class));
+		undoAction.execute(context,  Mockito.mock(ActionContext.class));
 		verify(release).declareEndDay(Mockito.eq(previouslyDeclaredDay));
 	}
 
 	private void executeDeclaring(final Date declaredDay) throws UnableToCompleteActionException {
-		new ReleaseDeclareEndDayAction(referenceId, declaredDay).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseDeclareEndDayAction(referenceId, declaredDay).execute(context,  Mockito.mock(ActionContext.class));
 	}
 
 	@Override

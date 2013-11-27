@@ -10,7 +10,6 @@ import br.com.oncast.ontrack.shared.model.color.ColorPack;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import org.simpleframework.xml.Element;
 
@@ -31,28 +30,9 @@ public class TagUpdateAction implements TagAction {
 	@Element(required = false)
 	private Color textColor;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected TagUpdateAction() {}
 
 	public TagUpdateAction(final UUID tagId, final String description, final Color foregroundColor, final Color backgroundColor) {
-		this.uniqueId = new UUID();
 		this.tagId = tagId;
 		this.description = description == null ? "" : description.trim();
 		this.backgroundColor = backgroundColor;

@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.server.model.scope;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+
+import java.util.Date;
 
 public class ScopeBuilder {
 	private final Scope scope;

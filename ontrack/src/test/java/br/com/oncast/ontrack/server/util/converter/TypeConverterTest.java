@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.server.util.converter;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
 import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionEntityMock;
 import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionEntityMockWithListOfActions;
 import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionMock;
@@ -11,6 +7,10 @@ import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionMockWithList
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class TypeConverterTest {
 

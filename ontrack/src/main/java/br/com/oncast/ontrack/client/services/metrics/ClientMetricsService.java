@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.services.metrics;
 import br.com.oncast.ontrack.client.services.places.OpenInNewWindowPlace;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
@@ -48,7 +48,7 @@ public interface ClientMetricsService {
 
 	void onConnectionRecovered();
 
-	void onActionExecution(ModelAction action, boolean isClientOnline);
+	void onActionExecution(UserAction action, boolean isClientOnline);
 
 	void onShortcutUsed(ShortcutMapping<?> mapping);
 

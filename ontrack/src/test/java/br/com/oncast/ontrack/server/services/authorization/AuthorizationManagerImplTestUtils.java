@@ -1,12 +1,13 @@
 package br.com.oncast.ontrack.server.services.authorization;
 
-import static org.mockito.Mockito.mock;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+
+import static org.mockito.Mockito.mock;
 
 public class AuthorizationManagerImplTestUtils {
 

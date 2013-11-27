@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,24 +29,6 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	@Attribute
 	private boolean userAction;
 
-	@Element
-	private UUID uniqueId;
-
-	@Override
-	public UUID getId() {
-		return uniqueId;
-	}
-
-	@Override
-	public int hashCode() {
-		return UUIDUtils.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return UUIDUtils.equals(this, obj);
-	}
-
 	protected AnnotationRemoveAction() {}
 
 	public AnnotationRemoveAction(final UUID subjectId, final UUID annotationId) {
@@ -55,7 +36,6 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	}
 
 	protected AnnotationRemoveAction(final UUID subjectId, final UUID annotationId, final boolean isUserAction) {
-		this.uniqueId = new UUID();
 		this.subjectId = subjectId;
 		this.annotationId = annotationId;
 		this.userAction = isUserAction;

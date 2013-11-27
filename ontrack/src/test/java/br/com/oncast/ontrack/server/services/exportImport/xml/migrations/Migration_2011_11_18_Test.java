@@ -1,16 +1,9 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertAttributeDoesntExist;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertAttributeExists;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementAttributeValueIs;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementDoesntExist;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementExists;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementHasTheseAttributesAndNothingElse;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementsType;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.getElement;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.getElements;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.readXMLFromFile;
-import static org.junit.Assert.assertEquals;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
+import br.com.oncast.ontrack.server.util.migration.MigrationTestUtils;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +14,18 @@ import org.dom4j.Element;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
-import br.com.oncast.ontrack.server.util.migration.MigrationTestUtils;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import static org.junit.Assert.assertEquals;
+
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertAttributeDoesntExist;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertAttributeExists;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementAttributeValueIs;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementDoesntExist;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementExists;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementHasTheseAttributesAndNothingElse;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementsType;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.getElement;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.getElements;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.readXMLFromFile;
 
 public class Migration_2011_11_18_Test {
 

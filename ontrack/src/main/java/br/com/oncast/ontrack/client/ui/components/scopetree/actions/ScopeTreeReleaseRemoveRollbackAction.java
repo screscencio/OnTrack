@@ -21,7 +21,7 @@ public class ScopeTreeReleaseRemoveRollbackAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
 		try {
 			final Release release = context.findRelease(action.getNewReleaseId());
 			for (final Scope scope : release.getScopeList()) {

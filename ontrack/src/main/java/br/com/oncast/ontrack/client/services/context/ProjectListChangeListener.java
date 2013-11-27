@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.services.context;
 
-import java.util.Set;
-
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+
+import java.util.Set;
 
 public interface ProjectListChangeListener {
 

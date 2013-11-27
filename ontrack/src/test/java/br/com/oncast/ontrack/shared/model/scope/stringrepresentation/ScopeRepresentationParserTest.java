@@ -1,12 +1,13 @@
 package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.EFFORT_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.PROGRESS_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.RELEASE_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.VALUE_SYMBOL;
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
 
 public class ScopeRepresentationParserTest {
 

@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.server.utils.typeConverter.baseConverters;
 
-import java.util.Date;
-
 import br.com.oncast.ontrack.server.utils.typeConverter.TypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
+
+import java.util.Date;
 
 public class DateConverter implements TypeConverter {
 

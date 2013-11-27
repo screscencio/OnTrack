@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;

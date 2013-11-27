@@ -1,15 +1,17 @@
 package br.com.oncast.ontrack.server.services.user;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager.UserStatusChangeListener;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
+import br.com.oncast.ontrack.shared.services.user.UserOfflineEvent;
+import br.com.oncast.ontrack.shared.services.user.UserOnlineEvent;
+import br.com.oncast.ontrack.shared.services.user.UserOpenProjectEvent;
+import br.com.oncast.ontrack.shared.services.user.UserStatusEvent;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,18 +26,18 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
-import br.com.oncast.ontrack.server.services.multicast.ClientManager;
-import br.com.oncast.ontrack.server.services.multicast.ClientManager.UserStatusChangeListener;
-import br.com.oncast.ontrack.server.services.multicast.MulticastService;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
-import br.com.oncast.ontrack.shared.services.user.UserOfflineEvent;
-import br.com.oncast.ontrack.shared.services.user.UserOnlineEvent;
-import br.com.oncast.ontrack.shared.services.user.UserOpenProjectEvent;
-import br.com.oncast.ontrack.shared.services.user.UserStatusEvent;
-import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 public class UsersStatusManagerTest {
 

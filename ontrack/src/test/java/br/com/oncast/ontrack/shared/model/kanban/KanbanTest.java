@@ -1,12 +1,13 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
-import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.DONE;
-import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.NOT_STARTED;
-import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.assertColumns;
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Test;
+import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.DONE;
+import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.NOT_STARTED;
+import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.assertColumns;
 
 public class KanbanTest {
 

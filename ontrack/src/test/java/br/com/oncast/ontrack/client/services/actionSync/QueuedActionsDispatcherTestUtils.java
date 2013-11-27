@@ -1,16 +1,12 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
@@ -21,9 +17,14 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class ActionQueuedDispatcherTestUtils {
+public class QueuedActionsDispatcherTestUtils {
 
 	private ServerPushClientServiceMockImpl serverPushClientService;
 	private MulticastService multicastService;
