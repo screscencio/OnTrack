@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.services.places.OpenInNewWindowPlace;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.model.action.UserAction;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
@@ -53,5 +54,7 @@ public interface ClientMetricsService {
 	void onShortcutUsed(ShortcutMapping<?> mapping);
 
 	void onProjectChange(UUID projectId);
+
+	void onActionConflict(UserAction action, UnableToCompleteActionException e);
 
 }

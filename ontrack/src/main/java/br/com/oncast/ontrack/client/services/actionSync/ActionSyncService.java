@@ -118,16 +118,19 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 
 	// TODO+++ instead of clearing the entire syncList, ask the user if he wants to skip the conflicted action and continue to re-sync
 	private void applyLocalPendingActions() {
-		try {
-			for (final ActionExecutionContext entry : syncList) {
+		for (final ActionExecutionContext entry : syncList) {
+			try {
 				actionExecutionService.onNonUserActionRequest(entry.getUserAction());
-				dispatch(entry.getUserAction());
+			} catch (final UnableToCompleteActionException e) {
+				e.printStackTrace();
+				metrics.onActionConflict(entry.getUserAction(), e);
+				syncList.clear();
+				showError(messages.someChangesConflicted());
+				return;
 			}
-			if (!syncList.isEmpty()) alertingService.showSuccess(messages.pendingActionsSynced(syncList.size()));
-		} catch (final UnableToCompleteActionException e) {
-			syncList.clear();
-			showError(messages.someChangesConflicted());
+			dispatch(entry.getUserAction());
 		}
+		if (!syncList.isEmpty()) alertingService.showSuccess(messages.pendingActionsSynced(syncList.size()));
 	}
 
 	@Override

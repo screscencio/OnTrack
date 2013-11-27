@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
 import br.com.oncast.ontrack.shared.model.action.UserAction;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackRealTimeServerMetrics;
@@ -129,6 +130,11 @@ public class ClientMetricsServiceImpl implements ClientMetricsService {
 	public void onActionExecution(final UserAction action, final boolean isClientOnline) {
 		if (isClientOnline) GoogleAnalyticsNativeImpl.sendEvent("action", "client_side_execution", className(action.getModelAction()));
 		else GoogleAnalyticsNativeImpl.sendEvent("action", "offline_execution", className(action.getModelAction()));
+	}
+
+	@Override
+	public void onActionConflict(final UserAction action, final UnableToCompleteActionException e) {
+		GoogleAnalyticsNativeImpl.sendEvent("action", "client_side_conflict", className(action.getModelAction()));
 	}
 
 	@Override

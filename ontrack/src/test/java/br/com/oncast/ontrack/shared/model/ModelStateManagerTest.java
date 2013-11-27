@@ -75,15 +75,46 @@ public class ModelStateManagerTest {
 	}
 
 	@Test
-	public void settingAStateEarliestThanTheInitialStateShouldReplaceTheInitialState() throws Exception {
+	public void settingAStateEarlerThanTheInitialStateShouldReplaceTheInitialState() throws Exception {
 		manager.setState("earlierState", initialAuthor, new Date(500));
+		assertEquals("earlierState", manager.getInitialState().getValue());
+		assertEquals(2, manager.getNumberOfStates());
+		assertEquals(initialStateValue, manager.getCurrentStateValue());
 	}
 
 	@Test
-	public void itShouldBeAbleToSetAStateWithSameTimestampThanThePreviousState() throws Exception {
+	public void settingAStateExactlyAtSameTimestampAsAnExistingStateShouldReplaceTheExistingStateForTheNewState() throws Exception {
+		final UserRepresentation newAuthor = UserRepresentationTestUtils.createUser();
+		final String newValue = "newState";
+		manager.setState(newValue, newAuthor, initialTimestamp);
+		assertEquals(1, manager.getNumberOfStates());
+		assertEquals(newValue, manager.getCurrentStateValue());
+		assertNull(manager.getLastOccurenceOf(initialStateValue));
+	}
+
+	@Test
+	public void shouldBeAbleToSetAStateWithSameTimestampThanThePreviousState() throws Exception {
 		final String newState = "new State";
 		manager.setState(newState, initialAuthor, initialTimestamp);
 		assertEquals(newState, manager.getCurrentStateValue());
+	}
+
+	@Test
+	public void shouldBeAbleToSetAStateWithDifferentValueBetweenTwoStatesWithSameValue() throws Exception {
+		final String intermediaryStateValue = "anotherState";
+		final String finalStateValue = "final state";
+
+		manager.setState(initialStateValue, initialAuthor, new Date(2000));
+		manager.setState(intermediaryStateValue, initialAuthor, new Date(1500));
+		manager.setState(finalStateValue, initialAuthor, new Date(2500));
+
+		assertEquals(1000, manager.getDurationOfState(initialStateValue));
+		assertEquals(500, manager.getDurationOfState(intermediaryStateValue));
+
+		assertEquals(initialStateValue, manager.getStateAt(0).getValue());
+		assertEquals(intermediaryStateValue, manager.getStateAt(1).getValue());
+		assertEquals(initialStateValue, manager.getStateAt(2).getValue());
+		assertEquals(finalStateValue, manager.getStateAt(3).getValue());
 	}
 
 	@Test
@@ -111,6 +142,18 @@ public class ModelStateManagerTest {
 		manager.setState(ModelState.create("oneMoreAnotherState", initialAuthor, new Date(6500)));
 
 		assertEquals(2000, manager.getDurationOfState(trackedStateValue));
+	}
+
+	@Test
+	public void theDurationOfAStateIsTheSumOfTheTimestampDifferencesEvenWhenTheSameStateValueIsSetSeveralTimes() throws Exception {
+		final String trackedStateValue = "trackedState";
+		manager.setState(trackedStateValue, initialAuthor, new Date(3500));
+		manager.setState(trackedStateValue, initialAuthor, new Date(4000));
+
+		manager.setState(trackedStateValue, initialAuthor, new Date(5000));
+		manager.setState("final state", initialAuthor, new Date(6500));
+
+		assertEquals(3000, manager.getDurationOfState(trackedStateValue));
 	}
 
 	@Test
@@ -185,15 +228,4 @@ public class ModelStateManagerTest {
 		assertNull(manager.getFirstOccurenceOf(overridedStateValue));
 	}
 
-	@Test
-	public void theNewStateShouldNotBeAddedWhenTheSecondLastStateIsTheSameAsTheNewStateWhenItOverridesTheLastState() throws Exception {
-		final String repeatedStateValue = "anotherOne";
-		final long firstOccurence = 3512310;
-
-		manager.setState(ModelState.create(repeatedStateValue, initialAuthor, new Date(firstOccurence)));
-		manager.setState(ModelState.create("overridedState", initialAuthor, new Date(3512314)));
-		manager.setState(ModelState.create(repeatedStateValue, initialAuthor, new Date(3512314)));
-
-		assertEquals(firstOccurence, manager.getLastOccurenceOf(repeatedStateValue).getTimestamp().getTime());
-	}
 }

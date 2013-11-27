@@ -46,7 +46,7 @@ public class GoogleAnalyticsServerAnalytics implements ServerAnalytics {
 
 	@Override
 	public void onActionConflicted(final UserAction action) {
-		send(action.getUserId(), action.getProjectId(), new EventHit("action", "confict").eventLabel(className(action.getModelAction())));
+		send(action.getUserId(), action.getProjectId(), new EventHit("action", "server_side_confict").eventLabel(className(action.getModelAction())));
 	}
 
 	@Override

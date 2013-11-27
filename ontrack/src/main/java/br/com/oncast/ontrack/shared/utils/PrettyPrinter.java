@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.utils;
 
+import br.com.oncast.ontrack.shared.model.action.UserAction;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,34 +18,34 @@ public class PrettyPrinter {
 		return clazz.getName().replaceAll(".*\\.", "");
 	}
 
-	public static String getSimpleNamesListString(final Collection<?> collection) {
-		return mountListString(collection, new StringGetter() {
+	public static <T> String getSimpleNamesListString(final Collection<T> collection) {
+		return mountListString(collection, new StringGetter<T>() {
 			@Override
-			public String getString(final Object object) {
+			public String getString(final T object) {
 				return getSimpleName(object);
 			}
 		});
 	}
 
-	public static String getToStringListString(final Collection<?> collection) {
-		return mountListString(collection, new StringGetter() {
+	public static <T> String getToStringListString(final Collection<T> collection) {
+		return mountListString(collection, new StringGetter<T>() {
 			@Override
-			public String getString(final Object object) {
+			public String getString(final T object) {
 				return object.toString();
 			}
 		});
 	}
 
-	public static String mountListString(final Collection<?> collection, final StringGetter getter) {
+	public static <T> String mountListString(final Collection<T> collection, final StringGetter<T> getter) {
 		final List<String> texts = new ArrayList<String>();
-		for (final Object object : collection) {
+		for (final T object : collection) {
 			texts.add(getter.getString(object));
 		}
 		return "[" + Joiner.on(',').join(texts) + "]";
 	}
 
-	private interface StringGetter {
-		String getString(Object object);
+	private interface StringGetter<T> {
+		String getString(T object);
 	}
 
 	public static String getToStringListString(final Object... objects) {
@@ -51,4 +53,12 @@ public class PrettyPrinter {
 		return "[" + Joiner.on(',').join(objects) + "]";
 	}
 
+	public static String getSimpleNamesForUserAction(final List<UserAction> actionList) {
+		return mountListString(actionList, new StringGetter<UserAction>() {
+			@Override
+			public String getString(final UserAction object) {
+				return getSimpleName(object.getModelAction());
+			}
+		});
+	}
 }

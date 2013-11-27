@@ -119,13 +119,13 @@ class BusinessLogicImpl implements BusinessLogic {
 					lastApplyedActionId = Math.max(lastApplyedActionId, persistedAction.getSequencialId());
 				}
 				if (actionList.isEmpty()) return lastApplyedActionId;
-				LOGGER.debug("Handling incoming actions " + PrettyPrinter.getSimpleNamesListString(actionList) + " from user " + authenticatedUser);
+				LOGGER.debug("Handling incoming actions " + PrettyPrinter.getSimpleNamesForUserAction(actionList) + " from user " + authenticatedUser);
 
 				final ProjectContext context = new ProjectContext(loadProject(projectId).getProject());
 
 				validateIncomingActions(actionList, context);
 				lastApplyedActionId = persistenceService.persistActions(actionList);
-				LOGGER.debug("Handled incoming actions " + PrettyPrinter.getSimpleNamesListString(actionList) + " from user " + authenticatedUser + " in " + getTimeSpent(initialTime) + " ms.");
+				LOGGER.debug("Handled incoming actions " + PrettyPrinter.getSimpleNamesForUserAction(actionList) + " from user " + authenticatedUser + " in " + getTimeSpent(initialTime) + " ms.");
 
 				modelActionSyncEvent = new ModelActionSyncEvent(projectId, actionList);
 				if (actionSyncRequest.shouldReturnToSender()) multicastService.multicastToAllUsersInSpecificProject(modelActionSyncEvent, projectId);

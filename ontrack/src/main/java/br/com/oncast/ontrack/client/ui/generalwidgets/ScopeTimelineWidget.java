@@ -124,7 +124,11 @@ public class ScopeTimelineWidget extends Composite {
 	private void addProgressStates(final Progress progress) {
 		FocusPanel previousStroke = null;
 		long previousTimestamp = start;
+		ProgressState previousStateValue = null;
 		for (final ModelState<ProgressState> state : progress) {
+			if (previousStateValue != null && state.getValue().equals(previousStateValue)) continue;
+			previousStateValue = state.getValue();
+
 			final long currentTimestamp = state.getTimestamp().getTime();
 			if (previousStroke != null) setProportion(previousStroke, previousTimestamp, currentTimestamp);
 
@@ -137,8 +141,7 @@ public class ScopeTimelineWidget extends Composite {
 		if (progress.isDone()) {
 			timelineBar.remove(previousStroke);
 			strokeMap.remove(previousTimestamp);
-		}
-		else {
+		} else {
 			setProportion(previousStroke, previousTimestamp, end);
 			addDot("icon-play " + style.timelineUnfinishedDot(), progress.getState(), new Date(end));
 		}

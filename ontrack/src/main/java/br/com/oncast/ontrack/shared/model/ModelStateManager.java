@@ -26,6 +26,10 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 		statesList.add(initialState);
 	}
 
+	public int getNumberOfStates() {
+		return statesList.size();
+	}
+
 	public ModelState<T> getCurrentState() {
 		return statesList.get(statesList.size() - 1);
 	}
@@ -38,16 +42,28 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 		setState(ModelState.create(newState, newAuthor, newTimestamp));
 	}
 
-	public void setState(final ModelState<T> newModelState) {
-		final ModelState<T> currentModelState = getCurrentState();
-		final long timeDifference = newModelState.getTimestamp().getTime() - currentModelState.getTimestamp().getTime();
+	public void setState(final ModelState<T> newState) {
+		final int index = getInsertionIndex(newState.getTimestamp());
+		if (index == getNumberOfStates()) statesList.add(newState);
+		else {
+			final ModelState<T> nextState = getStateAt(index);
+			final long timeDifference = newState.getTimestamp().getTime() - nextState.getTimestamp().getTime();
 
-		if (timeDifference < 0) throw new IllegalArgumentException("It's not possible to set a state that happened before the current state");
+			statesList.add(index, newState);
+			if (timeDifference == 0) this.statesList.remove(nextState);
+		}
+	}
 
-		if (timeDifference == 0) this.statesList.remove(currentModelState);
-		if (!statesList.isEmpty() && getCurrentStateValue() == newModelState.getValue()) return;
+	public ModelState<T> getStateAt(final int index) {
+		return statesList.get(index);
+	}
 
-		this.statesList.add(newModelState);
+	private int getInsertionIndex(final Date timestamp) {
+		for (int i = 0; i < statesList.size(); i++) {
+			final ModelState<T> state = statesList.get(i);
+			if (state.getTimestamp().getTime() >= timestamp.getTime()) return i;
+		}
+		return statesList.size();
 	}
 
 	public long getCurrentStateDuration() {
@@ -59,16 +75,16 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 
 		for (int i = 0; i < statesList.size() - 1; i++) {
 			final ModelState<T> state = statesList.get(i);
-			if (isTheRequiredState(state, stateValue)) {
+			if (hasValue(state, stateValue)) {
 				duration += getDurationBetween(state, statesList.get(i + 1));
 			}
 		}
-		if (isTheRequiredState(getCurrentState(), stateValue)) duration += getCurrentStateDuration();
+		if (hasValue(getCurrentState(), stateValue)) duration += getCurrentStateDuration();
 
 		return duration;
 	}
 
-	private boolean isTheRequiredState(final ModelState<T> state, final T stateValue) {
+	private boolean hasValue(final ModelState<T> state, final T stateValue) {
 		return state.getValue().equals(stateValue);
 	}
 
@@ -79,7 +95,7 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 	public ModelState<T> getLastOccurenceOf(final T stateValue) {
 		for (int i = statesList.size() - 1; i >= 0; i--) {
 			final ModelState<T> state = statesList.get(i);
-			if (isTheRequiredState(state, stateValue)) return state;
+			if (hasValue(state, stateValue)) return state;
 		}
 		return null;
 	}
@@ -91,7 +107,7 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 	public ModelState<T> getFirstOccurenceOf(final T stateValue) {
 		for (int i = 0; i < statesList.size(); i++) {
 			final ModelState<T> state = statesList.get(i);
-			if (isTheRequiredState(state, stateValue)) return state;
+			if (hasValue(state, stateValue)) return state;
 		}
 		return null;
 	}
