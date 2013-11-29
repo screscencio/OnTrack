@@ -95,6 +95,9 @@ public class XMLImporter {
 			final ProjectRepresentation representation = projectNode.getProjectRepresentation();
 			persistenceService.persistOrUpdateProjectRepresentation(representation);
 			final List<UserAction> actions = projectNode.getActions();
+			for (final UserAction userAction : actions) {
+				userAction.setProjectId(representation.getId());
+			}
 			persistActions(actions);
 			LOGGER.info("Persisted project " + representation + " and it's " + actions.size() + " actions in " + getTimeSpent(initialTime) + " ms.");
 		}

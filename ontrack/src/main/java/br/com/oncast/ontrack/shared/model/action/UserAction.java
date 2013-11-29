@@ -65,6 +65,10 @@ public class UserAction implements HasUUID, Serializable {
 		return getId();
 	}
 
+	public void setProjectId(final UUID projectId) {
+		this.projectId = projectId;
+	}
+
 	public void setSequencialId(final long id) {
 		this.sequencialId = id;
 	}
