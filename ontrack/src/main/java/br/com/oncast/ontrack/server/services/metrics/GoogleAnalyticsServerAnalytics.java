@@ -5,16 +5,19 @@ import br.com.oncast.ontrack.shared.metrics.MetricsTokenizer;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import java.util.concurrent.Future;
 
 import com.brsanthu.googleanalytics.EventHit;
+import com.brsanthu.googleanalytics.ExceptionHit;
 import com.brsanthu.googleanalytics.GoogleAnalytics;
 import com.brsanthu.googleanalytics.GoogleAnalyticsRequest;
 import com.brsanthu.googleanalytics.GoogleAnalyticsResponse;
 import com.brsanthu.googleanalytics.RequestProvider;
+import com.brsanthu.googleanalytics.TimingHit;
 
 public class GoogleAnalyticsServerAnalytics implements ServerAnalytics {
 
@@ -111,6 +114,59 @@ public class GoogleAnalyticsServerAnalytics implements ServerAnalytics {
 		ga.postAsync(new EventHit("ontrack", "active_connections_count_change", connected ? "connected" : "desconnected", count));
 	}
 
+	@Override
+	public void onMigrationExecution(final String versionFrom, final String versionTo, final long timeSpent) {
+		sendTimingHit("importer_migration_applied", versionFrom + " - " + versionTo, timeSpent);
+	}
+
+	@Override
+	public void onImportXmlLoad(final long xmlFileLenght, final long timeSpent) {
+		sendTimingHit("importer_xml_read", xmlFileLenght + "", timeSpent);
+	}
+
+	@Override
+	public void onUsersImported(final int newUsersCount, final long timeSpent) {
+		sendTimingHit("importer_users_imported", newUsersCount + "", timeSpent);
+	}
+
+	@Override
+	public void onProjectPersisted(final ProjectRepresentation representation, final int actionsCount, final long timeSpent) {
+		send(representation, timingHit("importer_project_persisted", actionsCount + "", timeSpent));
+	}
+
+	@Override
+	public void onProjectAuthorizationsImported(final int projectAuthorizationsCount, final long timeSpent) {
+		sendTimingHit("importer_project_authorization_imported", projectAuthorizationsCount + "", timeSpent);
+	}
+
+	@Override
+	public void onProjectLoadedForMigration(final ProjectRepresentation representation, final int actionsCount, final long timeSpent) {
+		send(representation, timingHit("importer_project_loaded", actionsCount + "", timeSpent));
+	}
+
+	@Override
+	public void onProjectLoadForMigrationError(final ProjectRepresentation representation, final Exception e) {
+		send(representation, new ExceptionHit(e.toString()));
+	}
+
+	@Override
+	public void onNotificationsImported(final int notificationsCount, final long timeSpent) {
+		sendTimingHit("importer_notifications_imported", "" + notificationsCount, timeSpent);
+	}
+
+	private void sendTimingHit(final String category, final String label, final long timeSpent) {
+		ga.postAsync(timingHit(category, label, timeSpent));
+	}
+
+	private TimingHit timingHit(final String category, final String label, final long timeSpent) {
+		final TimingHit hit = new TimingHit();
+		hit.userTimingCategory("ontrack");
+		hit.userTimingVariableName(category);
+		hit.userTimingLabel(label);
+		hit.userTimingTime((int) timeSpent);
+		return hit;
+	}
+
 	private <T extends GoogleAnalyticsRequest<T>> void send(final User user, final UUID projectId, final T request) {
 		send(user.getId(), projectId, request);
 	}
@@ -122,6 +178,15 @@ public class GoogleAnalyticsServerAnalytics implements ServerAnalytics {
 
 	private <T extends GoogleAnalyticsRequest<T>> void send(final User user, final T request) {
 		sendWithUser(user.getId(), request);
+	}
+
+	private <T extends GoogleAnalyticsRequest<T>> void send(final ProjectRepresentation representation, final T request) {
+		sendWithProject(representation.getId(), request);
+	}
+
+	private <T extends GoogleAnalyticsRequest<T>> void sendWithProject(final UUID projectId, final T request) {
+		request.customDimention(DIMENSION_PROJECT, projectId.toString());
+		ga.postAsync(request);
 	}
 
 	private <T extends GoogleAnalyticsRequest<T>> void sendWithUser(final UUID userId, final T request) {

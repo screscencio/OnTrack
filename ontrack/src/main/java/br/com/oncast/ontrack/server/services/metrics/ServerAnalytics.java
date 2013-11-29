@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.metrics;
 
 import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -36,5 +37,21 @@ public interface ServerAnalytics {
 	void onOnlineUsersCountChanged(int count, boolean entered);
 
 	void onActiveConnectionsCountChanged(int count, boolean connected);
+
+	void onMigrationExecution(String versionFrom, String versionTo, long timeSpent);
+
+	void onImportXmlLoad(long xmlFileLenght, long timeSpent);
+
+	void onUsersImported(int newUsersCount, long timeSpent);
+
+	void onProjectPersisted(ProjectRepresentation representation, int actionsCount, long timeSpent);
+
+	void onProjectAuthorizationsImported(int projectAuthorizationsCount, long timeSpent);
+
+	void onProjectLoadedForMigration(ProjectRepresentation representation, int actionsCount, long timeSpent);
+
+	void onProjectLoadForMigrationError(ProjectRepresentation representation, Exception e);
+
+	void onNotificationsImported(int notificationsCount, long timeSpent);
 
 }

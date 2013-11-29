@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Ontra
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -60,6 +61,9 @@ public class XMLImporterTest {
 	@Mock
 	private BusinessLogic businessLogic;
 
+	@Mock
+	private ServerAnalytics serverAnalytics;
+
 	private List<ProjectXMLNode> projects;
 	private List<UserXMLNode> users;
 	private List<ProjectAuthorizationXMLNode> projectAuthorizations;
@@ -99,7 +103,7 @@ public class XMLImporterTest {
 	}
 
 	private void configureImporter() throws Exception {
-		importer = new XMLImporter(persistenceService, businessLogic);
+		importer = new XMLImporter(persistenceService, businessLogic, serverAnalytics);
 		ReflectionTestUtils.set(importer, "ontrackXML", ontrackXML);
 	}
 

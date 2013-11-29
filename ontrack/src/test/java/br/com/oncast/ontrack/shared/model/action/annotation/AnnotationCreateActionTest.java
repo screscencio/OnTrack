@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.XMLWriter;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -174,7 +175,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	private void readXml(final File file, final PersistenceService persistenceService) throws NoResultFoundException, PersistenceException, Exception {
 		when(persistenceService.retrieveUserById(UserTestUtils.getAdmin().getId())).thenReturn(UserTestUtils.getAdmin());
 		final BusinessLogic businessLogic = mock(BusinessLogic.class);
-		final XMLImporter importer = new XMLImporter(persistenceService, businessLogic);
+		final XMLImporter importer = new XMLImporter(persistenceService, businessLogic, mock(ServerAnalytics.class));
 		importer.loadXML(file).persistObjects();
 	}
 

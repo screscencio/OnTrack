@@ -83,7 +83,7 @@ public class ServerServiceProvider {
 		}
 	}
 
-	ServerAnalytics getServerAnalytics() {
+	public ServerAnalytics getServerAnalytics() {
 		if (analytics != null) return analytics;
 		synchronized (this) {
 			return analytics == null ? analytics = new GoogleAnalyticsServerAnalytics() : analytics;
@@ -127,7 +127,7 @@ public class ServerServiceProvider {
 		if (xmlImporter != null) return xmlImporter;
 		synchronized (this) {
 			if (xmlImporter != null) return xmlImporter;
-			return xmlImporter = new XMLImporterService(getPersistenceService(), getBusinessLogic());
+			return xmlImporter = new XMLImporterService(getPersistenceService(), getBusinessLogic(), getServerAnalytics());
 		}
 	}
 

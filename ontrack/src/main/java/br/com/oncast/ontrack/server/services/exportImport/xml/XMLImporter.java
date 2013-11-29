@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Proje
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.exceptions.UnableToImportXMLException;
 import br.com.oncast.ontrack.server.services.exportImport.xml.transform.CustomMatcher;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -30,10 +31,12 @@ public class XMLImporter {
 	private static final Logger LOGGER = Logger.getLogger(XMLImporter.class);
 	private final BusinessLogic businessLogic;
 	private boolean persisted;
+	private final ServerAnalytics serverAnalytics;
 
-	public XMLImporter(final PersistenceService persistenceService, final BusinessLogic businessLogic) {
+	public XMLImporter(final PersistenceService persistenceService, final BusinessLogic businessLogic, final ServerAnalytics serverAnalytics) {
 		this.persistenceService = persistenceService;
 		this.businessLogic = businessLogic;
+		this.serverAnalytics = serverAnalytics;
 		this.persisted = false;
 	}
 
@@ -45,6 +48,7 @@ public class XMLImporter {
 			ontrackXML = serializer.read(OntrackXML.class, file);
 			persisted = false;
 			LOGGER.debug("Finished XML Serialization in " + getTimeSpent(initialTime) + " ms");
+			serverAnalytics.onImportXmlLoad(file.length(), getTimeSpent(initialTime));
 		} catch (final Exception e) {
 			throw new UnableToImportXMLException("Unable to deserialize xml file.", e);
 		}
@@ -72,6 +76,7 @@ public class XMLImporter {
 		for (final Notification notification : notifications) {
 			persistenceService.persistOrUpdateNotification(notification);
 		}
+		serverAnalytics.onNotificationsImported(notifications.size(), getTimeSpent(initialTime));
 		LOGGER.debug("Persisted " + notifications.size() + " notifications in " + getTimeSpent(initialTime) + " ms.");
 	}
 
@@ -86,6 +91,7 @@ public class XMLImporter {
 			newUsersCount++;
 		}
 		LOGGER.debug("Persisted " + newUsersCount + " new users in " + getTimeSpent(initialTime) + " ms.");
+		serverAnalytics.onUsersImported(newUsersCount, getTimeSpent(initialTime));
 	}
 
 	private void persistProjects(final List<ProjectXMLNode> projectNodes) throws PersistenceException {
@@ -100,6 +106,7 @@ public class XMLImporter {
 			}
 			persistActions(actions);
 			LOGGER.info("Persisted project " + representation + " and it's " + actions.size() + " actions in " + getTimeSpent(initialTime) + " ms.");
+			serverAnalytics.onProjectPersisted(representation, actions.size(), getTimeSpent(initialTime));
 		}
 		LOGGER.debug("Persisted " + projectNodes.size() + " projects in " + getTimeSpent(startTime) + " ms");
 	}
@@ -114,6 +121,7 @@ public class XMLImporter {
 			persistenceService.authorize(authNode.getUserId(), authNode.getProjectId());
 		}
 		LOGGER.debug("Persisted " + projectAuthorizationNodes.size() + " ProjectAuthorizations in " + getTimeSpent(initialTime) + " ms.");
+		serverAnalytics.onProjectAuthorizationsImported(projectAuthorizationNodes.size(), getTimeSpent(initialTime));
 
 	}
 
@@ -127,9 +135,11 @@ public class XMLImporter {
 			try {
 				businessLogic.loadProjectForMigration(representation.getId());
 				LOGGER.info("Loaded project " + representation + " in " + getTimeSpent(initialTime) + " ms.");
+				serverAnalytics.onProjectLoadedForMigration(representation, node.getActions().size(), getTimeSpent(initialTime));
 			} catch (final Exception e) {
 				final String message = "Unable to load project '" + representation + "' after import.";
 				LOGGER.error(message, e);
+				serverAnalytics.onProjectLoadForMigrationError(representation, e);
 				throw new UnableToImportXMLException("The xml import was not concluded. Some operations may be changed the database, but was not rolled back. Reason: " + message, e);
 			}
 		}
