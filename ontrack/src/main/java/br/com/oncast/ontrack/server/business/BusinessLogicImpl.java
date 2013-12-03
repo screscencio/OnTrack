@@ -122,6 +122,7 @@ class BusinessLogicImpl implements BusinessLogic {
 				LOGGER.debug("Handling incoming actions " + PrettyPrinter.getSimpleNamesForUserAction(actionList) + " from user " + authenticatedUser);
 
 				final ProjectContext context = new ProjectContext(loadProject(projectId).getProject());
+				LOGGER.debug("Loaded ProjectContext for project " + projectId);
 
 				validateIncomingActions(actionList, context);
 				lastApplyedActionId = persistenceService.persistActions(actionList);
@@ -152,22 +153,21 @@ class BusinessLogicImpl implements BusinessLogic {
 	// TODO Re-think validation strategy as loading the project every time may be a performance bottleneck.
 	@PostProcessActions
 	private void validateIncomingActions(final List<UserAction> actionList, final ProjectContext context) throws UnableToHandleActionException {
-		try {
-			for (final UserAction action : actionList) {
-				try {
-					ActionExecuter.verifyPermissions(action, context);
-					ActionExecuter.executeAction(context, action);
-					action.setReceiptTimestamp(new Date());
-					analytics.onActionExecuted(action);
-				} catch (final UnableToCompleteActionException e) {
-					analytics.onActionConflicted(action);
-					throw e;
-				}
+		for (final UserAction action : actionList) {
+			try {
+				ActionExecuter.verifyPermissions(action, context);
+				LOGGER.debug("Verified permissions to execute action " + PrettyPrinter.getSimpleNameForUserAction(action));
+				ActionExecuter.executeAction(context, action);
+				LOGGER.debug("Validated the action " + PrettyPrinter.getSimpleNameForUserAction(action));
+				action.setReceiptTimestamp(new Date());
+				LOGGER.debug("Updated ReceiptTimestamp po action " + PrettyPrinter.getSimpleNameForUserAction(action));
+				analytics.onActionExecuted(action);
+			} catch (final UnableToCompleteActionException e) {
+				analytics.onActionConflicted(action);
+				final String errorMessage = "Unable to process action. The incoming action is invalid.";
+				LOGGER.error(errorMessage, e);
+				throw new InvalidIncomingAction(errorMessage);
 			}
-		} catch (final UnableToCompleteActionException e) {
-			final String errorMessage = "Unable to process action. The incoming action is invalid.";
-			LOGGER.error(errorMessage, e);
-			throw new InvalidIncomingAction(errorMessage);
 		}
 	}
 

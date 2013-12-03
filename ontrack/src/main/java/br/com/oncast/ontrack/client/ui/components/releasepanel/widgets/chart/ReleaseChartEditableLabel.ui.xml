@@ -14,7 +14,7 @@
 	.valueEdit {
 		position: absolute;
 		top: -3px;
-		left: 140px;
+		right: 0px;
 		width: 60px;
 		bottom: -4px;
 	}

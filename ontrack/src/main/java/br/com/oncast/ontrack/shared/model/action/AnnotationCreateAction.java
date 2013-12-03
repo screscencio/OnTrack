@@ -106,4 +106,8 @@ public class AnnotationCreateAction implements AnnotationAction {
 		return annotationId;
 	}
 
+	public AnnotationType getAnnotationType() {
+		return AnnotationType.valueOf(annotationType);
+	}
+
 }

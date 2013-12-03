@@ -91,11 +91,11 @@ public class ReleaseChartPopup extends Composite implements HasCloseHandlers<Rel
 
 	@UiHandler("clickableChartPanel")
 	protected void onKeyDown(final KeyDownEvent e) {
+		e.stopPropagation();
 		if (!(e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE)) return;
 
 		hide();
 		e.preventDefault();
-		e.stopPropagation();
 	}
 
 	@UiHandler("closeIcon")

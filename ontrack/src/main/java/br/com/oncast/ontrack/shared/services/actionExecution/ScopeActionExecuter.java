@@ -43,7 +43,8 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 		final Scope scope = getInferenceBaseScope(context, action.getModelAction());
 
 		final ModelAction reverseAction = action.execute(context);
-		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action, scope, ActionHelper.findActionAuthor(context, action), action.getExecutionTimestamp());
+		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action.getModelAction(), scope, ActionHelper.findActionAuthor(context, action),
+				action.getExecutionTimestamp());
 
 		return new ActionExecutionContext(action, reverseAction, inferenceInfluencedScopeSet);
 	}

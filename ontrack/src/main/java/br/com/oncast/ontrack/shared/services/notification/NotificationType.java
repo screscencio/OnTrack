@@ -11,17 +11,13 @@ public enum NotificationType implements NotificationMessageCode {
 	IMPEDIMENT_CREATED() {
 		@Override
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-			return messages.impedimentCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification),
-					notification.getReferenceDescription(),
-					getProjectLinkFor(messages, notification));
+			return messages.impedimentCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
 		}
 	},
 	IMPEDIMENT_SOLVED() {
 		@Override
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-			return messages.impedimentSolvedNotificationWidgetMessage(getAnnotationLinkFor(notification),
-					notification.getReferenceDescription(),
-					getProjectLinkFor(messages, notification));
+			return messages.impedimentSolvedNotificationWidgetMessage(getAnnotationLinkFor(notification), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
 		}
 	},
 	PROGRESS_DECLARED() {
@@ -40,17 +36,13 @@ public enum NotificationType implements NotificationMessageCode {
 	ANNOTATION_CREATED() {
 		@Override
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-			return messages.annotationCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification),
-					notification.getReferenceDescription(),
-					getProjectLinkFor(messages, notification));
+			return messages.annotationCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
 		}
 	},
 	ANNOTATION_DEPRECATED() {
 		@Override
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-			return messages.annotationDeprecatedNotificationWidgetMessage(getAnnotationLinkFor(notification),
-					notification.getReferenceDescription(),
-					getProjectLinkFor(messages, notification));
+			return messages.annotationDeprecatedNotificationWidgetMessage(getAnnotationLinkFor(notification), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
 		}
 	},
 	TEAM_INVITED {
@@ -71,11 +63,9 @@ public enum NotificationType implements NotificationMessageCode {
 
 	private static String getProjectLinkFor(final NotificationWidgetMessages messages, final Notification notification) {
 		try {
-			final ProjectRepresentation project = ClientServices.get().projectRepresentationProvider()
-					.getProjectRepresentation(notification.getProjectId());
+			final ProjectRepresentation project = ClientServices.get().projectRepresentationProvider().getProjectRepresentation(notification.getProjectId());
 			return LinkFactory.getLinkForProject(project).asString();
-		}
-		catch (final RuntimeException e) {
+		} catch (final RuntimeException e) {
 			return messages.unavailableProject();
 		}
 

@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.TeamRevogueInvitationAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -65,29 +66,18 @@ public class NotificationFactory {
 		IMPEDIMENT_CREATION(ImpedimentCreateAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
-
-				final String referenceDescription = getReferenceDescription(action, projectContext);
-				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((ImpedimentCreateAction) action).getAnnotationId());
-
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.IMPEDIMENT_CREATED).setDescription(annotation.getMessage())
-						.setReferenceDescription(referenceDescription);
+				return createAnnotationNotificationBuilder(action, projectContext, authorId, ((ImpedimentCreateAction) action).getAnnotationId(), NotificationType.IMPEDIMENT_CREATED);
 			}
 		},
 		IMPEDIMENT_COMPLETITION(ImpedimentSolveAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
-
-				final String referenceDescription = getReferenceDescription(action, projectContext);
-				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((ImpedimentSolveAction) action).getAnnotationId());
-
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.IMPEDIMENT_SOLVED).setDescription(annotation.getMessage())
-						.setReferenceDescription(referenceDescription);
+				return createAnnotationNotificationBuilder(action, projectContext, authorId, ((ImpedimentSolveAction) action).getAnnotationId(), NotificationType.IMPEDIMENT_SOLVED);
 			}
 		},
 		PROGRESS_DECLARED(ScopeDeclareProgressAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
-
 				final Scope scope = getScopeById(action, projectContext);
 				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.PROGRESS_DECLARED).setReferenceDescription(scope.getDescription())
 						.setDescription(scope.getProgress().getDescription());
@@ -96,29 +86,30 @@ public class NotificationFactory {
 		ANNOTATION_CREATED(AnnotationCreateAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
-				String referenceDescription = "";
-				try {
-					referenceDescription = getReferenceDescription(action, projectContext);
-				} catch (final RuntimeException e) {
-					return null;
-				}
-				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((AnnotationCreateAction) action).getAnnotationId());
-
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.ANNOTATION_CREATED).setDescription(annotation.getMessage())
-						.setReferenceDescription(referenceDescription);
+				final AnnotationCreateAction annotationAction = (AnnotationCreateAction) action;
+				final NotificationType notificationType = annotationAction.getAnnotationType() == AnnotationType.SIMPLE ? NotificationType.ANNOTATION_CREATED : NotificationType.IMPEDIMENT_CREATED;
+				return createAnnotationNotificationBuilder(action, projectContext, authorId, annotationAction.getAnnotationId(), notificationType);
 			}
 		},
 		ANNOTATION_DEPRECATED(AnnotationDeprecateAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
-
-				final String referenceDescription = getReferenceDescription(action, projectContext);
-				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((AnnotationDeprecateAction) action).getAnnotationId());
-
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.ANNOTATION_DEPRECATED).setDescription(annotation.getMessage())
-						.setReferenceDescription(referenceDescription);
+				return createAnnotationNotificationBuilder(action, projectContext, authorId, ((AnnotationDeprecateAction) action).getAnnotationId(), NotificationType.ANNOTATION_DEPRECATED);
 			}
 		};
+
+		private static NotificationBuilder createAnnotationNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId, final UUID annotationId,
+				final NotificationType type) {
+			String referenceDescription = "";
+			try {
+				referenceDescription = getReferenceDescription(action, projectContext);
+			} catch (final RuntimeException e) {
+				return null;
+			}
+			final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), annotationId);
+
+			return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, type).setDescription(annotation.getMessage()).setReferenceDescription(referenceDescription);
+		}
 
 		private static NotificationBuilder initializeBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation, final UUID authorId, final NotificationType type) {
 

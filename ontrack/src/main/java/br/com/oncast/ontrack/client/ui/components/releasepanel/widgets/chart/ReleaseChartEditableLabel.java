@@ -128,8 +128,7 @@ public class ReleaseChartEditableLabel extends Composite implements HasValue<Flo
 		try {
 			setValue(Float.valueOf(valueEdit.getText()));
 			hideEdit();
-		}
-		catch (final NumberFormatException exception) {}
+		} catch (final NumberFormatException exception) {}
 	}
 
 	public void hideEdit() {

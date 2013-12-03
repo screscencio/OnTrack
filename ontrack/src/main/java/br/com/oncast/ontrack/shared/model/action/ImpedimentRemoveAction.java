@@ -58,4 +58,8 @@ public class ImpedimentRemoveAction implements ImpedimentAction {
 		return subjectId;
 	}
 
+	public UUID getAnnotationId() {
+		return annotationId;
+	}
+
 }

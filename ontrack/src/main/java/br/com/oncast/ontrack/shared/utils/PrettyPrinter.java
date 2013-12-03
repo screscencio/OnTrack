@@ -18,6 +18,10 @@ public class PrettyPrinter {
 		return clazz.getName().replaceAll(".*\\.", "");
 	}
 
+	public static String getSimpleNameForUserAction(final UserAction action) {
+		return getSimpleName(action.getModelAction());
+	}
+
 	public static <T> String getSimpleNamesListString(final Collection<T> collection) {
 		return mountListString(collection, new StringGetter<T>() {
 			@Override
