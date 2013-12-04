@@ -21,7 +21,7 @@ public class ModelActionSyncRequest implements DispatchRequest<ModelActionSyncRe
 
 	public ModelActionSyncRequest(final UUID projectId, final List<UserAction> actionList) {
 		this.projectId = projectId;
-		this.actionList = actionList;
+		this.actionList = new ArrayList<UserAction>(actionList);
 	}
 
 	public ModelActionSyncRequest(final UserAction action) {
@@ -36,7 +36,7 @@ public class ModelActionSyncRequest implements DispatchRequest<ModelActionSyncRe
 	}
 
 	public List<UserAction> getActionList() {
-		return actionList;
+		return new ArrayList<UserAction>(actionList);
 	}
 
 	public boolean shouldReturnToSender() {

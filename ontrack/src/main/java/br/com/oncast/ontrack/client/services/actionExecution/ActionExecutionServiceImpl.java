@@ -51,7 +51,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 			public void onActionExecution(final ActionExecutionContext execution, final ProjectContext context, final boolean isClientAction) {
 
 				notifyActionExecutionListeners(execution, context, isClientAction);
-				if (!isClientAction || !(execution.getUserAction() instanceof ShowsUndoAlertAfterActionExecution)) return;
+				if (!isClientAction || !(execution.getModelAction() instanceof ShowsUndoAlertAfterActionExecution)) return;
 
 				hideAlert();
 

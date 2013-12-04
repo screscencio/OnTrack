@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
+
 import java.lang.reflect.Method;
 
 import org.dom4j.Document;
@@ -8,13 +10,15 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import static org.mockito.Mockito.mock;
+
 public class MigrationExecuterTest {
 
 	private static final String MIGRATIONS_PACKAGE_NAME = "br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations";
 
 	@Test
 	public void theVersionAttributeValueOfRootElementShouldBeTheDocumentVersion() throws Exception {
-		final MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
+		final MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME, mock(ServerAnalytics.class));
 		final Document document = DocumentHelper.parseText("<root version=\"2011_10_10\"></root>");
 		assertEquals("2011_10_10", getVersionFrom(executer, document));
 	}
@@ -22,7 +26,7 @@ public class MigrationExecuterTest {
 	@Test
 	public void shouldExecuteCorrectMigrations() throws Exception {
 		final Document document = DocumentHelper.parseText("<root version=\"2011_10_01\"></root>");
-		final MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
+		final MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME, mock(ServerAnalytics.class));
 		executer.executeMigrations(document);
 
 		assertEquals(0, document.selectNodes("root/Migration_2011_10_01").size());

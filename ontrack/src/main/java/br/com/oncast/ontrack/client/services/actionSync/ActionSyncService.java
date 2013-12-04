@@ -122,7 +122,6 @@ public class ActionSyncService implements ActionExecutionListener, ConnectionLis
 			try {
 				actionExecutionService.onNonUserActionRequest(entry.getUserAction());
 			} catch (final UnableToCompleteActionException e) {
-				e.printStackTrace();
 				metrics.onActionConflict(entry.getUserAction(), e);
 				syncList.clear();
 				showError(messages.someChangesConflicted());

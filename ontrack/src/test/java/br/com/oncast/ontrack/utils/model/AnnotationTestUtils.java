@@ -42,7 +42,7 @@ public class AnnotationTestUtils {
 		public AnnotationBuilder() throws Exception {
 			this.id = new UUID();
 			this.author = UserRepresentationTestUtils.createUser();
-			this.date = new Date();
+			this.date = new Date(0);
 			this.message = "Message of annotation '" + id + "'.";
 			this.type = AnnotationType.SIMPLE;
 			this.deprecationState = DeprecationState.VALID;
@@ -55,7 +55,7 @@ public class AnnotationTestUtils {
 
 		public Annotation generate() {
 			final Annotation annotation = new Annotation(id, author, date, message, type);
-			annotation.setDeprecation(deprecationState, UserRepresentationTestUtils.getAdmin(), new Date(Long.MAX_VALUE));
+			annotation.setDeprecation(deprecationState, UserRepresentationTestUtils.getAdmin(), date);
 			return annotation;
 		}
 

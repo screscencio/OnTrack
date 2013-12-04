@@ -228,4 +228,16 @@ public class ModelStateManagerTest {
 		assertNull(manager.getFirstOccurenceOf(overridedStateValue));
 	}
 
+	@Test
+	public void lastOccurenceOfStateShouldIgnoreStatesWithSameValue() throws Exception {
+		final String stateValue = "state";
+
+		final Date firstLastOccurence = new Date(2000);
+		manager.setState(ModelState.create(stateValue, initialAuthor, firstLastOccurence));
+		manager.setState(ModelState.create(stateValue, initialAuthor, new Date(3000)));
+		manager.setState(ModelState.create(stateValue, initialAuthor, new Date(4000)));
+
+		assertEquals(firstLastOccurence, manager.getLastOccurenceOf(stateValue).getTimestamp());
+	}
+
 }

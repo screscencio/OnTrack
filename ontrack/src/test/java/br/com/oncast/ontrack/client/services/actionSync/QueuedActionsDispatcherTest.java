@@ -12,9 +12,12 @@ import br.com.oncast.ontrack.client.services.metrics.TimeTrackingEvent;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.shared.metrics.MetricsCategories;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.UserAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+
+import java.util.ArrayList;
 
 import junit.framework.Assert;
 
@@ -26,6 +29,8 @@ import org.mockito.MockitoAnnotations;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
+
+import static org.junit.Assert.assertEquals;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -153,6 +158,31 @@ public class QueuedActionsDispatcherTest extends GwtTest {
 		callbackHolder.getValue().onSuccess(null);
 
 		Assert.assertEquals("The second action sync request should have all the remaining actions.", 10, request.getValue().getActionList().size());
+	}
+
+	@Test
+	public void shouldNotAddDuplicatedActionsToDispatchQueue() throws Exception {
+		final UserAction action = UserActionTestUtils.create(new ScopeUpdateAction(new UUID(), ""));
+
+		final ValueHolder<DispatchCallback<VoidResult>> callbackHolder = actionSyncServiceTestUtils.new ValueHolder<DispatchCallback<VoidResult>>(null);
+		final ArrayList<ModelActionSyncRequest> requests = new ArrayList<ModelActionSyncRequest>();
+		requestDispatchServiceMock.registerDispatchListener(new DispatchListener() {
+			@Override
+			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
+				requests.add(modelActionSyncRequest);
+				callbackHolder.setValue(callback);
+			}
+		});
+
+		for (int i = 0; i < 10; i++) {
+			actionQueuedDispatcher.dispatch(action);
+		}
+		callbackHolder.getValue().onSuccess(null);
+		int sentActionsCount = 0;
+		for (final ModelActionSyncRequest request : requests) {
+			sentActionsCount += request.getActionList().size();
+		}
+		assertEquals(1, sentActionsCount);
 	}
 
 	private void dispatch() {

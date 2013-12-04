@@ -93,11 +93,13 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 	}
 
 	public ModelState<T> getLastOccurenceOf(final T stateValue) {
+		ModelState<T> lastOccurence = null;
 		for (int i = statesList.size() - 1; i >= 0; i--) {
 			final ModelState<T> state = statesList.get(i);
-			if (hasValue(state, stateValue)) return state;
+			if (hasValue(state, stateValue)) lastOccurence = state;
+			else if (lastOccurence != null) return lastOccurence;
 		}
-		return null;
+		return lastOccurence;
 	}
 
 	public ModelState<T> getInitialState() {

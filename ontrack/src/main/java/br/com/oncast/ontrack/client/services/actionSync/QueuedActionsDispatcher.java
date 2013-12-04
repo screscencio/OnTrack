@@ -61,7 +61,7 @@ public class QueuedActionsDispatcher {
 	}
 
 	public void dispatch(final UserAction action) {
-		waitingToBeDispatched.add(action);
+		if (!waitingForAcknowledgement.contains(action) && !waitingToBeDispatched.contains(action)) waitingToBeDispatched.add(action);
 		tryExchange();
 	}
 

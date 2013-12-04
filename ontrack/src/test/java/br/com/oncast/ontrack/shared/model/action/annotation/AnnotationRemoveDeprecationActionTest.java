@@ -39,7 +39,7 @@ public class AnnotationRemoveDeprecationActionTest extends ModelActionTest {
 	public void setUp() throws Exception {
 		subjectId = new UUID();
 		annotation = AnnotationTestUtils.create();
-		deprecationTimestamp = new Date();
+		deprecationTimestamp = new Date(0);
 		deprecationAuthor = UserRepresentationTestUtils.createUser();
 		annotation.setDeprecation(DeprecationState.DEPRECATED, deprecationAuthor, deprecationTimestamp);
 

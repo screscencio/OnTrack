@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
+import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 
 import java.util.Date;
 
@@ -11,8 +11,10 @@ import org.dom4j.Document;
 public class MigrationExecuter {
 
 	private final MigrationVersionController migrationVersionController;
+	private final ServerAnalytics serverAnalytics;
 
-	public MigrationExecuter(final String migrationPackageName) {
+	public MigrationExecuter(final String migrationPackageName, final ServerAnalytics serverAnalytics) {
+		this.serverAnalytics = serverAnalytics;
 		migrationVersionController = new MigrationVersionController(migrationPackageName);
 	}
 
@@ -25,7 +27,7 @@ public class MigrationExecuter {
 			destinationVersion = migration.getVersion();
 		}
 		final long time = new Date().getTime() - initialTimestamp;
-		ServerServiceProvider.getInstance().getServerAnalytics().onMigrationExecution(version, destinationVersion, time);
+		serverAnalytics.onMigrationExecution(version, destinationVersion, time);
 	}
 
 	private String getVersionFrom(final Document document) {

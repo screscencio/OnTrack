@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.exportImport.xml.MigrationExecuter;
 import br.com.oncast.ontrack.server.services.exportImport.xml.MigrationVersionController;
 
@@ -14,7 +15,7 @@ public class OntrackMigrationManager {
 	}
 
 	public static void applyMigrationsOn(final Document document) throws Exception {
-		new MigrationExecuter(MIGRATIONS_PACKAGE).executeMigrations(document);
+		new MigrationExecuter(MIGRATIONS_PACKAGE, ServerServiceProvider.getInstance().getServerAnalytics()).executeMigrations(document);
 	}
 
 }

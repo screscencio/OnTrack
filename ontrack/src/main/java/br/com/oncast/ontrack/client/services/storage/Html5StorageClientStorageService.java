@@ -233,10 +233,10 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		return bean.as();
 	}
 
-	private void storeUserActions(final String key, final List<UserAction> pendingActions) {
+	private void storeUserActions(final UUID projectId, final String key, final List<UserAction> pendingActions) {
 		if (gwtStorage == null || !authenticationService.isUserAvailable()) return;
 
-		final String keyName = getUserProjectStorageKey(key);
+		final String keyName = getUserStorageKeyForProject(projectId, key);
 		final StorageKey<ArrayList<UserAction>> storageKey = StorageKeyFactory.objectKey(keyName);
 		try {
 			gwtStorage.put(storageKey, new ArrayList<UserAction>(pendingActions));
@@ -247,10 +247,14 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		}
 	}
 
-	private <T> void storeModelActions(final String key, final List<T> actions) {
+	private String getUserStorageKeyForProject(final UUID projectId, final String key) {
+		return getApplicationKey(authenticationService.getCurrentUserId() + SEPARATOR + projectId + SEPARATOR + key);
+	}
+
+	private <T> void storeModelActions(final UUID projectId, final String key, final List<T> actions) {
 		if (gwtStorage == null || !authenticationService.isUserAvailable()) return;
 
-		final String keyName = getUserProjectStorageKey(key);
+		final String keyName = getUserStorageKeyForProject(projectId, key);
 		final StorageKey<ArrayList<T>> storageKey = StorageKeyFactory.objectKey(keyName);
 		try {
 			gwtStorage.put(storageKey, new ArrayList<T>(actions));
@@ -282,7 +286,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	}
 
 	@Override
-	public List<ActionExecutionContext> loadPendingActionExecutionContexts(UUID projectId) {
+	public List<ActionExecutionContext> loadPendingActionExecutionContexts(final UUID projectId) {
 		final ArrayList<ActionExecutionContext> entries = new ArrayList<ActionExecutionContext>();
 		final List<UserAction> actions = loadUserActions(ClientStorageKeyNames.PENDING_ACTIONS);
 		final List<ModelAction> reverseActions = loadList(ClientStorageKeyNames.PENDING_REVERSE_ACTIONS);
@@ -295,7 +299,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	}
 
 	@Override
-	public void storePendingActionExecutionContexts(UUID projectId, final List<ActionExecutionContext> entries) {
+	public void storePendingActionExecutionContexts(final UUID projectId, final List<ActionExecutionContext> entries) {
 		if (gwtStorage == null || !authenticationService.isUserAvailable()) return;
 
 		final ArrayList<UserAction> actions = new ArrayList<UserAction>();
@@ -304,8 +308,8 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 			actions.add(actionSyncEntry.getUserAction());
 			reverseActions.add(actionSyncEntry.getReverseModelAction());
 		}
-		storeUserActions(ClientStorageKeyNames.PENDING_ACTIONS, actions);
-		storeModelActions(ClientStorageKeyNames.PENDING_REVERSE_ACTIONS, reverseActions);
+		storeUserActions(projectId, ClientStorageKeyNames.PENDING_ACTIONS, actions);
+		storeModelActions(projectId, ClientStorageKeyNames.PENDING_REVERSE_ACTIONS, reverseActions);
 
 		return;
 	}
