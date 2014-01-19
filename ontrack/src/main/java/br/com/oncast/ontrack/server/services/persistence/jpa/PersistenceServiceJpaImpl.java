@@ -48,7 +48,7 @@ import org.hibernate.collection.PersistentBag;
 @SuppressWarnings("rawtypes")
 public class PersistenceServiceJpaImpl implements PersistenceService {
 
-	private static final int LATEST_NOTIFICATION_MAX_RESULTS = 1000;
+	private static final int LATEST_NOTIFICATION_MAX_RESULTS = 100;
 	private final static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ontrackPU");
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 	private final static ObjectCache<UUID, ProjectSnapshot> SNAPSHOT_CACHE = new ObjectCache<UUID, ProjectSnapshot>();
@@ -604,6 +604,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final Query queryNotification = em.createQuery("SELECT n FROM " + NotificationEntity.class.getSimpleName() + " n WHERE n.timestamp > :initialdate ORDER BY n.timestamp DESC");
 			queryNotification.setParameter("initialdate", initialDate);
+			queryNotification.setMaxResults(LATEST_NOTIFICATION_MAX_RESULTS);
 			final List<NotificationEntity> resultList = queryNotification.getResultList();
 
 			return (List<Notification>) TYPE_CONVERTER.convert(resultList);
