@@ -1,7 +1,6 @@
 import os, sys, getopt, re
 from time import gmtime, strftime, time
 
-MAX_NUMBER_OF_PROJECTS = 50
 baseUrl = 'localhost:8888'
 useHttps = False
 user = "admin@ontrack.com"
@@ -23,7 +22,7 @@ def executeCommand(command) :
 def download(projectId) :
 	xmlPath = getXmlPath(projectId)
 	print "[DOWNLOADING]", xmlPath 
-	executeCommand('curl --basic%s -u %s:%s %s/application/xml/download?projectId=%s > %s' % (ssl3, user, password, protocol, projectId, xmlPath))
+	executeCommand('curl --max-time 1800%s -u %s:%s %s/application/xml/download?projectId=%s > %s' % (ssl3, user, password, protocol, projectId, xmlPath))
 	xml = open(xmlPath)
 	xmlContent = xml.read()
 	if (not xmlContent.endswith("</ontrackXML>")) :

@@ -70,16 +70,21 @@ class Project :
 
 	def addUser(self, user) :
 		if user not in self.users :
-			self.users[user] = None
+			self.users[user] = [None, None]
 
 	def updateUserInvitationTimestamp(self, user, timestamp) :
-		if user in self.users and not self.users[user]:
-			self.users[user] = timestamp
+		if user in self.users and not self.users[user][0]:
+			self.users[user][0] = timestamp
+
+	def updateUserLastActionTimestamp(self, user, timestamp) :
+		if user in self.users :
+			self.users[user][1] = timestamp		
 
 	def getFirstUser(self) :
 		firstUser = None
 		firstTimestamp = datetime.utcnow()
-		for user, timestamp in self.users.items() :
+		for user, timestamps in self.users.items() :
+			timestamp = timestamps[0]
 			if timestamp and firstTimestamp > timestamp :
 				firstTimestamp = timestamp
 				firstUser = user
@@ -95,12 +100,18 @@ class Project :
 		ind = indentation + INDENTATION
 		printl( "%s%s" % (indentation, self.name) )
 		printl( "%sID: %s" % (ind, self.id) )
-		printl( "%sCreated by %s%s" % (ind, self.creator.email, formatTime(self.creationTimestamp)) )
+		printl( "%sCreated by %s%s" % (ind, self.creator.email if self.creator else "UNKNOWN", formatTime(self.creationTimestamp)) )
 		printl( "%sLast update%s" % (ind, formatTime(self.lastActionTimestamp)) )
 		printl( "%sTotal of %d users" % (ind, len(self.users)) )
-		printl( "%sProbable company: %s" % (ind, data.getCompany(self.getFirstUser().email).domain))
+		printl( "%sProbable company: %s" % (ind, data.getCompany(self.getFirstUser().email).domain if self.getFirstUser() else "UNKNOWN"))
 		printl( "%sMain users" % ind )
-		self.creator.printForProject(self, ind + INDENTATION)
+		if self.creator :
+			self.creator.printForProject(self, ind + INDENTATION)
+		else :
+			printl(ind + INDENTATION + "Project creator not found, sorry")
+		printl( "%sUsers" % ind )
+		for user, timestamps in self.users.items() :
+			printl(ind + INDENTATION + user.email + formatTime(timestamps[0]) + formatTime(timestamps[1], " [No Interaction]"))
 
 class User :
 	
@@ -242,14 +253,11 @@ def createUserMap(root):
 def toDatetime(dateStr) :
 	return datetime.strptime(dateStr, '%Y-%m-%d %H:%M:%S.%f %Z')
 
-def formatTime(d) :
+def formatTime(d, emptyStr='') :
 	if not d :
-		return ''
-
-	diff = datetime.utcnow() - d
-	differenceInMonths = diff.days / 30
-	differenceStr = "%i months ago" % differenceInMonths if differenceInMonths > 1 else d.strftime('%Y-%m-%d')
-	return " [%s]" % differenceStr
+		return emptyStr
+		
+	return " [%s]" % d.strftime('%Y-%m-%d')
 
 def processTeamInvite(project, action, user, timestamp) :
 	invitedUserId = action.find('userId').get('id')
@@ -267,7 +275,7 @@ def handleUserActions(root) :
 		project = data.getProject(representation.find('id').get('id'), representation.get('name'))
 
 		for userAction in root.iter('userAction') :
-			timestamp = toDatetime(userAction.get('timestamp'))
+			timestamp = toDatetime(userAction.get('executionTimestamp'))
 			project.setLastActionTimestamp(timestamp)
 
 			userId = userAction.find('userId').get('id')
@@ -278,6 +286,8 @@ def handleUserActions(root) :
 			actionClass = action.get('class')
 			if 'TeamInviteAction' in actionClass :
 				processTeamInvite(project, action, user, timestamp)
+			else :
+				project.updateUserLastActionTimestamp(user, timestamp)
 
 def updateUserAuthorizations(root) :
 	for representation in root.iter('projectRepresentation') :

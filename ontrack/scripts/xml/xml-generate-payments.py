@@ -103,6 +103,8 @@ class Project :
 			self.creationTimestamp = timestamp
 
 	def setLastActionTimestamp(self, timestamp) :
+		if not timestamp :
+			return
 		if not self.lastActionTimestamp or self.lastActionTimestamp < timestamp :
 			self.lastActionTimestamp = timestamp
 
@@ -298,7 +300,7 @@ class OnTrackData :
 		ind = indentation + INDENTATION
 		total = 0.0
 		for company, payingUsers in payingUsersByCompany.items() :
-			if company.domain in IGNORED_DOMAINS or company.lastActionTimestamp < billingStartDate :
+			if company.domain in IGNORED_DOMAINS or company.lastActionTimestamp is None :
 				continue
 			payingUsersCount = len(payingUsers)
 			price = payingUsersCount * PRICE_PER_USER
@@ -307,6 +309,30 @@ class OnTrackData :
 			for user in payingUsers :
 				printl(ind + INDENTATION + user.email)
 		printl( "%sTotal: R$ %.2f" % (indentation, total) )
+
+	def printMigrationToBilling(self, indentation = '') :
+		printl( indentation + "Billing Migration:")
+		projectsByCompany = {}
+		for project in self.projects.values() :
+			if project.getFirstUser() is None :
+				continue
+			company = self.getCompany(project.getFirstUser().email)
+			company.setLastActionTimestamp(project.lastActionTimestamp)
+			if company not in projectsByCompany :
+				projectsByCompany[company] = []
+			projectsByCompany[company].append(project)
+		ind = indentation + INDENTATION
+		for company, projects in projectsByCompany.items() :
+			if company.domain in IGNORED_DOMAINS or company.lastActionTimestamp is None :
+				continue
+			printl( "%s%s%s" % (ind, company.domain, formatTime(company.lastActionTimestamp)) )
+			for project in projects :
+				printl(ind + INDENTATION + project.name + ' [' + project.id + ']')
+				memberInd = ind + INDENTATION + INDENTATION
+				for user, membership in project.users.items() :
+					if membership.remotionTimestamp is not None and membership.remotionTimestamp > membership.invitationTimestamp :
+						continue
+					printl( '%s%s[%s] %s%s' % (memberInd, user.email, user.id, membership.profile, formatTime(user.creationTimestamp)) )
 
 
 def extractDomainFromEmail(email) :
@@ -331,14 +357,11 @@ def createUserMap(root):
 def toDatetime(dateStr) :
 	return datetime.strptime(dateStr, '%Y-%m-%d %H:%M:%S.%f %Z')
 
+
 def formatTime(d, emptyStr='') :
 	if not d :
 		return emptyStr
-
-	diff = datetime.utcnow() - d
-	differenceInMonths = diff.days / 30
-	differenceStr = "%i months ago" % differenceInMonths if differenceInMonths > 1 else d.strftime('%Y-%m-%d')
-	return " [%s]" % differenceStr
+	return " [%s]" % d.strftime('%Y-%m-%d')
 
 def processTeamInvite(project, action, user, timestamp) :
 	invitedUserId = action.find('userId').get('id')
@@ -382,7 +405,7 @@ def handleUserActions(root) :
 		project = data.getProject(representation.find('id').get('id'), representation.get('name'))
 
 		for userAction in root.iter('userAction') :
-			timestamp = toDatetime(userAction.get('timestamp'))
+			timestamp = toDatetime(userAction.get('executionTimestamp'))
 			project.setLastActionTimestamp(timestamp)
 
 			userId = userAction.find('userId').get('id')
@@ -450,6 +473,7 @@ def main():
 		execute(arg[0])
 		#data.printReport()
 		data.printPayment()
+		data.printMigrationToBilling()
 		outFile.close()
 		print "[INFO] Finished in %s" % str(datetime.now() - initialTime)
 		sys.exit()
