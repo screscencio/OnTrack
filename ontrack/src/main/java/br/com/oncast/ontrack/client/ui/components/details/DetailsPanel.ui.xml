@@ -202,7 +202,7 @@
 								</div>
 							</div>
 						</td>
-						<td width="253px" style="vertical-align: top;">
+						<td width="253px" style="vertical-align: top;" height="100%">
 							<div class="{style.rightPanel}" >
 								<aw:SubjectDetailWidget ui:field="subjectDetails" />
 								<div class="{style.categoryContainer}">
