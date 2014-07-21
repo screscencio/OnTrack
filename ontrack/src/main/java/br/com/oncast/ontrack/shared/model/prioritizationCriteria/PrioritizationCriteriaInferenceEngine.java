@@ -60,6 +60,7 @@ public abstract class PrioritizationCriteriaInferenceEngine implements Inference
 		final float inferedFinal = parentCriteria.getInfered();
 		final float bottomUpFinal = parentCriteria.getBottomUpValue();
 
+		if (inferedFinal == inferedInitial) processTopDown(parent, inferenceInfluencedScopeSet);
 		if (inferedFinal == inferedInitial && bottomUpInitial == bottomUpFinal) return parent;
 		return processBottomUp(parent, inferenceInfluencedScopeSet);
 	}
@@ -76,18 +77,14 @@ public abstract class PrioritizationCriteriaInferenceEngine implements Inference
 		}
 		if (criteria.getTopDownValue() != initialTopDownValue) inferenceInfluencedScopeSet.add(scope.getId());
 
-		float available = criteria.getTopDownValue() - getStronglyDefinedCriteriaSum(scope);
-		if (available < 0) available = 0;
-
+		final float available = Math.max(0, criteria.getTopDownValue() - getStronglyDefinedCriteriaSum(scope));
 		final float portion = getPortion(available, getChildrenWithNonStronglyDefinedCriterias(scope));
 
 		final List<Scope> childrenList = scope.getChildren();
 		for (final Scope child : childrenList) {
 			final PrioritizationCriteria childCriteria = getCriteria(child);
 			final boolean isChildStronglyDefined = childCriteria.isStronglyDefined();
-			final float value = isChildStronglyDefined && (childCriteria.getDeclared() > childCriteria.getBottomUpValue()) ? childCriteria.getDeclared()
-					: childCriteria
-							.getBottomUpValue();
+			final float value = isChildStronglyDefined && (childCriteria.getDeclared() > childCriteria.getBottomUpValue()) ? childCriteria.getDeclared() : childCriteria.getBottomUpValue();
 
 			final float childInitialTopDownValue = childCriteria.getTopDownValue();
 			if (value > portion) childCriteria.setTopDownValue(value);

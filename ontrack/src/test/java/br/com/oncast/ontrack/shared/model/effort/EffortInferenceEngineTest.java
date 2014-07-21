@@ -58,8 +58,64 @@ public class EffortInferenceEngineTest {
 		assertTrue(inferenceInfluencedScopes.contains(child3));
 	}
 
-	private void assertInferedEffort(final float expectedEffort, final Scope scope) {
-		assertEquals(expectedEffort, scope.getEffort().getInfered(), 0.1);
+	@Test
+	public void testCaseWhenTheGrandChildDeclaresMoreThanTheChildsInferedEffort() throws Exception {
+		final Scope root = ScopeTestUtils.createScope("root");
+		final Scope grandpa1 = ScopeTestUtils.createScope("grandpa1");
+		final Scope grandpa2 = ScopeTestUtils.createScope("grandpa2");
+		final Scope grandpa3 = ScopeTestUtils.createScope("grandpa3");
+
+		final Scope parent1 = ScopeTestUtils.createScope("parent1");
+		final Scope parent2 = ScopeTestUtils.createScope("parent2");
+		final Scope parent3 = ScopeTestUtils.createScope("parent3");
+
+		final Scope child1 = ScopeTestUtils.createScope("child1");
+		final Scope child2 = ScopeTestUtils.createScope("child2");
+		final Scope child3 = ScopeTestUtils.createScope("child3");
+
+		final Scope grandChild1 = ScopeTestUtils.createScope("grandChild1");
+		final Scope grandChild2 = ScopeTestUtils.createScope("grandChild2");
+		final Scope grandChild3 = ScopeTestUtils.createScope("grandChild3");
+
+		insertChild(root, grandpa1);
+		insertChild(root, grandpa2);
+		insertChild(root, grandpa3);
+		insertChild(grandpa1, parent1);
+		insertChild(grandpa1, parent2);
+		insertChild(grandpa1, parent3);
+		insertChild(parent1, child1);
+		insertChild(parent1, child2);
+		insertChild(parent1, child3);
+		insertChild(child2, grandChild1);
+		insertChild(child2, grandChild2);
+		insertChild(child2, grandChild3);
+
+		final Set<UUID> inferenceInfluencedScopes = declare(grandpa1, 120);
+		assertInfluenced(inferenceInfluencedScopes, grandpa1, parent1, parent2, parent3, child1, child2, child3, grandChild1, grandChild2, grandChild3);
+
+		assertInferedEffort(40, parent1, parent2, parent3);
+		assertInferedEffort(13.3, child1, child2, child3);
+		assertInferedEffort(4.4, grandChild1, grandChild2, grandChild3);
+
+		final Set<UUID> inferenceInfluencedScopes2 = declare(grandChild1, 52);
+		assertInfluenced(inferenceInfluencedScopes2, parent1, parent2, parent3, child1, child2, child3, grandChild1, grandChild2, grandChild3);
+
+		assertInferedEffort(52, grandChild1, child2, parent1);
+		assertInferedEffort(34, parent2, parent3);
+		assertInferedEffort(0, grandChild2, grandChild3, child1, child3);
+		assertInferedEffort(120, grandpa1);
+	}
+
+	private void assertInfluenced(final Set<UUID> inferenceInfluencedScopes, final Scope... scopes) {
+		for (final Scope scope : scopes) {
+			assertTrue("Expected " + scope.getDescription() + " to be included in the influencedScopesSet", inferenceInfluencedScopes.contains(scope));
+		}
+	}
+
+	private void assertInferedEffort(final double expectedEffort, final Scope... scopes) {
+		for (final Scope scope : scopes) {
+			assertEquals(expectedEffort, scope.getEffort().getInfered(), 0.1);
+		}
 	}
 
 	private Set<UUID> declare(final Scope scope, final float effort) {
@@ -79,8 +135,8 @@ public class EffortInferenceEngineTest {
 		return updatesScopes;
 	}
 
-	private Set<UUID> procressEffortInference(final Scope rootScope) {
-		return EFFORT_INFERENCE_ENGINE.process(rootScope, UserRepresentationTestUtils.getAdmin(), new Date(0));
+	private Set<UUID> procressEffortInference(final Scope scope) {
+		return EFFORT_INFERENCE_ENGINE.process(scope, UserRepresentationTestUtils.getAdmin(), new Date(0));
 	}
 
 	private Set<UUID> processProgressInference(final Scope scope) {
