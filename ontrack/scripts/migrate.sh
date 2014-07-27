@@ -1,56 +1,60 @@
 #!/bin/bash
 
 VerifyBackupDirPresence(){
-    if [ ! -d /backup ]; then
+    if [ ! -d $BACKUP_PATH ]; then
         mkdir /backup
     fi
-    if [ ! -d /backup/mysql ]; then
-        mkdir /backup/mysql
+    if [ ! -d $BACKUP_PATH/database ]; then
+        mkdir $BACKUP_PATH/database
     fi
-    if [ ! -d /backup/xml ]; then
-        mkdir /backup/xml
+    if [ ! -d $BACKUP_PATH/xml ]; then
+        mkdir $BACKUP_PATH/xml
+    fi
+    if [ ! -d $BACKUP_PATH/war ]; then
+        mkdir $BACKUP_PATH/war
     fi
 }
 
 UpdateWarFile(){
-	echo 'Updating war file'
-	java -cp ../scripts/migration-tools.jar br.com.oncast.ontrack.SingleReleasePackageGenerator $WAR_INSTANCE
-	echo 'War updated...'
+	echo 'Generating war file'
+    mvn package -Pprod -Dmaven.test.skip=true
+	echo 'War generated...'
 }
 
 RetrieveXML() {
     echo 'Retrieve old xml'
-    curl --basic --user $APP_USER:$APP_PASS $APP_URL/application/xml/download > $BACKUP_PATH/xml/ontrack-$CURRENT_DATE.xml
+    python scripts/xml/xml-download-uuid.py -b localhost:8080 -o $BACKUP_PATH/xml/ontrack_$CURRENT_DATE
     echo 'Xml saved!'
 }
 
 StopTomcat(){
     echo 'Stoping instance'
-    rm $TOMCAT_PATH/$WAR_NAME
+    mv $TOMCAT_PATH/$WAR_NAME $BACKUP_PATH/war/ontrack_$CURRENT_DATE.war
     x=`curl -I  --stderr /dev/null $APP_URL | head -1 | cut -d' ' -f2`
     while [ "$x" != '404' ]; do
         sleep 1
         x=`curl -I  --stderr /dev/null $APP_URL | head -1 | cut -d' ' -f2`
     done
+    rm -rf $TOMCAT_PATH/../work/Catalina/localhost/*
     echo 'Instance stopped!'
 }
 
 DumpDataBase(){
     echo "Making database Backup..."
-    mysqldump --user=$DB_USER --password=$DB_PASSWORD --host=$DB_URL --databases $DB_SCHEMA | bzip2 > $BACKUP_PATH/mysql/mysql-$CURRENT_DATE.bz2
+    mysqldump --user=$DB_USER --password=$DB_PASSWORD --host=$DB_URL --databases $DB_SCHEMA | bzip2 > $BACKUP_PATH/database/ontrack_$CURRENT_DATE.bz2
     echo "Backup done!"
 }
 
 CleanDatabase(){
     echo 'Dropping old database'
-    mysql -u$DB_USER --password$DB_PASSWORD -h $DB_URL -e "drop schema "$DB_SCHEMA
-    mysql -u$DB_USER --password$DB_PASSWORD -h $DB_URL -e "create schema "$DB_SCHEMA
+    mysql -u$DB_USER --password$DB_PASSWORD -h $DB_URL -e "drop database $DB_SCHEMA;"
+    mysql -u$DB_USER --password$DB_PASSWORD -h $DB_URL -e "create database $DB_SCHEMA character set utf8 collate utf8_general_ci;"
     echo 'Database cleaned'
 }
 
 DeployNewWar(){
     echo 'Deploing instance'
-    cp $WAR_NAME $TOMCAT_PATH
+    cp target/ontrackExt-0.0.1.war $TOMCAT_PATH/$WAR_NAME
     x=`curl -I --stderr /dev/null $APP_URL | head -1 | cut -d' ' -f2`
     while [ "$x" = '404' ]; do
         sleep 1
@@ -61,13 +65,13 @@ DeployNewWar(){
 
 UploadXML(){
     echo 'Uploading xml to the new instance'
-    curl --basic --user $APP_USER:$APP_PASS -F "ontrack=@$BACKUP_PATH/xml/ontrack-$CURRENT_DATE.xml;type=text/xml" $APP_URL/application/xml/upload
+    python scripts/xml/xml-upload-uuid.py -b localhost:8080 -d ontrack_$CURRENT_DATE/
     echo 'Xml uploaded!'
 }
 
 PrintHelp(){
     echo 'Usage: sh migrate.sh http://url /path/to/tomcat instance'
-    echo 'The file.war must be in this same path'
+    echo 'Production: sh ./script/migrate.sh https://ontrack.oncast.com.br $CATALINA_HOME/webapps ROOT'
 }
 
 if [ $# -ne 3 ]
@@ -79,15 +83,12 @@ else
     WAR_INSTANCE="$3"
     WAR_NAME=$WAR_INSTANCE.war
 
-    APP_USER="admin@ontrack.com"
-    APP_PASS="ontrackpoulain"
-    
-    BACKUP_PATH="/backup"
-    DB_USER="root"
-    DB_PASSWORD=""
+    BACKUP_PATH="/var/lib/ontrack/backup"
+    DB_USER="ontrack"
+    DB_PASSWORD="xtlhpuFY1VvU6w"
     DB_URL="localhost:3306"
-    DB_SCHEMA="migTest"
-    CURRENT_DATE=`date +%d-%m-%Y_%H:%M:%S`
+    DB_SCHEMA="ontrack"
+    CURRENT_DATE=`date +%Y-%m-%d_%H:%M:%S`
     
     VerifyBackupDirPresence
     
