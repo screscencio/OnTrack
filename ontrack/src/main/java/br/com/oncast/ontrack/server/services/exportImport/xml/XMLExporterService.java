@@ -18,7 +18,6 @@ import br.com.oncast.ontrack.shared.services.notification.Notification;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -33,19 +32,23 @@ public class XMLExporterService {
 		version = OntrackMigrationManager.getCurrentVersion();
 	}
 
-	public void export(final OutputStream outputStream, final UUID... projectIds) {
+	public void export(final OutputStream outputStream, final List<UUID> projectIds) {
 		try {
-			final List<UUID> requestedIds = Arrays.asList(projectIds);
-			new XMLWriter()
-					.setVersion(version)
-					// FIXME don't export all users every time
-					.setUserList(getAllUsers())
-					// .setUserList(requestedIds.isEmpty() ? getAllUsers() : getUsersFor(requestedIds))
-					.setProjectsList(requestedIds.isEmpty() ? getAllProjectsWithActions() : getProjectsWithActions(requestedIds))
-					.setProjectAuthorizationsList(requestedIds.isEmpty() ? getAllProjectAuthorizations() : getProjectAuthorizationsFor(requestedIds))
-					.setNotifications(requestedIds.isEmpty() ? getLatestNotificationsForAllProjects() : getLatestNotificationsFor(requestedIds)).export(outputStream);
+			new XMLWriter().setVersion(version).setProjectsList(projectIds.isEmpty() ? getAllProjectsWithActions() : getProjectsWithActions(projectIds))
+					.setProjectAuthorizationsList(projectIds.isEmpty() ? getAllProjectAuthorizations() : getProjectAuthorizationsFor(projectIds))
+					.setNotifications(projectIds.isEmpty() ? getLatestNotificationsForAllProjects() : getLatestNotificationsFor(projectIds))
+					.setUserList(projectIds.isEmpty() ? getAllUsers() : new ArrayList<UserXMLNode>()).export(outputStream);
 		} catch (final NoResultFoundException e) {
 			throw new UnableToExportXMLException("Could not mount xml.", e);
+		} catch (final PersistenceException e) {
+			throw new UnableToExportXMLException("Could not mount xml.", e);
+		}
+	}
+
+	public void exportUsers(final OutputStream outputStream) {
+		try {
+			new XMLWriter().setVersion(version).setProjectsList(new ArrayList<ProjectXMLNode>()).setProjectAuthorizationsList(new ArrayList<ProjectAuthorizationXMLNode>())
+					.setNotifications(new ArrayList<Notification>()).setUserList(getAllUsers()).export(outputStream);
 		} catch (final PersistenceException e) {
 			throw new UnableToExportXMLException("Could not mount xml.", e);
 		}
@@ -68,18 +71,6 @@ public class XMLExporterService {
 		}
 
 		return projectList;
-	}
-
-	private List<UserXMLNode> getUsersFor(final List<UUID> projectIds) throws PersistenceException {
-		final List<UserXMLNode> userXMLNodeList = new ArrayList<UserXMLNode>();
-
-		for (final UUID projectId : projectIds) {
-			for (final User user : persistanceService.retrieveUsersOfProject(projectId)) {
-				userXMLNodeList.add(associatePasswordTo(user));
-			}
-		}
-
-		return userXMLNodeList;
 	}
 
 	private List<UserXMLNode> getAllUsers() throws PersistenceException {
@@ -138,7 +129,6 @@ public class XMLExporterService {
 			out.write(representation.getId().toString().getBytes());
 			out.write(",".getBytes());
 		}
-		out.flush();
 	}
 
 }
