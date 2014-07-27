@@ -61,7 +61,11 @@ def execute(filesPath):
 
 def uploadDir(dirPath, startTime) :
 	expression = re.compile(r"^ontrack_[A-Z\-0-9]+\.xml$")
-	for entry in os.listdir(os.path.join(dirPath)):
+	entries = os.listdir(os.path.join(dirPath))
+	if 'users.xml' in entries :
+		upload(os.path.join(dirPath, 'users.xml'))
+		printTimeSpent(startTime)
+	for entry in entries:
 		if expression.match(entry) :
 			upload(os.path.join(dirPath, entry))
 			printTimeSpent(startTime)

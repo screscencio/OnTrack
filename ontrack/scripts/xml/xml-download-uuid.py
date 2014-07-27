@@ -53,9 +53,38 @@ def prepareFolder() :
 			sufix = "_" + str(i + 1)
 	folder = folder + sufix
 
-def revertFiles(projectsListPath) :
-	os.remove(projectsListPath)
+def revertFiles() :
+	os.remove(os.path.join(folder, "projectList.txt"))
+	try :
+		os.remove(os.path.join(folder, "users.xml"))
+	except :
+		pass
 	os.rmdir(folder)
+
+def downloadProjectsList() :
+	projectsListPath = os.path.join(folder, "projectList.txt")
+
+	print "\n[INFO] retrieving the projects list"
+	executeCommand('curl --basic%s -u %s:%s %s/application/xml/download?list-projects > %s' % (ssl3, user, password, protocol, projectsListPath))
+	projectsList = open(projectsListPath).read()
+	if (not projectsList or 'Error' in projectsList) :
+		print "[Error] There is no projects available"
+		return []
+	print "\n[INFO] projects list retieved successfully."
+	return projectsList.split(",")
+
+def downloadUsers() :
+	usersFilePath = os.path.join(folder, "users.xml")
+
+	print "\n[INFO] retrieving the users list"
+	executeCommand('curl --basic%s -u %s:%s %s/application/xml/download?list-users > %s' % (ssl3, user, password, protocol, usersFilePath))
+	xmlContent = open(usersFilePath).read()
+	succeeded = xmlContent.endswith("</ontrackXML>")
+	if (succeeded) :
+		print "\n[INFO] users list retieved successfully."
+	else :
+		print "[Error] Could not retrieve the users list"
+	return succeeded
 
 def execute(projects):
 	startTime = time()
@@ -64,18 +93,10 @@ def execute(projects):
 	prepareFolder()
 
 	if (not projects) :
-		projectsListPath = os.path.join(folder, "projectList.txt")
-
-		print "\n[INFO] retrieving the projects list"
-		executeCommand('curl --basic%s -u %s:%s %s/application/xml/download?list-projects > %s' % (ssl3, user, password, protocol, projectsListPath))
-		projectsList = open(projectsListPath).read()
-		if (not projectsList) :
-			revertFiles(projectsListPath)
-			print "[Error] There is no projects available"
-			printTimeSpent(startTime)
+		projects = downloadProjectsList()
+		if not projects or not downloadUsers():
+			revertFiles()
 			return
-		print "\n[INFO] projects list retieved successfully."
-		projects = projectsList.split(",")
 
 	try:
 		for projectId in projects:
