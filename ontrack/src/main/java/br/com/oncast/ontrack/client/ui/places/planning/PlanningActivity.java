@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
+import br.com.oncast.ontrack.client.ui.places.ResumableActivity;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
-public class PlanningActivity extends AbstractActivity {
+public class PlanningActivity extends AbstractActivity implements ResumableActivity {
 
 	private static final ClientServices SERVICE_PROVIDER = ClientServices.get();
 	private final ActivityActionExecutionListener activityActionExecutionListener;
@@ -88,7 +89,6 @@ public class PlanningActivity extends AbstractActivity {
 		view.setVisible(true);
 		final Release firstReleaseInProgress = getFirstReleaseInProgress(projectContext);
 		if (firstReleaseInProgress != null) view.ensureWidgetIsVisible(view.getReleasePanel().getWidgetFor(firstReleaseInProgress));
-		view.getScopeTree().setFocus(true);
 
 		registrations.add(registerScopeSelectionEventHandler());
 
@@ -105,7 +105,16 @@ public class PlanningActivity extends AbstractActivity {
 				timeTracking.end();
 			}
 		});
+	}
 
+	@Override
+	public void onResume() {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				view.getScopeTree().setFocus(true);
+			}
+		});
 	}
 
 	private ProjectListChangeListener getProjectRepresentationListener() {
