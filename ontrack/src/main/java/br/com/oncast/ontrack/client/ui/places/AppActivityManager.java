@@ -16,14 +16,13 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
- * Manages {@link Activity} objects that should be kicked off in response to {@link PlaceChangeEvent} events. Each activity can start itself
- * asynchronously, and provides a widget to be shown when it's ready to run.
+ * Manages {@link Activity} objects that should be kicked off in response to {@link PlaceChangeEvent} events. Each activity can start itself asynchronously, and provides a widget to be shown when it's
+ * ready to run.
  */
 public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChangeRequestEvent.Handler {
 
 	/**
-	 * Wraps our real display to prevent an Activity from taking it over if it is
-	 * not the currentActivity.
+	 * Wraps our real display to prevent an Activity from taking it over if it is not the currentActivity.
 	 */
 	private class ProtectedDisplay implements AcceptsOneWidget {
 		private final Activity activity;
@@ -51,8 +50,7 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 	private final EventBus eventBus;
 
 	/*
-	 * Note that we use the legacy class from com.google.gwt.event.shared, because
-	 * we can't change the Activity interface.
+	 * Note that we use the legacy class from com.google.gwt.event.shared, because we can't change the Activity interface.
 	 */
 	private final ResettableEventBus stopperedEventBus;
 
@@ -67,8 +65,10 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 	/**
 	 * Create an ActivityManager. Next call {@link #setDisplay}.
 	 * 
-	 * @param mapper finds the {@link Activity} for a given {@link com.google.gwt.place.shared.Place}
-	 * @param eventBus source of {@link PlaceChangeEvent} and {@link PlaceChangeRequestEvent} events.
+	 * @param mapper
+	 *            finds the {@link Activity} for a given {@link com.google.gwt.place.shared.Place}
+	 * @param eventBus
+	 *            source of {@link PlaceChangeEvent} and {@link PlaceChangeRequestEvent} events.
 	 */
 	public AppActivityManager(final ActivityMapper mapper, final EventBus eventBus) {
 		this.mapper = mapper;
@@ -77,11 +77,10 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 	}
 
 	/**
-	 * Deactivate the current activity, find the next one from our ActivityMapper,
-	 * and start it.
+	 * Deactivate the current activity, find the next one from our ActivityMapper, and start it.
 	 * <p>
-	 * The current activity's widget will be hidden immediately, which can cause flicker if the next activity provides its widget asynchronously. That can be
-	 * minimized by decent caching. Perenially slow activities might mitigate this by providing a widget immediately, with some kind of "loading" treatment.
+	 * The current activity's widget will be hidden immediately, which can cause flicker if the next activity provides its widget asynchronously. That can be minimized by decent caching. Perenially
+	 * slow activities might mitigate this by providing a widget immediately, with some kind of "loading" treatment.
 	 */
 	@Override
 	public void onPlaceChange(final PlaceChangeEvent event) {
@@ -92,7 +91,10 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 		Throwable caughtOnStart = null;
 
 		if (nextActivity == null) { return; }
-		if (currentActivity.equals(nextActivity)) { return; }
+		if (currentActivity.equals(nextActivity)) {
+			notifyOnResume();
+			return;
+		}
 
 		if (startingNext) {
 			// The place changed again before the new current activity showed its
@@ -100,13 +102,11 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 			caughtOnCancel = tryStopOrCancel(false);
 			currentActivity = NULL_ACTIVITY;
 			startingNext = false;
-		}
-		else if (!currentActivity.equals(NULL_ACTIVITY)) {
+		} else if (!currentActivity.equals(NULL_ACTIVITY)) {
 			showWidget(null);
 
 			/*
-			 * Kill off the activity's handlers, so it doesn't have to worry about
-			 * them accidentally firing as a side effect of its tear down
+			 * Kill off the activity's handlers, so it doesn't have to worry about them accidentally firing as a side effect of its tear down
 			 */
 			stopperedEventBus.removeHandlers();
 			caughtOnStop = tryStopOrCancel(true);
@@ -116,11 +116,11 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 
 		if (currentActivity.equals(NULL_ACTIVITY)) {
 			showWidget(null);
-		}
-		else {
+		} else {
 			startingNext = true;
 			caughtOnStart = tryStart();
 		}
+		notifyOnResume();
 
 		if (caughtOnStart != null || caughtOnCancel != null || caughtOnStop != null) {
 			final Set<Throwable> causes = new LinkedHashSet<Throwable>();
@@ -149,13 +149,12 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 	}
 
 	/**
-	 * Sets the display for the receiver, and has the side effect of starting or
-	 * stopping its monitoring the event bus for place change events.
+	 * Sets the display for the receiver, and has the side effect of starting or stopping its monitoring the event bus for place change events.
 	 * <p>
-	 * If you are disposing of an ActivityManager, it is important to call setDisplay(null) to get it to deregister from the event bus, so that it can be
-	 * garbage collected.
+	 * If you are disposing of an ActivityManager, it is important to call setDisplay(null) to get it to deregister from the event bus, so that it can be garbage collected.
 	 * 
-	 * @param display an instance of AcceptsOneWidget
+	 * @param display
+	 *            an instance of AcceptsOneWidget
 	 */
 	public void setDisplay(final AcceptsOneWidget display) {
 		final boolean wasActive = (null != this.display);
@@ -166,12 +165,14 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 		}
 	}
 
+	private void notifyOnResume() {
+		if (currentActivity instanceof ResumableActivity) ((ResumableActivity) currentActivity).onResume();
+	}
+
 	private Activity getNextActivity(final PlaceChangeEvent event) {
 		if (display == null) {
 			/*
-			 * Display may have been nulled during PlaceChangeEvent dispatch. Don't
-			 * bother the mapper, just return a null to ensure we shut down the
-			 * current activity
+			 * Display may have been nulled during PlaceChangeEvent dispatch. Don't bother the mapper, just return a null to ensure we shut down the current activity
 			 */
 			return null;
 		}
@@ -188,13 +189,10 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 		Throwable caughtOnStart = null;
 		try {
 			/*
-			 * Wrap the actual display with a per-call instance that protects the
-			 * display from canceled or stopped activities, and which maintains our
-			 * startingNext state.
+			 * Wrap the actual display with a per-call instance that protects the display from canceled or stopped activities, and which maintains our startingNext state.
 			 */
 			currentActivity.start(new ProtectedDisplay(currentActivity), stopperedEventBus);
-		}
-		catch (final Throwable t) {
+		} catch (final Throwable t) {
 			caughtOnStart = t;
 		}
 		return caughtOnStart;
@@ -205,18 +203,14 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 		try {
 			if (stop) {
 				currentActivity.onStop();
-			}
-			else {
+			} else {
 				currentActivity.onCancel();
 			}
-		}
-		catch (final Throwable t) {
+		} catch (final Throwable t) {
 			caughtOnStop = t;
-		}
-		finally {
+		} finally {
 			/*
-			 * Kill off the handlers again in case it was naughty and added new ones
-			 * during onstop or oncancel
+			 * Kill off the handlers again in case it was naughty and added new ones during onstop or oncancel
 			 */
 			stopperedEventBus.removeHandlers();
 		}
@@ -226,8 +220,7 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 	private void updateHandlers(final boolean activate) {
 		if (activate) {
 			final HandlerRegistration placeReg = eventBus.addHandler(PlaceChangeEvent.TYPE, this);
-			final HandlerRegistration placeRequestReg =
-					eventBus.addHandler(PlaceChangeRequestEvent.TYPE, this);
+			final HandlerRegistration placeRequestReg = eventBus.addHandler(PlaceChangeRequestEvent.TYPE, this);
 
 			this.handlerRegistration = new HandlerRegistration() {
 				@Override
@@ -236,8 +229,7 @@ public class AppActivityManager implements PlaceChangeEvent.Handler, PlaceChange
 					placeRequestReg.removeHandler();
 				}
 			};
-		}
-		else {
+		} else {
 			if (handlerRegistration != null) {
 				handlerRegistration.removeHandler();
 				handlerRegistration = null;
