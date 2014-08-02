@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd;
 
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeContainer;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidgetContainer;
 import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.ModelWidgetContainerDragHandler;
@@ -8,6 +9,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseScopeItemDragHandler extends ModelWidgetContainerDragHandler<Scope> {
 
@@ -25,13 +27,14 @@ public class ReleaseScopeItemDragHandler extends ModelWidgetContainerDragHandler
 		final DropController dropTargetController = event.getContext().finalDropController;
 		if (dropTargetController == null) return;
 
-		if (dropTargetController.getDropTarget() instanceof VerticalPanel) {
-			final VerticalPanel targetReleaseArea = (VerticalPanel) dropTargetController.getDropTarget();
+		final VerticalPanel targetReleaseArea = (VerticalPanel) dropTargetController.getDropTarget();
+		final Widget parent = targetReleaseArea.getParent().getParent();
+		if (parent instanceof ScopeWidgetContainer) {
 			final ScopeWidgetContainer targetScopeContainer = (ScopeWidgetContainer) targetReleaseArea.getParent().getParent();
-
-			itemDroppedListener.onItemDropped(draggedScopeWidget.getModelObject(), targetScopeContainer.getOwnerRelease(),
-					targetReleaseArea.getWidgetIndex(draggedScopeWidget));
+			itemDroppedListener.onItemDropped(draggedScopeWidget.getModelObject(), targetScopeContainer.getOwnerRelease(), targetReleaseArea.getWidgetIndex(draggedScopeWidget));
+		} else if (parent instanceof KanbanScopeContainer) {
+			final KanbanScopeContainer targetScopeContainer = (KanbanScopeContainer) targetReleaseArea.getParent().getParent();
+			itemDroppedListener.onItemDropped(draggedScopeWidget.getScope(), targetScopeContainer.getKanbanColumn().getDescription());
 		}
-		else itemDroppedListener.onItemDropped(draggedScopeWidget.getScope());
 	}
 }

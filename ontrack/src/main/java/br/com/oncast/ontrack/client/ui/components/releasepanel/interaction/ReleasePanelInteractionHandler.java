@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityActio
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -35,16 +34,14 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	public void onScopeIncreasePriorityRequest(final Scope scope) {
 		assureConfigured();
 		final Release release = scope.getRelease();
-		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(),
-				release.getScopeIndex(scope) - 1));
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(), release.getScopeIndex(scope) - 1));
 	}
 
 	@Override
 	public void onScopeDecreasePriorityRequest(final Scope scope) {
 		assureConfigured();
 		final Release release = scope.getRelease();
-		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(),
-				release.getScopeIndex(scope) + 1));
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(), release.getScopeIndex(scope) + 1));
 	}
 
 	@Override
@@ -63,15 +60,13 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	@Override
 	public void onReleaseIncreasePriorityRequest(final Release release) {
 		assureConfigured();
-		applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(),
-				release.getParent().getChildIndex(release) - 1));
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) - 1));
 	}
 
 	@Override
 	public void onReleaseDecreasePriorityRequest(final Release release) {
 		assureConfigured();
-		applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(),
-				release.getParent().getChildIndex(release) + 1));
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(), release.getParent().getChildIndex(release) + 1));
 	}
 
 	@Override
@@ -81,13 +76,12 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	}
 
 	private void assureConfigured() {
-		if (applicationActionHandler == null) throw new RuntimeException(
-				"This class was not yet configured.");
+		if (applicationActionHandler == null) throw new RuntimeException("This class was not yet configured.");
 	}
 
 	@Override
-	public void onScopeUnderworkdDropRequest(final Scope scope) {
+	public void onScopeProgressChangeDropRequest(final Scope scope, final String newProgress) {
 		assureConfigured();
-		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), ProgressState.UNDER_WORK.getDescription()));
+		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), newProgress));
 	}
 }

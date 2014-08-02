@@ -74,7 +74,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 		};
 		members = new DraggableMembersListWidget(userDragAndDropManager);
 		releaseWidget = new ReleasePanelWidget(interactionHandler, userDragAndDropManager, userDropControllerFactory, true);
-		kanbanPanel = new KanbanPanel(kanban, release, userDragAndDropManager, userDropControllerFactory);
+		kanbanPanel = new KanbanPanel(kanban, release, releaseWidget, userDragAndDropManager, userDropControllerFactory);
 		detailWidget = new ProgressDetailPanel(release);
 
 		chart = new ReleaseChart(release, false);
@@ -82,7 +82,6 @@ public class ProgressPanel extends Composite implements ProgressView {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		releaseWidget.setRelease(release);
-		releaseWidget.registerDropController(new ProgressReleaseDropManager(kanbanPanel, interactionHandler, style.kanbanPanelOnDragTarget()));
 		chart.updateData();
 	}
 

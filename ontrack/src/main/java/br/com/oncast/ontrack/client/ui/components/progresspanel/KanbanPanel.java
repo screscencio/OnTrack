@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanCo
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidgetFactory;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanColumnDragHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanScopeItemDragHandler;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
@@ -23,6 +24,8 @@ import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
@@ -30,6 +33,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
@@ -57,8 +61,10 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 			public KanbanColumnWidget createWidget(final KanbanColumn modelBean) {
 				final KanbanColumnWidget w = new KanbanColumnWidget(release, modelBean, scopeDragAndDropMangager, interactionHandler, scopeWidgetFactory);
 				kanbanColumnDragAndDropMangager.monitorNewDraggableItem(w, w.getDraggableAnchor());
+				addAsDropTarget(w);
 				return w;
 			}
+
 		}, new AnimatedContainer(new HorizontalPanel(), new AnimationFactory() {
 
 			@Override
@@ -78,7 +84,11 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 	final DragAndDropManager kanbanColumnDragAndDropMangager;
 	private final ProgressPanelInteractionHandler interactionHandler;
 
-	public KanbanPanel(final Kanban kanban, final Release release, final DragAndDropManager userDragAndDropManager,
+	private DropControllerFactory factory;
+
+	private ReleasePanelWidget releaseWidget;
+
+	public KanbanPanel(final Kanban kanban, final Release release, final ReleasePanelWidget releaseWidget, final DragAndDropManager userDragAndDropManager,
 			final DropControllerFactory userDropControllerFactory) {
 		this.release = release;
 
@@ -91,6 +101,15 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 
 		notStartedColumn = new KanbanColumnWidget(release, kanban.getNotStartedColumn(), scopeDragAndDropMangager, interactionHandler, scopeWidgetFactory);
 		doneColumn = new KanbanColumnWidget(release, kanban.getDoneColumn(), scopeDragAndDropMangager, interactionHandler, scopeWidgetFactory);
+		this.releaseWidget = releaseWidget;
+		factory = new DropControllerFactory() {
+			@Override
+			public DropController create(final Widget panel) {
+				return new VerticalPanelDropController((VerticalPanel) panel);
+			}
+		};
+		addAsDropTarget(notStartedColumn);
+		addAsDropTarget(doneColumn);
 
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -121,6 +140,10 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 		if (columnWidget == null) return null;
 
 		return columnWidget.getScopeContainter().getWidgetFor(scope);
+	}
+
+	private void addAsDropTarget(final KanbanColumnWidget w) {
+		releaseWidget.monitorDropTarget(w.getScopeContainter().getContainningPanel(), factory);
 	}
 
 	private KanbanColumnWidget getColumnFor(final Progress progress) {
