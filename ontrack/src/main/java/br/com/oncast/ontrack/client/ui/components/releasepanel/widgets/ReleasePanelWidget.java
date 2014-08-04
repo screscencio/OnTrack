@@ -55,7 +55,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
@@ -229,8 +228,8 @@ public class ReleasePanelWidget extends Composite {
 			}
 
 			@Override
-			public void onItemDropped(final Scope droppedScope) {
-				if (releaseSpecific) releasePanelInteractionHandler.onScopeUnderworkdDropRequest(droppedScope);
+			public void onItemDropped(final Scope droppedScope, final String newProgress) {
+				if (releaseSpecific) releasePanelInteractionHandler.onScopeProgressChangeDropRequest(droppedScope, newProgress);
 			}
 		};
 	}
@@ -239,7 +238,7 @@ public class ReleasePanelWidget extends Composite {
 		return actionExecutionListener;
 	}
 
-	public void registerDropController(final DropController controller) {
-		dragAndDropManager.registerDropController(controller);
+	public void monitorDropTarget(final Widget target, final DropControllerFactory factory) {
+		dragAndDropManager.monitorDropTarget(target, factory);
 	}
 }

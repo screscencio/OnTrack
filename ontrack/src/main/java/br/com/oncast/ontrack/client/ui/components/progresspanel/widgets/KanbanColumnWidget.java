@@ -10,7 +10,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.action.KanbanLockAction;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -30,9 +29,6 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-
-import static br.com.oncast.ontrack.shared.model.progress.Progress.DEFAULT_NOT_STARTED_NAME;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
 
 public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanColumn> {
 
@@ -145,29 +141,16 @@ public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanC
 	@Override
 	public boolean update() {
 		this.title.setValue(column.getDescription(), false);
-		return scopeContainer.update(getTasks());
+		return scopeContainer.update(getStories());
 	}
 
-	private List<Scope> getTasks() {
-		final List<Scope> tasks = new ArrayList<Scope>();
-
-		for (final Scope scope : release.getScopeList()) {
-			if (scope.getProgress().getState() == ProgressState.UNDER_WORK) addTasks(tasks, scope);
+	private List<Scope> getStories() {
+		final List<Scope> stories = new ArrayList<Scope>();
+		for (final Scope story : release.getScopeList()) {
+			if (story.getProgress().getDescription().equals(column.getDescription())) stories.add(story);
+			else if (ProgressState.NOT_STARTED.matches(column.getDescription()) && ProgressState.NOT_STARTED.matches(story.getProgress().getDescription())) stories.add(story);
 		}
-
-		for (final Scope scope : release.getScopeList()) {
-			if (scope.getProgress().getState() == ProgressState.DONE) addTasks(tasks, scope);
-		}
-
-		return tasks;
-	}
-
-	private void addTasks(final List<Scope> tasks, final Scope scope) {
-		for (final Scope task : scope.getAllLeafs()) {
-			final Progress progress = task.getProgress();
-			final String progressDescription = progress.getState() == NOT_STARTED ? DEFAULT_NOT_STARTED_NAME : progress.getDescription();
-			if (progressDescription.equals(column.getDescription())) tasks.add(task);
-		}
+		return stories;
 	}
 
 	@Override

@@ -19,5 +19,5 @@ public interface ReleasePanelWidgetInteractionHandler {
 
 	void onReleaseRenameRequest(Release release, String newReleaseName);
 
-	void onScopeUnderworkdDropRequest(Scope droppedScope);
+	void onScopeProgressChangeDropRequest(Scope droppedScope, String newProgress);
 }

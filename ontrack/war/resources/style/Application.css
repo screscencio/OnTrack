@@ -149,7 +149,7 @@ html,body {
 }
 
 .kanban .dragdrop-positioner {
-	width: 100%;
+	width: 240px;
 	min-width: 207px;
 	margin-bottom: 3px !important;
 }
