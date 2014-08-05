@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
+import br.com.oncast.ontrack.server.configuration.Configurations;
 import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -17,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.PasswordValidator;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +32,8 @@ public class AuthenticationManager {
 	private static final Logger LOGGER = Logger.getLogger(AuthenticationManager.class);
 
 	private static final String DEFAULT_NEW_USER_PASSWORD = "";
+
+	private static final long DAYS = 24 * 60 * 60 * 1000;
 
 	private final PersistenceService persistenceService;
 
@@ -237,5 +241,28 @@ public class AuthenticationManager {
 			LOGGER.error(message, e);
 			throw new UnableToResetPasswordException(message);
 		}
+	}
+
+	public void authenticateByToken(final String athenticationToken) {
+		try {
+			final User user = persistenceService.retrieveUserById(new UUID(athenticationToken));
+			if (isUserActive(user)) throwInvalidTokenException(athenticationToken);
+
+			sessionManager.getCurrentSession().setAuthenticatedUser(user);
+			notifyUserLoggedIn(user);
+		} catch (final Exception e) {
+			LOGGER.error(e);
+			throwInvalidTokenException(athenticationToken);
+		}
+	}
+
+	private boolean isUserActive(final User user) throws PersistenceException {
+		final Date creationTimestamp = user.getCreationTimestamp();
+		final long difference = new Date().getTime() - creationTimestamp.getTime();
+		return difference > Configurations.get().getAuthenticationTokenExpirationInDays() * DAYS && persistenceService.retrievePasswordsForUser(user.getId()).isEmpty();
+	}
+
+	private void throwInvalidTokenException(final String athenticationToken) {
+		throw new AuthenticationException("Invalid authentication token (" + athenticationToken + ")");
 	}
 }

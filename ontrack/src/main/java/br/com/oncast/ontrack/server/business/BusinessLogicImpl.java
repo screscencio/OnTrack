@@ -450,7 +450,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		LOGGER.debug("Created New User '" + userEmail + "'.");
 		sendWelcomeMail(userEmail, generatedPassword);
 		return user.getId();
-
 	}
 
 	private void updateGlobalProfile(final User user, final Profile profile) {

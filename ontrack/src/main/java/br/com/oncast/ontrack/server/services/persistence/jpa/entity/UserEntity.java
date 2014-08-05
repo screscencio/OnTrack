@@ -6,6 +6,8 @@ import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConve
 import br.com.oncast.ontrack.shared.model.user.Profile;
 import br.com.oncast.ontrack.shared.model.user.User;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -30,6 +32,9 @@ public class UserEntity {
 
 	@Column(name = "globalProfile", nullable = false)
 	private Profile globalProfile;
+
+	@Column(name = "creationTimestamp", nullable = false)
+	private Date creationTimestamp;
 
 	public String getId() {
 		return id;
@@ -69,6 +74,14 @@ public class UserEntity {
 
 	public void setGlobalProfile(final Profile globalProfile) {
 		this.globalProfile = globalProfile;
+	}
+
+	public Date getCreationTimestamp() {
+		return creationTimestamp;
+	}
+
+	public void setCreationTimestamp(final Date creationTimestamp) {
+		this.creationTimestamp = creationTimestamp;
 	}
 
 }

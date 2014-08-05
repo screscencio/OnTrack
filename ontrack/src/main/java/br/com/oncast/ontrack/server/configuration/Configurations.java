@@ -65,4 +65,8 @@ public class Configurations {
 	public String getGoogleAnalyticsTrackingId() {
 		return properties.getProperty("google_analytics.tracking_id");
 	}
+
+	public Integer getAuthenticationTokenExpirationInDays() {
+		return Integer.valueOf(properties.getProperty("authentication.token_expiration_time_in_days"));
+	}
 }

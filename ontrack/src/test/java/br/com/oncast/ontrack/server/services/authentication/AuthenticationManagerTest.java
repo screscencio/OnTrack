@@ -25,9 +25,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import com.ibm.icu.util.Calendar;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -88,6 +91,13 @@ public class AuthenticationManagerTest {
 	private void setDefaultMockBehavior() throws NoResultFoundException, PersistenceException {
 		when(persistenceServiceMock.retrieveUserByEmail(anyString())).thenReturn(user);
 		when(persistenceServiceMock.retrievePasswordsForUser(any(UUID.class))).thenReturn(userPasswords);
+		// when(persistenceServicethen.new Answer<List<Password>>() {}ID.class))).then(new Answer<List<Password>>() {
+		//
+		// @Override
+		// public List<Password> answer(final InvocationOnMock arg0) throws Throwable {
+		// // FIXME Auto-generated catch block
+		// return null;
+		// }});
 		when(passwordMock.authenticate(anyString())).thenReturn(true);
 	}
 
@@ -204,6 +214,41 @@ public class AuthenticationManagerTest {
 		authenticationManager.logout();
 
 		verify(listener, times(1)).onUserLoggedOut(Mockito.same(user), (String) Mockito.any());
+	}
+
+	@Test(expected = AuthenticationException.class)
+	public void invalidAthenticationTokenShouldThrowAuthenticationError() throws Exception {
+		authenticationManager.authenticateByToken("invalid");
+	}
+
+	@Test
+	public void usersOlderThanAWeekWihtoutPasswordShouldNotBeAuthenticated() throws Exception {
+		final User olderUser = userOlderThanAWeek();
+		userPasswords.clear();
+		try {
+			authenticationManager.authenticateByToken(olderUser.getId().toString());
+			fail("");
+		} catch (final AuthenticationException e) {
+			assertFalse("The user should not be authenticated", authenticationManager.isUserAuthenticated());
+		}
+	}
+
+	@Test
+	public void usersOlderThanAWeekWithPasswordShouldBeAuthenticated() throws Exception {
+		final User olderUser = userOlderThanAWeek();
+		authenticationManager.authenticateByToken(olderUser.getId().toString());
+		assertTrue("The user should be authenticated", authenticationManager.isUserAuthenticated());
+		assertEquals(olderUser, authenticationManager.getAuthenticatedUser());
+	}
+
+	private User userOlderThanAWeek() throws Exception {
+		final User olderUser = user;
+		final Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.WEEK_OF_YEAR, -1);
+		cal.add(Calendar.DAY_OF_YEAR, -1);
+		olderUser.setCreationTimestamp(cal.getTime());
+		when(persistenceServiceMock.retrieveUserById(olderUser.getId())).thenReturn(olderUser);
+		return olderUser;
 	}
 
 	private void forcePersistenceToDoNotFindUser() throws NoResultFoundException, PersistenceException {
