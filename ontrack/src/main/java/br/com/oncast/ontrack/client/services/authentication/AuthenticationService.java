@@ -32,4 +32,6 @@ public interface AuthenticationService {
 	boolean canCurrentUserManageProjects();
 
 	void resetPasswordFor(String username, ResetPasswordCallback resetPasswordCallback);
+
+	boolean isCurrentUserActivated();
 }

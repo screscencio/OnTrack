@@ -31,7 +31,7 @@ import static org.junit.Assert.fail;
 
 import static org.mockito.Mockito.when;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 public class ScopeInsertParentAction_ReleaseCreationTest {
 

@@ -52,4 +52,6 @@ public interface BusinessLogic {
 
 	UUID createUser(String userEmail, Profile profile);
 
+	UUID createTrialUser(String userEmail, Profile profile);
+
 }

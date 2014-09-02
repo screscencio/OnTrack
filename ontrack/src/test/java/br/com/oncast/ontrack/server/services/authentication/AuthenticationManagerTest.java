@@ -221,31 +221,51 @@ public class AuthenticationManagerTest {
 		authenticationManager.authenticateByToken("invalid");
 	}
 
-	@Test
+	@Test(expected = AuthenticationException.class)
 	public void usersOlderThanAWeekWihtoutPasswordShouldNotBeAuthenticated() throws Exception {
-		final User olderUser = userOlderThanAWeek();
+		final User olderUser = userWithAge(-8);
 		userPasswords.clear();
-		try {
-			authenticationManager.authenticateByToken(olderUser.getId().toString());
-			fail("");
-		} catch (final AuthenticationException e) {
-			assertFalse("The user should not be authenticated", authenticationManager.isUserAuthenticated());
-		}
+		authenticationManager.authenticateByToken(olderUser.getId().toString());
+	}
+
+	@Test(expected = AuthenticationException.class)
+	public void usersOlderThanAWeekShouldNotBeAuthenticatedEvenWithPassword() throws Exception {
+		final User olderUser = userWithAge(-8);
+		authenticationManager.authenticateByToken(olderUser.getId().toString());
+	}
+
+	@Test(expected = AuthenticationException.class)
+	public void usersWithPasswordShouldNotBeAuthenticatedWithToken() throws Exception {
+		authenticationManager.authenticateByToken(user.getId().toString());
 	}
 
 	@Test
-	public void usersOlderThanAWeekWithPasswordShouldBeAuthenticated() throws Exception {
-		final User olderUser = userOlderThanAWeek();
-		authenticationManager.authenticateByToken(olderUser.getId().toString());
-		assertTrue("The user should be authenticated", authenticationManager.isUserAuthenticated());
-		assertEquals(olderUser, authenticationManager.getAuthenticatedUser());
+	public void usersWithoutPasswordAndYoungerThanAWeekShouldBeAuthenticatedWithToken() throws Exception {
+		final User youngerUser = userWithAge(-6);
+		userPasswords.clear();
+		authenticationManager.authenticateByToken(youngerUser.getId().toString());
+		assertTrue(authenticationManager.isUserAuthenticated());
+		assertEquals(youngerUser, authenticationManager.getAuthenticatedUser());
 	}
 
-	private User userOlderThanAWeek() throws Exception {
+	@Test
+	public void usersWithoutPasswordAndCreatedTodayShouldBeAuthenticatedWithToken() throws Exception {
+		final User youngerUser = userWithAge(0);
+		userPasswords.clear();
+		authenticationManager.authenticateByToken(youngerUser.getId().toString());
+		assertTrue(authenticationManager.isUserAuthenticated());
+		assertEquals(youngerUser, authenticationManager.getAuthenticatedUser());
+		userPasswords.add(passwordMock);
+		try {
+			authenticationManager.authenticateByToken(youngerUser.getId().toString());
+			fail("User should not be authenticated after setting a password");
+		} catch (final AuthenticationException e) {}
+	}
+
+	private User userWithAge(final int ageInDays) throws Exception {
 		final User olderUser = user;
 		final Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.WEEK_OF_YEAR, -1);
-		cal.add(Calendar.DAY_OF_YEAR, -1);
+		cal.add(Calendar.DAY_OF_YEAR, ageInDays);
 		olderUser.setCreationTimestamp(cal.getTime());
 		when(persistenceServiceMock.retrieveUserById(olderUser.getId())).thenReturn(olderUser);
 		return olderUser;

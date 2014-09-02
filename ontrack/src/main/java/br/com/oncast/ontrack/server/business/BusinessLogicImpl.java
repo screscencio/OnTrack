@@ -452,6 +452,17 @@ class BusinessLogicImpl implements BusinessLogic {
 		return user.getId();
 	}
 
+	@Override
+	public UUID createTrialUser(final String userEmail, final Profile profile) {
+		User user = retrieveExistingUser(userEmail);
+		if (user != null) { throw new RuntimeException("The user " + userEmail + " already exists"); }
+
+		user = authenticationManager.createNewUser(userEmail, null, profile);
+		LOGGER.debug("Created New User '" + userEmail + "'.");
+		sendActivationMail(userEmail, user.getId().toString());
+		return user.getId();
+	}
+
 	private void updateGlobalProfile(final User user, final Profile profile) {
 		user.setGlobalProfile(profile);
 		try {
@@ -474,6 +485,16 @@ class BusinessLogicImpl implements BusinessLogic {
 			mailFactory.createWelcomeMail().sendTo(userEmail, generatedPassword);
 		} catch (final Exception e) {
 			final String message = "The user was created but welcome e-mail was not sent.";
+			LOGGER.error(message, e);
+			throw new RuntimeException(message, e);
+		}
+	}
+
+	private void sendActivationMail(final String userEmail, final String accessToken) {
+		try {
+			mailFactory.createActivationMail().sendTo(userEmail, accessToken);
+		} catch (final Exception e) {
+			final String message = "The user was created but activation e-mail was not sent.";
 			LOGGER.error(message, e);
 			throw new RuntimeException(message, e);
 		}

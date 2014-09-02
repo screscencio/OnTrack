@@ -19,8 +19,6 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequ
 
 import java.util.ArrayList;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -31,6 +29,9 @@ import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -67,7 +68,7 @@ public class QueuedActionsDispatcherTest extends GwtTest {
 
 			@Override
 			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
-				if (callbackHolder.getValue() != null) Assert.fail(QueuedActionsDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
+				if (callbackHolder.getValue() != null) fail(QueuedActionsDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
 				callbackHolder.setValue(callback);
 			}
 		});
@@ -82,26 +83,26 @@ public class QueuedActionsDispatcherTest extends GwtTest {
 
 			@Override
 			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
-				if (callbackHolder.getValue() != null) Assert.fail(QueuedActionsDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
+				if (callbackHolder.getValue() != null) fail(QueuedActionsDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
 				callbackHolder.setValue(callback);
 			}
 		});
 
-		Assert.assertNull("It should not exist any callback registered.", callbackHolder.getValue());
+		assertNull("It should not exist any callback registered.", callbackHolder.getValue());
 
 		for (int i = 0; i < 10; i++)
 			dispatch();
 
-		Assert.assertNotNull("It should exist a callback registered.", callbackHolder.getValue());
+		assertNotNull("It should exist a callback registered.", callbackHolder.getValue());
 
 		final DispatchCallback<VoidResult> callback = callbackHolder.getValue();
 		callbackHolder.setValue(null);
 
-		Assert.assertNull("It should not exist any callback registered.", callbackHolder.getValue());
+		assertNull("It should not exist any callback registered.", callbackHolder.getValue());
 
 		callback.onSuccess(null);
 
-		Assert.assertNotNull("It should exist a callback registered.", callbackHolder.getValue());
+		assertNotNull("It should exist a callback registered.", callbackHolder.getValue());
 	}
 
 	@Test
@@ -112,7 +113,7 @@ public class QueuedActionsDispatcherTest extends GwtTest {
 
 			@Override
 			public void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<VoidResult> callback) {
-				if (callbackHolder.getValue() != null) Assert.fail(QueuedActionsDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
+				if (callbackHolder.getValue() != null) fail(QueuedActionsDispatcher.class.getSimpleName() + " should only make one call at a time to the request dispatch service.");
 				callbackHolder.setValue(callback);
 				request.setValue(modelActionSyncRequest);
 			}
@@ -121,13 +122,13 @@ public class QueuedActionsDispatcherTest extends GwtTest {
 		for (int i = 0; i < 10; i++)
 			dispatch();
 
-		Assert.assertEquals("The first action sync request should have only one action.", 1, request.getValue().getActionList().size());
+		assertEquals("The first action sync request should have only one action.", 1, request.getValue().getActionList().size());
 
 		final DispatchCallback<VoidResult> callback = callbackHolder.getValue();
 		callbackHolder.setValue(null);
 		callback.onSuccess(null);
 
-		Assert.assertEquals("The second action sync request should have all the remaining actions.", 9, request.getValue().getActionList().size());
+		assertEquals("The second action sync request should have all the remaining actions.", 9, request.getValue().getActionList().size());
 	}
 
 	@Test
@@ -146,18 +147,18 @@ public class QueuedActionsDispatcherTest extends GwtTest {
 		for (int i = 0; i < 10; i++)
 			dispatch();
 
-		Assert.assertEquals("The first action sync request should have only one action.", 1, request.getValue().getActionList().size());
+		assertEquals("The first action sync request should have only one action.", 1, request.getValue().getActionList().size());
 
 		callbackHolder.getValue().onSuccess(null);
 
 		for (int i = 0; i < 10; i++)
 			dispatch();
 
-		Assert.assertEquals("The second action sync request should have 9 actions.", 9, request.getValue().getActionList().size());
+		assertEquals("The second action sync request should have 9 actions.", 9, request.getValue().getActionList().size());
 
 		callbackHolder.getValue().onSuccess(null);
 
-		Assert.assertEquals("The second action sync request should have all the remaining actions.", 10, request.getValue().getActionList().size());
+		assertEquals("The second action sync request should have all the remaining actions.", 10, request.getValue().getActionList().size());
 	}
 
 	@Test

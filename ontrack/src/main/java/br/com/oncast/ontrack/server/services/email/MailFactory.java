@@ -22,4 +22,8 @@ public class MailFactory {
 		return WelcomeMail.createInstance();
 	}
 
+	public ActivationMail createActivationMail() {
+		return ActivationMail.createInstance();
+	}
+
 }

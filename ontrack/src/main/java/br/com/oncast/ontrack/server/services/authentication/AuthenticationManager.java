@@ -33,7 +33,7 @@ public class AuthenticationManager {
 
 	private static final String DEFAULT_NEW_USER_PASSWORD = "";
 
-	private static final long DAYS = 24 * 60 * 60 * 1000;
+	private static final long MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
 
 	private final PersistenceService persistenceService;
 
@@ -127,11 +127,16 @@ public class AuthenticationManager {
 			final User user = findUserByEmail(username);
 			final List<Password> userPasswords = findPasswordForUser(user);
 
-			final Password userPassword = getValidUserPassword(currentPassword, userPasswords);
-			if (userPassword == null) throw new InvalidAuthenticationCredentialsException("Could not change the password for the user " + username + ", because the current password is incorrect.");
+			if (userPasswords.isEmpty()) {
+				createPasswordForUser(user, newPassword);
+			} else {
+				final Password userPassword = getValidUserPassword(currentPassword, userPasswords);
+				if (userPassword == null) { throw new InvalidAuthenticationCredentialsException("Could not change the password for the user " + username
+						+ ", because the current password is incorrect."); }
+				userPassword.setPassword(newPassword);
+				persistenceService.persistOrUpdatePassword(userPassword);
+			}
 
-			userPassword.setPassword(newPassword);
-			persistenceService.persistOrUpdatePassword(userPassword);
 		} catch (final UserNotFoundException e) {
 			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
 			LOGGER.error(message, e);
@@ -144,8 +149,9 @@ public class AuthenticationManager {
 	}
 
 	private Password getValidUserPassword(final String password, final List<Password> userPasswords) {
-		for (final Password pass : userPasswords)
+		for (final Password pass : userPasswords) {
 			if (pass.authenticate(password)) return pass;
+		}
 		return null;
 	}
 
@@ -246,23 +252,24 @@ public class AuthenticationManager {
 	public void authenticateByToken(final String athenticationToken) {
 		try {
 			final User user = persistenceService.retrieveUserById(new UUID(athenticationToken));
-			if (isUserActive(user)) throwInvalidTokenException(athenticationToken);
+			if (!isTokenValid(user)) throw new AuthenticationException("Invalid authentication token (" + athenticationToken + ")");
 
 			sessionManager.getCurrentSession().setAuthenticatedUser(user);
 			notifyUserLoggedIn(user);
 		} catch (final Exception e) {
 			LOGGER.error(e);
-			throwInvalidTokenException(athenticationToken);
+			throw new AuthenticationException("Invalid authentication token (" + athenticationToken + ")");
 		}
 	}
 
-	private boolean isUserActive(final User user) throws PersistenceException {
+	private boolean isTokenValid(final User user) throws PersistenceException {
 		final Date creationTimestamp = user.getCreationTimestamp();
 		final long difference = new Date().getTime() - creationTimestamp.getTime();
-		return difference > Configurations.get().getAuthenticationTokenExpirationInDays() * DAYS && persistenceService.retrievePasswordsForUser(user.getId()).isEmpty();
+		final boolean validToken = difference <= Configurations.get().getAuthenticationTokenExpirationInDays() * MILLISECONDS_IN_A_DAY;
+		return validToken && !hasPassword(user.getId());
 	}
 
-	private void throwInvalidTokenException(final String athenticationToken) {
-		throw new AuthenticationException("Invalid authentication token (" + athenticationToken + ")");
+	public boolean hasPassword(final UUID userId) throws PersistenceException {
+		return !persistenceService.retrievePasswordsForUser(userId).isEmpty();
 	}
 }

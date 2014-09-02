@@ -31,14 +31,14 @@ import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import java.util.Date;
 
-import junit.framework.Assert;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertEquals;
 
 import static org.mockito.Mockito.when;
 
@@ -52,7 +52,7 @@ public class ReleaseScopeOrderTest {
 
 		@Override
 		public void assertObjectEquality(final Scope expected, final Scope actual) throws DeepEqualityException {
-			Assert.assertEquals(expected.getId(), actual.getId());
+			assertEquals(expected.getId(), actual.getId());
 		}
 	}
 

@@ -46,7 +46,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 // TODO Create tests for other methods. Now it is only testing release search.
 public class ProjectContextTest {

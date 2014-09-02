@@ -15,10 +15,10 @@ public class OnTrackOnboardingResource {
 
 	@POST
 	@Path("/user")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public String onboarding(final OnboardingApiRequest request) {
-		final String accessUrl = ServerServiceProvider.getInstance().getBusinessLogic().createUser(request.getEmail(), Profile.ACCOUNT_MANAGER).toString();
-		return Configurations.get().getApplicationBaseUrl() + "/onboarding/access/" + accessUrl;
+		final String accessToken = ServerServiceProvider.getInstance().getBusinessLogic().createTrialUser(request.getEmail(), Profile.ACCOUNT_MANAGER).toString();
+		return Configurations.get().getApplicationBaseUrl() + "onboarding/access/" + accessToken;
 	}
 
 }

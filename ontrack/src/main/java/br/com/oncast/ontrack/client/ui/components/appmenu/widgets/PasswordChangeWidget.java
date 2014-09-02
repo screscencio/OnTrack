@@ -21,6 +21,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -52,6 +53,9 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	protected Label messageLabel;
 
 	@UiField
+	protected HTMLPanel oldPasswordContainer;
+
+	@UiField
 	protected Button changePasswordButton;
 
 	public PasswordChangeWidget() {
@@ -67,11 +71,16 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	@Override
 	public void show() {
 		clearFields();
+		oldPasswordContainer.setVisible(ClientServices.get().authentication().isCurrentUserActivated());
 		focus();
 	}
 
 	public void focus() {
-		oldPasswordArea.setFocus(true);
+		if (ClientServices.get().authentication().isCurrentUserActivated()) {
+			oldPasswordArea.setFocus(true);
+		} else {
+			newPasswordArea.setFocus(true);
+		}
 	}
 
 	@UiHandler({ "oldPasswordArea", "newPasswordArea", "retypePasswordArea" })

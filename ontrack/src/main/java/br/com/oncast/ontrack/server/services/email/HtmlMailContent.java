@@ -33,6 +33,11 @@ public class HtmlMailContent {
 		return writeMailContent(createNewUserWelcomeContext(userEmail, generatedPassword, from), template);
 	}
 
+	public static String forTrialUserWelcome(final String userEmail, final String accessToken, final String from) {
+		final Template template = getTemplate("/br/com/oncast/ontrack/server/services/email/welcomeToTrialUser.html");
+		return writeMailContent(createTrialUserWelcomeContext(userEmail, accessToken, from), template);
+	}
+
 	public static String forProjectCreationQuotaRequest(final String currentUser) {
 		final Template template = getTemplate("/br/com/oncast/ontrack/server/services/email/projectCreationQuotaRequest.html");
 		return writeMailContent(createProjectCreationQuotaRequestContext(currentUser), template);
@@ -55,6 +60,14 @@ public class HtmlMailContent {
 		context.put("userEmail", userEmail);
 		context.put("currentUser", inviter);
 		context.put("generatedPassword", generatedPassword);
+		return context;
+	}
+
+	private static VelocityContext createTrialUserWelcomeContext(final String userEmail, final String accessToken, final String inviter) {
+		final VelocityContext context = new VelocityContext();
+		context.put("projectLink", CustomUrlGenerator.getApplicationUrl() + "onboarding/access/" + accessToken);
+		context.put("userEmail", userEmail);
+		context.put("currentUser", inviter);
 		return context;
 	}
 

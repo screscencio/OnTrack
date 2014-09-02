@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
+import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 
 import java.io.IOException;
 
@@ -19,8 +20,13 @@ public class OnboardingServlet extends HttpServlet {
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		final String[] paths = request.getPathInfo().split("/");
 		final String userId = paths[paths.length - 1];
-		SERVICE_PROVIDER.getAuthenticationManager().authenticateByToken(userId);
-		response.sendRedirect("/");
+		try {
+			SERVICE_PROVIDER.getSessionManager().configureCurrentHttpSession(request);
+			SERVICE_PROVIDER.getAuthenticationManager().authenticateByToken(userId);
+			response.sendRedirect("/");
+		} catch (final AuthenticationException e) {
+			response.sendRedirect("/error/token.html");
+		}
 	}
 
 }

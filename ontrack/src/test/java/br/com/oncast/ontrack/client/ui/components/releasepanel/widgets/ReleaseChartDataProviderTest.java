@@ -34,13 +34,12 @@ import com.google.gwt.user.client.rpc.impl.ReflectionHelper;
 import com.ibm.icu.util.Calendar;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import static junit.framework.Assert.assertEquals;
 
 public class ReleaseChartDataProviderTest {
 
@@ -136,7 +135,7 @@ public class ReleaseChartDataProviderTest {
 	public void getEffortSumShouldReturnEffortSumOfTheRelease() throws Exception {
 		for (int i = 0; i < 20; i++) {
 			releaseEffortSum = (float) i;
-			assertEquals(releaseEffortSum, getProvider().getEffortSum());
+			assertEquals(releaseEffortSum, getProvider().getEffortSum(), 0.009);
 		}
 	}
 
@@ -188,7 +187,7 @@ public class ReleaseChartDataProviderTest {
 		Mockito.when(release.hasDeclaredEstimatedSpeed()).thenReturn(true);
 		Mockito.when(release.getEstimatedSpeed()).thenReturn(declaredVelocity);
 
-		assertEquals(declaredVelocity, getProvider().getEstimatedVelocity());
+		assertEquals(declaredVelocity, getProvider().getEstimatedVelocity(), 0.009);
 
 		Mockito.verify(release).getEstimatedSpeed();
 	}
@@ -200,7 +199,7 @@ public class ReleaseChartDataProviderTest {
 		Mockito.when(release.hasDeclaredEstimatedSpeed()).thenReturn(false);
 		Mockito.when(estimatorMock.getInferedEstimatedSpeed(Mockito.any(Release.class))).thenReturn(inferedVelocity);
 
-		assertEquals(inferedVelocity, getProvider().getEstimatedVelocity());
+		assertEquals(inferedVelocity, getProvider().getEstimatedVelocity(), 0.009);
 
 		Mockito.verify(release, Mockito.never()).getEstimatedSpeed();
 		Mockito.verify(estimatorMock).getInferedEstimatedSpeed(Mockito.any(Release.class));

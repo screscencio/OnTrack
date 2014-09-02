@@ -9,11 +9,10 @@ import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import static br.com.oncast.ontrack.shared.model.annotation.AnnotationType.OPEN_IMPEDIMENT;
@@ -64,12 +63,12 @@ public class AbstractSubjectDetailUpdateEventTest {
 
 	@Test
 	public void shouldCountTwoWhenTwoImpedimentsAreNotDeprecated() throws Exception {
-		Assert.assertEquals(validOpenImpediments.size(), event.getOpenImpedimentsCount());
+		assertEquals(validOpenImpediments.size(), event.getOpenImpedimentsCount());
 	}
 
 	@Test
 	public void shouldGetOnlyValidOpenImpediments() throws Exception {
-		Assert.assertEquals(validOpenImpediments, event.getOpenImpediments());
+		assertEquals(validOpenImpediments, event.getOpenImpediments());
 	}
 
 }

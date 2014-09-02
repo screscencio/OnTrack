@@ -45,8 +45,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
-import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -244,7 +242,7 @@ public class PersistenceServiceTest {
 		persistenceService.persistOrUpdateUser(user);
 
 		user = persistenceService.retrieveUserByEmail(email);
-		Assert.assertEquals(0, persistenceService.retrievePasswordsForUser(user.getId()).size());
+		assertEquals(0, persistenceService.retrievePasswordsForUser(user.getId()).size());
 	}
 
 	@Test

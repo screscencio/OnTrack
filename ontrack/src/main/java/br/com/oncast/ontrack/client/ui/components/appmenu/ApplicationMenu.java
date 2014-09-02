@@ -235,6 +235,9 @@ public class ApplicationMenu extends Composite {
 		registerUserDataUpdateListener();
 
 		userMenuItem.setPopupConfig(popup);
+		if (!SERVICE_PROVIDER.authentication().isCurrentUserActivated()) {
+			popupPassChange.pop();
+		}
 	}
 
 	private void createAssignedToMeMenu() {

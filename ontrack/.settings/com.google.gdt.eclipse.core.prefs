@@ -1,4 +1,4 @@
 eclipse.preferences.version=1
-jarsExcludedFromWebInfLib=/home/guih/dev/workspace/OnTrack/ontrack/lib/gwt-test-utils-0.44.jar|/home/guih/dev/workspace/OnTrack/ontrack/lib/htmlparser-1.6.jar|/home/guih/dev/workspace/OnTrack/ontrack/lib/junit-4.8.1.jar|/home/guih/dev/workspace/OnTrack/ontrack/lib/mockito-all-1.9.5.jar
+jarsExcludedFromWebInfLib=/Users/mats/dev/ontrack/OnTrack/ontrack/lib/gwt-test-utils-0.44.jar|/Users/mats/dev/ontrack/OnTrack/ontrack/lib/htmlparser-1.6.jar|/Users/mats/dev/ontrack/OnTrack/ontrack/lib/junit-4.8.1.jar|/Users/mats/dev/ontrack/OnTrack/ontrack/lib/mockito-all-1.9.5.jar
 warSrcDir=war
 warSrcDirIsOutput=true
