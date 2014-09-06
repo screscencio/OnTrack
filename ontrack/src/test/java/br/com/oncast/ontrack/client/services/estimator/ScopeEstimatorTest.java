@@ -46,7 +46,7 @@ public class ScopeEstimatorTest {
 	public void whenTheScopeIsInAReleaseTheEstimatedVelocityForTheScopeIsTheEstimatedVelocityForTheRelease() throws Exception {
 		final float vel = 3F;
 		final Release release = ReleaseTestUtils.createRelease();
-		scope.setRelease(release);
+		release.addScope(scope);
 		when(releaseEstimator.getEstimatedSpeed(release)).thenReturn(vel);
 
 		assertEquals(vel, estimator.getEstimatedExecutionSpeed(scope), TestUtils.TOLERATED_FLOAT_DIFFERENCE);

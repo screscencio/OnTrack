@@ -27,6 +27,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.HasMouseDownHandlers;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -35,7 +38,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ProgressIcon extends Composite {
+public class ProgressIcon extends Composite implements HasMouseDownHandlers {
 
 	private static ProgressIconUiBinder uiBinder = GWT.create(ProgressIconUiBinder.class);
 
@@ -143,6 +146,11 @@ public class ProgressIcon extends Composite {
 
 	private void declareProgress(final String progressDescription) {
 		ClientServices.get().actionExecution().onUserActionExecutionRequest(new ScopeDeclareProgressAction(task.getId(), progressDescription));
+	}
+
+	@Override
+	public HandlerRegistration addMouseDownHandler(final MouseDownHandler handler) {
+		return progressIcon.addMouseDownHandler(handler);
 	}
 
 }

@@ -157,7 +157,7 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 	 * @param release
 	 */
 	public void setRelease(final Release release) {
-		if (!release.containsScope(this)) throw new IllegalArgumentException("The Release should contain the scope");
+		if (release != null && !release.containsScope(this)) throw new IllegalArgumentException("The Release should contain the scope");
 		this.release = release;
 	}
 

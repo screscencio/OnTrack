@@ -5,24 +5,12 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ProgressIconUpdater;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ProgressIconUpdaterStyle;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.SpacerCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.CommandMenuMessages;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
-import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
-import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
-import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
-import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
-import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PercentualBar;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
-import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
-import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
-import br.com.oncast.ontrack.client.ui.generalwidgets.impediment.ImpedimentListWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.progress.ProgressIcon;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedTagsWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
@@ -32,20 +20,13 @@ import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.client.utils.ui.ElementUtils;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.PrioritizationCriteria;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
@@ -56,10 +37,10 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -75,7 +56,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 
 	interface ScopeCardWidgetUiBinder extends UiBinder<Widget, ScopeCardWidget> {}
 
-	interface ScopeCardWidgetStyle extends ProgressIconUpdaterStyle {
+	interface ScopeCardWidgetStyle extends CssResource {
 		String selected();
 
 		String targetHighlight();
@@ -97,8 +78,8 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 	@UiField
 	SpanElement descriptionLabel;
 
-	@UiField
-	FocusPanel progressIcon;
+	@UiField(provided = true)
+	ProgressIcon progressIcon;
 
 	@UiField
 	HTMLPanel internalPanel;
@@ -137,7 +118,6 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 	private boolean selected = false;
 	private boolean targetHighlight = false;
 	private boolean associationHighlight = false;
-	private boolean skipScopeSelectionEventOnPopupClose = false;
 	private boolean currentScopeHasOpenImpediments = false;
 
 	public ScopeCardWidget(final Scope scope) {
@@ -147,6 +127,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 	public ScopeCardWidget(final Scope scope, final boolean releaseSpecific, final DragAndDropManager userDragAndDropMananger) {
 		associatedUsers = createAssociatedUsersListWidget(scope, userDragAndDropMananger);
 		tags = new ScopeAssociatedTagsWidget(scope);
+		progressIcon = new ProgressIcon(scope);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
@@ -263,8 +244,7 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 		this.currentScopeHasOpenImpediments = hasOpenImpediments;
 
 		final ProgressIconUpdater updater = ProgressIconUpdater.getUpdater(scope, currentScopeHasOpenImpediments);
-		progressIcon.setStyleName(updater.getStyle(style));
-		progressIcon.setTitle(updater.getTitle(scope));
+		progressIcon.update();
 		if (!description.isEmpty()) updater.animate(internalPanel);
 
 		if (releaseSpecific) updateStoryColor(progress);
@@ -295,88 +275,6 @@ public class ScopeCardWidget extends Composite implements ScopeWidget, ModelWidg
 	@UiHandler("progressIcon")
 	public void onProgressIconMouseDown(final MouseDownEvent e) {
 		fireScopeSelectionEvent(); // Showing the item that will be changed.
-	}
-
-	@UiHandler("progressIcon")
-	public void onProgressIconClick(final ClickEvent e) {
-		e.stopPropagation();
-		showPopup(currentScopeHasOpenImpediments ? new ImpedimentListWidget(scope) : createProgressMenu());
-	}
-
-	private Widget createProgressMenu() {
-		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
-		final ProjectContext context = ClientServices.getCurrentProjectContext();
-
-		for (final String progressDefinition : context.getProgressDefinitions(scope))
-			items.add(createItem(ProgressState.getLabelForDescription(progressDefinition), progressDefinition));
-		items.add(new SpacerCommandMenuItem());
-		items.add(new TextAndImageCommandMenuItem("icon-flag", MESSAGES.impediments(), new Command() {
-			@Override
-			public void execute() {
-				skipScopeSelectionEventOnPopupClose = true;
-				showPopup(new ImpedimentListWidget(scope));
-			}
-		}));
-
-		final FiltrableCommandMenu commandsMenu = new FiltrableCommandMenu(getProgressCommandMenuItemFactory(), 200, 264);
-		commandsMenu.setOrderedItems(items);
-		return commandsMenu;
-	}
-
-	private void showPopup(final Widget finalPopupWidget) {
-		// Scheduled because of selection event steels focus if not
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				PopupConfig.configPopup().alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.RIGHT))
-						.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.BOTTOM)).popup(finalPopupWidget).onClose(new PopupCloseListener() {
-							@Override
-							public void onHasClosed() {
-								if (!skipScopeSelectionEventOnPopupClose) fireScopeSelectionEvent(); // Return focus to scopeTree;
-								else skipScopeSelectionEventOnPopupClose = false;
-							}
-						}).pop();
-			}
-		});
-	}
-
-	public SimpleCommandMenuItem createItem(final String itemText, final String progressToDeclare) {
-		return new SimpleCommandMenuItem(itemText, progressToDeclare, new Command() {
-
-			@Override
-			public void execute() {
-				declareProgress(progressToDeclare);
-			}
-		});
-	}
-
-	private void declareProgress(final String progressDescription) {
-		SERVICE_PROVIDER.actionExecution().onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), progressDescription));
-	}
-
-	private CustomCommandMenuItemFactory getProgressCommandMenuItemFactory() {
-		return new CustomCommandMenuItemFactory() {
-
-			@Override
-			public String getNoItemText() {
-				return null;
-			}
-
-			@Override
-			public CommandMenuItem createCustomItem(final String inputText) {
-				return new SimpleCommandMenuItem(MESSAGES.markAs(inputText), inputText, new Command() {
-					@Override
-					public void execute() {
-						declareProgress(inputText);
-					}
-				});
-			}
-
-			@Override
-			public boolean shouldPrioritizeCustomItem() {
-				return false;
-			}
-		};
 	}
 
 	@UiHandler("panel")

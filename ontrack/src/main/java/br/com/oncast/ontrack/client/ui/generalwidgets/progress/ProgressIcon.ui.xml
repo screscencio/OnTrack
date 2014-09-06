@@ -5,7 +5,7 @@
 	<ui:image field="notStarted" src="../../components/scope/not_started.png"/>
 	<ui:image field="underwork" src="../../components/scope/underwork.png"/>
 	<ui:image field="done" src="../../components/scope/done.png"/>
-	<ui:style type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ProgressIconUpdaterStyle">
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ProgressIconUpdaterStyle">
 	
 		.progressIconDone, .progressIconUnderwork, .progressIconNotStarted, .progressIconHasOpenImpediments {
 			position: relative;

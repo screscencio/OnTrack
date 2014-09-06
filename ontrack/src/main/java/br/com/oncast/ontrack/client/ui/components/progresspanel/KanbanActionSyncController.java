@@ -4,6 +4,8 @@ import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
+import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
@@ -141,6 +143,8 @@ public class KanbanActionSyncController {
 				if (action instanceof ScopeInsertSiblingUpRollbackAction) return true;
 				if (action instanceof ScopeInsertSiblingDownRollbackAction) return true;
 				if (action instanceof ScopeInsertParentRollbackAction) return true;
+				if (action instanceof ImpedimentAction) return true;
+				if (action instanceof AnnotationAction) return true;
 				if (action instanceof ScopeInsertChildRollbackAction) return true;
 				if (action instanceof ScopeBindReleaseAction) return true;
 				if (action instanceof ScopeDeclareProgressAction) return true;
