@@ -84,8 +84,8 @@ public class Release implements Serializable, HasUUID {
 	}
 
 	/**
-	 * Returns a copy of the list of children releases. If you want to add or remove a child release, use {@link Release#addChild(Release)} and
-	 * {@link Release#removeChild(Release)}. Don't manipulate this list directly.
+	 * Returns a copy of the list of children releases. If you want to add or remove a child release, use {@link Release#addChild(Release)} and {@link Release#removeChild(Release)}. Don't manipulate
+	 * this list directly.
 	 */
 	public List<Release> getChildren() {
 		return new ArrayList<Release>(childrenList);
@@ -104,16 +104,15 @@ public class Release implements Serializable, HasUUID {
 	}
 
 	/**
-	 * Appends a release to the end of the children list. If the added release already has an association with other release, this association is removed before
-	 * the new association is made.
+	 * Appends a release to the end of the children list. If the added release already has an association with other release, this association is removed before the new association is made.
 	 */
 	public void addChild(final Release release) {
 		addChild(-1, release);
 	}
 
 	/**
-	 * Inserts a release at the specified position into the children list. If the added release already has an association with other release, this association
-	 * is removed before the new association is made.
+	 * Inserts a release at the specified position into the children list. If the added release already has an association with other release, this association is removed before the new association is
+	 * made.
 	 * 
 	 * If the index position is negative the scope will be added to the end of the list.
 	 */
@@ -202,8 +201,8 @@ public class Release implements Serializable, HasUUID {
 	}
 
 	/**
-	 * Returns a copy of the list of associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope, int)} and
-	 * {@link Release#removeScope(Scope)}. Do NOT manipulate this list directly.
+	 * Returns a copy of the list of associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope, int)} and {@link Release#removeScope(Scope)}. Do NOT
+	 * manipulate this list directly.
 	 */
 	public List<Scope> getScopeList() {
 		return new ArrayList<Scope>(scopeList);
@@ -219,8 +218,7 @@ public class Release implements Serializable, HasUUID {
 	}
 
 	/**
-	 * Adds a scope to the scope list. If the added scope already has an association with other release, the association is not removed before
-	 * the new association is made.
+	 * Adds a scope to the scope list. If the added scope already has an association with other release, the association is not removed before the new association is made.
 	 */
 	// TODO Remove this method. Use the method below.
 	public void addScope(final Scope scope) {
@@ -228,8 +226,7 @@ public class Release implements Serializable, HasUUID {
 	}
 
 	/**
-	 * Adds a scope to the scope list in a specific index. If the added scope already has an association with other release, the association is not removed
-	 * before the new association is made.
+	 * Adds a scope to the scope list in a specific index. If the added scope already has an association with other release, the association is not removed before the new association is made.
 	 * 
 	 * If the index position is negative the scope will be added to the end of the list.
 	 */
@@ -237,14 +234,12 @@ public class Release implements Serializable, HasUUID {
 		if (scopeList.contains(scope) && scopeList.indexOf(scope) == scopeIndex) return;
 
 		// TODO Remove this 'defensive programming' conditional statement.
-		if (scope.getRelease() != null && !scope.getRelease().equals(this)) throw new RuntimeException(
-				"The scope should not have any release set to be added to this release");
+		if (scope.getRelease() != null && !scope.getRelease().equals(this)) throw new RuntimeException("The scope should not have any release set to be added to this release");
 
 		scopeList.remove(scope);
 		if (scopeIndex < 0 || scopeIndex >= scopeList.size()) scopeList.add(scope);
 		else scopeList.add(scopeIndex, scope);
 
-		// TODO Analyze removing this. Or the scope-release becomes bidirectional or the action has to be responsible for both ways.
 		scope.setRelease(this);
 	}
 
@@ -273,8 +268,8 @@ public class Release implements Serializable, HasUUID {
 	}
 
 	public void setDescription(final String newReleaseDescription) {
-		if (newReleaseDescription == null || newReleaseDescription.isEmpty() || newReleaseDescription.contains(ReleaseDescriptionParser.SEPARATOR)) throw new RuntimeException(
-				"An invalid description was given.");
+		if (newReleaseDescription == null || newReleaseDescription.isEmpty() || newReleaseDescription.contains(ReleaseDescriptionParser.SEPARATOR))
+			throw new RuntimeException("An invalid description was given.");
 		description = newReleaseDescription;
 	}
 
@@ -390,7 +385,9 @@ public class Release implements Serializable, HasUUID {
 
 	/**
 	 * Finds the latest past release that satisfies the given condition
-	 * @param condition that tests if the release is the right one
+	 * 
+	 * @param condition
+	 *            that tests if the release is the right one
 	 * @return the latest release that satisfies the given condition or null if any past release satisfies the condition
 	 */
 	public Release getLatestPastRelease(final Condition condition) {
@@ -407,7 +404,9 @@ public class Release implements Serializable, HasUUID {
 
 	/**
 	 * Finds the first future release that satisfies the given condition
-	 * @param condition that tests if the release is the right one
+	 * 
+	 * @param condition
+	 *            that tests if the release is the right one
 	 * @return the first release that satisfies the given condition or null if any future release satisfies the condition
 	 */
 	public Release getFirstFutureRelease(final Condition condition) {

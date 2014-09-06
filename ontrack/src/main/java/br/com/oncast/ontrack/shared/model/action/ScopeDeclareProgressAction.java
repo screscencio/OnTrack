@@ -84,13 +84,12 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	}
 
 	private void assureKanbanColumnExistence(final ProjectContext context, final Scope scope) throws UnableToCompleteActionException {
-		final Scope story = scope.getStory();
-		final Release release = story.getRelease();
+		final Release release = scope.getRelease();
 		if (release == null) return;
 
 		final Kanban kanban = context.getKanban(release);
-		for (final Scope task : story.getAllLeafs()) {
-			final String description = task.getProgress().getDescription();
+		for (final Scope story : release.getScopeList()) {
+			final String description = story.getProgress().getDescription();
 			if (!kanban.hasNonInferedColumn(description)) subActionList.add(new KanbanColumnCreateAction(release.getId(), description, false));
 		}
 	}

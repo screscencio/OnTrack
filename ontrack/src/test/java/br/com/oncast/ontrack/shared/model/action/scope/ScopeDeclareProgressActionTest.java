@@ -95,8 +95,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetProgressStatusOfScopeToNotStartedConsideringVariations() throws UnableToCompleteActionException {
-		final String[] acceptableNotStartedDescriptions = { "NotStarted", "Not Started", "Not started", "not started", "not_started", "Not_Started", "NS",
-				"ns", "N", "n" };
+		final String[] acceptableNotStartedDescriptions = { "NotStarted", "Not Started", "Not started", "not started", "not_started", "Not_Started", "NS", "ns", "N", "n" };
 		for (final String notStartedDespription : acceptableNotStartedDescriptions) {
 			new ScopeDeclareProgressAction(scope.getId(), notStartedDespription).execute(context, actionContext);
 			assertThatProgressIs(ProgressState.NOT_STARTED);
@@ -195,7 +194,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 		final Kanban kanban = KanbanTestUtils.createWith();
 		final String progress = "AnyProgress";
 		final ScopeDeclareProgressAction action = new ScopeDeclareProgressAction(scope.getId(), progress);
-		scope.setRelease(release);
+		release.addScope(scope);
 
 		when(context.findScope(scope.getId())).thenReturn(scope);
 		when(context.getKanban(release)).thenReturn(kanban);

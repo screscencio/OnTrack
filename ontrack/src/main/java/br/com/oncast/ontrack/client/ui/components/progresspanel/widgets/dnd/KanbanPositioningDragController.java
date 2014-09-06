@@ -48,13 +48,13 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 
 	private int findIndex(final ScopeCardWidget draggedScope) {
 		int index = 0;
-		final List<Scope> tasks = release.getTasks();
-		final int draggedPriority = tasks.indexOf(draggedScope.getModelObject());
+		final List<Scope> scopes = release.getScopeList();
+		final int draggedPriority = scopes.indexOf(draggedScope.getModelObject());
 		for (final Widget widget : (VerticalPanel) dropTarget) {
 			if (!(widget instanceof ScopeCardWidget)) continue;
 
 			final ScopeCardWidget w = (ScopeCardWidget) widget;
-			if (tasks.indexOf(w.getModelObject()) >= draggedPriority) return index;
+			if (scopes.indexOf(w.getModelObject()) >= draggedPriority) return index;
 			index++;
 		}
 		return index;
