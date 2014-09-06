@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:p="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.progress">
 	
 	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.details.TaskWidget.TaskWidgetStyle">
 	
@@ -13,13 +14,28 @@
 			background: COLOR_SELECTED_HEADER;
 		}
 
-		.description {}
-
+		.descriptionContainer {
+			padding-top: 2px;
+			padding-left: 2px;
+			position: relative;
+		}
+		
 	</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel">
 		<g:HTMLPanel ui:field="container" styleName="{style.container}">
-			<g:Label ui:field="description" styleName="{style.description}" />
+			<table class="{style.descriptionContainer}">
+				<tbody>
+					<tr>
+						<td width="100%">
+							<span ui:field="descriptionLabel"/>
+						</td>
+						<td>
+				 			<p:ProgressIcon ui:field="progressIcon"/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 	
