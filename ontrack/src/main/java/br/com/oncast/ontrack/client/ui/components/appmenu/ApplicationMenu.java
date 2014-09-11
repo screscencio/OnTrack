@@ -236,6 +236,8 @@ public class ApplicationMenu extends Composite {
 
 		userMenuItem.setPopupConfig(popup);
 		if (!SERVICE_PROVIDER.authentication().isCurrentUserActivated()) {
+			popupPassChange.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(applicationMenuPanel, HorizontalAlignment.CENTER));
+			popupPassChange.setModal(true);
 			popupPassChange.pop();
 		}
 	}
