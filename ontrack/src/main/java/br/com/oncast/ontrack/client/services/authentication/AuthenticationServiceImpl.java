@@ -167,6 +167,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			public void onSuccess(final VoidResult result) {
 				callback.onUserPasswordChangedSuccessfully();
 				isCurrentUserActivated = true;
+				notifyUserInformationLoadToUserAuthenticationListeners();
 			}
 
 			@Override
@@ -186,6 +187,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	@Override
 	public void registerUserAuthenticationListener(final UserAuthenticationListener listener) {
 		userAuthenticatedListeners.add(listener);
+		if (isUserAvailable()) {
+			listener.onUserInformationLoaded();
+		}
 	}
 
 	@Override

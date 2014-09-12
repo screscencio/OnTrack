@@ -47,9 +47,9 @@ public class ScopeEstimator {
 	@SuppressWarnings("deprecation")
 	private long getTimeOnly(final Date date) {
 		final Date d = CalendarUtil.copyDate(date);
-		d.setYear(0);
-		d.setMonth(0);
-		d.setDate(0);
+		d.setYear(1);
+		d.setMonth(1);
+		d.setDate(1);
 		return d.getTime();
 	}
 

@@ -86,10 +86,11 @@ public class PopupConfig {
 	private AlignmentReference alignHorizontallyTo;
 	private VerticalAlignment verticalAlignment;
 	private AlignmentReference alignVerticallyTo;
-	private boolean isModal = false;
+	private boolean focusMode = false;
 	private Panel previousAlertingParent;
 	private Widget previousShortcutHelpParent;
 	private BasicMaskPanel maskPanel;
+	private boolean modal;
 
 	private PopupConfig() {}
 
@@ -189,15 +190,18 @@ public class PopupConfig {
 		return this;
 	}
 
-	/**
-	 * Defines if the popup should be shown in a modal background or on a transparent background, default is transparent
-	 * 
-	 * @param isModal
-	 *            , true if you want a modal background or false otherwise
-	 * @return the self assistant for in-line call convenience.
-	 */
-	public PopupConfig setModal(final boolean isModal) {
-		this.isModal = isModal;
+	public PopupConfig focusMode(final boolean focusMode) {
+		this.focusMode = focusMode;
+		return this;
+	}
+
+	public PopupConfig modal() {
+		this.modal = true;
+		return this;
+	}
+
+	public PopupConfig nonModal() {
+		this.modal = false;
 		return this;
 	}
 
@@ -292,15 +296,15 @@ public class PopupConfig {
 			@Override
 			public void onWillHide() {
 				hidePopup();
-				if (isModal) {
+				if (focusMode) {
 					if (previousAlertingParent != null) ClientServices.get().alerting().setAlertingParentWidget(previousAlertingParent);
 					if (previousShortcutHelpParent != null) ShortcutService.setShortcutHelpPanelParentWidget(previousShortcutHelpParent);
 				}
 				maskPanel = null;
 			}
-		}, isModal);
+		}, focusMode, !modal);
 
-		if (isModal) {
+		if (focusMode) {
 			previousAlertingParent = ClientServices.get().alerting().setAlertingParentWidget(RootPanel.get());
 			previousShortcutHelpParent = ShortcutService.setShortcutHelpPanelParentWidget(RootPanel.get());
 		}

@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
+import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
@@ -21,6 +22,8 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -81,6 +84,8 @@ public class ApplicationMenu extends Composite {
 	private HandlerRegistration registration;
 
 	private MenuItem userLogoutMenuItem;
+
+	private PopupConfig popupPassChange;
 
 	public ApplicationMenu() {
 		this(true);
@@ -143,6 +148,33 @@ public class ApplicationMenu extends Composite {
 	protected void onLoad() {
 		super.onLoad();
 		registerUserDataUpdateListener();
+		SERVICE_PROVIDER.authentication().registerUserAuthenticationListener(new UserAuthenticationListener() {
+
+			@Override
+			public void onUserLoggedOut() {}
+
+			@Override
+			public void onUserLoggedIn() {}
+
+			@Override
+			public void onUserInformationLoaded() {
+				if (!SERVICE_PROVIDER.authentication().isCurrentUserActivated()) {
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							popupPassChange.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(applicationMenuPanel, HorizontalAlignment.CENTER));
+							popupPassChange.focusMode(true);
+							popupPassChange.modal();
+							popupPassChange.pop();
+						}
+					});
+				} else {
+					popupPassChange.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userMenuItem, HorizontalAlignment.LEFT));
+					popupPassChange.focusMode(false);
+					popupPassChange.nonModal();
+				}
+			}
+		});
 	}
 
 	private void registerUserDataUpdateListener() {
@@ -212,8 +244,7 @@ public class ApplicationMenu extends Composite {
 		if (registration != null) return;
 		final ApplicationSubmenu userMenu = new ApplicationSubmenu();
 
-		final PopupConfig popupPassChange = PopupConfig.configPopup().popup(new PasswordChangeWidget())
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM))
+		popupPassChange = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM))
 				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userMenuItem, HorizontalAlignment.LEFT)).setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
 		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu).alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM))
 				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userMenuItem, HorizontalAlignment.LEFT));
@@ -235,11 +266,6 @@ public class ApplicationMenu extends Composite {
 		registerUserDataUpdateListener();
 
 		userMenuItem.setPopupConfig(popup);
-		if (!SERVICE_PROVIDER.authentication().isCurrentUserActivated()) {
-			popupPassChange.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(applicationMenuPanel, HorizontalAlignment.CENTER));
-			popupPassChange.setModal(true);
-			popupPassChange.pop();
-		}
 	}
 
 	private void createAssignedToMeMenu() {

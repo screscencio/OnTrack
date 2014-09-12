@@ -108,8 +108,8 @@ public class ScopeEstimatorTest {
 	@Test
 	public void theScopeRemainingTimeShouldBeNegativeWhenNowIsBeforeTheDueDate() throws Exception {
 		scope.setDueDate(addToNow(-2, -3, -4));
-		final long timeDifference = -2 * DateUnit.HOUR + -3 * DateUnit.MINUTE + -4 * DateUnit.SECOND;
-		assertRemainingTimeWithSecondsOfPrecision(timeDifference);
+		final long timeDifference = 2 * DateUnit.HOUR + 3 * DateUnit.MINUTE + 4 * DateUnit.SECOND;
+		assertRemainingTimeWithSecondsOfPrecision(-timeDifference);
 	}
 
 	@Test

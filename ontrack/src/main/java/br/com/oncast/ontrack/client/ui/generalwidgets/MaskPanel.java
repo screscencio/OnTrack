@@ -8,10 +8,10 @@ public class MaskPanel {
 
 	private MaskPanel() {}
 
-	public static BasicMaskPanel show(final HideHandler hideHandler, final boolean isModal) {
+	public static BasicMaskPanel show(final HideHandler hideHandler, final boolean isModal, final boolean hideOnClick) {
 		final BasicMaskPanel panel = getPhysicalMaskWidget();
 		getShowingMaskPanels().add(panel);
-		panel.setModal(isModal).show(hideHandler);
+		panel.setModal(isModal).hideOnClick(hideOnClick).show(hideHandler);
 		return panel;
 	}
 
