@@ -216,7 +216,7 @@ public class ServerServiceProvider {
 		if (notificationServerService != null) return notificationServerService;
 		synchronized (this) {
 			if (notificationServerService != null) return notificationServerService;
-			return notificationServerService = new NotificationServerServiceImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService());
+			return notificationServerService = new NotificationServerServiceImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(), getMailFactory());
 		}
 	}
 

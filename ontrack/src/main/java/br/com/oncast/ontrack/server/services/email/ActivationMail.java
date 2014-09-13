@@ -5,6 +5,7 @@ import javax.mail.MessagingException;
 public class ActivationMail {
 
 	private final MailSender sender;
+
 	private String invitee;
 
 	private ActivationMail() {

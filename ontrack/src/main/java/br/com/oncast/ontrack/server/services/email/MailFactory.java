@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.server.services.email;
 
+import br.com.oncast.ontrack.shared.services.notification.Notification;
+
 public class MailFactory {
 
 	public ProjectAuthorizationMail createProjectAuthorizationMail() {
@@ -24,6 +26,10 @@ public class MailFactory {
 
 	public ActivationMail createActivationMail() {
 		return ActivationMail.createInstance();
+	}
+
+	public NotificationMail createNotificationMail(final Notification notification) {
+		return new NotificationMail(notification);
 	}
 
 }

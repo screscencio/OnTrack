@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.notification;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.email.MailFactory;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -27,12 +28,14 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 	private final AuthenticationManager authenticationManager;
 	private final PersistenceService persistenceService;
 	private final MulticastService multicastService;
+	private final MailFactory mailFactory;
 
-	public NotificationServerServiceImpl(final AuthenticationManager authenticationManager, final PersistenceService persistenceService,
-			final MulticastService multicastService) {
+	public NotificationServerServiceImpl(final AuthenticationManager authenticationManager, final PersistenceService persistenceService, final MulticastService multicastService,
+			final MailFactory mailFactory) {
 		this.authenticationManager = authenticationManager;
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
+		this.mailFactory = mailFactory;
 	}
 
 	@Override
@@ -41,11 +44,9 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 		LOGGER.debug("Retrieving notifications for user '" + user + "'.");
 		try {
 			return persistenceService.retrieveLatestNotificationsForUser(user.getId(), MAX_NUMBER_OF_NOTIFICATIONS);
-		}
-		catch (final NoResultFoundException e) {
+		} catch (final NoResultFoundException e) {
 			return new ArrayList<Notification>();
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String message = "It was not possible to retrieve the user's notifications.";
 			LOGGER.error(message, e);
 			throw new UnableToRetrieveNotificationListException(message);
@@ -56,8 +57,7 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 	public void registerNewNotification(final Notification notification) throws UnableToCreateNotificationException {
 		try {
 			this.persistenceService.persistOrUpdateNotification(notification);
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String message = "Unable to create a new notification exception.";
 			LOGGER.error(message, e);
 			throw new UnableToCreateNotificationException(message);
@@ -66,12 +66,12 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 		try {
 			final List<User> usersByIds = persistenceService.retrieveUsersByIds(recipientsAsUserMails);
 			this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), usersByIds);
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String message = "Unable to multicast new notification: Unable to retrieve recipient list.";
 			LOGGER.error(message, e);
 			throw new UnableToCreateNotificationException(message);
 		}
+		if (notification.isImportant()) mailFactory.createNotificationMail(notification).send();
 	}
 
 	@Override
@@ -89,8 +89,7 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 
 		try {
 			persistenceService.persistOrUpdateNotification(notification);
-		}
-		catch (final PersistenceException e) {
+		} catch (final PersistenceException e) {
 			final String message = "Unable to update notification: Unable to persist it.";
 			LOGGER.error(message, e);
 			throw new UnableToUpdateNotificationException(message);

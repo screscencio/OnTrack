@@ -12,7 +12,9 @@ import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -61,6 +63,15 @@ public class Notification implements Serializable {
 	@ConversionAlias("type")
 	@ConvertUsing(NotificationTypeConveter.class)
 	private NotificationType type;
+
+	private static final Set<NotificationType> IMPORTANT_NOTIFICATIONS = new HashSet<NotificationType>();
+
+	static {
+		IMPORTANT_NOTIFICATIONS.add(NotificationType.IMPEDIMENT_SOLVED);
+		IMPORTANT_NOTIFICATIONS.add(NotificationType.IMPEDIMENT_CREATED);
+		IMPORTANT_NOTIFICATIONS.add(NotificationType.TEAM_INVITED);
+		IMPORTANT_NOTIFICATIONS.add(NotificationType.TEAM_REMOVED);
+	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected Notification() {
@@ -166,6 +177,10 @@ public class Notification implements Serializable {
 
 	public void setAuthorId(final UUID authorId) {
 		this.authorId = authorId;
+	}
+
+	public boolean isImportant() {
+		return IMPORTANT_NOTIFICATIONS.contains(type);
 	}
 
 }

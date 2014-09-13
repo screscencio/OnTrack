@@ -137,4 +137,9 @@ public class HtmlMailContent {
 		return engine;
 	}
 
+	public static String getContent(final String templatePath, final MailVariableValuesMap parameters) {
+		final Template template = getTemplate(templatePath);
+		return writeMailContent(parameters, template);
+	}
+
 }

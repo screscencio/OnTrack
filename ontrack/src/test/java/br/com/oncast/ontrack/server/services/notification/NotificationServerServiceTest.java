@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.server.services.notification;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.NotificationMail;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -12,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
+import br.com.oncast.ontrack.shared.services.notification.NotificationTestUtils;
 import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 
@@ -25,26 +28,35 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.assertEquals;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import static br.com.oncast.ontrack.utils.model.UserTestUtils.createUser;
-import static org.junit.Assert.assertEquals;
 
 public class NotificationServerServiceTest {
 
 	NotificationServerService notificationServerService;
+
 	@Mock
 	AuthenticationManager authenticationManager;
+
 	@Mock
 	PersistenceService persistenceService;
+
 	@Mock
 	MulticastService multicastService;
+
+	@Mock
+	MailFactory mailFactory;
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		notificationServerService = new NotificationServerServiceImpl(authenticationManager, persistenceService, multicastService);
+		notificationServerService = new NotificationServerServiceImpl(authenticationManager, persistenceService, multicastService, mailFactory);
+		final NotificationMail notificationMailMock = Mockito.mock(NotificationMail.class);
+		when(mailFactory.createNotificationMail(Mockito.any(Notification.class))).thenReturn(notificationMailMock);
 	}
 
 	@Test
@@ -56,9 +68,7 @@ public class NotificationServerServiceTest {
 		userList.add(user1);
 		userList.add(user2);
 		when(persistenceService.retrieveUsersByIds(Mockito.any(List.class))).thenReturn(userList);
-		final Notification notification = getBuilder().setDescription("msg1").addReceipient(user1.getId())
-				.addReceipient(user2.getId())
-				.getNotification();
+		final Notification notification = getBuilder().setDescription("msg1").addReceipient(user1.getId()).addReceipient(user2.getId()).getNotification();
 
 		final ArgumentCaptor<Notification> persistenceCaptor = ArgumentCaptor.forClass(Notification.class);
 		final ArgumentCaptor<NotificationCreatedEvent> multicastEventCaptor = ArgumentCaptor.forClass(NotificationCreatedEvent.class);
@@ -80,40 +90,50 @@ public class NotificationServerServiceTest {
 	}
 
 	private NotificationBuilder getBuilder() {
-		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, ProjectTestUtils.createRepresentation(new UUID("")),
-				new UUID());
+		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, ProjectTestUtils.createRepresentation(new UUID("")), new UUID());
 	}
 
 	@Test
-	public void retrieveCurrentUserNotificationListShouldReturnEmptyListIfThereAreNoNotificationsOnPersistence()
-			throws UnableToRetrieveNotificationListException, NoResultFoundException, PersistenceException {
+	public void retrieveCurrentUserNotificationListShouldReturnEmptyListIfThereAreNoNotificationsOnPersistence() throws UnableToRetrieveNotificationListException, NoResultFoundException,
+			PersistenceException {
 		final User user1 = createUser();
 		when(authenticationManager.getAuthenticatedUser()).thenReturn(user1);
-		when(
-				persistenceService.retrieveLatestNotificationsForUser(user1.getId(),
-						NotificationServerServiceImpl.MAX_NUMBER_OF_NOTIFICATIONS)).thenThrow(
-				new NoResultFoundException("", null));
+		when(persistenceService.retrieveLatestNotificationsForUser(user1.getId(), NotificationServerServiceImpl.MAX_NUMBER_OF_NOTIFICATIONS)).thenThrow(new NoResultFoundException("", null));
 		final List<Notification> notificationList = notificationServerService.retrieveCurrentUserNotificationList();
 		assertEquals(0, notificationList.size());
 	}
 
 	@Test
-	public void retrieveCurrentUserNotificationListShouldReturnNotificationsReturnedByPersistence()
-			throws UnableToRetrieveNotificationListException, NoResultFoundException, PersistenceException {
+	public void retrieveCurrentUserNotificationListShouldReturnNotificationsReturnedByPersistence() throws UnableToRetrieveNotificationListException, NoResultFoundException, PersistenceException {
 		final User user1 = createUser();
 		final User user2 = createUser();
-		final Notification notification = getBuilder().setDescription("msg1").addReceipient(user1.getId())
-				.addReceipient(user2.getId())
-				.getNotification();
+		final Notification notification = getBuilder().setDescription("msg1").addReceipient(user1.getId()).addReceipient(user2.getId()).getNotification();
 		final List<Notification> list = new ArrayList<Notification>();
 		list.add(notification);
 
 		when(authenticationManager.getAuthenticatedUser()).thenReturn(user1);
-		when(
-				persistenceService.retrieveLatestNotificationsForUser(user1.getId(),
-						NotificationServerServiceImpl.MAX_NUMBER_OF_NOTIFICATIONS)).thenReturn(list);
+		when(persistenceService.retrieveLatestNotificationsForUser(user1.getId(), NotificationServerServiceImpl.MAX_NUMBER_OF_NOTIFICATIONS)).thenReturn(list);
 		final List<Notification> notificationList = notificationServerService.retrieveCurrentUserNotificationList();
 
 		assertEquals(list, notificationList);
+	}
+
+	@Test
+	public void shouldSendNotificationEmailWhenAnImportantNotificationIsRegistered() throws Exception {
+		final Notification importantNotification = NotificationTestUtils.createImportantMail();
+		final NotificationMail notificationMailMock = Mockito.mock(NotificationMail.class);
+
+		when(mailFactory.createNotificationMail(importantNotification)).thenReturn(notificationMailMock);
+		notificationServerService.registerNewNotification(importantNotification);
+
+		verify(mailFactory).createNotificationMail(importantNotification);
+		verify(notificationMailMock).send();
+	}
+
+	@Test
+	public void shouldNotSendNotificationEmailWhenANotImportantNotificationIsRegistered() throws Exception {
+		final Notification notification = NotificationTestUtils.createNotImportantMail();
+		notificationServerService.registerNewNotification(notification);
+		Mockito.verifyZeroInteractions(mailFactory);
 	}
 }

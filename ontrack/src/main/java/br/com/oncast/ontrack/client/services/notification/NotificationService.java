@@ -11,7 +11,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEventHandler;
-import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationReadStateRequest;
@@ -31,17 +30,8 @@ public class NotificationService {
 	private final List<Notification> availableNotifications = new LinkedList<Notification>();
 	private boolean notificationListAvailability;
 
-	private static final Set<NotificationType> IMPORTANT_NOTIFICATIONS = new HashSet<NotificationType>();
-
-	static {
-		IMPORTANT_NOTIFICATIONS.add(NotificationType.IMPEDIMENT_SOLVED);
-		IMPORTANT_NOTIFICATIONS.add(NotificationType.IMPEDIMENT_CREATED);
-		IMPORTANT_NOTIFICATIONS.add(NotificationType.TEAM_INVITED);
-		IMPORTANT_NOTIFICATIONS.add(NotificationType.TEAM_REMOVED);
-	}
-
-	public NotificationService(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
-			final ProjectRepresentationProvider projectRepresentationProvider, final ClientAlertingService alertingService) {
+	public NotificationService(final DispatchService dispatchService, final ServerPushClientService serverPushClientService, final ProjectRepresentationProvider projectRepresentationProvider,
+			final ClientAlertingService alertingService) {
 
 		this.dispatchService = dispatchService;
 		this.alertingService = alertingService;
@@ -167,6 +157,6 @@ public class NotificationService {
 	}
 
 	public boolean isImportant(final Notification notification) {
-		return IMPORTANT_NOTIFICATIONS.contains(notification.getType());
+		return notification.isImportant();
 	}
 }
