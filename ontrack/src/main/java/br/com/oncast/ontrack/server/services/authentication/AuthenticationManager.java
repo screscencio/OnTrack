@@ -1,7 +1,8 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
 import br.com.oncast.ontrack.server.configuration.Configurations;
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.MailService;
+import br.com.oncast.ontrack.server.services.email.PasswordResetMail;
 import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -39,16 +40,16 @@ public class AuthenticationManager {
 
 	private final SessionManager sessionManager;
 
-	private final MailFactory mailFactory;
+	private final MailService mailService;
 
 	private final Set<AuthenticationListener> authenticationListeners = new HashSet<AuthenticationListener>();
 
 	private final ServerAnalytics analytics;
 
-	public AuthenticationManager(final PersistenceService persistenceService, final SessionManager sessionManager, final MailFactory mailFactory, final ServerAnalytics analytics) {
+	public AuthenticationManager(final PersistenceService persistenceService, final SessionManager sessionManager, final MailService mailService, final ServerAnalytics analytics) {
 		this.persistenceService = persistenceService;
 		this.sessionManager = sessionManager;
-		this.mailFactory = mailFactory;
+		this.mailService = mailService;
 		this.analytics = analytics;
 	}
 
@@ -237,7 +238,7 @@ public class AuthenticationManager {
 			final User user = findUserByEmail(username);
 			final String newPassword = PasswordHash.generatePassword();
 			createPasswordForUser(user, newPassword);
-			mailFactory.createPasswordResetMail().send(username, newPassword);
+			mailService.send(PasswordResetMail.getMail(username, newPassword));
 		} catch (final UserNotFoundException e) {
 			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
 			LOGGER.error(message, e);

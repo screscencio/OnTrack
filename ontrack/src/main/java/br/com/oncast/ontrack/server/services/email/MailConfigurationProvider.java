@@ -31,7 +31,7 @@ public class MailConfigurationProvider {
 		};
 	}
 
-	static String getMailUsername() {
+	public static String getMailUsername() {
 		return CONFIGURATIONS.getEmailUsername();
 	}
 

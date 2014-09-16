@@ -1,7 +1,8 @@
 package br.com.oncast.ontrack.server.services.notification;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.MailService;
+import br.com.oncast.ontrack.server.services.email.NotificationMail;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -28,14 +29,14 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 	private final AuthenticationManager authenticationManager;
 	private final PersistenceService persistenceService;
 	private final MulticastService multicastService;
-	private final MailFactory mailFactory;
+	private final MailService mailService;
 
 	public NotificationServerServiceImpl(final AuthenticationManager authenticationManager, final PersistenceService persistenceService, final MulticastService multicastService,
-			final MailFactory mailFactory) {
+			final MailService mailService) {
 		this.authenticationManager = authenticationManager;
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
-		this.mailFactory = mailFactory;
+		this.mailService = mailService;
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 			LOGGER.error(message, e);
 			throw new UnableToCreateNotificationException(message);
 		}
-		if (notification.isImportant()) mailFactory.createNotificationMail(notification).send();
+		if (notification.isImportant()) mailService.send(new NotificationMail(notification));
 	}
 
 	@Override

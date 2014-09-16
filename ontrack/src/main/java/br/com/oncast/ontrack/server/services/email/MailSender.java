@@ -67,4 +67,5 @@ public class MailSender {
 	public void sendToDefaultEmail() {
 		sendTo(MailConfigurationProvider.getMailUsername());
 	}
+
 }

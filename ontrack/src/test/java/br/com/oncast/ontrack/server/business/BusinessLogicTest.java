@@ -6,7 +6,7 @@ import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProc
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.MailService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
@@ -267,7 +267,7 @@ public class BusinessLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
-		business = new BusinessLogicImpl(persistence, multicast, clientManager, authenticationManager, authorizationManager, sessionManager, mock(MailFactory.class), new SyncronizationService(),
+		business = new BusinessLogicImpl(persistence, multicast, clientManager, authenticationManager, authorizationManager, sessionManager, mock(MailService.class), new SyncronizationService(),
 				postProcessmentsInitializer, integration, serverAnalytics);
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();

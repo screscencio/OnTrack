@@ -1,30 +1,39 @@
 package br.com.oncast.ontrack.server.services.email;
 
-import javax.mail.MessagingException;
+public class PasswordResetMail implements OnTrackMail {
 
-public class PasswordResetMail {
+	private final String sendTo;
+	private final String generatedPassword;
 
-	private final MailSender sender;
-
-	private PasswordResetMail() {
-		sender = MailSender.createInstance();
+	private PasswordResetMail(final String sendTo, final String generatedPassword) {
+		this.sendTo = sendTo;
+		this.generatedPassword = generatedPassword;
 	}
 
-	public static PasswordResetMail createInstance() {
-		return new PasswordResetMail();
+	public static PasswordResetMail getMail(final String userEmail, final String generatedPassword) {
+		return new PasswordResetMail(userEmail, generatedPassword);
 	}
 
-	public void send(final String userEmail, final String generatedPassword) {
-		try {
-			final String mailContent = HtmlMailContent.forPasswordReset(userEmail, generatedPassword);
-			sender.subject(createPasswordResetSubject()).htmlContent(mailContent).sendTo(userEmail);
-		}
-		catch (final MessagingException e) {
-			throw new RuntimeException("Exception configuring mail service.", e);
-		}
+	@Override
+	public String getSubject() {
+		return "[OnTrack] Password reset";
 	}
 
-	private static String createPasswordResetSubject() {
-		return "Password reset";
+	@Override
+	public String getTemplatePath() {
+		return "/br/com/oncast/ontrack/server/services/email/authMailPassReset.html";
+	}
+
+	@Override
+	public MailVariableValuesMap getParameters() {
+		final MailVariableValuesMap context = new MailVariableValuesMap();
+		context.put("userEmail", sendTo);
+		context.put("generatedPassword", generatedPassword);
+		return context;
+	}
+
+	@Override
+	public String getSendTo() {
+		return sendTo;
 	}
 }

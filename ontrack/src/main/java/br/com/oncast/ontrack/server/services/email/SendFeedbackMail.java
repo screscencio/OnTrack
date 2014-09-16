@@ -1,42 +1,40 @@
 package br.com.oncast.ontrack.server.services.email;
 
-import javax.mail.MessagingException;
+public class SendFeedbackMail implements OnTrackMail {
 
-public class SendFeedbackMail {
+	private final String currentUser;
 
-	private final MailSender sender;
-	private String currentUser;
-	private String feedbackMessage;
+	private final String feedbackMessage;
 
-	private SendFeedbackMail() {
-		sender = MailSender.createInstance();
-	}
-
-	public static SendFeedbackMail createInstance() {
-		return new SendFeedbackMail();
-	}
-
-	public SendFeedbackMail currentUser(final String currentUser) {
+	private SendFeedbackMail(final String currentUser, final String feedbackMessage) {
 		this.currentUser = currentUser;
-		return this;
-	}
-
-	public SendFeedbackMail feedbackMessage(final String feedbackMessage) {
 		this.feedbackMessage = feedbackMessage;
-		return this;
 	}
 
-	public void send() {
-		try {
-			final String mailContent = HtmlMailContent.forSendFeedback(currentUser, feedbackMessage);
-			sender.subject(getSubject()).replyTo(currentUser).htmlContent(mailContent).sendToDefaultEmail();
-		}
-		catch (final MessagingException e) {
-			throw new RuntimeException("Exception configuring mail service.", e);
-		}
+	public static SendFeedbackMail getMail(final String currentUser, final String feedbackMessage) {
+		return new SendFeedbackMail(currentUser, feedbackMessage);
 	}
 
-	private String getSubject() {
-		return "Feedback from " + currentUser;
+	@Override
+	public String getSubject() {
+		return "[OnTrack] Feedback from " + currentUser;
+	}
+
+	@Override
+	public String getTemplatePath() {
+		return "/br/com/oncast/ontrack/server/services/email/sendFeedback.html";
+	}
+
+	@Override
+	public MailVariableValuesMap getParameters() {
+		final MailVariableValuesMap context = new MailVariableValuesMap();
+		context.put("currentUser", currentUser);
+		context.put("feedbackMessage", feedbackMessage);
+		return context;
+	}
+
+	@Override
+	public String getSendTo() {
+		return MailConfigurationProvider.getMailUsername();
 	}
 }

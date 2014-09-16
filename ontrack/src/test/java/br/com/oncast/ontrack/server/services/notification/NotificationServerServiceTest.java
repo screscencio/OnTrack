@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.server.services.notification;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.MailService;
 import br.com.oncast.ontrack.server.services.email.NotificationMail;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -49,14 +49,12 @@ public class NotificationServerServiceTest {
 	MulticastService multicastService;
 
 	@Mock
-	MailFactory mailFactory;
+	MailService mailService;
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		notificationServerService = new NotificationServerServiceImpl(authenticationManager, persistenceService, multicastService, mailFactory);
-		final NotificationMail notificationMailMock = Mockito.mock(NotificationMail.class);
-		when(mailFactory.createNotificationMail(Mockito.any(Notification.class))).thenReturn(notificationMailMock);
+		notificationServerService = new NotificationServerServiceImpl(authenticationManager, persistenceService, multicastService, mailService);
 	}
 
 	@Test
@@ -121,19 +119,17 @@ public class NotificationServerServiceTest {
 	@Test
 	public void shouldSendNotificationEmailWhenAnImportantNotificationIsRegistered() throws Exception {
 		final Notification importantNotification = NotificationTestUtils.createImportantMail();
-		final NotificationMail notificationMailMock = Mockito.mock(NotificationMail.class);
-
-		when(mailFactory.createNotificationMail(importantNotification)).thenReturn(notificationMailMock);
 		notificationServerService.registerNewNotification(importantNotification);
 
-		verify(mailFactory).createNotificationMail(importantNotification);
-		verify(notificationMailMock).send();
+		final ArgumentCaptor<NotificationMail> captor = ArgumentCaptor.forClass(NotificationMail.class);
+		verify(mailService).send(captor.capture());
+		final NotificationMail sentMail = captor.getValue();
 	}
 
 	@Test
 	public void shouldNotSendNotificationEmailWhenANotImportantNotificationIsRegistered() throws Exception {
 		final Notification notification = NotificationTestUtils.createNotImportantMail();
 		notificationServerService.registerNewNotification(notification);
-		Mockito.verifyZeroInteractions(mailFactory);
+		Mockito.verifyZeroInteractions(mailService);
 	}
 }

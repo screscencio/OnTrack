@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.server.services.authorization;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.MailService;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
@@ -21,16 +21,18 @@ public class AuthorizationManagerImplTestUtils {
 		integrationMock = mock(IntegrationService.class);
 	}
 
-	public static AuthorizationManagerImpl create(final PersistenceService persistence, final AuthenticationManager authenticationManager, final MailFactory mailFactory) {
-		return new AuthorizationManagerImpl(authenticationManager, persistence, multicastMock, mailFactory, clientManager, integrationMock);
+	public static AuthorizationManagerImpl create(final PersistenceService persistence, final AuthenticationManager authenticationManager, final MailService mailService) {
+		return new AuthorizationManagerImpl(authenticationManager, persistence, multicastMock, mailService, clientManager, integrationMock);
 	}
 
-	public static AuthorizationManagerImpl create(final PersistenceService persistence, final AuthenticationManager authenticationManager, final MailFactory mailFactory, final MulticastService multicastService) {
-		return new AuthorizationManagerImpl(authenticationManager, persistence, multicastService, mailFactory, clientManager, integrationMock);
+	public static AuthorizationManagerImpl create(final PersistenceService persistence, final AuthenticationManager authenticationManager, final MailService mailService,
+			final MulticastService multicastService) {
+		return new AuthorizationManagerImpl(authenticationManager, persistence, multicastService, mailService, clientManager, integrationMock);
 	}
 
-	public static AuthorizationManagerImpl create(final PersistenceService persistence, final AuthenticationManager authenticationManager, final MailFactory mailFactory, final IntegrationService integrationService) {
-		return new AuthorizationManagerImpl(authenticationManager, persistence, multicastMock, mailFactory, clientManager, integrationService);
+	public static AuthorizationManagerImpl create(final PersistenceService persistence, final AuthenticationManager authenticationManager, final MailService mailService,
+			final IntegrationService integrationService) {
+		return new AuthorizationManagerImpl(authenticationManager, persistence, multicastMock, mailService, clientManager, integrationService);
 	}
 
 }

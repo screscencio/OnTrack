@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProc
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManagerImpl;
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.MailService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporterService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporterService;
 import br.com.oncast.ontrack.server.services.integration.BillingTrackIntegrationService;
@@ -50,8 +50,6 @@ public class ServerServiceProvider {
 	private PersistenceService persistenceService;
 	private ActionPostProcessingService actionPostProcessingService;
 
-	private MailFactory mailFactory;
-
 	private StorageService storageService;
 
 	private ActionPostProcessmentsInitializer postProcessmentsInitializer;
@@ -68,6 +66,8 @@ public class ServerServiceProvider {
 
 	private GoogleAnalyticsServerAnalytics analytics;
 
+	private MailService mailService;
+
 	public static ServerServiceProvider getInstance() {
 		return INSTANCE;
 	}
@@ -79,7 +79,7 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
 			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getMulticastService(), getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(),
-					getSessionManager(), getMailFactory(), getSyncronizationService(), getActionPostProcessmentsInitializer(), getIntegrationService(), getServerAnalytics());
+					getSessionManager(), getMailService(), getSyncronizationService(), getActionPostProcessmentsInitializer(), getIntegrationService(), getServerAnalytics());
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ServerServiceProvider {
 		if (authorizationManager != null) return authorizationManager;
 		synchronized (this) {
 			if (authorizationManager != null) return authorizationManager;
-			return authorizationManager = new AuthorizationManagerImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(), getMailFactory(), getClientManagerService(),
+			return authorizationManager = new AuthorizationManagerImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(), getMailService(), getClientManagerService(),
 					getIntegrationService());
 		}
 	}
@@ -111,7 +111,7 @@ public class ServerServiceProvider {
 		if (authenticationManager != null) return authenticationManager;
 		synchronized (this) {
 			if (authenticationManager != null) return authenticationManager;
-			return authenticationManager = new AuthenticationManager(getPersistenceService(), getSessionManager(), getMailFactory(), getServerAnalytics());
+			return authenticationManager = new AuthenticationManager(getPersistenceService(), getSessionManager(), getMailService(), getServerAnalytics());
 		}
 	}
 
@@ -171,14 +171,6 @@ public class ServerServiceProvider {
 		}
 	}
 
-	public MailFactory getMailFactory() {
-		if (mailFactory != null) return mailFactory;
-		synchronized (this) {
-			if (mailFactory != null) return mailFactory;
-			return mailFactory = new MailFactory();
-		}
-	}
-
 	private SyncronizationService getSyncronizationService() {
 		if (syncronizationService != null) return syncronizationService;
 		synchronized (this) {
@@ -216,7 +208,15 @@ public class ServerServiceProvider {
 		if (notificationServerService != null) return notificationServerService;
 		synchronized (this) {
 			if (notificationServerService != null) return notificationServerService;
-			return notificationServerService = new NotificationServerServiceImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(), getMailFactory());
+			return notificationServerService = new NotificationServerServiceImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(), getMailService());
+		}
+	}
+
+	private MailService getMailService() {
+		if (mailService != null) return mailService;
+		synchronized (this) {
+			if (mailService != null) return mailService;
+			return mailService = new MailService();
 		}
 	}
 

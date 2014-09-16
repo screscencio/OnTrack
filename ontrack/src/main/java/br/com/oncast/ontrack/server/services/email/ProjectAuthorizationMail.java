@@ -1,47 +1,56 @@
 package br.com.oncast.ontrack.server.services.email;
 
+import br.com.oncast.ontrack.server.services.CustomUrlGenerator;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
-import javax.mail.MessagingException;
+public class ProjectAuthorizationMail implements OnTrackMail {
 
-public class ProjectAuthorizationMail {
+	private final ProjectRepresentation project;
 
-	private final MailSender sender;
-	private ProjectRepresentation project;
-	private String currentUser;
+	private final String currentUser;
 
-	private ProjectAuthorizationMail() {
-		sender = MailSender.createInstance();
-	}
+	private final String sendTo;
 
-	public static ProjectAuthorizationMail createInstance() {
-		return new ProjectAuthorizationMail();
-	}
+	private final String generatedPassword;
 
-	public ProjectAuthorizationMail setProject(final ProjectRepresentation project) {
+	private ProjectAuthorizationMail(final ProjectRepresentation project, final String currentUser, final String sentTo, final String generatedPassword) {
 		this.project = project;
-		return this;
-	}
-
-	public ProjectAuthorizationMail currentUser(final String currentUser) {
 		this.currentUser = currentUser;
-		return this;
+		this.sendTo = sentTo;
+		this.generatedPassword = generatedPassword;
 	}
 
-	public void sendTo(final String userEmail, final String generatedPassword) {
-		try {
-			String mailContent;
-			if (generatedPassword != null) mailContent = HtmlMailContent.forNewUserProjectAuthorization(userEmail, generatedPassword, project, currentUser);
-			else mailContent = HtmlMailContent.forProjectAuthorization(userEmail, project, currentUser);
-
-			sender.subject(createAuthorizationSubject()).htmlContent(mailContent).sendTo(userEmail);
-		}
-		catch (final MessagingException e) {
-			throw new RuntimeException("Exception configuring mail service.", e);
-		}
+	public static ProjectAuthorizationMail getMail(final ProjectRepresentation project, final String currentUser, final String sentTo, final String generatedPassword) {
+		return new ProjectAuthorizationMail(project, currentUser, sentTo, generatedPassword);
 	}
 
-	private static String createAuthorizationSubject() {
-		return "Project Invite";
+	@Override
+	public String getSubject() {
+		return "[OnTrack] " + (isNewUser() ? "Welcome to OnTrack" : "Project Invite");
+	}
+
+	private boolean isNewUser() {
+		return generatedPassword != null;
+	}
+
+	@Override
+	public String getTemplatePath() {
+		return "/br/com/oncast/ontrack/server/services/email/" + (isNewUser() ? "authMailNewUser" : "authMail") + ".html";
+	}
+
+	@Override
+	public MailVariableValuesMap getParameters() {
+		final MailVariableValuesMap context = new MailVariableValuesMap();
+		context.put("projectName", project.getName());
+		context.put("projectLink", CustomUrlGenerator.forProject(project));
+		context.put("userEmail", sendTo);
+		context.put("currentUser", currentUser);
+		if (isNewUser()) context.put("generatedPassword", generatedPassword);
+		return context;
+	}
+
+	@Override
+	public String getSendTo() {
+		return sendTo;
 	}
 }

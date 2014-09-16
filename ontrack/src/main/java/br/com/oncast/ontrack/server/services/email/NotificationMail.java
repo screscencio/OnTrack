@@ -8,7 +8,7 @@ public class NotificationMail implements OnTrackMail {
 
 	@Override
 	public String getSubject() {
-		return "Notifição do OnTrack";
+		return "[OnTrack] Notifição";
 	}
 
 	@Override
@@ -25,11 +25,6 @@ public class NotificationMail implements OnTrackMail {
 	@Override
 	public String getSendTo() {
 		return null;
-	}
-
-	public void send() {
-		// FIXME Auto-generated catch block
-
 	}
 
 }
