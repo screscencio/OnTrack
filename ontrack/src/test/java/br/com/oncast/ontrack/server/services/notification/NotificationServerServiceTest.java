@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEve
 import br.com.oncast.ontrack.shared.services.notification.NotificationTestUtils;
 import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
 
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -118,12 +121,21 @@ public class NotificationServerServiceTest {
 
 	@Test
 	public void shouldSendNotificationEmailWhenAnImportantNotificationIsRegistered() throws Exception {
-		final Notification importantNotification = NotificationTestUtils.createImportantMail();
+		final int numberOfNotificationRecipients = 5;
+		final Notification importantNotification = spy(NotificationTestUtils.createImportantMail());
+		final List<UUID> userIds = new ArrayList<UUID>();
+		final List<User> users = new ArrayList<User>();;
+		for (int i = 0; i < numberOfNotificationRecipients; i++) {
+			final User user = UserTestUtils.createUser();
+			users.add(user);
+			userIds.add(user.getId());
+		}
+		when(importantNotification.getRecipientsAsUserIds()).thenReturn(userIds);
+		when(persistenceService.retrieveUsersByIds(userIds)).thenReturn(users);
+
 		notificationServerService.registerNewNotification(importantNotification);
 
-		final ArgumentCaptor<NotificationMail> captor = ArgumentCaptor.forClass(NotificationMail.class);
-		verify(mailService).send(captor.capture());
-		final NotificationMail sentMail = captor.getValue();
+		verify(mailService, times(numberOfNotificationRecipients)).send(Mockito.any(NotificationMail.class));
 	}
 
 	@Test

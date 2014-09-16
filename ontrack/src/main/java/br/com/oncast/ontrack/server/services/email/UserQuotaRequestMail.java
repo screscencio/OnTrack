@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.server.services.email;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class UserQuotaRequestMail implements OnTrackMail {
 
 	private final String currentUser;
@@ -30,7 +33,7 @@ public class UserQuotaRequestMail implements OnTrackMail {
 	}
 
 	@Override
-	public String getSendTo() {
-		return MailConfigurationProvider.getMailUsername();
+	public List<String> getRecipients() {
+		return Arrays.asList(MailConfigurationProvider.getMailUsername());
 	}
 }

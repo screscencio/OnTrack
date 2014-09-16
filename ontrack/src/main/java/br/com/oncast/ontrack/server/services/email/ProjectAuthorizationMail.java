@@ -3,6 +3,9 @@ package br.com.oncast.ontrack.server.services.email;
 import br.com.oncast.ontrack.server.services.CustomUrlGenerator;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ProjectAuthorizationMail implements OnTrackMail {
 
 	private final ProjectRepresentation project;
@@ -50,7 +53,7 @@ public class ProjectAuthorizationMail implements OnTrackMail {
 	}
 
 	@Override
-	public String getSendTo() {
-		return sendTo;
+	public List<String> getRecipients() {
+		return Arrays.asList(sendTo);
 	}
 }

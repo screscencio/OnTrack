@@ -13,11 +13,21 @@ public enum NotificationType implements NotificationMessageCode {
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
 			return messages.impedimentCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
 		}
+
+		@Override
+		public String simpleMessage(final Notification notification) {
+			return "criou o impedimento";
+		}
 	},
 	IMPEDIMENT_SOLVED() {
 		@Override
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
 			return messages.impedimentSolvedNotificationWidgetMessage(getAnnotationLinkFor(notification), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
+		}
+
+		@Override
+		public String simpleMessage(final Notification notification) {
+			return "resolveu o impedimento";
 		}
 	},
 	PROGRESS_DECLARED() {
@@ -32,11 +42,23 @@ public enum NotificationType implements NotificationMessageCode {
 
 			return messages.progressUnderworkNotificationWidgetMessage(notification.getDescription(), descriptionLink, projectLink);
 		}
+
+		@Override
+		public String simpleMessage(final Notification notification) {
+			// TODO NOT implemented
+			return "";
+		}
 	},
 	ANNOTATION_CREATED() {
 		@Override
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
 			return messages.annotationCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
+		}
+
+		@Override
+		public String simpleMessage(final Notification notification) {
+			// TODO NOT implemented
+			return "";
 		}
 	},
 	ANNOTATION_DEPRECATED() {
@@ -44,11 +66,22 @@ public enum NotificationType implements NotificationMessageCode {
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
 			return messages.annotationDeprecatedNotificationWidgetMessage(getAnnotationLinkFor(notification), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
 		}
+
+		@Override
+		public String simpleMessage(final Notification notification) {
+			// TODO NOT implemented
+			return "";
+		}
 	},
 	TEAM_INVITED {
 		@Override
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
 			return messages.teamInvitedNotificationWidgetMessage(notification.getReferenceDescription());
+		}
+
+		@Override
+		public String simpleMessage(final Notification notification) {
+			return "convidou o " + notification.getReferenceDescription() + " para o projeto";
 		}
 	},
 	TEAM_REMOVED {
@@ -56,10 +89,17 @@ public enum NotificationType implements NotificationMessageCode {
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
 			return messages.teamRemovedNotificationWidgetMessage(notification.getReferenceDescription());
 		}
+
+		@Override
+		public String simpleMessage(final Notification notification) {
+			return "excluiu o " + notification.getReferenceDescription() + " do projeto";
+		}
 	};
 
 	@Override
 	public abstract String selectMessage(final NotificationWidgetMessages messages, final Notification notification);
+
+	public abstract String simpleMessage(final Notification notification);
 
 	private static String getProjectLinkFor(final NotificationWidgetMessages messages, final Notification notification) {
 		try {

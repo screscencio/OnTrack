@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.server.services.email;
 
+import java.util.List;
+
 public interface OnTrackMail {
 
 	String getSubject();
@@ -8,6 +10,6 @@ public interface OnTrackMail {
 
 	MailVariableValuesMap getParameters();
 
-	String getSendTo();
+	List<String> getRecipients();
 
 }

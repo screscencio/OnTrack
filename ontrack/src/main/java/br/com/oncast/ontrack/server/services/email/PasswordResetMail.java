@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.server.services.email;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class PasswordResetMail implements OnTrackMail {
 
 	private final String sendTo;
@@ -33,7 +36,7 @@ public class PasswordResetMail implements OnTrackMail {
 	}
 
 	@Override
-	public String getSendTo() {
-		return sendTo;
+	public List<String> getRecipients() {
+		return Arrays.asList(sendTo);
 	}
 }

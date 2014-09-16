@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.services.notification;
 
+
 public class NotificationTestUtils {
 
 	public static Notification createImportantMail() {

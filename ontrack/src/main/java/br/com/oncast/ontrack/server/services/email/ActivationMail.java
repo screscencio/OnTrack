@@ -2,6 +2,9 @@ package br.com.oncast.ontrack.server.services.email;
 
 import br.com.oncast.ontrack.server.services.CustomUrlGenerator;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ActivationMail implements OnTrackMail {
 
 	private String invitee;
@@ -44,8 +47,8 @@ public class ActivationMail implements OnTrackMail {
 	}
 
 	@Override
-	public String getSendTo() {
-		return userEmail;
+	public List<String> getRecipients() {
+		return Arrays.asList(userEmail);
 	}
 
 	public String getFrom() {

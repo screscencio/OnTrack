@@ -8,7 +8,9 @@ public class MailService {
 		try {
 			final String mailContent = HtmlMailContent.getContent(mail.getTemplatePath(), mail.getParameters());
 			final MailSender sender = MailSender.createInstance();
-			sender.subject(mail.getSubject()).htmlContent(mailContent).sendTo(mail.getSendTo());
+			for (final String recipient : mail.getRecipients()) {
+				sender.subject(mail.getSubject()).htmlContent(mailContent).sendTo(recipient);
+			}
 		} catch (final MessagingException e) {
 			throw new RuntimeException("Exception configuring mail service.", e);
 		}

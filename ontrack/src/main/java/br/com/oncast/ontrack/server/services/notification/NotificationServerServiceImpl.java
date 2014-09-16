@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveNotificationListException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToUpdateNotificationException;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
@@ -65,14 +66,24 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 		}
 		final List<UUID> recipientsAsUserMails = notification.getRecipientsAsUserIds();
 		try {
-			final List<User> usersByIds = persistenceService.retrieveUsersByIds(recipientsAsUserMails);
-			this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), usersByIds);
+			final List<User> users = persistenceService.retrieveUsersByIds(recipientsAsUserMails);
+			this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), users);
+			if (notification.isImportant()) {
+				final User author = persistenceService.retrieveUserById(notification.getAuthorId());
+				final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(notification.getProjectReference());
+				for (final User user : users) {
+					mailService.send(NotificationMail.getMail(notification, author, user, project));
+				}
+			}
 		} catch (final PersistenceException e) {
 			final String message = "Unable to multicast new notification: Unable to retrieve recipient list.";
 			LOGGER.error(message, e);
 			throw new UnableToCreateNotificationException(message);
+		} catch (final NoResultFoundException e) {
+			final String message = "Unable to send notification email: Notification author was not found.";
+			LOGGER.error(message, e);
+			throw new UnableToCreateNotificationException(message);
 		}
-		if (notification.isImportant()) mailService.send(new NotificationMail(notification));
 	}
 
 	@Override

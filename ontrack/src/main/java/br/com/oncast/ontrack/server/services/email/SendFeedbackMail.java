@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.server.services.email;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SendFeedbackMail implements OnTrackMail {
 
 	private final String currentUser;
@@ -34,7 +37,7 @@ public class SendFeedbackMail implements OnTrackMail {
 	}
 
 	@Override
-	public String getSendTo() {
-		return MailConfigurationProvider.getMailUsername();
+	public List<String> getRecipients() {
+		return Arrays.asList(MailConfigurationProvider.getMailUsername());
 	}
 }
