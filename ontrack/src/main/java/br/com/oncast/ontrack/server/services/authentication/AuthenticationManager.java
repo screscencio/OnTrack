@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
 import org.apache.log4j.Logger;
 
 // TODO ++++Increment password strength validation, reflecting it on the UI as well so the user can create it without getting bored/angry.
@@ -239,11 +241,16 @@ public class AuthenticationManager {
 			final String newPassword = PasswordHash.generatePassword();
 			createPasswordForUser(user, newPassword);
 			mailService.send(PasswordResetMail.getMail(username, newPassword));
+
 		} catch (final UserNotFoundException e) {
 			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
 			LOGGER.error(message, e);
 			throw new InvalidAuthenticationCredentialsException(message);
 		} catch (final NoSuchAlgorithmException e) {
+			final String message = "Unable to update the user '" + username + "'s password: new password could not be created.";
+			LOGGER.error(message, e);
+			throw new UnableToResetPasswordException(message);
+		} catch (final MessagingException e) {
 			final String message = "Unable to update the user '" + username + "'s password: new password could not be created.";
 			LOGGER.error(message, e);
 			throw new UnableToResetPasswordException(message);

@@ -11,6 +11,8 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
+import javax.mail.MessagingException;
+
 import org.apache.log4j.Logger;
 
 public class NotificationCreationPostProcessor implements ActionPostProcessor<ModelAction> {
@@ -27,8 +29,7 @@ public class NotificationCreationPostProcessor implements ActionPostProcessor<Mo
 	}
 
 	@Override
-	public void process(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext)
-			throws UnableToPostProcessActionException {
+	public void process(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext) throws UnableToPostProcessActionException {
 		if (!active) {
 			LOGGER.debug("Ignoring notification post processment of action '" + action + "': the post processor was deactivated.");
 			return;
@@ -37,10 +38,11 @@ public class NotificationCreationPostProcessor implements ActionPostProcessor<Mo
 		try {
 			final Notification notification = notificationFactory.createNofification(action, actionContext, projectContext);
 			if (notification == null) return;
-
 			this.notificationServerService.registerNewNotification(notification);
-		}
-		catch (final UnableToCreateNotificationException e) {
+
+		} catch (final UnableToCreateNotificationException e) {
+			throw new UnableToPostProcessActionException("It was not possible to register new notification.", e);
+		} catch (final MessagingException e) {
 			throw new UnableToPostProcessActionException("It was not possible to register new notification.", e);
 		}
 	}

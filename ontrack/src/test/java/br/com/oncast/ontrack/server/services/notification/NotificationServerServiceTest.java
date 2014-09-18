@@ -22,6 +22,8 @@ import br.com.oncast.ontrack.utils.model.UserTestUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -62,7 +64,7 @@ public class NotificationServerServiceTest {
 
 	@Test
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void registerNewNotificationShouldPersistAndMulticast() throws PersistenceException, UnableToCreateNotificationException {
+	public void registerNewNotificationShouldPersistAndMulticast() throws PersistenceException, UnableToCreateNotificationException, MessagingException {
 		final User user1 = createUser();
 		final User user2 = createUser();
 		final ArrayList<User> userList = new ArrayList<User>();

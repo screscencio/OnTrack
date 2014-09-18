@@ -20,6 +20,8 @@ import br.com.oncast.ontrack.shared.services.notification.NotificationRecipient;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import org.apache.log4j.Logger;
 
 public class NotificationServerServiceImpl implements NotificationServerService {
@@ -56,7 +58,7 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 	}
 
 	@Override
-	public void registerNewNotification(final Notification notification) throws UnableToCreateNotificationException {
+	public void registerNewNotification(final Notification notification) throws UnableToCreateNotificationException, MessagingException {
 		try {
 			this.persistenceService.persistOrUpdateNotification(notification);
 		} catch (final PersistenceException e) {

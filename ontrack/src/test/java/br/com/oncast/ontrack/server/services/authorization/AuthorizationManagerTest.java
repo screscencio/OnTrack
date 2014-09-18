@@ -28,6 +28,7 @@ import br.com.oncast.ontrack.utils.model.UserTestUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
@@ -290,7 +291,7 @@ public class AuthorizationManagerTest {
 		assertEquals(project, createdProject.getProjectRepresentation());
 	}
 
-	private MailVariableValuesMap verifyProjectAuthorizationMailSent() {
+	private MailVariableValuesMap verifyProjectAuthorizationMailSent() throws MessagingException {
 		final ArgumentCaptor<ProjectAuthorizationMail> captor = ArgumentCaptor.forClass(ProjectAuthorizationMail.class);
 		verify(mailService).send(captor.capture());
 		return captor.getValue().getParameters();

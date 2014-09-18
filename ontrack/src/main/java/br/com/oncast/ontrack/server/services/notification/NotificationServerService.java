@@ -7,11 +7,13 @@ import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 public interface NotificationServerService {
 
 	List<Notification> retrieveCurrentUserNotificationList() throws UnableToRetrieveNotificationListException;
 
-	void registerNewNotification(Notification notification) throws UnableToCreateNotificationException;
+	void registerNewNotification(Notification notification) throws UnableToCreateNotificationException, MessagingException;
 
 	void updateNotificationCurrentUserReadState(Notification notification, boolean read) throws UnableToUpdateNotificationException;
 

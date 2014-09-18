@@ -65,6 +65,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import org.apache.log4j.Logger;
 
 class BusinessLogicImpl implements BusinessLogic {
@@ -383,14 +385,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public void sendProjectCreationQuotaRequestEmail() {
+	public void sendProjectCreationQuotaRequestEmail() throws MessagingException {
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 		analytics.onProjectCreationRequested(authenticatedUser);
 		mailService.send(UserQuotaRequestMail.getMail(authenticatedUser.getEmail()));
 	}
 
 	@Override
-	public void sendFeedbackEmail(final String feedbackMessage) {
+	public void sendFeedbackEmail(final String feedbackMessage) throws MessagingException {
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 		analytics.onFeedbackReceived(authenticatedUser, feedbackMessage);
 		mailService.send(SendFeedbackMail.getMail(authenticatedUser.getEmail(), feedbackMessage));

@@ -7,7 +7,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
-public class HtmlMailContent {
+class HtmlMailContent {
 
 	public static String getContent(final String templatePath, final MailVariableValuesMap parameters) {
 		final Template template = getTemplate(templatePath);
