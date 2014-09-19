@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu;
 
 import br.com.oncast.ontrack.client.services.ClientServices;
-import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
+import br.com.oncast.ontrack.client.services.authentication.UserInformationLoadCallback;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
@@ -148,17 +148,15 @@ public class ApplicationMenu extends Composite {
 	protected void onLoad() {
 		super.onLoad();
 		registerUserDataUpdateListener();
-		SERVICE_PROVIDER.authentication().registerUserAuthenticationListener(new UserAuthenticationListener() {
+		SERVICE_PROVIDER.authentication().loadCurrentUserInformation(new UserInformationLoadCallback() {
 
 			@Override
-			public void onUserLoggedOut() {}
-
-			@Override
-			public void onUserLoggedIn() {}
-
-			@Override
-			public void onUserInformationLoaded() {
-				if (!SERVICE_PROVIDER.authentication().isCurrentUserActivated()) {
+			public void onUserInformationLoaded(final UUID currentUser, final boolean isCurrentUserActivated) {
+				if (isCurrentUserActivated) {
+					popupPassChange.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userMenuItem, HorizontalAlignment.LEFT));
+					popupPassChange.focusMode(false);
+					popupPassChange.nonModal();
+				} else {
 					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 						@Override
 						public void execute() {
@@ -168,12 +166,11 @@ public class ApplicationMenu extends Composite {
 							popupPassChange.pop();
 						}
 					});
-				} else {
-					popupPassChange.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(userMenuItem, HorizontalAlignment.LEFT));
-					popupPassChange.focusMode(false);
-					popupPassChange.nonModal();
 				}
 			}
+
+			@Override
+			public void onUnexpectedFailure(final Throwable cause) {}
 		});
 	}
 

@@ -78,7 +78,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				isCurrentUserActivated = result.isCurrentUserActivated();
 				updateCurrentUser(user);
 
-				callback.onUserInformationLoaded(currentUser.getId());
+				callback.onUserInformationLoaded(currentUser.getId(), isCurrentUserActivated);
 				notifyUserInformationLoadToUserAuthenticationListeners();
 			}
 
