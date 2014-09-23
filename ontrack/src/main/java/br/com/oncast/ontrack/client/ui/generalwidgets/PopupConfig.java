@@ -90,7 +90,7 @@ public class PopupConfig {
 	private Panel previousAlertingParent;
 	private Widget previousShortcutHelpParent;
 	private BasicMaskPanel maskPanel;
-	private boolean modal;
+	private boolean modal = false;
 
 	private PopupConfig() {}
 

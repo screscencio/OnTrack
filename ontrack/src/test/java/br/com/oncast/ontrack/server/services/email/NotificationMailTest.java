@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,13 +33,15 @@ public class NotificationMailTest {
 
 	private ProjectRepresentation project;
 
+	private List<User> users;
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		author = UserTestUtils.createUser("author@mail.com");
 		recipient = UserTestUtils.createUser("recipient@mail.com");
 		project = ProjectTestUtils.createRepresentation();
-		mail = NotificationMail.getMail(notification, author, recipient, project);
+		mail = NotificationMail.getMail(notification, author, recipient, users, project);
 		when(notification.getReferenceId()).thenReturn(new UUID());
 		when(notification.getDescription()).thenReturn("my notification description");
 		when(notification.getReferenceDescription()).thenReturn("my notification reference description");
@@ -64,7 +67,7 @@ public class NotificationMailTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldNotBeAbleToSendNotificationWithoutRecipients() throws Exception {
-		NotificationMail.getMail(notification, author, null, project);
+		NotificationMail.getMail(notification, author, null, users, project);
 	}
 
 	@Test

@@ -56,8 +56,14 @@ public class UserMentionCommandItemFactory implements CustomCommandMenuItemFacto
 	private void appendText(final String text) {
 		final String newText = textArea.getHTML().replaceAll("@[^@]*$", "@") + text;
 		textArea.setHTML(newText);
-		setSelectionRange(textArea.getElement(), selectionIndex);
-		selectionIndex += 2; // IMPORTANT somehow this works
+		try {
+			setSelectionRange(textArea.getElement(), selectionIndex);
+			selectionIndex += 2; // IMPORTANT somehow this works
+		} catch (final Exception e) {
+			selectionIndex = 3;
+			setSelectionRange(textArea.getElement(), selectionIndex);
+		}
+
 		textArea.setFocus(true);
 		config.hidePopup();
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {

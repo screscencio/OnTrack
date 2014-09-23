@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.shared.services.user.UserInformationUpdateEvent;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -263,6 +264,11 @@ public class UserDataServiceImpl implements UserDataService {
 
 		void onInformationChange(User user);
 
+	}
+
+	@Override
+	public List<User> getUsersList() {
+		return new ArrayList<User>(cachedUsers);
 	}
 
 }

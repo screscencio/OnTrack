@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.services.notification;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 
+import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
@@ -157,6 +158,6 @@ public class NotificationService {
 	}
 
 	public boolean isImportant(final Notification notification) {
-		return notification.isImportant();
+		return notification.isImportant(ClientServices.getCurrentUser());
 	}
 }

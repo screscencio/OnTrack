@@ -70,11 +70,11 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 		try {
 			final List<User> users = persistenceService.retrieveUsersByIds(recipientsAsUserMails);
 			this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), users);
-			if (notification.isImportant()) {
-				final User author = persistenceService.retrieveUserById(notification.getAuthorId());
-				final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(notification.getProjectReference());
-				for (final User user : users) {
-					mailService.send(NotificationMail.getMail(notification, author, user, project));
+			final User author = persistenceService.retrieveUserById(notification.getAuthorId());
+			final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(notification.getProjectReference());
+			for (final User user : users) {
+				if (notification.isImportant(user.getId())) {
+					mailService.send(NotificationMail.getMail(notification, author, user, users, project));
 				}
 			}
 		} catch (final PersistenceException e) {

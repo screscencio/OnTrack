@@ -6,6 +6,9 @@ import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWi
 import br.com.oncast.ontrack.client.utils.link.LinkFactory;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.utils.AnnotationDescriptionParser;
+import br.com.oncast.ontrack.shared.utils.AnnotationDescriptionParser.ParseHandler;
 
 public enum NotificationType implements NotificationMessageCode {
 	IMPEDIMENT_CREATED() {
@@ -45,8 +48,7 @@ public enum NotificationType implements NotificationMessageCode {
 
 		@Override
 		public String simpleMessage(final Notification notification) {
-			// TODO NOT implemented
-			return "";
+			return "declarou o progresso";
 		}
 	},
 	ANNOTATION_CREATED() {
@@ -57,8 +59,7 @@ public enum NotificationType implements NotificationMessageCode {
 
 		@Override
 		public String simpleMessage(final Notification notification) {
-			// TODO NOT implemented
-			return "";
+			return "comentou";
 		}
 	},
 	ANNOTATION_DEPRECATED() {
@@ -69,8 +70,7 @@ public enum NotificationType implements NotificationMessageCode {
 
 		@Override
 		public String simpleMessage(final Notification notification) {
-			// TODO NOT implemented
-			return "";
+			return "descartou";
 		}
 	},
 	TEAM_INVITED {
@@ -112,10 +112,19 @@ public enum NotificationType implements NotificationMessageCode {
 	}
 
 	private static String getAnnotationLinkFor(final Notification notification) {
-		return LinkFactory.getLinkForAnnotation(notification.getProjectId(), notification.getReferenceId(), notification.getDescription()).asString();
+		return LinkFactory.getLinkForAnnotation(notification.getProjectId(), notification.getReferenceId(), parseDescription(notification)).asString();
 	}
 
 	private static String getScopeLinkFor(final Notification notification) {
 		return LinkFactory.getScopeLinkFor(notification.getProjectId(), notification.getReferenceId(), notification.getReferenceDescription()).asString();
+	}
+
+	private static String parseDescription(final Notification notification) {
+		return AnnotationDescriptionParser.parse(notification.getDescription(), ClientServices.get().userData().getUsersList(), new ParseHandler<User>() {
+			@Override
+			public String getReplacement(final User model) {
+				return model.getName();
+			}
+		});
 	}
 }

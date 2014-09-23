@@ -13,7 +13,7 @@ public class BasicMaskPanel implements IsWidget {
 
 	private final FocusPanel maskPanel;
 	private HideHandler hideHandler;
-	private HandlerRegistration clickHandlerRegistration;
+	private HandlerRegistration clickHandlerRegistration = null;
 
 	protected BasicMaskPanel() {
 		maskPanel = new FocusPanel();
@@ -21,7 +21,6 @@ public class BasicMaskPanel implements IsWidget {
 		maskPanel.setVisible(false);
 
 		RootPanel.get().add(maskPanel);
-		hideOnClick(true);
 	}
 
 	protected void show(final HideHandler hideHandler) {
@@ -47,14 +46,16 @@ public class BasicMaskPanel implements IsWidget {
 	}
 
 	protected BasicMaskPanel hideOnClick(final boolean hideOnClick) {
+		System.out.println(hideOnClick + " , " + clickHandlerRegistration);
 		if (hideOnClick && clickHandlerRegistration == null) {
 			clickHandlerRegistration = maskPanel.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(final ClickEvent event) {
+					System.out.println("me clicaram");
 					hide();
 				}
 			});
-		} else if (clickHandlerRegistration != null) {
+		} else if (!hideOnClick && clickHandlerRegistration != null) {
 			clickHandlerRegistration.removeHandler();
 		}
 		return this;

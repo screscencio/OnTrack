@@ -179,8 +179,12 @@ public class Notification implements Serializable {
 		this.authorId = authorId;
 	}
 
-	public boolean isImportant() {
-		return IMPORTANT_NOTIFICATIONS.contains(type);
+	public boolean isImportant(final UUID userId) {
+		return IMPORTANT_NOTIFICATIONS.contains(type) || hasMentions(userId);
+	}
+
+	private boolean hasMentions(final UUID userId) {
+		return getDescription().contains(userId.toString());
 	}
 
 }
