@@ -18,8 +18,13 @@ import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+import br.com.oncast.ontrack.shared.utils.AnnotationDescriptionParser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -144,11 +149,37 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 		if (this.annotation.getMessage().trim().isEmpty()) return;
 
-		final InlineHTML richText = new InlineHTML();
-		richText.setHTML(HTMLTextUtils.setTargetBlankInHyperLinks(this.annotation.getMessage()));
-		richText.setStyleName(style.richTextArea());
-		messageBody.add(richText);
-		messageBody.setCellWidth(richText, "100%");
+		parseDescription();
+	}
+
+	private void parseDescription() {
+		final List<UserRepresentation> users = ClientServices.get().contextProvider().getCurrent().getUsers();
+		for (final UserRepresentation userRepresentation : new ArrayList<UserRepresentation>(users)) {
+			ClientServices.get().userData().loadRealUser(userRepresentation.getId(), new AsyncCallback<User>() {
+				@Override
+				public void onFailure(final Throwable caught) {}
+
+				@Override
+				public void onSuccess(final User result) {
+					users.remove(userRepresentation);
+					if (users.isEmpty()) {
+						final InlineHTML richText = new InlineHTML();
+						String messageHtml = HTMLTextUtils.setTargetBlankInHyperLinks(annotation.getMessage());
+						messageHtml = AnnotationDescriptionParser.parse(messageHtml, ClientServices.get().contextProvider().getCurrent().getUsers(),
+								new AnnotationDescriptionParser.ParseHandler<UserRepresentation>() {
+									@Override
+									public String getReplacement(final UserRepresentation model) {
+										return "<span class=\"user-mention\">@" + ClientServices.get().userData().getRealUser(model).getName() + "</span>";
+									}
+								});
+						richText.setHTML(messageHtml);
+						richText.setStyleName(style.richTextArea());
+						messageBody.add(richText);
+						messageBody.setCellWidth(richText, "100%");
+					}
+				}
+			});
+		}
 	}
 
 	@Override
