@@ -1,9 +1,6 @@
 package br.com.oncast.ontrack.server.services.actionPostProcessing;
 
-import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
@@ -71,7 +68,7 @@ public class ActionPostProcessingServiceTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void actionThatDoesNotHavePostProcessorsRegisteredSHouldNotInvokeOtherProcessors() throws UnableToPostProcessActionException, NoResultFoundException, PersistenceException {
+	public void actionThatDoesNotHavePostProcessorsRegisteredSHouldNotInvokeOtherProcessors() throws Exception {
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext projectContext = new ProjectContext(project);
 		final ActionContext actionContext = mock(ActionContext.class);
@@ -87,7 +84,7 @@ public class ActionPostProcessingServiceTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void actionThatDoesHavePostProcessorsRegisteredSHouldInvokeProcessor() throws UnableToPostProcessActionException, NoResultFoundException, PersistenceException {
+	public void actionThatDoesHavePostProcessorsRegisteredSHouldInvokeProcessor() throws Exception {
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext projectContext = new ProjectContext(project);
 		final ActionContext actionContext = mock(ActionContext.class);
@@ -103,7 +100,7 @@ public class ActionPostProcessingServiceTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void actionThatHaveTwoPostProcessorsRegisteredSHouldInvokeBothProcessors() throws UnableToPostProcessActionException, NoResultFoundException, PersistenceException {
+	public void actionThatHaveTwoPostProcessorsRegisteredSHouldInvokeBothProcessors() throws Exception {
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext projectContext = new ProjectContext(project);
 		final ActionContext actionContext = mock(ActionContext.class);
@@ -122,7 +119,7 @@ public class ActionPostProcessingServiceTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void postProcessorsRegisteredWithInterfaceShouldSHouldInvokeBothProcessors() throws UnableToPostProcessActionException, NoResultFoundException, PersistenceException {
+	public void postProcessorsRegisteredWithInterfaceShouldSHouldInvokeBothProcessors() throws Exception {
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext projectContext = new ProjectContext(project);
 		final ActionContext actionContext = mock(ActionContext.class);

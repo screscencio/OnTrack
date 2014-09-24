@@ -2,9 +2,6 @@ package br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring;
 
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -38,23 +35,22 @@ public class ActionExecutionMonitoringAspectTest {
 	}
 
 	@Test
-	public void shouldNotPostProcessActionExecutionInNonAnnotatedMethods() throws UnableToCompleteActionException, UnableToPostProcessActionException, NoResultFoundException, PersistenceException {
+	public void shouldNotPostProcessActionExecutionInNonAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeAction(projectContext, actionContext, action);
 		Mockito.verify(postProcessor, Mockito.times(0)).process(action, actionContext, projectContext);
 	}
 
 	@Test
-	public void shouldNotPostProcessActionExecutionInDontPostProcessAnnotatedMethods() throws UnableToCompleteActionException, UnableToPostProcessActionException, NoResultFoundException,
-			PersistenceException {
+	public void shouldNotPostProcessActionExecutionInDontPostProcessAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithoutPostProcessing(projectContext, actionContext, action);
+
 		Mockito.verify(postProcessor, Mockito.times(0)).process(action, actionContext, projectContext);
 	}
 
 	@Test
-	public void shouldPostProcessActionExecutionInPostProcessAnnotatedMethods() throws UnableToCompleteActionException, UnableToPostProcessActionException, NoResultFoundException,
-			PersistenceException {
+	public void shouldPostProcessActionExecutionInPostProcessAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithPostProcessing(projectContext, actionContext, action);
 		Mockito.verify(postProcessor, Mockito.times(1)).process(action, actionContext, projectContext);
@@ -62,8 +58,7 @@ public class ActionExecutionMonitoringAspectTest {
 
 	@Test
 	@PostProcessActions
-	public void shouldNotPostProcessActionExecutionTakingInAccountNestedAnnotatedMethods() throws UnableToCompleteActionException, UnableToPostProcessActionException, NoResultFoundException,
-			PersistenceException {
+	public void shouldNotPostProcessActionExecutionTakingInAccountNestedAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithoutPostProcessing(projectContext, actionContext, action);
 		Mockito.verify(postProcessor, Mockito.times(0)).process(action, actionContext, projectContext);
@@ -71,8 +66,7 @@ public class ActionExecutionMonitoringAspectTest {
 
 	@Test
 	@DontPostProcessActions
-	public void shouldPostProcessActionExecutionTakingInAccountNestedAnnotatedMethods() throws UnableToCompleteActionException, UnableToPostProcessActionException, NoResultFoundException,
-			PersistenceException {
+	public void shouldPostProcessActionExecutionTakingInAccountNestedAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithPostProcessing(projectContext, actionContext, action);
 		Mockito.verify(postProcessor, Mockito.times(1)).process(action, actionContext, projectContext);
@@ -80,7 +74,7 @@ public class ActionExecutionMonitoringAspectTest {
 
 	@Test
 	@DontPostProcessActions
-	public void shouldPostProcessOnlyOneActionExecution() throws UnableToCompleteActionException, UnableToPostProcessActionException, NoResultFoundException, PersistenceException {
+	public void shouldPostProcessOnlyOneActionExecution() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithPostProcessing(projectContext, actionContext, action);
 		executeActionWithoutPostProcessing(projectContext, actionContext, action);
@@ -90,7 +84,7 @@ public class ActionExecutionMonitoringAspectTest {
 
 	@Test
 	@PostProcessActions
-	public void shouldPostProcessTwoActionExecution() throws UnableToCompleteActionException, UnableToPostProcessActionException, NoResultFoundException, PersistenceException {
+	public void shouldPostProcessTwoActionExecution() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithPostProcessing(projectContext, actionContext, action);
 		executeActionWithoutPostProcessing(projectContext, actionContext, action);

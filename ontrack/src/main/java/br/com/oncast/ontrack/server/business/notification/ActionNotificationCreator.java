@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.server.business.notification;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
@@ -47,19 +46,19 @@ public enum ActionNotificationCreator {
 	},
 	IMPEDIMENT_CREATION(ImpedimentCreateAction.class) {
 		@Override
-		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
-			return createAnnotationNotificationBuilder(action, projectContext, authorId, ((ImpedimentCreateAction) action).getAnnotationId(), NotificationType.IMPEDIMENT_CREATED);
+		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) throws AnnotationNotFoundException {
+			return notificationBuilder(action, projectContext, authorId, ((ImpedimentCreateAction) action).getAnnotationId(), NotificationType.IMPEDIMENT_CREATED);
 		}
 	},
 	IMPEDIMENT_COMPLETITION(ImpedimentSolveAction.class) {
 		@Override
-		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
-			return createAnnotationNotificationBuilder(action, projectContext, authorId, ((ImpedimentSolveAction) action).getAnnotationId(), NotificationType.IMPEDIMENT_SOLVED);
+		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) throws AnnotationNotFoundException {
+			return notificationBuilder(action, projectContext, authorId, ((ImpedimentSolveAction) action).getAnnotationId(), NotificationType.IMPEDIMENT_SOLVED);
 		}
 	},
 	PROGRESS_DECLARED(ScopeDeclareProgressAction.class) {
 		@Override
-		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
+		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) throws ScopeNotFoundException {
 			final Scope scope = getScopeById(action, projectContext);
 			return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.PROGRESS_DECLARED).setReferenceDescription(scope.getDescription()).setDescription(
 					scope.getProgress().getDescription());
@@ -67,43 +66,33 @@ public enum ActionNotificationCreator {
 	},
 	ANNOTATION_CREATED(AnnotationCreateAction.class) {
 		@Override
-		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
+		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) throws AnnotationNotFoundException {
 			final AnnotationCreateAction annotationAction = (AnnotationCreateAction) action;
 			final NotificationType notificationType = annotationAction.getAnnotationType() == AnnotationType.SIMPLE ? NotificationType.ANNOTATION_CREATED : NotificationType.IMPEDIMENT_CREATED;
-			return createAnnotationNotificationBuilder(action, projectContext, authorId, annotationAction.getAnnotationId(), notificationType);
+			return notificationBuilder(action, projectContext, authorId, annotationAction.getAnnotationId(), notificationType);
 		}
 	},
 	ANNOTATION_DEPRECATED(AnnotationDeprecateAction.class) {
 		@Override
-		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) {
-			return createAnnotationNotificationBuilder(action, projectContext, authorId, ((AnnotationDeprecateAction) action).getAnnotationId(), NotificationType.ANNOTATION_DEPRECATED);
+		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) throws AnnotationNotFoundException {
+			return notificationBuilder(action, projectContext, authorId, ((AnnotationDeprecateAction) action).getAnnotationId(), NotificationType.ANNOTATION_DEPRECATED);
 		}
 	};
 
-	private static NotificationBuilder createAnnotationNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId, final UUID annotationId,
-			final NotificationType type) {
+	private static NotificationBuilder notificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId, final UUID annotationId, final NotificationType type)
+			throws AnnotationNotFoundException {
 		String referenceDescription = "";
-		try {
-			referenceDescription = getReferenceDescription(action, projectContext);
-		} catch (final RuntimeException e) {
-			return null;
-		}
+		referenceDescription = getReferenceDescription(action, projectContext);
 		final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), annotationId);
-
 		return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, type).setDescription(annotation.getMessage()).setReferenceDescription(referenceDescription);
 	}
 
 	private static NotificationBuilder initializeBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation, final UUID authorId, final NotificationType type) {
-
 		return new NotificationBuilder(type, projectRepresentation, authorId).setReferenceId(action.getReferenceId());
 	}
 
-	private static Scope getScopeById(final ModelAction action, final ProjectContext projectContext) {
-		try {
-			return projectContext.findScope(action.getReferenceId());
-		} catch (final ScopeNotFoundException e3) {
-			throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e3);
-		}
+	private static Scope getScopeById(final ModelAction action, final ProjectContext projectContext) throws ScopeNotFoundException {
+		return projectContext.findScope(action.getReferenceId());
 	}
 
 	private static String getReferenceDescription(final ModelAction action, final ProjectContext projectContext) {
@@ -118,12 +107,8 @@ public enum ActionNotificationCreator {
 		}
 	}
 
-	private static Annotation getAnnotationById(final ProjectContext projectContext, final UUID referenceId, final UUID annotationId) {
-		try {
-			return projectContext.findAnnotation(referenceId, annotationId);
-		} catch (final AnnotationNotFoundException e) {
-			throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e);
-		}
+	private static Annotation getAnnotationById(final ProjectContext projectContext, final UUID referenceId, final UUID annotationId) throws AnnotationNotFoundException {
+		return projectContext.findAnnotation(referenceId, annotationId);
 	}
 
 	private final Class<? extends ModelAction> clazz;
@@ -140,6 +125,7 @@ public enum ActionNotificationCreator {
 		return null;
 	}
 
-	protected abstract NotificationBuilder createNotificationBuilder(ModelAction action, ProjectContext projectContext, UUID authorId) throws NoResultFoundException, PersistenceException;
+	protected abstract NotificationBuilder createNotificationBuilder(ModelAction action, ProjectContext projectContext, UUID authorId) throws NoResultFoundException, PersistenceException,
+			AnnotationNotFoundException, ScopeNotFoundException;
 
 }

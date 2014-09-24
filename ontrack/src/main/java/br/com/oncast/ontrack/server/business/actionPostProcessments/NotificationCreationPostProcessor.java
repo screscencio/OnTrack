@@ -10,7 +10,9 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificati
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import javax.mail.MessagingException;
@@ -32,22 +34,16 @@ public class NotificationCreationPostProcessor implements ActionPostProcessor<Mo
 
 	@Override
 	public void process(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext) throws UnableToPostProcessActionException, NoResultFoundException,
-			PersistenceException {
+			PersistenceException, AnnotationNotFoundException, ScopeNotFoundException, UnableToCreateNotificationException, MessagingException {
 		if (!active) {
 			LOGGER.debug("Ignoring notification post processment of action '" + action + "': the post processor was deactivated.");
 			return;
 		}
 
-		try {
-			final Notification notification = notificationFactory.createNofification(action, actionContext, projectContext);
-			if (notification == null) return;
-			this.notificationServerService.registerNewNotification(notification);
+		final Notification notification = notificationFactory.createNofification(action, actionContext, projectContext);
+		if (notification == null) return;
+		this.notificationServerService.registerNewNotification(notification);
 
-		} catch (final UnableToCreateNotificationException e) {
-			throw new UnableToPostProcessActionException("It was not possible to register new notification.", e);
-		} catch (final MessagingException e) {
-			throw new UnableToPostProcessActionException("It was not possible to register new notification.", e);
-		}
 	}
 
 	public void deactivate() {

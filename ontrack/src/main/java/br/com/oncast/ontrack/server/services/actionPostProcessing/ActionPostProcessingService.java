@@ -3,16 +3,21 @@ package br.com.oncast.ontrack.server.services.actionPostProcessing;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.ActionExecutionMonitoringAspect;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.mail.MessagingException;
 
 import org.apache.log4j.Logger;
 
@@ -64,7 +69,8 @@ public class ActionPostProcessingService {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void callPostProcessor(final ProjectContext projectContext, final ActionContext actionContext, final ModelAction modelAction, final ActionPostProcessor processor)
-			throws UnableToPostProcessActionException, NoResultFoundException, PersistenceException {
+			throws UnableToPostProcessActionException, NoResultFoundException, PersistenceException, AnnotationNotFoundException, ScopeNotFoundException, UnableToCreateNotificationException,
+			MessagingException {
 		processor.process(modelAction, actionContext, projectContext);
 	}
 

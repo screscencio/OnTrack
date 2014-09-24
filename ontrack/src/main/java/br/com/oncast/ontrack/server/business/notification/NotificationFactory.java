@@ -4,14 +4,17 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 
 public class NotificationFactory {
 
-	public Notification createNofification(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext) throws NoResultFoundException, PersistenceException {
+	public Notification createNofification(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext) throws NoResultFoundException, PersistenceException,
+			AnnotationNotFoundException, ScopeNotFoundException {
 		final ActionNotificationCreator creator = ActionNotificationCreator.getCreatorFor(action.getClass());
 		if (creator == null) return null;
 
