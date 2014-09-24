@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class NotificationMailTest {
 		author = UserTestUtils.createUser("author@mail.com");
 		recipient = UserTestUtils.createUser("recipient@mail.com");
 		project = ProjectTestUtils.createRepresentation();
-		mail = NotificationMail.getMail(notification, author, recipient, users, project);
+		mail = NotificationMail.getMail(notification, author, recipient, new ArrayList<User>(), project);
 		when(notification.getReferenceId()).thenReturn(new UUID());
 		when(notification.getDescription()).thenReturn("my notification description");
 		when(notification.getReferenceDescription()).thenReturn("my notification reference description");
@@ -54,9 +55,9 @@ public class NotificationMailTest {
 	}
 
 	@Test
-	public void testImpedimentMailTemplatePath() throws Exception {
+	public void testAnnotationMailTemplatePath() throws Exception {
 		when(notification.getType()).thenReturn(NotificationType.IMPEDIMENT_CREATED);
-		assertEquals("/br/com/oncast/ontrack/server/services/email/impedimentNotificationMail.html", mail.getTemplatePath());
+		assertEquals("/br/com/oncast/ontrack/server/services/email/annotationNotificationMail.html", mail.getTemplatePath());
 	}
 
 	@Test

@@ -4,6 +4,8 @@ import br.com.oncast.ontrack.server.business.notification.NotificationFactory;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.notification.NotificationServerService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -29,7 +31,8 @@ public class NotificationCreationPostProcessor implements ActionPostProcessor<Mo
 	}
 
 	@Override
-	public void process(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext) throws UnableToPostProcessActionException {
+	public void process(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext) throws UnableToPostProcessActionException, NoResultFoundException,
+			PersistenceException {
 		if (!active) {
 			LOGGER.debug("Ignoring notification post processment of action '" + action + "': the post processor was deactivated.");
 			return;

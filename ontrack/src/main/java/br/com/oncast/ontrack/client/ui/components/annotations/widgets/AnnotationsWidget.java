@@ -261,8 +261,6 @@ public class AnnotationsWidget extends Composite {
 			}
 
 			private String parseMentions(final String html) {
-				System.out.println(html);
-				System.out.println(html.replaceAll("<span data-user-id=\"([\\w\\d-]+)\"[^>]*>[^<]*</span>", "$1"));
 				return html.replaceAll("<span data-user-id=\"([\\w\\d-]+)\"[^>]*>[^<]*</span>", "$1");
 			}
 		});

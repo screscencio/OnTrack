@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.server.services.actionPostProcessing;
 
 import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.ActionExecutionMonitoringAspect;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -62,7 +64,7 @@ public class ActionPostProcessingService {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void callPostProcessor(final ProjectContext projectContext, final ActionContext actionContext, final ModelAction modelAction, final ActionPostProcessor processor)
-			throws UnableToPostProcessActionException {
+			throws UnableToPostProcessActionException, NoResultFoundException, PersistenceException {
 		processor.process(modelAction, actionContext, projectContext);
 	}
 
