@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.TeamRevogueInvitationAction;
@@ -76,6 +77,16 @@ public enum ActionNotificationCreator {
 		@Override
 		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) throws AnnotationNotFoundException {
 			return notificationBuilder(action, projectContext, authorId, ((AnnotationDeprecateAction) action).getAnnotationId(), NotificationType.ANNOTATION_DEPRECATED);
+		}
+	},
+
+	SCOPE_BIND_HUMAN_ID_ACTION(ScopeBindHumanIdAction.class) {
+		@Override
+		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) throws NoResultFoundException, PersistenceException {
+			final NotificationBuilder builder = initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.SCOPE_BIND_HUMAN_ID);
+			final User user = ServerServiceProvider.getInstance().getUsersDataManager().retrieveUser(action.getReferenceId());
+			builder.setReferenceDescription(user.getName());
+			return builder;
 		}
 	};
 

@@ -94,6 +94,17 @@ public enum NotificationType implements NotificationMessageCode {
 		public String simpleMessage(final Notification notification) {
 			return "excluiu o " + notification.getReferenceDescription() + " do projeto";
 		}
+	},
+	SCOPE_BIND_HUMAN_ID {
+		@Override
+		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
+			return messages.scopeBindHumanId(notification.getReferenceDescription());
+		}
+
+		@Override
+		public String simpleMessage(final Notification notification) {
+			return "vinculou " + notification.getReferenceDescription() + " ao escopo";
+		}
 	};
 
 	@Override
