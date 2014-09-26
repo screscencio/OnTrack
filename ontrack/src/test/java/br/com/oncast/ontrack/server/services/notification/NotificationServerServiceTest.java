@@ -64,7 +64,7 @@ public class NotificationServerServiceTest {
 
 	@Test
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void registerNewNotificationShouldPersistAndMulticast() throws PersistenceException, UnableToCreateNotificationException, MessagingException {
+	public void registerNewNotificationShouldPersistAndMulticast() throws PersistenceException, UnableToCreateNotificationException, MessagingException, NoResultFoundException {
 		final User user1 = createUser();
 		final User user2 = createUser();
 		final ArrayList<User> userList = new ArrayList<User>();

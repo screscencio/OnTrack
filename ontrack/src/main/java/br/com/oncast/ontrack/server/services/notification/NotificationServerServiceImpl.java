@@ -58,33 +58,18 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 	}
 
 	@Override
-	public void registerNewNotification(final Notification notification) throws UnableToCreateNotificationException, MessagingException {
-		try {
-			this.persistenceService.persistOrUpdateNotification(notification);
-		} catch (final PersistenceException e) {
-			final String message = "Unable to create a new notification exception.";
-			LOGGER.error(message, e);
-			throw new UnableToCreateNotificationException(message);
-		}
+	public void registerNewNotification(final Notification notification) throws UnableToCreateNotificationException, MessagingException, PersistenceException, NoResultFoundException {
+		this.persistenceService.persistOrUpdateNotification(notification);
 		final List<UUID> recipientsAsUserMails = notification.getRecipientsAsUserIds();
-		try {
-			final List<User> users = persistenceService.retrieveUsersByIds(recipientsAsUserMails);
-			this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), users);
-			final User author = persistenceService.retrieveUserById(notification.getAuthorId());
-			final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(notification.getProjectReference());
-			for (final User user : users) {
-				if (notification.isImportant(user.getId())) {
-					mailService.send(NotificationMail.getMail(notification, author, user, users, project));
-				}
+
+		final List<User> users = persistenceService.retrieveUsersByIds(recipientsAsUserMails);
+		this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), users);
+		final User author = persistenceService.retrieveUserById(notification.getAuthorId());
+		final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(notification.getProjectReference());
+		for (final User user : users) {
+			if (notification.isImportant(user.getId())) {
+				mailService.send(NotificationMail.getMail(notification, author, user, users, project));
 			}
-		} catch (final PersistenceException e) {
-			final String message = "Unable to multicast new notification: Unable to retrieve recipient list.";
-			LOGGER.error(message, e);
-			throw new UnableToCreateNotificationException(message);
-		} catch (final NoResultFoundException e) {
-			final String message = "Unable to send notification email: Notification author was not found.";
-			LOGGER.error(message, e);
-			throw new UnableToCreateNotificationException(message);
 		}
 	}
 

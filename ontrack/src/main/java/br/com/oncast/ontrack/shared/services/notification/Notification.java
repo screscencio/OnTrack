@@ -91,6 +91,14 @@ public class Notification implements Serializable {
 		return users;
 	}
 
+	public List<UUID> getImportantRecipientsAsUserIds() {
+		final List<UUID> users = new ArrayList<UUID>();
+		for (final NotificationRecipient recipient : recipients) {
+			if (isImportant(recipient.getId())) users.add(recipient.getUserId());
+		}
+		return users;
+	}
+
 	public UUID getProjectId() {
 		return projectId;
 	}
