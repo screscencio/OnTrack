@@ -52,7 +52,7 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	@DefaultMessage("unavailable project")
 	String unavailableProject();
 
-	@Description("User binded to a scope")
-	@DefaultMessage("binded ''{0}'' to a scope")
-	String scopeBindHumanId(String referenceDescription);
+	@Description("User associated to a scope")
+	@DefaultMessage("associated ''{0}'' on item ''{1}'' at ''{2}''")
+	String scopeAddAssociated(String user, String scopeItem, String project);
 }

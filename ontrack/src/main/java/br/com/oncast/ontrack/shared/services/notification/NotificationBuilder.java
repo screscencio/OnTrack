@@ -21,7 +21,7 @@ public class NotificationBuilder {
 	}
 
 	public NotificationBuilder addReceipient(final UUID userId) {
-		notification.addReceipient(new NotificationRecipient(userId));
+		notification.addRecipient(new NotificationRecipient(userId));
 		return this;
 	}
 

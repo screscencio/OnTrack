@@ -47,7 +47,7 @@ public class NotificationTypeTest {
 	@Test
 	public void SCOPE_BIND_HUMAN_ID_ShouldReturnCorrectMessage() {
 		final Notification notification = new Notification();
-		notification.setReferenceDescription("OnCast");
-		Assert.assertEquals("vinculou OnCast ao escopo", NotificationType.SCOPE_BIND_HUMAN_ID.simpleMessage(notification));
+		notification.setReferenceDescription("Item XPTO");
+		Assert.assertEquals("te vinculou ao ítem Item XPTO", NotificationType.SCOPE_ADD_ASSOCIATED_USER.simpleMessage(notification));
 	}
 }

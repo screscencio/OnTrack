@@ -95,15 +95,19 @@ public enum NotificationType implements NotificationMessageCode {
 			return "excluiu o " + notification.getReferenceDescription() + " do projeto";
 		}
 	},
-	SCOPE_BIND_HUMAN_ID {
+	SCOPE_ADD_ASSOCIATED_USER {
 		@Override
+		/**
+		 * notification.getDescription() == User
+		 * notification.getReferenceDescription() == ScopeItem
+		 */
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-			return messages.scopeBindHumanId(notification.getReferenceDescription());
+			return messages.scopeAddAssociated(notification.getDescription(), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
 		}
 
 		@Override
 		public String simpleMessage(final Notification notification) {
-			return "vinculou " + notification.getReferenceDescription() + " ao escopo";
+			return "te vinculou ao ítem " + notification.getReferenceDescription();
 		}
 	};
 
