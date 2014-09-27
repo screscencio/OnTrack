@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.utils.link.LinkFactory;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.AnnotationDescriptionParser;
 import br.com.oncast.ontrack.shared.utils.AnnotationDescriptionParser.ParseHandler;
 
@@ -98,11 +99,12 @@ public enum NotificationType implements NotificationMessageCode {
 	SCOPE_ADD_ASSOCIATED_USER {
 		@Override
 		/**
-		 * notification.getDescription() == User
+		 * notification.getDescription() == UserId
 		 * notification.getReferenceDescription() == ScopeItem
 		 */
 		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-			return messages.scopeAddAssociated(notification.getDescription(), notification.getReferenceDescription(), getProjectLinkFor(messages, notification));
+			final User user = ClientServices.get().userData().getRealUser(new UUID(notification.getDescription()));
+			return messages.scopeAddAssociated(user.getName(), getScopeLinkFor(notification), getProjectLinkFor(messages, notification));
 		}
 
 		@Override

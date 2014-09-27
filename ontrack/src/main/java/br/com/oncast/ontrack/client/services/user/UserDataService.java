@@ -31,4 +31,6 @@ public interface UserDataService {
 
 	List<User> getUsersList();
 
+	User getRealUser(UUID userId);
+
 }

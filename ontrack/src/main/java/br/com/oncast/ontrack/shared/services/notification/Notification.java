@@ -71,7 +71,6 @@ public class Notification implements Serializable {
 		IMPORTANT_NOTIFICATIONS.add(NotificationType.IMPEDIMENT_CREATED);
 		IMPORTANT_NOTIFICATIONS.add(NotificationType.TEAM_INVITED);
 		IMPORTANT_NOTIFICATIONS.add(NotificationType.TEAM_REMOVED);
-		IMPORTANT_NOTIFICATIONS.add(NotificationType.SCOPE_ADD_ASSOCIATED_USER);
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.

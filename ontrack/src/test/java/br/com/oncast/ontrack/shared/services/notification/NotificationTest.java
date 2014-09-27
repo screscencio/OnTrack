@@ -36,10 +36,20 @@ public class NotificationTest {
 	}
 
 	@Test
-	public void IMPORTANT_ShouldHaveScopeAddAssociatedUser() {
+	public void IMPORTANT_ShouldNotHaveScopeAddAssociatedUser() {
 		final Notification notification = new Notification();
+		notification.setDescription("");
 		notification.setType(NotificationType.SCOPE_ADD_ASSOCIATED_USER);
-		Assert.assertTrue(notification.isImportant(new UUID()));
+		Assert.assertFalse(notification.isImportant(new UUID()));
+	}
+
+	@Test
+	public void IMPORTANT_ShouldHaveScopeAddAssociatedUserWhenTheAssociatedUserIdIsInDescription() {
+		final Notification notification = new Notification();
+		final UUID userId = new UUID();
+		notification.setDescription(userId.toString());
+		notification.setType(NotificationType.SCOPE_ADD_ASSOCIATED_USER);
+		Assert.assertTrue(notification.isImportant(userId));
 	}
 
 	@Test

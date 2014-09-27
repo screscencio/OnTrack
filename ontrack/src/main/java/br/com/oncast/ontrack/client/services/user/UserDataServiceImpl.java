@@ -201,7 +201,7 @@ public class UserDataServiceImpl implements UserDataService {
 	@Override
 	public void loadRealUser(final UUID userId, final AsyncCallback<User> callback) {
 		if (cachedUsers.contains(userId)) {
-			callback.onSuccess(retrieveRealUser(userId));
+			callback.onSuccess(getRealUser(userId));
 			return;
 		}
 
@@ -232,10 +232,11 @@ public class UserDataServiceImpl implements UserDataService {
 
 	@Override
 	public User getRealUser(final UserRepresentation userRepresentation) {
-		return retrieveRealUser(userRepresentation.getId());
+		return getRealUser(userRepresentation.getId());
 	}
 
-	private User retrieveRealUser(final UUID userId) {
+	@Override
+	public User getRealUser(final UUID userId) {
 		for (final User user : cachedUsers) {
 			if (user.getId().equals(userId)) return user;
 		}
@@ -250,7 +251,7 @@ public class UserDataServiceImpl implements UserDataService {
 	@Override
 	public HandlerRegistration registerListenerForSpecificUser(final UUID userId, final UserSpecificInformationChangeListener listener) {
 		userSpecificListeners.put(userId, listener);
-		if (cachedUsers.contains(userId)) listener.onInformationChange(retrieveRealUser(userId));
+		if (cachedUsers.contains(userId)) listener.onInformationChange(getRealUser(userId));
 
 		return new HandlerRegistration() {
 			@Override
