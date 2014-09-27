@@ -107,7 +107,7 @@ public enum NotificationType implements NotificationMessageCode {
 
 		@Override
 		public String simpleMessage(final Notification notification) {
-			return "te vinculou ao ítem " + notification.getReferenceDescription();
+			return "te associou ";
 		}
 	};
 

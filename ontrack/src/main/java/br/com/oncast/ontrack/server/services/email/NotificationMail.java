@@ -24,6 +24,7 @@ public class NotificationMail implements OnTrackMail {
 	static {
 		TEMPLATE_POSTFIX.put(NotificationType.TEAM_INVITED, "invitation");
 		TEMPLATE_POSTFIX.put(NotificationType.TEAM_REMOVED, "invitation");
+		TEMPLATE_POSTFIX.put(NotificationType.SCOPE_ADD_ASSOCIATED_USER, "association");
 	}
 
 	private NotificationMail(final Notification notification, final User author, final User recipient, final List<User> users, final ProjectRepresentation project) {
@@ -58,12 +59,14 @@ public class NotificationMail implements OnTrackMail {
 		param.put("projectName", project.getName());
 		param.put("authorName", author.getName());
 		param.put("annotationId", notification.getReferenceId());
+		param.put("itemId", notification.getReferenceId());
 		param.put("annotationDescription", AnnotationDescriptionParser.parse(notification.getDescription(), users, new ParseHandler<User>() {
 			@Override
 			public String getReplacement(final User model) {
 				return model.getName();
 			}
 		}));
+		param.put("itemDescription", notification.getReferenceDescription());
 		param.put("subjectDescription", notification.getReferenceDescription());
 		param.put("action", notification.getType().simpleMessage(notification));
 		return param;
@@ -73,5 +76,4 @@ public class NotificationMail implements OnTrackMail {
 	public List<String> getRecipients() {
 		return Arrays.asList(recipient.getEmail());
 	}
-
 }

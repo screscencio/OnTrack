@@ -195,5 +195,4 @@ public class Notification implements Serializable {
 	private boolean hasMentions(final UUID userId) {
 		return getDescription().contains(userId.toString());
 	}
-
 }

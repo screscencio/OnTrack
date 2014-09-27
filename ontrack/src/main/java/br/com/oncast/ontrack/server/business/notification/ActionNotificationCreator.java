@@ -82,10 +82,13 @@ public enum ActionNotificationCreator {
 
 	SCOPE_ADD_ASSOCIATED_USER(ScopeAddAssociatedUserAction.class) {
 		@Override
-		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) throws NoResultFoundException, PersistenceException {
+		protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext, final UUID authorId) throws NoResultFoundException,
+				PersistenceException, ScopeNotFoundException {
 			final NotificationBuilder builder = initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.SCOPE_ADD_ASSOCIATED_USER);
-			final User user = ServerServiceProvider.getInstance().getUsersDataManager().retrieveUser(action.getReferenceId());
-			builder.setReferenceDescription(user.getName());
+			final User user = ServerServiceProvider.getInstance().getUsersDataManager().retrieveUser(((ScopeAddAssociatedUserAction) action).getUserId());
+			builder.setReferenceDescription(projectContext.findScope(action.getReferenceId()).getDescription());
+			builder.setReferenceId(action.getReferenceId());
+			builder.setDescription(user.getName());
 			return builder;
 		}
 	};

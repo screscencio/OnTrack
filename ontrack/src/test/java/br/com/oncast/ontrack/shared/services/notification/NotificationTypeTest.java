@@ -48,6 +48,6 @@ public class NotificationTypeTest {
 	public void SCOPE_BIND_HUMAN_ID_ShouldReturnCorrectMessage() {
 		final Notification notification = new Notification();
 		notification.setReferenceDescription("Item XPTO");
-		Assert.assertEquals("te vinculou ao ítem Item XPTO", NotificationType.SCOPE_ADD_ASSOCIATED_USER.simpleMessage(notification));
+		Assert.assertEquals("te associou ", NotificationType.SCOPE_ADD_ASSOCIATED_USER.simpleMessage(notification));
 	}
 }
