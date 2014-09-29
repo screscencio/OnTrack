@@ -2,8 +2,11 @@ package br.com.oncast.ontrack.shared.services.notification;
 
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class NotificationTest {
 
@@ -11,28 +14,28 @@ public class NotificationTest {
 	public void notificationTeamInvited_ShouldBeImportant() {
 		final Notification notification = new Notification();
 		notification.setType(NotificationType.TEAM_INVITED);
-		Assert.assertTrue(notification.isImportant(new UUID()));
+		assertTrue(notification.isImportant(new UUID()));
 	}
 
 	@Test
 	public void notificationTeamRemoved_ShouldBeImportant() {
 		final Notification notification = new Notification();
 		notification.setType(NotificationType.TEAM_REMOVED);
-		Assert.assertTrue(notification.isImportant(new UUID()));
+		assertTrue(notification.isImportant(new UUID()));
 	}
 
 	@Test
 	public void notificationImpedimentSolved_ShouldBeImportant() {
 		final Notification notification = new Notification();
 		notification.setType(NotificationType.IMPEDIMENT_SOLVED);
-		Assert.assertTrue(notification.isImportant(new UUID()));
+		assertTrue(notification.isImportant(new UUID()));
 	}
 
 	@Test
 	public void notificationImpedimentCreated_ShouldBeImportant() {
 		final Notification notification = new Notification();
 		notification.setType(NotificationType.IMPEDIMENT_CREATED);
-		Assert.assertTrue(notification.isImportant(new UUID()));
+		assertTrue(notification.isImportant(new UUID()));
 	}
 
 	@Test
@@ -41,7 +44,7 @@ public class NotificationTest {
 		final UUID userId = new UUID();
 		notification.setDescription(userId.toString());
 		notification.setType(NotificationType.SCOPE_ADD_ASSOCIATED_USER);
-		Assert.assertTrue(notification.isImportant(userId));
+		assertTrue(notification.isImportant(userId));
 	}
 
 	@Test
@@ -49,7 +52,7 @@ public class NotificationTest {
 		final Notification notification = new Notification();
 		notification.setDescription("");
 		notification.setType(NotificationType.SCOPE_ADD_ASSOCIATED_USER);
-		Assert.assertFalse(notification.isImportant(new UUID()));
+		assertFalse(notification.isImportant(new UUID()));
 	}
 
 	@Test
@@ -57,7 +60,7 @@ public class NotificationTest {
 		final Notification notification = new Notification();
 		notification.setDescription("");
 		notification.setType(NotificationType.ANNOTATION_DEPRECATED);
-		Assert.assertFalse(notification.isImportant(new UUID()));
+		assertFalse(notification.isImportant(new UUID()));
 	}
 
 	@Test
@@ -66,7 +69,7 @@ public class NotificationTest {
 		final UUID userId = new UUID();
 		notification.setDescription(userId.toString());
 		notification.setType(NotificationType.ANNOTATION_DEPRECATED);
-		Assert.assertTrue(notification.isImportant(userId));
+		assertTrue(notification.isImportant(userId));
 	}
 
 	@Test
@@ -74,7 +77,7 @@ public class NotificationTest {
 		final Notification notification = new Notification();
 		notification.setDescription("");
 		notification.setType(NotificationType.ANNOTATION_CREATED);
-		Assert.assertFalse(notification.isImportant(new UUID()));
+		assertFalse(notification.isImportant(new UUID()));
 	}
 
 	@Test
@@ -83,7 +86,7 @@ public class NotificationTest {
 		final UUID userId = new UUID();
 		notification.setDescription(userId.toString());
 		notification.setType(NotificationType.ANNOTATION_CREATED);
-		Assert.assertTrue(notification.isImportant(userId));
+		assertTrue(notification.isImportant(userId));
 	}
 
 	@Test
@@ -91,7 +94,7 @@ public class NotificationTest {
 		final Notification notification = new Notification();
 		notification.setDescription("");
 		notification.setType(NotificationType.PROGRESS_DECLARED);
-		Assert.assertFalse(notification.isImportant(new UUID()));
+		assertFalse(notification.isImportant(new UUID()));
 	}
 
 	@Test
@@ -100,7 +103,7 @@ public class NotificationTest {
 		final UUID userId = new UUID();
 		notification.setDescription(userId.toString());
 		notification.setType(NotificationType.PROGRESS_DECLARED);
-		Assert.assertTrue(notification.isImportant(userId));
+		assertTrue(notification.isImportant(userId));
 	}
 
 	@Test
@@ -109,7 +112,7 @@ public class NotificationTest {
 		final UUID uuid = new UUID();
 		final NotificationRecipient recipient = setUpNotificationWithRecipient(notification, uuid);
 		notification.addRecipient(recipient);
-		Assert.assertEquals(recipient, notification.getRecipient(uuid));
+		assertEquals(recipient, notification.getRecipient(uuid));
 	}
 
 	@Test
@@ -121,7 +124,7 @@ public class NotificationTest {
 		final UUID otherUuid = new UUID();
 		final NotificationRecipient otherRecipient = setUpNotificationWithRecipient(notification, otherUuid);
 		notification.addRecipient(otherRecipient);
-		Assert.assertEquals(recipient, notification.getRecipient(uuid));
+		assertEquals(recipient, notification.getRecipient(uuid));
 	}
 
 	@Test
@@ -130,7 +133,7 @@ public class NotificationTest {
 		final UUID uuid = new UUID();
 		final NotificationRecipient recipient = setUpNotificationWithRecipient(notification, uuid);
 		notification.addRecipient(recipient);
-		Assert.assertTrue(notification.getRecipientsAsUserIds().contains(uuid));
+		assertTrue(notification.getRecipientsAsUserIds().contains(uuid));
 	}
 
 	@Test
@@ -144,9 +147,9 @@ public class NotificationTest {
 		final NotificationRecipient otherRecipient = setUpNotificationWithRecipient(notification, otherUuid);
 		notification.addRecipient(otherRecipient);
 
-		Assert.assertEquals(2, notification.getRecipientsAsUserIds().size());
-		Assert.assertTrue(notification.getRecipientsAsUserIds().contains(uuid));
-		Assert.assertTrue(notification.getRecipientsAsUserIds().contains(otherUuid));
+		assertEquals(2, notification.getRecipientsAsUserIds().size());
+		assertTrue(notification.getRecipientsAsUserIds().contains(uuid));
+		assertTrue(notification.getRecipientsAsUserIds().contains(otherUuid));
 	}
 
 	@Test
@@ -159,15 +162,15 @@ public class NotificationTest {
 		final NotificationRecipient otherRecipient = setUpNotificationWithRecipient(notification, uuid);
 		notification.addRecipient(otherRecipient);
 
-		Assert.assertEquals(1, notification.getRecipientsAsUserIds().size());
-		Assert.assertTrue(notification.getRecipientsAsUserIds().contains(uuid));
+		assertEquals(1, notification.getRecipientsAsUserIds().size());
+		assertTrue(notification.getRecipientsAsUserIds().contains(uuid));
 	}
 
 	@Test
 	public void shouldReturnCorrectStringOnToString() {
 		final Notification notification = new Notification();
 		notification.setDescription("XPTO");
-		Assert.assertEquals("Notification(XPTO)", notification.toString());
+		assertEquals("Notification(XPTO)", notification.toString());
 	}
 
 	private NotificationRecipient setUpNotificationWithRecipient(final Notification notification, final UUID uuid) {
