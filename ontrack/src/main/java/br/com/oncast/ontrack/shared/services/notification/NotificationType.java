@@ -4,7 +4,7 @@ import br.com.oncast.ontrack.client.i18n.NotificationMessageCode;
 import br.com.oncast.ontrack.client.services.ClientServices;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidgetMessages;
 import br.com.oncast.ontrack.client.utils.link.LinkFactory;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;

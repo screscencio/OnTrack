@@ -7,7 +7,6 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
@@ -16,10 +15,6 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
 
 // TODO Possible optimization may be necessary as this algorithm does not make use of "damage-control", because the damage control implementation we had would
 // only take in account the action modification and not the modifications done by other inference engines (like EffortInferenceEngine).
@@ -36,7 +31,7 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 	public Set<UUID> process(final Scope scope, final UserRepresentation author, final Date timestamp) {
 		final HashSet<UUID> updatedScopes = new HashSet<UUID>();
 
-		if (scope.isLeaf()) setState(scope, NOT_STARTED, updatedScopes, author, timestamp);
+		if (scope.isLeaf()) setState(scope, ProgressState.NOT_STARTED, updatedScopes, author, timestamp);
 		propagateToDescendants(scope, updatedScopes, author, timestamp);
 		propagateToAncestors(scope, updatedScopes, author, timestamp);
 
@@ -55,12 +50,11 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		if (scope.isRoot()) return;
 
 		final Scope parent = scope.getParent();
-		ProgressState state = DONE;
+		ProgressState state = ProgressState.DONE;
 		for (final Scope sibling : parent.getChildren()) {
-			if (state.equals(UNDER_WORK) || is(sibling, UNDER_WORK)) {
-				state = UNDER_WORK;
-			}
-			else if (is(sibling, NOT_STARTED)) state = NOT_STARTED;
+			if (state.equals(ProgressState.UNDER_WORK) || is(sibling, ProgressState.UNDER_WORK)) {
+				state = ProgressState.UNDER_WORK;
+			} else if (is(sibling, ProgressState.NOT_STARTED)) state = ProgressState.NOT_STARTED;
 		}
 
 		if (setState(parent, state, updatedScopes, author, timestamp)) propagateToAncestors(parent, updatedScopes, author, timestamp);
@@ -70,23 +64,22 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		if (scope.isLeaf()) return;
 
 		ProgressState state = scope.getProgress().getState();
-		if (!state.equals(DONE)) state = NOT_STARTED;
+		if (!state.equals(ProgressState.DONE)) state = ProgressState.NOT_STARTED;
 
 		boolean allDone = true;
 
 		for (final Scope child : scope.getChildren()) {
 			if (setState(child, state, updatedScopes, author, timestamp)) propagateToDescendants(child, updatedScopes, author, timestamp);
-			allDone &= is(child, DONE);
+			allDone &= is(child, ProgressState.DONE);
 		}
 
-		if (!scope.isLeaf() && is(scope, NOT_STARTED) && allDone) setState(scope, DONE, updatedScopes, author, timestamp);
+		if (!scope.isLeaf() && is(scope, ProgressState.NOT_STARTED) && allDone) setState(scope, ProgressState.DONE, updatedScopes, author, timestamp);
 	}
 
-	private boolean setState(final Scope scope, final ProgressState newState, final HashSet<UUID> updatedScopes, final UserRepresentation author,
-			final Date timestamp) {
+	private boolean setState(final Scope scope, final ProgressState newState, final HashSet<UUID> updatedScopes, final UserRepresentation author, final Date timestamp) {
 		final Progress progress = scope.getProgress();
 		final ProgressState previousState = progress.getState();
-		if (newState.equals(NOT_STARTED)) progress.updateStateToDeclared(author, timestamp);
+		if (newState.equals(ProgressState.NOT_STARTED)) progress.updateStateToDeclared(author, timestamp);
 		else progress.setState(newState, author, timestamp);
 
 		final boolean updated = !is(scope, previousState);
@@ -106,8 +99,8 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 	}
 
 	private void calculateBottomUpAmmounts(final Scope scope, final HashSet<UUID> updatedScopes) {
-		final float newAccomplishedEffort = is(scope, DONE) ? scope.getEffort().getInfered() : calculateAccomplishedEffort(scope);
-		final float newAccomplishedValue = is(scope, DONE) ? scope.getValue().getInfered() : calculateAccomplishedValue(scope);
+		final float newAccomplishedEffort = is(scope, ProgressState.DONE) ? scope.getEffort().getInfered() : calculateAccomplishedEffort(scope);
+		final float newAccomplishedValue = is(scope, ProgressState.DONE) ? scope.getValue().getInfered() : calculateAccomplishedValue(scope);
 
 		if (Math.abs(newAccomplishedEffort - scope.getEffort().getAccomplished()) > EPSILON) {
 			scope.getEffort().setAccomplished(newAccomplishedEffort);

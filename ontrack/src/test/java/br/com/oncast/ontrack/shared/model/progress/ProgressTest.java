@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
@@ -36,8 +35,7 @@ public class ProgressTest {
 	private void setState(final ProgressState state) {
 		try {
 			Thread.sleep(1);
-		}
-		catch (final InterruptedException e) {}
+		} catch (final InterruptedException e) {}
 		progress.setState(state, UserRepresentationTestUtils.getAdmin(), new Date());
 	}
 

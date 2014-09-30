@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.client.services.estimator.ScopeEstimatorProvider;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.utils.ColorUtil;
 import br.com.oncast.ontrack.shared.model.color.Color;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressTestUtils;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.ScopeEstimator;
@@ -64,9 +64,8 @@ public class ColorProviderServiceTest {
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		scope = spy(ScopeTestUtils.createScope());
-		service = new ColorProviderServiceImpl(requestDispatchService, contextProviderService, scopeEstimatorProvider, serverPushClientService, eventBus,
-				usersStatusServiceImpl,
-				colorPicker, colorPackPicker);
+		service = new ColorProviderServiceImpl(requestDispatchService, contextProviderService, scopeEstimatorProvider, serverPushClientService, eventBus, usersStatusServiceImpl, colorPicker,
+				colorPackPicker);
 		when(scopeEstimatorProvider.get()).thenReturn(scopeEstimator);
 		when(scope.hasDueDate()).thenReturn(true);
 	}

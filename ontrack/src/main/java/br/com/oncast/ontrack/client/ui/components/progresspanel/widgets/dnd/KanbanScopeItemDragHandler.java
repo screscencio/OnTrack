@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanSc
 import br.com.oncast.ontrack.client.ui.components.scope.ScopeCardWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.ModelWidgetContainerDragHandler;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;

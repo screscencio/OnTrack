@@ -9,8 +9,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -214,7 +213,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 		return actionContext;
 	}
 
-	private void assertThatProgressIs(final Progress.ProgressState status) {
+	private void assertThatProgressIs(final ProgressState status) {
 		assertEquals(status, scope.getProgress().getState());
 	}
 
