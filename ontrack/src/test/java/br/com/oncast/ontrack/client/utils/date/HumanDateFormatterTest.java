@@ -130,11 +130,12 @@ public class HumanDateFormatterTest extends GwtTest {
 		assertEquals(hourAndMinute.format(now), formatter.formatDateRelativeTo(now, relativeTo));
 	}
 
-	// FIXME this test fails in the weekends replace it with fixed date time
 	@Test
 	public void theSameRelativeDateFormattingRulesAppliesWhenRelativeDateIsBeforeTheGivenDate() throws Exception {
-		final Date relativeTo = addMinutes(now, -44);
-		assertEquals(hourAndMinute.format(now), formatter.formatDateRelativeTo(now, relativeTo));
+		final Date date = dayAndTime(12, 11, 00);
+		final Date relativeTo = dayAndTime(11, 12, 00);
+
+		assertEquals(MESSAGES.tomorrow() + " " + MESSAGES.at() + " " + hourAndMinute.format(date), formatter.formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
