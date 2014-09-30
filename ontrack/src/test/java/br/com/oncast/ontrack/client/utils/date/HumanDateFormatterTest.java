@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.utils.date;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.junit.Before;
@@ -213,6 +215,20 @@ public class HumanDateFormatterTest extends GwtTest {
 		final Date relativeTo = dayAndTime(21, 21, 21);
 
 		assertEquals(MESSAGES.lessThanAnHour(), formatter.setMinimum(HOURS).formatTimeDifference(date, relativeTo));
+	}
+
+	@Test
+	public void shouldFormatAbsoluteDate() throws ParseException {
+		final Calendar date = Calendar.getInstance();
+		date.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("29/09/2014"));
+		assertEquals("Mon, 29/09/2014 at 12:00:00", HumanDateFormatter.formatAbsoluteDate(date.getTime()));
+	}
+
+	@Test
+	public void shouldFormatShortAbsoluteDate() throws ParseException {
+		final Calendar date = Calendar.getInstance();
+		date.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("29/09/2014"));
+		assertEquals("29/09/14", HumanDateFormatter.formatShortAbsoluteDate(date.getTime()));
 	}
 
 	private Date dayAndTime(final int day, final int hour, final int minute) {
