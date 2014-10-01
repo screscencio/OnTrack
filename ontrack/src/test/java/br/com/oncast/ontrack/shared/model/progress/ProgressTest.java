@@ -114,24 +114,48 @@ public class ProgressTest {
 	}
 
 	@Test
-	public void shouldReturnNullIfIsNotDone() {
+	public void getLeadTime_shouldReturnNullIfIsNotDone() {
 		setState(ProgressState.UNDER_WORK);
 		assertNull(progress.getLeadTime());
 	}
 
 	@Test
-	public void shouldNotReturnNullIfIsDone() {
+	public void getLeadTime_shouldNotReturnNullIfIsDone() {
 		setState(ProgressState.DONE);
 		assertNotNull(progress.getLeadTime());
 	}
 
 	@Test
-	public void shouldReturnTheLeadTimeIfIsDone() {
+	public void getLeadTime_shouldReturnTheCorrectLeadTimeIfIsDone() {
 		final Progress newProgress = ProgressTestUtils.create();
 		final Date date = new Date();
 		CalendarUtil.addDaysToDate(date, 3);
 		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), date);
 		assertEquals(3l, (newProgress.getLeadTime().longValue() / DateUnit.DAY));
+	}
+
+	@Test
+	public void getCycleTime_shouldReturnNullIfIsNotDone() {
+		setState(ProgressState.UNDER_WORK);
+		assertNull(progress.getCycleTime());
+	}
+
+	@Test
+	public void getCycleTime_shouldNotReturnNullIfIsDone() {
+		setState(ProgressState.DONE);
+		assertNotNull(progress.getCycleTime());
+	}
+
+	@Test
+	public void getCycleTime_shouldReturnTheCorrectCycleTimeIfIsDone() {
+		final Progress newProgress = ProgressTestUtils.create();
+		final Date dateWork = new Date();
+		CalendarUtil.addDaysToDate(dateWork, 1);
+		final Date dateDone = new Date();
+		CalendarUtil.addDaysToDate(dateDone, 3);
+		newProgress.setState(ProgressState.UNDER_WORK, UserRepresentationTestUtils.getAdmin(), dateWork);
+		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), dateDone);
+		assertEquals(2l, (newProgress.getCycleTime().longValue() / DateUnit.DAY));
 	}
 
 	private void setState(final ProgressState state) {

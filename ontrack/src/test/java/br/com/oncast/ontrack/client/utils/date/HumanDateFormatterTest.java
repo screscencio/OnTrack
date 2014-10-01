@@ -126,8 +126,10 @@ public class HumanDateFormatterTest extends GwtTest {
 
 	@Test
 	public void theRelativeDateTextIsInHourMinuteFormatWhenDifferenceIsLessThanAnHourAndMoreThanMinute() throws Exception {
-		final Date relativeTo = addMinutes(now, 44);
-		assertEquals(hourAndMinute.format(now), formatter.formatDateRelativeTo(now, relativeTo));
+		final Date to = dayAndTime(12, 00, 00);
+		final Date relativeTo = dayAndTime(12, 00, 44);
+
+		assertEquals(hourAndMinute.format(to), formatter.formatDateRelativeTo(to, relativeTo));
 	}
 
 	@Test
