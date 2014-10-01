@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
+import br.com.oncast.ontrack.client.utils.date.DateUnit;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
@@ -8,6 +9,8 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,13 +33,6 @@ public class ProgressTest {
 		setState(ProgressState.UNDER_WORK);
 
 		assertEquals(WorkingDayFactory.create(), progress.getStartDay());
-	}
-
-	private void setState(final ProgressState state) {
-		try {
-			Thread.sleep(1);
-		} catch (final InterruptedException e) {}
-		progress.setState(state, UserRepresentationTestUtils.getAdmin(), new Date());
 	}
 
 	@Test
@@ -117,4 +113,31 @@ public class ProgressTest {
 		assertFalse(endDay.equals(progress.getEndDay()));
 	}
 
+	@Test
+	public void shouldReturnNullIfIsNotDone() {
+		setState(ProgressState.UNDER_WORK);
+		assertNull(progress.getLeadTime());
+	}
+
+	@Test
+	public void shouldNotReturnNullIfIsDone() {
+		setState(ProgressState.DONE);
+		assertNotNull(progress.getLeadTime());
+	}
+
+	@Test
+	public void shouldReturnTheLeadTimeIfIsDone() {
+		final Progress newProgress = ProgressTestUtils.create();
+		final Date date = new Date();
+		CalendarUtil.addDaysToDate(date, 3);
+		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), date);
+		assertEquals(3l, (newProgress.getLeadTime().longValue() / DateUnit.DAY));
+	}
+
+	private void setState(final ProgressState state) {
+		try {
+			Thread.sleep(1);
+		} catch (final InterruptedException e) {}
+		progress.setState(state, UserRepresentationTestUtils.getAdmin(), new Date());
+	}
 }
