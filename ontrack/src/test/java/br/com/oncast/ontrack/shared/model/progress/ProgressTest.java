@@ -17,6 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ProgressTest {
 
@@ -159,6 +160,34 @@ public class ProgressTest {
 		newProgress.setState(ProgressState.UNDER_WORK, UserRepresentationTestUtils.getAdmin(), dateWork);
 		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), dateDone);
 		assertEquals(2l, (newProgress.getCycleTime().longValue() / DateUnit.DAY));
+	}
+
+	@Test
+	public void shouldInformTheAuthorOfInitializedState() {
+		assertEquals(UserRepresentationTestUtils.getAdmin(), progress.getInitialStateAuthor());
+	}
+
+	@Test
+	public void shouldInformIfIsNotStarted() {
+		assertTrue(progress.isNotStarted());
+	}
+
+	@Test
+	public void shouldInformIfIsUnderWork() {
+		setState(ProgressState.UNDER_WORK);
+		assertTrue(progress.isUnderWork());
+	}
+
+	@Test
+	public void shouldInformIfIsDone() {
+		setState(ProgressState.DONE);
+		assertTrue(progress.isDone());
+	}
+
+	@Test
+	public void shouldInformDescriptionAsDeclaredDescription() {
+		progress.setDescription("XPTO", UserRepresentationTestUtils.getAdmin(), new Date());
+		assertEquals("XPTO", progress.getDeclaredDescription());
 	}
 
 	private void setState(final ProgressState state) {
