@@ -14,5 +14,4 @@ public class ProgressTestUtils {
 	public static Progress create() {
 		return new Progress(UserRepresentationTestUtils.getAdmin(), new Date());
 	}
-
 }

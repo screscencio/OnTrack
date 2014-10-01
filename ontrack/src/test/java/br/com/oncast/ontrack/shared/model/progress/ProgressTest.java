@@ -135,9 +135,12 @@ public class ProgressTest {
 	}
 
 	@Test
-	public void getCycleTime_shouldReturnNullIfIsNotDone() {
-		setState(ProgressState.UNDER_WORK);
-		assertNull(progress.getCycleTime());
+	public void getCycleTime_shouldUseTodayAsDoneDateIfIsNotDone() {
+		final Progress newProgress = ProgressTestUtils.create();
+		final Date dateWork = new Date();
+		CalendarUtil.addDaysToDate(dateWork, -2);
+		newProgress.setState(ProgressState.UNDER_WORK, UserRepresentationTestUtils.getAdmin(), dateWork);
+		assertEquals(2L, (newProgress.getCycleTime().longValue() / DateUnit.DAY));
 	}
 
 	@Test
@@ -147,7 +150,7 @@ public class ProgressTest {
 	}
 
 	@Test
-	public void getCycleTime_shouldReturnTheCorrectCycleTimeIfIsDone() {
+	public void getCycleTime_shouldReturnTheCorrectCycleTime_WhenIsDone() {
 		final Progress newProgress = ProgressTestUtils.create();
 		final Date dateWork = new Date();
 		CalendarUtil.addDaysToDate(dateWork, 1);

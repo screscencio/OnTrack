@@ -74,11 +74,13 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 		long duration = 0;
 
 		for (int i = 0; i < statesList.size() - 1; i++) {
+			final ModelState<T> nextState = statesList.get(i + 1);
 			final ModelState<T> state = statesList.get(i);
 			if (hasValue(state, stateValue)) {
-				duration += getDurationBetween(state, statesList.get(i + 1));
+				duration += getDurationBetween(state, nextState);
 			}
 		}
+
 		if (hasValue(getCurrentState(), stateValue)) duration += getCurrentStateDuration();
 
 		return duration;
@@ -89,7 +91,10 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 	}
 
 	private long getDurationBetween(final ModelState<T> previousState, final ModelState<T> nextState) {
-		return nextState.getTimestamp().getTime() - previousState.getTimestamp().getTime();
+		final Date nextDate = new Date();
+		if (nextState.getTimestamp() != null) nextDate.setTime(nextState.getTimestamp().getTime());
+
+		return nextDate.getTime() - previousState.getTimestamp().getTime();
 	}
 
 	public ModelState<T> getLastOccurenceOf(final T stateValue) {

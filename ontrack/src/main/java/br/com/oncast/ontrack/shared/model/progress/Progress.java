@@ -107,7 +107,6 @@ public class Progress implements Serializable, Iterable<ModelState<ProgressState
 	}
 
 	public Long getCycleTime() {
-		if (!isDone()) return null;
 		return stateManager.getDurationOfState(ProgressState.UNDER_WORK);
 	}
 
