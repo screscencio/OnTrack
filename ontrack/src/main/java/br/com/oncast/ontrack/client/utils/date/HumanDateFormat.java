@@ -32,6 +32,10 @@ public abstract class HumanDateFormat {
 
 	public String getUnitText() {
 		if (isMinimun()) return "";
+		return getRwawUnitText();
+	}
+
+	public String getRwawUnitText() {
 		return difference == 1 ? unit.getSingular() : unit.getPlural();
 	}
 

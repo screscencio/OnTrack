@@ -15,7 +15,11 @@ public class TimeDifferenceFormat extends HumanDateFormat {
 
 	@Override
 	public String getDateText() {
-		return isMinimun() ? unit.getLessThanMinimun() : removeUnnecessaryZeros(difference);
+		return isMinimun() ? unit.getLessThanMinimun() : getRawDateText();
+	}
+
+	public String getRawDateText() {
+		return removeUnnecessaryZeros(difference);
 	}
 
 	public String formatWith(final String positiveSuffix, final String negativeSuffix) {
