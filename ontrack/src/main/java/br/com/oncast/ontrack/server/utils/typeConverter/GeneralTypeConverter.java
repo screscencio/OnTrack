@@ -8,9 +8,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.baseConverters.FloatConv
 import br.com.oncast.ontrack.server.utils.typeConverter.baseConverters.IntegerConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.baseConverters.LongConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.baseConverters.StringConverter;
-import br.com.oncast.ontrack.server.utils.typeConverter.custom.UUIDConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +37,6 @@ public class GeneralTypeConverter implements TypeConverter {
 		addCustomConverter(ArrayList.class, new CollectionConverter<ArrayList>(ArrayList.class));
 		addCustomConverter(LinkedList.class, new CollectionConverter<LinkedList>(LinkedList.class));
 		addCustomConverter(Date.class, new DateConverter());
-		addCustomConverter(UUID.class, new UUIDConverter());
 	}
 
 	@Override
