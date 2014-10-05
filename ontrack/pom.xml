@@ -333,7 +333,7 @@
 						<executions>
 							<execution>
 								<id>auto-clean</id>
-								<phase>initialize<pom.xml/phase>
+								<phase>initialize</phase>
 								<goals>
 									<goal>clean</goal>
 								</goals>
