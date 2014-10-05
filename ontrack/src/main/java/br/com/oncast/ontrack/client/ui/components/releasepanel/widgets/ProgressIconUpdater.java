@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.BgColorAnimation
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.color.Color;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;

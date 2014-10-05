@@ -6,7 +6,7 @@ import br.com.oncast.ontrack.shared.model.ModelState;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import java.util.Date;

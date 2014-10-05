@@ -35,21 +35,22 @@ public class ActionExecutionMonitoringAspectTest {
 	}
 
 	@Test
-	public void shouldNotPostProcessActionExecutionInNonAnnotatedMethods() throws UnableToCompleteActionException {
+	public void shouldNotPostProcessActionExecutionInNonAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeAction(projectContext, actionContext, action);
 		Mockito.verify(postProcessor, Mockito.times(0)).process(action, actionContext, projectContext);
 	}
 
 	@Test
-	public void shouldNotPostProcessActionExecutionInDontPostProcessAnnotatedMethods() throws UnableToCompleteActionException {
+	public void shouldNotPostProcessActionExecutionInDontPostProcessAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithoutPostProcessing(projectContext, actionContext, action);
+
 		Mockito.verify(postProcessor, Mockito.times(0)).process(action, actionContext, projectContext);
 	}
 
 	@Test
-	public void shouldPostProcessActionExecutionInPostProcessAnnotatedMethods() throws UnableToCompleteActionException {
+	public void shouldPostProcessActionExecutionInPostProcessAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithPostProcessing(projectContext, actionContext, action);
 		Mockito.verify(postProcessor, Mockito.times(1)).process(action, actionContext, projectContext);
@@ -57,7 +58,7 @@ public class ActionExecutionMonitoringAspectTest {
 
 	@Test
 	@PostProcessActions
-	public void shouldNotPostProcessActionExecutionTakingInAccountNestedAnnotatedMethods() throws UnableToCompleteActionException {
+	public void shouldNotPostProcessActionExecutionTakingInAccountNestedAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithoutPostProcessing(projectContext, actionContext, action);
 		Mockito.verify(postProcessor, Mockito.times(0)).process(action, actionContext, projectContext);
@@ -65,7 +66,7 @@ public class ActionExecutionMonitoringAspectTest {
 
 	@Test
 	@DontPostProcessActions
-	public void shouldPostProcessActionExecutionTakingInAccountNestedAnnotatedMethods() throws UnableToCompleteActionException {
+	public void shouldPostProcessActionExecutionTakingInAccountNestedAnnotatedMethods() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithPostProcessing(projectContext, actionContext, action);
 		Mockito.verify(postProcessor, Mockito.times(1)).process(action, actionContext, projectContext);
@@ -73,7 +74,7 @@ public class ActionExecutionMonitoringAspectTest {
 
 	@Test
 	@DontPostProcessActions
-	public void shouldPostProcessOnlyOneActionExecution() throws UnableToCompleteActionException {
+	public void shouldPostProcessOnlyOneActionExecution() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithPostProcessing(projectContext, actionContext, action);
 		executeActionWithoutPostProcessing(projectContext, actionContext, action);
@@ -83,7 +84,7 @@ public class ActionExecutionMonitoringAspectTest {
 
 	@Test
 	@PostProcessActions
-	public void shouldPostProcessTwoActionExecution() throws UnableToCompleteActionException {
+	public void shouldPostProcessTwoActionExecution() throws Exception {
 		final FicticiousAction action = new FicticiousAction();
 		executeActionWithPostProcessing(projectContext, actionContext, action);
 		executeActionWithoutPostProcessing(projectContext, actionContext, action);

@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
@@ -53,7 +54,7 @@ public class ActionPostProcessmentsInitializer {
 		postProcessingService.registerPostProcessor(getIntegrationServiceTeamInviteRevoguedNotifierPostProcessor(), TeamRevogueInvitationAction.class);
 		postProcessingService.registerPostProcessor(getTeamActionPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class);
 		postProcessingService.registerPostProcessor(getNotificationCreationPostProcessor(), ImpedimentCreateAction.class, ImpedimentSolveAction.class, ScopeDeclareProgressAction.class,
-				AnnotationCreateAction.class, AnnotationDeprecateAction.class, TeamInviteAction.class, TeamRevogueInvitationAction.class);
+				AnnotationCreateAction.class, AnnotationDeprecateAction.class, TeamInviteAction.class, TeamRevogueInvitationAction.class, ScopeAddAssociatedUserAction.class);
 		postProcessingService.registerPostProcessor(getScopeBindIdPostProcessor(), ScopeBindReleaseAction.class);
 		postProcessingService.registerPostProcessor(getScopeUpdatePostProcessor(), ScopeUpdateAction.class);
 		initialized = true;

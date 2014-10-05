@@ -41,7 +41,7 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 		SERVICE_PROVIDER.authentication().loadCurrentUserInformation(new UserInformationLoadCallback() {
 
 			@Override
-			public void onUserInformationLoaded(final UUID userId) {
+			public void onUserInformationLoaded(final UUID userId, final boolean isCurrentUserAvailable) {
 				validateGatheredData();
 				trackingEvent.end();
 			}

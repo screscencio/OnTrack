@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -33,16 +34,28 @@ public class User implements Serializable, Comparable<User>, HasUUID {
 	@Element
 	private Profile globalProfile;
 
+	@Attribute
+	private Date creationTimestamp;
+
 	User() {}
 
 	public User(final UUID id, final String email, final Profile globalProfile) {
 		this.id = id;
 		this.email = email;
 		this.globalProfile = globalProfile;
+		this.creationTimestamp = new Date();
 	}
 
 	public User(final UUID id, final String email) {
 		this(id, email, Profile.getDefaultProfile());
+	}
+
+	public Date getCreationTimestamp() {
+		return creationTimestamp;
+	}
+
+	public void setCreationTimestamp(final Date creationTimestamp) {
+		this.creationTimestamp = creationTimestamp;
 	}
 
 	@Override

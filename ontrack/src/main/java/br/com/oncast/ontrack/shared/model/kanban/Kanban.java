@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import java.io.Serializable;
@@ -130,8 +130,7 @@ public class Kanban extends SimpleKanban implements Serializable {
 		if (columnToRename.isStaticColumn()) throw new RuntimeException("It's not possible to rename a static column");
 
 		final KanbanColumn desiredColumn = getColumn(newDescription);
-		if (desiredColumn != null && !desiredColumn.equals(columnToRename)) throw new RuntimeException(
-				"The column with name " + newDescription + " already exists");
+		if (desiredColumn != null && !desiredColumn.equals(columnToRename)) throw new RuntimeException("The column with name " + newDescription + " already exists");
 
 		fullKanban.renameColumn(columnDescription, newDescription);
 

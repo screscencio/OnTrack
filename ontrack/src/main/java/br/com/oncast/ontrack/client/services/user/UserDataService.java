@@ -5,6 +5,8 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import java.util.List;
+
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -26,5 +28,9 @@ public interface UserDataService {
 	void onUserDataUpdate(User user, AsyncCallback<User> callback);
 
 	void hasAvatarInGravatar(User user, UserHasGravatarCallback callback);
+
+	List<User> getUsersList();
+
+	User getRealUser(UUID userId);
 
 }

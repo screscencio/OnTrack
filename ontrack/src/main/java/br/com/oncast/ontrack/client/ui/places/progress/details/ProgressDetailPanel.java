@@ -88,8 +88,10 @@ public class ProgressDetailPanel extends Composite {
 		if (scope == null || !scope.isStory()) {
 			getTasksHeader().addClassName(style.tabHeaderLabelDisabled());
 			if (container.getSelectedIndex() == 2) container.selectTab(0);
+		} else {
+			getTasksHeader().removeClassName(style.tabHeaderLabelDisabled());
+			container.selectTab(2);
 		}
-		else getTasksHeader().removeClassName(style.tabHeaderLabelDisabled());
 
 		descriptionWidget.setSelected(scope);
 		checklistWidget.setSelected(scope);

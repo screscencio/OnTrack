@@ -21,6 +21,8 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextReque
 
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 // TODO Analyze dividing this class into multiple classes, each doing a specific job.
 public interface BusinessLogic {
 
@@ -36,9 +38,9 @@ public interface BusinessLogic {
 
 	ProjectRevision loadProject(UUID uuid) throws ProjectNotFoundException, UnableToLoadProjectException;
 
-	void sendProjectCreationQuotaRequestEmail();
+	void sendProjectCreationQuotaRequestEmail() throws MessagingException;
 
-	void sendFeedbackEmail(String feedbackText);
+	void sendFeedbackEmail(String feedbackText) throws MessagingException;
 
 	void authorize(String userEmail, UUID projectId, Profile profile, boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException, UnableToHandleActionException, AuthorizationException;
 
@@ -52,4 +54,5 @@ public interface BusinessLogic {
 
 	UUID createUser(String userEmail, Profile profile);
 
+	UUID createTrialUser(String userEmail, Profile profile);
 }

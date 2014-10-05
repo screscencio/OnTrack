@@ -7,10 +7,17 @@ import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadFileChangeListener;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetListener;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
@@ -18,8 +25,13 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -32,6 +44,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -102,6 +115,12 @@ public class AnnotationsWidget extends Composite {
 
 	private AnnotationType selectedType = AnnotationType.SIMPLE;
 
+	private PopupConfig configPopup;
+
+	private UserMentionCommandItemFactory factory;
+
+	private FiltrableCommandMenu filtrableMenu;
+
 	public AnnotationsWidget(final UUID subjectId) {
 		this.subjectId = subjectId;
 		initWidget(uiBinder.createAndBindUi(this));
@@ -153,6 +172,48 @@ public class AnnotationsWidget extends Composite {
 	@UiHandler("newAnnotationText")
 	protected void onNewAnnotationTextKeyUp(final KeyUpEvent e) {
 		updateAnnotationCreateButton();
+		if (new Shortcut(BrowserKeyCodes.KEY_2).with(ShiftModifier.PRESSED).accepts(e.getNativeEvent()) && matchesMentionStart(newAnnotationText.getText())) showUserMentionsWidget();
+	}
+
+	private boolean matchesMentionStart(final String text) {
+		return text.matches(".*\\s@$") || text.equals("@");
+	}
+
+	private void showUserMentionsWidget() {
+		final List<UserRepresentation> users = ClientServices.get().contextProvider().getCurrent().getUsers();
+		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
+		for (final UserRepresentation userRepresentation : users) {
+			ClientServices.get().userData().loadRealUser(userRepresentation.getId(), new AsyncCallback<User>() {
+				@Override
+				public void onFailure(final Throwable caught) {}
+
+				@Override
+				public void onSuccess(final User result) {
+					items.add(getFactory().createItem(result));
+					if (users.size() <= items.size()) {
+						getMenu().setItems(items);
+						getPopupConfig().pop();
+					}
+				}
+			});
+		}
+	}
+
+	private PopupConfig getPopupConfig() {
+		return configPopup == null ? configPopup = PopupConfig.configPopup() : configPopup;
+	}
+
+	private UserMentionCommandItemFactory getFactory() {
+		return factory == null ? factory = new UserMentionCommandItemFactory(getPopupConfig(), newAnnotationText) : factory;
+	}
+
+	private FiltrableCommandMenu getMenu() {
+		if (filtrableMenu == null) {
+			filtrableMenu = new FiltrableCommandMenu(getFactory(), 250, 200);
+			getPopupConfig().popup(filtrableMenu).alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(newAnnotationText, HorizontalAlignment.LEFT))
+					.alignVertical(VerticalAlignment.TOP, new AlignmentReference(newAnnotationText, VerticalAlignment.BOTTOM));
+		}
+		return filtrableMenu;
 	}
 
 	private void updateAnnotationCreateButton() {
@@ -195,10 +256,13 @@ public class AnnotationsWidget extends Composite {
 		uploadWidget.submitForm(new UploadWidgetListener() {
 			@Override
 			public void onUploadCompleted(final UUID fileRepresentationId) {
-				getProvider().details().createAnnotationFor(subjectId, selectedType, newAnnotationText.getHTML().trim(), fileRepresentationId);
+				getProvider().details().createAnnotationFor(subjectId, selectedType, parseMentions(newAnnotationText.getHTML().trim()), fileRepresentationId);
 				hideNewAnnotationContainer();
 			}
 
+			private String parseMentions(final String html) {
+				return html.replaceAll("<span data-user-id=\"([\\w\\d-]+)\"[^>]*>[^<]*</span>", "$1");
+			}
 		});
 	}
 

@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.shared.services.user.UserInformationUpdateEvent;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -200,7 +201,7 @@ public class UserDataServiceImpl implements UserDataService {
 	@Override
 	public void loadRealUser(final UUID userId, final AsyncCallback<User> callback) {
 		if (cachedUsers.contains(userId)) {
-			callback.onSuccess(retrieveRealUser(userId));
+			callback.onSuccess(getRealUser(userId));
 			return;
 		}
 
@@ -231,10 +232,11 @@ public class UserDataServiceImpl implements UserDataService {
 
 	@Override
 	public User getRealUser(final UserRepresentation userRepresentation) {
-		return retrieveRealUser(userRepresentation.getId());
+		return getRealUser(userRepresentation.getId());
 	}
 
-	private User retrieveRealUser(final UUID userId) {
+	@Override
+	public User getRealUser(final UUID userId) {
 		for (final User user : cachedUsers) {
 			if (user.getId().equals(userId)) return user;
 		}
@@ -249,7 +251,7 @@ public class UserDataServiceImpl implements UserDataService {
 	@Override
 	public HandlerRegistration registerListenerForSpecificUser(final UUID userId, final UserSpecificInformationChangeListener listener) {
 		userSpecificListeners.put(userId, listener);
-		if (cachedUsers.contains(userId)) listener.onInformationChange(retrieveRealUser(userId));
+		if (cachedUsers.contains(userId)) listener.onInformationChange(getRealUser(userId));
 
 		return new HandlerRegistration() {
 			@Override
@@ -263,6 +265,11 @@ public class UserDataServiceImpl implements UserDataService {
 
 		void onInformationChange(User user);
 
+	}
+
+	@Override
+	public List<User> getUsersList() {
+		return new ArrayList<User>(cachedUsers);
 	}
 
 }

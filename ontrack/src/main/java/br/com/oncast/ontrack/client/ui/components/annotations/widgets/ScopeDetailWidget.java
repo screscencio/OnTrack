@@ -178,8 +178,8 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 		}
 
 		final TimeDifferenceFormat format = HumanDateFormatter.get().setDecimalDigits(1).getTimeDifferenceFormat(difference);
-		widget.setValue(format.getDateText());
-		widget.setPosfix(format.getUnitText());
+		widget.setValue(format.getRawDateText());
+		widget.setPosfix(format.getRwawUnitText());
 	}
 
 }

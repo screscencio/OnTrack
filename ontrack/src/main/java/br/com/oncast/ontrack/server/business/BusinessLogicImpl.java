@@ -8,7 +8,12 @@ import br.com.oncast.ontrack.server.services.authentication.AuthenticationManage
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.PasswordHash;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.ActivationMail;
+import br.com.oncast.ontrack.server.services.email.MailConfigurationProvider;
+import br.com.oncast.ontrack.server.services.email.MailService;
+import br.com.oncast.ontrack.server.services.email.SendFeedbackMail;
+import br.com.oncast.ontrack.server.services.email.UserQuotaRequestMail;
+import br.com.oncast.ontrack.server.services.email.WelcomeMail;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
@@ -60,6 +65,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import org.apache.log4j.Logger;
 
 class BusinessLogicImpl implements BusinessLogic {
@@ -74,14 +81,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final AuthenticationManager authenticationManager;
 	private final SessionManager sessionManager;
 	private final AuthorizationManager authorizationManager;
-	private final MailFactory mailFactory;
 	private final IntegrationService integrationService;
 	private final SyncronizationService syncronizationService;
 	private final ActionPostProcessmentsInitializer postProcessmentsControler;
 	private final ServerAnalytics analytics;
+	private final MailService mailService;
 
 	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService multicastService, final ClientManager clientManager,
-			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager, final MailFactory mailFactory,
+			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager, final MailService mailService,
 			final SyncronizationService syncronizationService, final ActionPostProcessmentsInitializer postProcessmentsControler, final IntegrationService integrationService,
 			final ServerAnalytics serverAnalytics) {
 		this.persistenceService = persistenceService;
@@ -90,7 +97,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		this.authenticationManager = authenticationManager;
 		this.authorizationManager = authorizationManager;
 		this.sessionManager = sessionManager;
-		this.mailFactory = mailFactory;
+		this.mailService = mailService;
 		this.syncronizationService = syncronizationService;
 		this.postProcessmentsControler = postProcessmentsControler;
 		this.integrationService = integrationService;
@@ -378,17 +385,17 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public void sendProjectCreationQuotaRequestEmail() {
+	public void sendProjectCreationQuotaRequestEmail() throws MessagingException {
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 		analytics.onProjectCreationRequested(authenticatedUser);
-		mailFactory.createUserQuotaRequestMail().currentUser(authenticatedUser.getEmail()).send();
+		mailService.send(UserQuotaRequestMail.getMail(authenticatedUser.getEmail()));
 	}
 
 	@Override
-	public void sendFeedbackEmail(final String feedbackMessage) {
+	public void sendFeedbackEmail(final String feedbackMessage) throws MessagingException {
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 		analytics.onFeedbackReceived(authenticatedUser, feedbackMessage);
-		mailFactory.createSendFeedbackMail().currentUser(authenticatedUser.getEmail()).feedbackMessage(feedbackMessage).send();
+		mailService.send(SendFeedbackMail.getMail(authenticatedUser.getEmail(), feedbackMessage));
 
 	}
 
@@ -450,7 +457,17 @@ class BusinessLogicImpl implements BusinessLogic {
 		LOGGER.debug("Created New User '" + userEmail + "'.");
 		sendWelcomeMail(userEmail, generatedPassword);
 		return user.getId();
+	}
 
+	@Override
+	public UUID createTrialUser(final String userEmail, final Profile profile) {
+		User user = retrieveExistingUser(userEmail);
+		if (user != null) { throw new RuntimeException("The user " + userEmail + " already exists"); }
+
+		user = authenticationManager.createNewUser(userEmail, null, profile);
+		LOGGER.debug("Created New User '" + userEmail + "'.");
+		sendActivationMail(userEmail, user.getId().toString());
+		return user.getId();
 	}
 
 	private void updateGlobalProfile(final User user, final Profile profile) {
@@ -472,9 +489,19 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	private void sendWelcomeMail(final String userEmail, final String generatedPassword) {
 		try {
-			mailFactory.createWelcomeMail().sendTo(userEmail, generatedPassword);
+			mailService.send(WelcomeMail.getMail(MailConfigurationProvider.getMailUsername(), userEmail, generatedPassword));
 		} catch (final Exception e) {
 			final String message = "The user was created but welcome e-mail was not sent.";
+			LOGGER.error(message, e);
+			throw new RuntimeException(message, e);
+		}
+	}
+
+	private void sendActivationMail(final String userEmail, final String accessToken) {
+		try {
+			mailService.send(ActivationMail.getMail(accessToken, userEmail));
+		} catch (final Exception e) {
+			final String message = "The user was created but activation e-mail was not sent.";
 			LOGGER.error(message, e);
 			throw new RuntimeException(message, e);
 		}

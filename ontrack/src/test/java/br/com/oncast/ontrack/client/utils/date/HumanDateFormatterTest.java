@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.utils.date;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.junit.Before;
@@ -124,15 +126,18 @@ public class HumanDateFormatterTest extends GwtTest {
 
 	@Test
 	public void theRelativeDateTextIsInHourMinuteFormatWhenDifferenceIsLessThanAnHourAndMoreThanMinute() throws Exception {
-		final Date relativeTo = addMinutes(now, 44);
-		assertEquals(hourAndMinute.format(now), formatter.formatDateRelativeTo(now, relativeTo));
+		final Date to = dayAndTime(12, 00, 00);
+		final Date relativeTo = dayAndTime(12, 00, 44);
+
+		assertEquals(hourAndMinute.format(to), formatter.formatDateRelativeTo(to, relativeTo));
 	}
 
-	// FIXME this test fails in the weekends replace it with fixed date time
 	@Test
 	public void theSameRelativeDateFormattingRulesAppliesWhenRelativeDateIsBeforeTheGivenDate() throws Exception {
-		final Date relativeTo = addMinutes(now, -44);
-		assertEquals(hourAndMinute.format(now), formatter.formatDateRelativeTo(now, relativeTo));
+		final Date date = dayAndTime(12, 11, 00);
+		final Date relativeTo = dayAndTime(11, 12, 00);
+
+		assertEquals(MESSAGES.tomorrow() + " " + MESSAGES.at() + " " + hourAndMinute.format(date), formatter.formatDateRelativeTo(date, relativeTo));
 	}
 
 	@Test
@@ -213,6 +218,20 @@ public class HumanDateFormatterTest extends GwtTest {
 		final Date relativeTo = dayAndTime(21, 21, 21);
 
 		assertEquals(MESSAGES.lessThanAnHour(), formatter.setMinimum(HOURS).formatTimeDifference(date, relativeTo));
+	}
+
+	@Test
+	public void shouldFormatAbsoluteDate() throws ParseException {
+		final Calendar date = Calendar.getInstance();
+		date.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("29/09/2014"));
+		assertEquals("Mon, 29/09/2014 at 12:00:00", HumanDateFormatter.formatAbsoluteDate(date.getTime()));
+	}
+
+	@Test
+	public void shouldFormatShortAbsoluteDate() throws ParseException {
+		final Calendar date = Calendar.getInstance();
+		date.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("29/09/2014"));
+		assertEquals("29/09/14", HumanDateFormatter.formatShortAbsoluteDate(date.getTime()));
 	}
 
 	private Date dayAndTime(final int day, final int hour, final int minute) {

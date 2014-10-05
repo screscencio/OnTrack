@@ -2,9 +2,11 @@ package br.com.oncast.ontrack.client.ui.generalwidgets.details;
 
 import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.progress.ProgressIcon;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -12,7 +14,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TaskWidget extends Composite implements ScopeWidget {
@@ -22,7 +23,6 @@ public class TaskWidget extends Composite implements ScopeWidget {
 	interface TaskWidgetUiBinder extends UiBinder<Widget, TaskWidget> {}
 
 	interface TaskWidgetStyle extends CssResource {
-
 		String targetHighlight();
 	}
 
@@ -37,7 +37,10 @@ public class TaskWidget extends Composite implements ScopeWidget {
 	HTMLPanel container;
 
 	@UiField
-	Label description;
+	SpanElement descriptionLabel;
+
+	@UiField(provided = true)
+	ProgressIcon progressIcon;
 
 	private Scope task;
 
@@ -48,6 +51,7 @@ public class TaskWidget extends Composite implements ScopeWidget {
 	public TaskWidget(final Scope scope, final TaskWidgetClickListener clickListener) {
 		this.task = scope;
 		this.listener = clickListener;
+		progressIcon = new ProgressIcon(task);
 		initWidget(uiBinder.createAndBindUi(this));
 		update();
 	}
@@ -59,7 +63,8 @@ public class TaskWidget extends Composite implements ScopeWidget {
 
 	@Override
 	public boolean update() {
-		description.setText(task.getDescription());
+		descriptionLabel.setInnerText(task.getDescription());
+		progressIcon.update();
 		return false;
 	}
 

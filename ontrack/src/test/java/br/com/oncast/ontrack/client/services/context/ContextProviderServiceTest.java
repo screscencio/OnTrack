@@ -19,8 +19,6 @@ import br.com.oncast.ontrack.utils.mocks.callback.DispatchCallbackMock;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -29,6 +27,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -66,10 +65,9 @@ public class ContextProviderServiceTest {
 		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProjectVersion())).when(requestDispatchService)
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
-		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider,
-				requestDispatchService, authenticationService, clientMetricsService);
+		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService, authenticationService, clientMetricsService);
 
-		Assert.assertFalse(contextProviderService.isContextAvailable(projectId));
+		assertFalse(contextProviderService.isContextAvailable(projectId));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -79,12 +77,11 @@ public class ContextProviderServiceTest {
 		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProjectVersion())).when(requestDispatchService)
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
-		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
-				authenticationService, clientMetricsService);
+		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService, authenticationService, clientMetricsService);
 
 		contextProviderService.loadProjectContext(projectId, Mockito.mock(ProjectContextLoadCallback.class));
 
-		Assert.assertTrue(contextProviderService.isContextAvailable(projectId));
+		assertTrue(contextProviderService.isContextAvailable(projectId));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -94,25 +91,23 @@ public class ContextProviderServiceTest {
 		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProjectVersion())).when(requestDispatchService)
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
-		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
-				authenticationService, clientMetricsService);
+		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService, authenticationService, clientMetricsService);
 
 		contextProviderService.loadProjectContext(projectId, Mockito.mock(ProjectContextLoadCallback.class));
 
-		Assert.assertTrue(contextProviderService.isContextAvailable(projectId));
+		assertTrue(contextProviderService.isContextAvailable(projectId));
 
 		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
 		verify(authenticationService).registerUserAuthenticationListener(captor.capture());
 
 		captor.getValue().onUserLoggedOut();
 
-		Assert.assertFalse(contextProviderService.isContextAvailable(projectId));
+		assertFalse(contextProviderService.isContextAvailable(projectId));
 	}
 
 	@Test
 	public void shouldBeAbleToUnloadTheCurrentProjectContext() throws Exception {
-		final ContextProviderServiceImpl service = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService, authenticationService,
-				clientMetricsService);
+		final ContextProviderServiceImpl service = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService, authenticationService, clientMetricsService);
 		service.loadProjectContext(projectId, Mockito.mock(ProjectContextLoadCallback.class));
 
 		service.unloadProjectContext();

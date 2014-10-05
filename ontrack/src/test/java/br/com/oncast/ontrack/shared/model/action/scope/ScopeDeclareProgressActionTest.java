@@ -9,8 +9,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -95,8 +94,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetProgressStatusOfScopeToNotStartedConsideringVariations() throws UnableToCompleteActionException {
-		final String[] acceptableNotStartedDescriptions = { "NotStarted", "Not Started", "Not started", "not started", "not_started", "Not_Started", "NS",
-				"ns", "N", "n" };
+		final String[] acceptableNotStartedDescriptions = { "NotStarted", "Not Started", "Not started", "not started", "not_started", "Not_Started", "NS", "ns", "N", "n" };
 		for (final String notStartedDespription : acceptableNotStartedDescriptions) {
 			new ScopeDeclareProgressAction(scope.getId(), notStartedDespription).execute(context, actionContext);
 			assertThatProgressIs(ProgressState.NOT_STARTED);
@@ -195,7 +193,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 		final Kanban kanban = KanbanTestUtils.createWith();
 		final String progress = "AnyProgress";
 		final ScopeDeclareProgressAction action = new ScopeDeclareProgressAction(scope.getId(), progress);
-		scope.setRelease(release);
+		release.addScope(scope);
 
 		when(context.findScope(scope.getId())).thenReturn(scope);
 		when(context.getKanban(release)).thenReturn(kanban);
@@ -215,7 +213,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 		return actionContext;
 	}
 
-	private void assertThatProgressIs(final Progress.ProgressState status) {
+	private void assertThatProgressIs(final ProgressState status) {
 		assertEquals(status, scope.getProgress().getState());
 	}
 

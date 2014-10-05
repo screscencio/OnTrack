@@ -1,37 +1,50 @@
 package br.com.oncast.ontrack.server.services.email;
 
-import javax.mail.MessagingException;
+import br.com.oncast.ontrack.server.services.CustomUrlGenerator;
 
-public class WelcomeMail {
+import java.util.Arrays;
+import java.util.List;
 
-	private final MailSender sender;
-	private String invitee;
+public class WelcomeMail implements OnTrackMail {
 
-	private WelcomeMail() {
-		sender = MailSender.createInstance();
-	}
+	private final String invitee;
 
-	public static WelcomeMail createInstance() {
-		return new WelcomeMail();
-	}
+	private final String userEmail;
 
-	public WelcomeMail invitee(final String invitee) {
+	private final String generatedPassword;
+
+	private WelcomeMail(final String invitee, final String userEmail, final String generatedPassword) {
 		this.invitee = invitee;
-		return this;
+		this.userEmail = userEmail;
+		this.generatedPassword = generatedPassword;
 	}
 
-	public void sendTo(final String userEmail, final String generatedPassword) {
-		try {
-			final String from = invitee == null ? MailConfigurationProvider.getMailUsername() : invitee;
-			final String mailContent = HtmlMailContent.forNewUserWelcome(userEmail, generatedPassword, from);
-
-			sender.subject(createAuthorizationSubject()).htmlContent(mailContent).sendTo(userEmail);
-		} catch (final MessagingException e) {
-			throw new RuntimeException("Exception configuring mail service.", e);
-		}
+	public static WelcomeMail getMail(final String invitee, final String userEmail, final String generatedPassword) {
+		return new WelcomeMail(invitee, userEmail, generatedPassword);
 	}
 
-	private static String createAuthorizationSubject() {
-		return "Welcome to OnTrack";
+	@Override
+	public String getSubject() {
+		return "[OnTrack] Welcome";
+	}
+
+	@Override
+	public String getTemplatePath() {
+		return "/br/com/oncast/ontrack/server/services/email/welcomeToNewUser.html";
+	}
+
+	@Override
+	public MailVariableValuesMap getParameters() {
+		final MailVariableValuesMap context = new MailVariableValuesMap();
+		context.put("projectLink", CustomUrlGenerator.getApplicationUrl());
+		context.put("userEmail", userEmail);
+		context.put("currentUser", invitee);
+		context.put("generatedPassword", generatedPassword);
+		return context;
+	}
+
+	@Override
+	public List<String> getRecipients() {
+		return Arrays.asList(userEmail);
 	}
 }

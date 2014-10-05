@@ -1,36 +1,39 @@
 package br.com.oncast.ontrack.server.services.email;
 
-import javax.mail.MessagingException;
+import java.util.Arrays;
+import java.util.List;
 
-public class UserQuotaRequestMail {
+public class UserQuotaRequestMail implements OnTrackMail {
 
-	private final MailSender sender;
-	private String currentUser;
+	private final String currentUser;
 
-	private UserQuotaRequestMail() {
-		sender = MailSender.createInstance();
-	}
-
-	public static UserQuotaRequestMail createInstance() {
-		return new UserQuotaRequestMail();
-	}
-
-	public UserQuotaRequestMail currentUser(final String currentUser) {
+	private UserQuotaRequestMail(final String currentUser) {
 		this.currentUser = currentUser;
-		return this;
 	}
 
-	public void send() {
-		try {
-			final String mailContent = HtmlMailContent.forProjectCreationQuotaRequest(currentUser);
-			sender.subject(createProjectCreationQuotaRequestSubject()).replyTo(currentUser).htmlContent(mailContent).sendToDefaultEmail();
-		}
-		catch (final MessagingException e) {
-			throw new RuntimeException("Exception configuring mail service.", e);
-		}
+	public static UserQuotaRequestMail getMail(final String currentUser) {
+		return new UserQuotaRequestMail(currentUser);
 	}
 
-	private String createProjectCreationQuotaRequestSubject() {
-		return "Project Creation Quota Request";
+	@Override
+	public String getSubject() {
+		return "[OnTrack] Project Creation Quota Request";
+	}
+
+	@Override
+	public String getTemplatePath() {
+		return "/br/com/oncast/ontrack/server/services/email/projectCreationQuotaRequest.html";
+	}
+
+	@Override
+	public MailVariableValuesMap getParameters() {
+		final MailVariableValuesMap context = new MailVariableValuesMap();
+		context.put("currentUser", currentUser);
+		return context;
+	}
+
+	@Override
+	public List<String> getRecipients() {
+		return Arrays.asList(MailConfigurationProvider.getMailUsername());
 	}
 }

@@ -13,13 +13,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
@@ -64,14 +59,14 @@ public class BillingTrackIntegrationService implements IntegrationService {
 	}
 
 	private <T> void post(final String path, final T request, final String errorMessage) {
-		final Client client = ClientBuilder.newClient(config);
-		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/notify/" + path);
-		try {
-			final Response response = client.target(uriBuilder).request(MediaType.TEXT_HTML).post(Entity.entity(request, MediaType.APPLICATION_JSON));
-			checkErrors(response);
-		} catch (final Exception e) {
-			LOGGER.error("Could not notify integration server: " + errorMessage, e);
-		}
+		// final Client client = ClientBuilder.newClient(config);
+		// final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("api/notify/" + path);
+		// try {
+		// final Response response = client.target(uriBuilder).request(MediaType.TEXT_HTML).post(Entity.entity(request, MediaType.APPLICATION_JSON));
+		// checkErrors(response);
+		// } catch (final Exception e) {
+		// LOGGER.error("Could not notify integration server: " + errorMessage, e);
+		// }
 	}
 
 	private void checkErrors(final Response response) {

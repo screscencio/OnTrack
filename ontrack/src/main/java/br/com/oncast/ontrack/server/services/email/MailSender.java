@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.server.services.email;
 
-import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -12,59 +11,41 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-public class MailSender {
+class MailSender {
 	private final Session session = Session.getDefaultInstance(MailConfigurationProvider.configProperties(), MailConfigurationProvider.mailAuthenticator());
 
-	private final MimeMessage message;
+	private final MimeMessage message = new MimeMessage(session);
+	private final OnTrackMail mail;
 
-	private MailSender() throws MessagingException {
-		message = new MimeMessage(session);
-		try {
-			message.setFrom(new InternetAddress(MailConfigurationProvider.getMailUsername()));
-		} catch (final AddressException e) {
-			throw new RuntimeException("Invalid sender e-mail.", e);
+	public static MailSender getSender(final OnTrackMail mail) throws AddressException, MessagingException {
+		return new MailSender(mail);
+	}
+
+	private MailSender(final OnTrackMail mail) throws AddressException, MessagingException {
+		message.setFrom(new InternetAddress(MailConfigurationProvider.getMailUsername()));
+		this.mail = mail;
+		prepareMessage();
+	}
+
+	public MimeMessage send() throws MessagingException {
+		for (final String recipient : mail.getRecipients()) {
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+			Transport.send(message);
 		}
+		return message;
 	}
 
-	public static MailSender createInstance() {
-		try {
-			return new MailSender();
-		} catch (final MessagingException e) {
-			throw new RuntimeException("Exception configuring mail service.", e);
-		}
+	private void prepareMessage() throws MessagingException {
+		message.setSubject(mail.getSubject(), "UTF-8");
+		final String mailContent = HtmlMailContent.getContent(mail.getTemplatePath(), mail.getParameters());
+		message.setContent(htmlContent(mailContent));
 	}
 
-	public MailSender subject(final String string) throws MessagingException {
-		message.setSubject(string, "UTF-8");
-		return this;
-	}
-
-	public MailSender replyTo(final String replyTo) throws AddressException, MessagingException {
-		message.setReplyTo(new Address[] { new InternetAddress(replyTo) });
-		return this;
-	}
-
-	public MailSender htmlContent(final String htmlContent) throws MessagingException {
+	private Multipart htmlContent(final String mailContent) throws MessagingException {
 		final Multipart multipart = new MimeMultipart();
 		final MimeBodyPart html = new MimeBodyPart();
-		html.setContent(htmlContent, "text/html; charset=UTF-8");
+		html.setContent(mailContent, "text/html; charset=UTF-8");
 		multipart.addBodyPart(html);
-		message.setContent(multipart);
-		return this;
-	}
-
-	public void sendTo(final String email) {
-		try {
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-			Transport.send(message);
-		} catch (final AddressException e) {
-			throw new RuntimeException(String.format("User has an invalid e-mail: %s.", email), e);
-		} catch (final MessagingException e) {
-			throw new RuntimeException("Error sending e-mail.", e);
-		}
-	}
-
-	public void sendToDefaultEmail() {
-		sendTo(MailConfigurationProvider.getMailUsername());
+		return multipart;
 	}
 }

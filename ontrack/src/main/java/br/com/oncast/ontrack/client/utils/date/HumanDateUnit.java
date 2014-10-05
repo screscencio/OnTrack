@@ -85,8 +85,8 @@ public enum HumanDateUnit {
 	private DateTimeFormat comparationFormat;
 	private final String lessThanMinimun;
 
-	private HumanDateUnit(final long maxDifference, final long delimiter, final String comparationFormatString, final String singular, final String plural,
-			final String moment, final String lessThanTheMinimun) {
+	private HumanDateUnit(final long maxDifference, final long delimiter, final String comparationFormatString, final String singular, final String plural, final String moment,
+			final String lessThanTheMinimun) {
 		this.maxDifference = maxDifference;
 		this.delimiter = delimiter;
 		this.singular = singular;

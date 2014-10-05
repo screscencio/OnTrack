@@ -4,8 +4,8 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceTestUtils;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressTestUtils;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -28,8 +28,7 @@ public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 	private final String FILE_NAME_PREFIX = "Flow1";
 
 	@Test
-	public void shouldReturnToSameStateAfterMultipleUndosAndRedosInScopeInsertionWithDeclaredProgressInScopeWithoutProgress()
-			throws UnableToCompleteActionException {
+	public void shouldReturnToSameStateAfterMultipleUndosAndRedosInScopeInsertionWithDeclaredProgressInScopeWithoutProgress() throws UnableToCompleteActionException {
 		final Scope currentScope = ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 4);
 
 		final Scope parent = currentScope;
@@ -50,8 +49,7 @@ public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 	}
 
 	@Test
-	public void shouldReturnToSameStateAfterMultipleUndosAndRedosInScopeInsertionWithDeclaredProgressInScopeWithProgress()
-			throws UnableToCompleteActionException {
+	public void shouldReturnToSameStateAfterMultipleUndosAndRedosInScopeInsertionWithDeclaredProgressInScopeWithProgress() throws UnableToCompleteActionException {
 		final Scope currentScope = ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6);
 
 		final Scope parent = currentScope.getChild(1);
@@ -63,16 +61,13 @@ public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 		ModelAction action = new ScopeInsertChildAction(scope.getId(), "b11 %DONE");
 		ModelAction rollbackAction = executeAction(parent, action, context);
 
-		DeepEqualityTestUtils.assertObjectEquality(
-				getModifiedScopeForTestThatShouldReturnToSameStateAfterMultipleUndosAndRedosInScopeInsertionWithDeclaredProgressInScopeWithProgress(),
-				currentScope);
+		DeepEqualityTestUtils.assertObjectEquality(getModifiedScopeForTestThatShouldReturnToSameStateAfterMultipleUndosAndRedosInScopeInsertionWithDeclaredProgressInScopeWithProgress(), currentScope);
 
 		for (int i = 0; i < 10; i++) {
 			action = executeAction(parent, rollbackAction, context);
 			DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6), currentScope);
 			rollbackAction = executeAction(parent, action, context);
-			DeepEqualityTestUtils.assertObjectEquality(
-					getModifiedScopeForTestThatShouldReturnToSameStateAfterMultipleUndosAndRedosInScopeInsertionWithDeclaredProgressInScopeWithProgress(),
+			DeepEqualityTestUtils.assertObjectEquality(getModifiedScopeForTestThatShouldReturnToSameStateAfterMultipleUndosAndRedosInScopeInsertionWithDeclaredProgressInScopeWithProgress(),
 					currentScope);
 		}
 	}

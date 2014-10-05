@@ -623,3 +623,8 @@ button[disabled],button[disabled]:hover,input[disabled],input[disabled]:hover
 	border: 1px solid #BBBBBB;
 	border-spacing: 0px;
 }
+
+.user-mention {
+	font-weight: bold;
+	color: #738593;
+}

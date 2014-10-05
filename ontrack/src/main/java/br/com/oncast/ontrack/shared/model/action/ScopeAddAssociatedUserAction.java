@@ -63,6 +63,10 @@ public class ScopeAddAssociatedUserAction implements ScopeAction {
 		return scopeId;
 	}
 
+	public UUID getUserId() {
+		return userId;
+	}
+
 	@Override
 	public boolean changesEffortInference() {
 		return false;

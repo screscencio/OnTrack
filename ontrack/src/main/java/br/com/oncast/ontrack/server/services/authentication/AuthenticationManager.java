@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.configuration.Configurations;
+import br.com.oncast.ontrack.server.services.email.MailService;
+import br.com.oncast.ontrack.server.services.email.PasswordResetMail;
 import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -17,9 +19,12 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.PasswordValidator;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.mail.MessagingException;
 
 import org.apache.log4j.Logger;
 
@@ -31,20 +36,22 @@ public class AuthenticationManager {
 
 	private static final String DEFAULT_NEW_USER_PASSWORD = "";
 
+	private static final long MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
+
 	private final PersistenceService persistenceService;
 
 	private final SessionManager sessionManager;
 
-	private final MailFactory mailFactory;
+	private final MailService mailService;
 
 	private final Set<AuthenticationListener> authenticationListeners = new HashSet<AuthenticationListener>();
 
 	private final ServerAnalytics analytics;
 
-	public AuthenticationManager(final PersistenceService persistenceService, final SessionManager sessionManager, final MailFactory mailFactory, final ServerAnalytics analytics) {
+	public AuthenticationManager(final PersistenceService persistenceService, final SessionManager sessionManager, final MailService mailService, final ServerAnalytics analytics) {
 		this.persistenceService = persistenceService;
 		this.sessionManager = sessionManager;
-		this.mailFactory = mailFactory;
+		this.mailService = mailService;
 		this.analytics = analytics;
 	}
 
@@ -123,11 +130,16 @@ public class AuthenticationManager {
 			final User user = findUserByEmail(username);
 			final List<Password> userPasswords = findPasswordForUser(user);
 
-			final Password userPassword = getValidUserPassword(currentPassword, userPasswords);
-			if (userPassword == null) throw new InvalidAuthenticationCredentialsException("Could not change the password for the user " + username + ", because the current password is incorrect.");
+			if (userPasswords.isEmpty()) {
+				createPasswordForUser(user, newPassword);
+			} else {
+				final Password userPassword = getValidUserPassword(currentPassword, userPasswords);
+				if (userPassword == null) { throw new InvalidAuthenticationCredentialsException("Could not change the password for the user " + username
+						+ ", because the current password is incorrect."); }
+				userPassword.setPassword(newPassword);
+				persistenceService.persistOrUpdatePassword(userPassword);
+			}
 
-			userPassword.setPassword(newPassword);
-			persistenceService.persistOrUpdatePassword(userPassword);
 		} catch (final UserNotFoundException e) {
 			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
 			LOGGER.error(message, e);
@@ -140,8 +152,9 @@ public class AuthenticationManager {
 	}
 
 	private Password getValidUserPassword(final String password, final List<Password> userPasswords) {
-		for (final Password pass : userPasswords)
+		for (final Password pass : userPasswords) {
 			if (pass.authenticate(password)) return pass;
+		}
 		return null;
 	}
 
@@ -227,7 +240,8 @@ public class AuthenticationManager {
 			final User user = findUserByEmail(username);
 			final String newPassword = PasswordHash.generatePassword();
 			createPasswordForUser(user, newPassword);
-			mailFactory.createPasswordResetMail().send(username, newPassword);
+			mailService.send(PasswordResetMail.getMail(username, newPassword));
+
 		} catch (final UserNotFoundException e) {
 			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
 			LOGGER.error(message, e);
@@ -236,6 +250,34 @@ public class AuthenticationManager {
 			final String message = "Unable to update the user '" + username + "'s password: new password could not be created.";
 			LOGGER.error(message, e);
 			throw new UnableToResetPasswordException(message);
+		} catch (final MessagingException e) {
+			final String message = "Unable to update the user '" + username + "'s password: new password could not be created.";
+			LOGGER.error(message, e);
+			throw new UnableToResetPasswordException(message);
 		}
+	}
+
+	public void authenticateByToken(final String athenticationToken) {
+		try {
+			final User user = persistenceService.retrieveUserById(new UUID(athenticationToken));
+			if (!isTokenValid(user)) throw new AuthenticationException("Invalid authentication token (" + athenticationToken + ")");
+
+			sessionManager.getCurrentSession().setAuthenticatedUser(user);
+			notifyUserLoggedIn(user);
+		} catch (final Exception e) {
+			LOGGER.error(e);
+			throw new AuthenticationException("Invalid authentication token (" + athenticationToken + ")");
+		}
+	}
+
+	private boolean isTokenValid(final User user) throws PersistenceException {
+		final Date creationTimestamp = user.getCreationTimestamp();
+		final long difference = new Date().getTime() - creationTimestamp.getTime();
+		final boolean validToken = difference <= Configurations.get().getAuthenticationTokenExpirationInDays() * MILLISECONDS_IN_A_DAY;
+		return validToken && !hasPassword(user.getId());
+	}
+
+	public boolean hasPassword(final UUID userId) throws PersistenceException {
+		return !persistenceService.retrievePasswordsForUser(userId).isEmpty();
 	}
 }

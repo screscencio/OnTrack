@@ -2,8 +2,8 @@ package br.com.oncast.ontrack.utils.inference;
 
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.prioritizationCriteria.ValueInferenceEngine;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
@@ -129,8 +129,7 @@ public class InferenceEngineTestUtils {
 		for (final UUID id : actual) {
 			exceededScopes.add(scopesCache.containsKey(id) ? scopesCache.get(id).getDescription() : id.toString());
 		}
-		assertTrue("There are " + actual.size() + " more scopes than expected: " + Joiner.on(", ").join(exceededScopes),
-				actual.isEmpty());
+		assertTrue("There are " + actual.size() + " more scopes than expected: " + Joiner.on(", ").join(exceededScopes), actual.isEmpty());
 	}
 
 	public static void assertInferedEffort(final double expectedEffort, final Scope scope) {

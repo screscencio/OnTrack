@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.client.utils.date.DateUnit;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
@@ -10,11 +10,14 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gwt.user.datepicker.client.CalendarUtil;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ProgressTest {
 
@@ -31,14 +34,6 @@ public class ProgressTest {
 		setState(ProgressState.UNDER_WORK);
 
 		assertEquals(WorkingDayFactory.create(), progress.getStartDay());
-	}
-
-	private void setState(final ProgressState state) {
-		try {
-			Thread.sleep(1);
-		}
-		catch (final InterruptedException e) {}
-		progress.setState(state, UserRepresentationTestUtils.getAdmin(), new Date());
 	}
 
 	@Test
@@ -119,4 +114,86 @@ public class ProgressTest {
 		assertFalse(endDay.equals(progress.getEndDay()));
 	}
 
+	@Test
+	public void getLeadTime_shouldReturnNullIfIsNotDone() {
+		setState(ProgressState.UNDER_WORK);
+		assertNull(progress.getLeadTime());
+	}
+
+	@Test
+	public void getLeadTime_shouldNotReturnNullIfIsDone() {
+		setState(ProgressState.DONE);
+		assertNotNull(progress.getLeadTime());
+	}
+
+	@Test
+	public void getLeadTime_shouldReturnTheCorrectLeadTimeIfIsDone() {
+		final Progress newProgress = ProgressTestUtils.create();
+		final Date date = new Date();
+		CalendarUtil.addDaysToDate(date, 3);
+		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), date);
+		assertEquals(3l, (newProgress.getLeadTime().longValue() / DateUnit.DAY));
+	}
+
+	@Test
+	public void getCycleTime_shouldUseTodayAsDoneDateIfIsNotDone() {
+		final Progress newProgress = ProgressTestUtils.create();
+		final Date dateWork = new Date();
+		CalendarUtil.addDaysToDate(dateWork, -2);
+		newProgress.setState(ProgressState.UNDER_WORK, UserRepresentationTestUtils.getAdmin(), dateWork);
+		assertEquals(2L, (newProgress.getCycleTime().longValue() / DateUnit.DAY));
+	}
+
+	@Test
+	public void getCycleTime_shouldNotReturnNullIfIsDone() {
+		setState(ProgressState.DONE);
+		assertNotNull(progress.getCycleTime());
+	}
+
+	@Test
+	public void getCycleTime_shouldReturnTheCorrectCycleTime_WhenIsDone() {
+		final Progress newProgress = ProgressTestUtils.create();
+		final Date dateWork = new Date();
+		CalendarUtil.addDaysToDate(dateWork, 1);
+		final Date dateDone = new Date();
+		CalendarUtil.addDaysToDate(dateDone, 3);
+		newProgress.setState(ProgressState.UNDER_WORK, UserRepresentationTestUtils.getAdmin(), dateWork);
+		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), dateDone);
+		assertEquals(2l, (newProgress.getCycleTime().longValue() / DateUnit.DAY));
+	}
+
+	@Test
+	public void shouldInformTheAuthorOfInitializedState() {
+		assertEquals(UserRepresentationTestUtils.getAdmin(), progress.getInitialStateAuthor());
+	}
+
+	@Test
+	public void shouldInformIfIsNotStarted() {
+		assertTrue(progress.isNotStarted());
+	}
+
+	@Test
+	public void shouldInformIfIsUnderWork() {
+		setState(ProgressState.UNDER_WORK);
+		assertTrue(progress.isUnderWork());
+	}
+
+	@Test
+	public void shouldInformIfIsDone() {
+		setState(ProgressState.DONE);
+		assertTrue(progress.isDone());
+	}
+
+	@Test
+	public void shouldInformDescriptionAsDeclaredDescription() {
+		progress.setDescription("XPTO", UserRepresentationTestUtils.getAdmin(), new Date());
+		assertEquals("XPTO", progress.getDeclaredDescription());
+	}
+
+	private void setState(final ProgressState state) {
+		try {
+			Thread.sleep(1);
+		} catch (final InterruptedException e) {}
+		progress.setState(state, UserRepresentationTestUtils.getAdmin(), new Date());
+	}
 }

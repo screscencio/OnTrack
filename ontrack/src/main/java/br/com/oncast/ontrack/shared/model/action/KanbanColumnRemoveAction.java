@@ -74,7 +74,7 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 
 	private List<ModelAction> moveColumnScopes(final String originColumn, final String destinationColumn, final Release release, final ProjectContext context, final ActionContext actionContext)
 			throws UnableToCompleteActionException {
-		final List<Scope> scopes = release.getTasks();
+		final List<Scope> scopes = release.getScopeList();
 		if (scopes.isEmpty()) return null;
 
 		final List<ModelAction> rollbackActions = new LinkedList<ModelAction>();

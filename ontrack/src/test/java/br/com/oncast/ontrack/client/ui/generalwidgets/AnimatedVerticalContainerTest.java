@@ -18,10 +18,10 @@ import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
 @GwtModule("br.com.oncast.ontrack.Application")
-public class AnimatedVerticalContainerTests extends GwtTest {
+public class AnimatedVerticalContainerTest extends GwtTest {
 
 	public static final int ANIMATION_DURATION = 10;
-	private static final int SLEEP_DELAY = 50;
+	private static final int SLEEP_DELAY = 100;
 	AnimatedContainer container;
 
 	private final AnimationFactory animationMockFactory = new AnimationMockFactory(ANIMATION_DURATION);

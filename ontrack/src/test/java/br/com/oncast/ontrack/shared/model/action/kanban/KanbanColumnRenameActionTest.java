@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -50,7 +50,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		final String columnDescription = "B";
 
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context,  Mockito.mock(ActionContext.class));
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(kanban).renameColumn(columnDescription, newDescription);
 	}
@@ -61,7 +61,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		final String columnDescription = "B";
 
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context,  Mockito.mock(ActionContext.class));
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(kanban).renameColumn(columnDescription, newDescription);
 	}
@@ -73,7 +73,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 
 		doThrow(new RuntimeException("any exception")).when(kanban).renameColumn(columnDescription, newDescription);
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context,  Mockito.mock(ActionContext.class));
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(kanban).renameColumn(columnDescription, newDescription);
 	}
@@ -131,8 +131,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 				currentAction = currentAction.execute(context, actionContext);
 				verify(kanban, times(++times)).renameColumn(columnDescription, newDescription);
 				assertEquals(newDescription, scope.getProgress().getDescription());
-			}
-			else {
+			} else {
 				currentAction = currentAction.execute(context, actionContext);
 				verify(kanban, times(times)).renameColumn(newDescription, columnDescription);
 				assertEquals(columnDescription, scope.getProgress().getDescription());

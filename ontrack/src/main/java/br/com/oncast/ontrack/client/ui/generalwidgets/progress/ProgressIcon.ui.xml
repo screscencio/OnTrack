@@ -1,0 +1,37 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:image field="notStarted" src="../../components/scope/not_started.png"/>
+	<ui:image field="underwork" src="../../components/scope/underwork.png"/>
+	<ui:image field="done" src="../../components/scope/done.png"/>
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ProgressIconUpdaterStyle">
+	
+		.progressIconDone, .progressIconUnderwork, .progressIconNotStarted, .progressIconHasOpenImpediments {
+			position: relative;
+			right: 6px;
+			margin-left: 5px;
+			cursor: pointer;
+		}
+		
+		@sprite .progressIconDone {
+        	gwt-image: 'done';
+		}
+		
+		@sprite .progressIconUnderwork {
+	        gwt-image: 'underwork';
+		}
+		
+		@sprite .progressIconNotStarted {
+	        gwt-image: 'notStarted';
+		}
+		
+		.progressIconHasOpenImpediments {
+			color: COLOR_ERROR_PRIMARY;
+		}
+		
+	</ui:style>
+	
+	<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIconNotStarted}"/>
+	
+</ui:UiBinder> 

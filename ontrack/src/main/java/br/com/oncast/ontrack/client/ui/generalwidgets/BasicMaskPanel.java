@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -12,6 +13,7 @@ public class BasicMaskPanel implements IsWidget {
 
 	private final FocusPanel maskPanel;
 	private HideHandler hideHandler;
+	private HandlerRegistration clickHandlerRegistration = null;
 
 	protected BasicMaskPanel() {
 		maskPanel = new FocusPanel();
@@ -19,16 +21,9 @@ public class BasicMaskPanel implements IsWidget {
 		maskPanel.setVisible(false);
 
 		RootPanel.get().add(maskPanel);
-		maskPanel.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				hide();
-			}
-		});
 	}
 
 	protected void show(final HideHandler hideHandler) {
-
 		if (maskPanel.isVisible()) throw new RuntimeException("The MaskPanel is already visible.");
 
 		this.hideHandler = hideHandler;
@@ -48,6 +43,22 @@ public class BasicMaskPanel implements IsWidget {
 
 	protected Style getStyle() {
 		return maskPanel.getElement().getStyle();
+	}
+
+	protected BasicMaskPanel hideOnClick(final boolean hideOnClick) {
+		System.out.println(hideOnClick + " , " + clickHandlerRegistration);
+		if (hideOnClick && clickHandlerRegistration == null) {
+			clickHandlerRegistration = maskPanel.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(final ClickEvent event) {
+					System.out.println("me clicaram");
+					hide();
+				}
+			});
+		} else if (!hideOnClick && clickHandlerRegistration != null) {
+			clickHandlerRegistration.removeHandler();
+		}
+		return this;
 	}
 
 	protected void setFocus(final boolean focused) {

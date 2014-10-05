@@ -3,7 +3,8 @@ package br.com.oncast.ontrack.server.services.authorization;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.PasswordHash;
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.MailService;
+import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMail;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
@@ -35,16 +36,16 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	private final AuthenticationManager authenticationManager;
 	private final PersistenceService persistenceService;
 	private final MulticastService multicastService;
-	private final MailFactory mailFactory;
+	private final MailService mailService;
 	private final ClientManager clientManager;
 	private final IntegrationService integrationService;
 
 	public AuthorizationManagerImpl(final AuthenticationManager authenticationManager, final PersistenceService persistenceService, final MulticastService multicastService,
-			final MailFactory mailFactory, final ClientManager clientManager, final IntegrationService integrationMock) {
+			final MailService mailService, final ClientManager clientManager, final IntegrationService integrationMock) {
 		this.authenticationManager = authenticationManager;
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
-		this.mailFactory = mailFactory;
+		this.mailService = mailService;
 		this.clientManager = clientManager;
 		this.integrationService = integrationMock;
 	}
@@ -139,8 +140,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	private void sendMailMessage(final UUID projectId, final String userEmail, final String generatedPassword, final User authenticatedUser) {
 		try {
-			mailFactory.createProjectAuthorizationMail().currentUser(authenticatedUser.getEmail()).setProject(persistenceService.retrieveProjectRepresentation(projectId))
-					.sendTo(userEmail, generatedPassword);
+			mailService.send(ProjectAuthorizationMail.getMail(persistenceService.retrieveProjectRepresentation(projectId), authenticatedUser.getEmail(), userEmail, generatedPassword));
 		} catch (final Exception e) {
 			LOGGER.error("It was not possible to send e-mail.", e);
 		}

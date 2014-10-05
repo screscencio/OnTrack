@@ -152,8 +152,12 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 		this.childrenList.clear();
 	}
 
-	// TODO ++Think about bidirectional linkage (if not present in the release, then set it)
+	/**
+	 * @precondition The release should contain the scope
+	 * @param release
+	 */
 	public void setRelease(final Release release) {
+		if (release != null && !release.containsScope(this)) throw new IllegalArgumentException("The Release should contain the scope");
 		this.release = release;
 	}
 

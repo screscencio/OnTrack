@@ -47,7 +47,7 @@ public class DetailActivity extends AbstractActivity {
 				detailPanel.registerActionExecutionListener();
 				timeTracking.end();
 			}
-		}).setModal(true).pop();
+		}).focusMode(true).pop();
 	}
 
 	@Override

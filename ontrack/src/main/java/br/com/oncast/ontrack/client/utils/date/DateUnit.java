@@ -10,4 +10,7 @@ public class DateUnit {
 	public static final long WEEK = 7 * DAY;
 	public static final long YEAR = 12 * MONTH;
 
+	public static final long SATURDAY = 6;
+	public static final long SUNDAY = 0;
+
 }

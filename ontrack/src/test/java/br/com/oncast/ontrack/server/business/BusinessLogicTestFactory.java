@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
-import br.com.oncast.ontrack.server.services.email.MailFactory;
+import br.com.oncast.ontrack.server.services.email.MailService;
 import br.com.oncast.ontrack.server.services.integration.IntegrationService;
 import br.com.oncast.ontrack.server.services.metrics.ServerAnalytics;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
@@ -50,7 +50,7 @@ public class BusinessLogicTestFactory {
 	private MulticastService multicast;
 	private ClientManager clientManager;
 	private SessionManager sessionManager;
-	private MailFactory mailFactory;
+	private MailService mailService;
 	private SyncronizationService syncronizationService;
 	private ActionPostProcessmentsInitializer postProcessments;
 	private PersistenceService persistence;
@@ -63,7 +63,7 @@ public class BusinessLogicTestFactory {
 		clientManager = mock(ClientManager.class);
 		sessionManager = mock(SessionManager.class);
 		authorization = getAuthorizationMock();
-		mailFactory = mock(MailFactory.class);
+		mailService = mock(MailService.class);
 		postProcessments = mock(ActionPostProcessmentsInitializer.class);
 		syncronizationService = new SyncronizationService();
 		persistence = getPersistenceMock();
@@ -85,7 +85,7 @@ public class BusinessLogicTestFactory {
 
 	public BusinessLogic create() {
 		try {
-			return new BusinessLogicImpl(persistence, multicast, clientManager, authentication, authorization, sessionManager, mailFactory, syncronizationService, postProcessments, integration,
+			return new BusinessLogicImpl(persistence, multicast, clientManager, authentication, authorization, sessionManager, mailService, syncronizationService, postProcessments, integration,
 					serverAnalytics);
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
@@ -122,8 +122,8 @@ public class BusinessLogicTestFactory {
 		return this;
 	}
 
-	public BusinessLogicTestFactory with(final MailFactory mailFactory) {
-		this.mailFactory = mailFactory;
+	public BusinessLogicTestFactory with(final MailService mailService) {
+		this.mailService = mailService;
 		return this;
 	}
 
@@ -160,13 +160,13 @@ public class BusinessLogicTestFactory {
 		return create(businessLogic().with(persistence).with(authenticationManager).with(authorizationManager).with(sessionManager));
 	}
 
-	public static BusinessLogic create(final PersistenceService persistence, final MailFactory mailFactory) {
-		return create(businessLogic().with(persistence).with(mailFactory));
+	public static BusinessLogic create(final PersistenceService persistence, final MailService mailService) {
+		return create(businessLogic().with(persistence).with(mailService));
 
 	}
 
-	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager, final MailFactory mailFactory) {
-		return create(businessLogic().with(persistence).with(authenticationManager).with(mailFactory));
+	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager, final MailService mailService) {
+		return create(businessLogic().with(persistence).with(authenticationManager).with(mailService));
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager) {

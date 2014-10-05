@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWid
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityException;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
 
 public class ScopeTreeDeepEqualityComparator implements DeepEqualityComparator<ScopeTree> {
 
@@ -18,7 +18,7 @@ public class ScopeTreeDeepEqualityComparator implements DeepEqualityComparator<S
 		final int expectedItemCount = expectedTreeWidget.getItemCount();
 		final int actualItemCount = actualTreeWidget.getItemCount();
 
-		Assert.assertEquals(expectedItemCount, actualItemCount);
+		assertEquals(expectedItemCount, actualItemCount);
 
 		for (int i = 0; i < expectedItemCount; i++)
 			DeepEqualityTestUtils.assertObjectEquality(expectedTreeWidget.getItem(i), actualTreeWidget.getItem(i));

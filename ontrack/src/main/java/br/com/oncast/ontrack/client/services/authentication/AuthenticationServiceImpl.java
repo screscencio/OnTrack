@@ -46,6 +46,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final ClientAlertingService alertingService;
 
+	private boolean isCurrentUserActivated;
+
 	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController, final ServerPushClientService serverPushClientService,
 			final ClientAlertingService alertingService) {
 		this.dispatchService = dispatchService;
@@ -73,9 +75,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			public void onSuccess(final CurrentUserInformationResponse result) {
 				final User user = result.getUser();
 
+				isCurrentUserActivated = result.isCurrentUserActivated();
 				updateCurrentUser(user);
 
-				callback.onUserInformationLoaded(currentUser.getId());
+				callback.onUserInformationLoaded(currentUser.getId(), isCurrentUserActivated);
 				notifyUserInformationLoadToUserAuthenticationListeners();
 			}
 
@@ -163,6 +166,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			@Override
 			public void onSuccess(final VoidResult result) {
 				callback.onUserPasswordChangedSuccessfully();
+				isCurrentUserActivated = true;
+				notifyUserInformationLoadToUserAuthenticationListeners();
 			}
 
 			@Override
@@ -182,6 +187,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	@Override
 	public void registerUserAuthenticationListener(final UserAuthenticationListener listener) {
 		userAuthenticatedListeners.add(listener);
+		if (isUserAvailable()) {
+			listener.onUserInformationLoaded();
+		}
 	}
 
 	@Override
@@ -249,6 +257,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	@Override
 	public boolean canCurrentUserManageProjects() {
 		return currentUser.getGlobalProfile().hasPermissionsOf(Profile.PROJECT_MANAGER);
+	}
+
+	@Override
+	public boolean isCurrentUserActivated() {
+		return isCurrentUserActivated;
 	}
 
 }

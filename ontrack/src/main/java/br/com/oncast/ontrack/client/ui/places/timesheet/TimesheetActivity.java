@@ -75,7 +75,7 @@ public class TimesheetActivity extends AbstractActivity {
 			public void onWillOpen() {
 				timesheetPanel.registerActionExecutionListener();
 			}
-		}).setModal(true);
+		}).focusMode(true);
 	}
 
 	@Override
