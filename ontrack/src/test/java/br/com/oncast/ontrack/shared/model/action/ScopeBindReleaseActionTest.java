@@ -2,10 +2,6 @@ package br.com.oncast.ontrack.shared.model.action;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
-import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -113,6 +109,34 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertThatReleaseIsInContext(releaseDescription);
+	}
+
+	@Test
+	public void shouldDefineTheEffortAsOneIfNoOneWasDeclaredOrInfered_WhenNewRelease() throws UnableToCompleteActionException, ReleaseNotFoundException {
+		final String releaseDescription = "R4";
+		assertThatReleaseIsNotInContext(releaseDescription);
+
+		final Scope scope = rootScope.getChild(0);
+		new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context, Mockito.mock(ActionContext.class));
+
+		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
+		assertTrue(newRelease.getScopeList().contains(scope));
+		assertEquals(1.0, newRelease.getScopeList().get(0).getDeclaredEffort().doubleValue(), 0);
+	}
+
+	@Test
+	public void shouldNotDefineTheEffortAsOneIfInferedWasInformed_WhenNewRelease() throws UnableToCompleteActionException, ReleaseNotFoundException {
+		final String releaseDescription = "R4";
+		assertThatReleaseIsNotInContext(releaseDescription);
+
+		rootScope.getEffort().setDeclared(4);
+		rootScope.getChild(0);
+		final Scope scope = rootScope.getChild(0);
+		new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context, Mockito.mock(ActionContext.class));
+
+		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
+		assertTrue(newRelease.getScopeList().contains(scope));
+		assertEquals(1.0, newRelease.getScopeList().get(0).getDeclaredEffort().doubleValue(), 0);
 	}
 
 	private Release assertThatReleaseIsInContext(final String releaseDescription) throws ReleaseNotFoundException {
