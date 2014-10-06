@@ -92,6 +92,8 @@ public class ScopeEstimatorTest {
 
 	@Test
 	public void theScopeRemainingTimeShouldBeTheTimeDifferenceBetweenDueDateAndNow() throws Exception {
+		final Calendar now = Calendar.getInstance();
+		Assume.assumeTrue(!(now.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) && !(now.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY));
 		scope.setDueDate(addToNow(1, 2, 3));
 		final long timeDifference = 1 * DateUnit.HOUR + 2 * DateUnit.MINUTE + 3 * DateUnit.SECOND;
 		assertRemainingTimeWithSecondsOfPrecision(timeDifference);
@@ -112,8 +114,8 @@ public class ScopeEstimatorTest {
 	 */
 	@Test
 	public void theScopeRemainingTimeShouldBeNegativeWhenNowIsBeforeTheDueDate() throws Exception {
-		final Date now = new Date();
-		Assume.assumeTrue(!(now.getDay() == DateUnit.SATURDAY) && !(now.getDay() == DateUnit.SUNDAY));
+		final Calendar now = Calendar.getInstance();
+		Assume.assumeTrue(!(now.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) && !(now.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY));
 		scope.setDueDate(addToNow(-2, -3, -4));
 		final long timeDifference = 2 * DateUnit.HOUR + 3 * DateUnit.MINUTE + 4 * DateUnit.SECOND;
 		assertRemainingTimeWithSecondsOfPrecision(-timeDifference);
