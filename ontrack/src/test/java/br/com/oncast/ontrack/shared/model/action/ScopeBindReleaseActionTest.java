@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.action.scope;
+package br.com.oncast.ontrack.shared.model.action;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity;
@@ -21,10 +21,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ScopeBindReleaseActionTest extends ModelActionTest {
 
@@ -44,7 +43,7 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		final Scope scope = rootScope.getChild(0);
 		assertFalse(rootRelease.getChild(0).getScopeList().contains(scope));
 
-		new ScopeBindReleaseAction(scope.getId(), "R1").execute(context,  Mockito.mock(ActionContext.class));
+		new ScopeBindReleaseAction(scope.getId(), "R1").execute(context, Mockito.mock(ActionContext.class));
 		assertTrue(rootRelease.getChild(0).getScopeList().contains(scope));
 	}
 
@@ -55,7 +54,7 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		release.addScope(scope);
 		assertTrue(rootRelease.getChild(0).getScopeList().contains(scope));
 
-		new ScopeBindReleaseAction(scope.getId(), "").execute(context,  Mockito.mock(ActionContext.class));
+		new ScopeBindReleaseAction(scope.getId(), "").execute(context, Mockito.mock(ActionContext.class));
 		assertFalse(rootRelease.getChild(0).getScopeList().contains(scope));
 	}
 
@@ -65,7 +64,7 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		assertThatReleaseIsNotInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(0);
-		new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context,  Mockito.mock(ActionContext.class));
+		new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(scope));
@@ -77,7 +76,7 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		assertThatReleaseIsInContext(release.getDescription());
 
 		final Scope scope = rootScope.getChild(0);
-		new ScopeBindReleaseAction(scope.getId(), release.getDescription()).execute(context,  Mockito.mock(ActionContext.class));
+		new ScopeBindReleaseAction(scope.getId(), release.getDescription()).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release loadedRelease = assertThatReleaseIsInContext(release.getDescription());
 		assertTrue(loadedRelease.getScopeList().contains(scope));
@@ -90,12 +89,12 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		assertThatReleaseIsNotInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(0);
-		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context,  Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(scope));
 
-		rollbackAction.execute(context,  Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertThatReleaseIsNotInContext(releaseDescription);
 	}
@@ -106,12 +105,12 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		assertThatReleaseIsInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(0);
-		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context,  Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(scope));
 
-		rollbackAction.execute(context,  Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertThatReleaseIsInContext(releaseDescription);
 	}
@@ -125,8 +124,7 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		try {
 			context.findRelease(releaseDescription);
 			fail("The release should not exist in project context.");
-		}
-		catch (final ReleaseNotFoundException e) {}
+		} catch (final ReleaseNotFoundException e) {}
 	}
 
 	@Override
