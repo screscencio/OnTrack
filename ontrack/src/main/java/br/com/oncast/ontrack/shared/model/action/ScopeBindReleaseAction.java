@@ -90,7 +90,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 			final Effort effort = new Effort();
 			effort.setDeclared(1.0F);
 
-			selectedScope.getEffort().setDeclared(1);
+			if (!selectedScope.getEffort().hasInfered()) selectedScope.getEffort().setDeclared(1);
 
 			if (rollbackSubActionsContainsKanbanColumnCreateAction()) assureKanbanColumnExistence(selectedScope, newRelease, context);
 		}

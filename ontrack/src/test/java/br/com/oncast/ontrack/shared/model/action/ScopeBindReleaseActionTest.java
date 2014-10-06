@@ -129,14 +129,13 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		final String releaseDescription = "R4";
 		assertThatReleaseIsNotInContext(releaseDescription);
 
-		rootScope.getEffort().setDeclared(4);
-		rootScope.getChild(0);
 		final Scope scope = rootScope.getChild(0);
+		scope.getEffort().setDeclared(4.0F);
 		new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(scope));
-		assertEquals(1.0, newRelease.getScopeList().get(0).getDeclaredEffort().doubleValue(), 0);
+		assertEquals(4.0, newRelease.getScopeList().get(0).getDeclaredEffort().doubleValue(), 0);
 	}
 
 	private Release assertThatReleaseIsInContext(final String releaseDescription) throws ReleaseNotFoundException {
