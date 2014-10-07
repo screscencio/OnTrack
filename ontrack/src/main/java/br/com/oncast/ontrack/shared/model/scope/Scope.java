@@ -259,4 +259,8 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 	public Float getDeclaredEffort() {
 		return effort.getDeclared();
 	}
+
+	public Float getDeclaredValue() {
+		return value.getDeclared();
+	}
 }

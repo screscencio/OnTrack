@@ -6,7 +6,6 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
-import br.com.oncast.ontrack.shared.model.prioritizationCriteria.Effort;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
@@ -87,10 +86,8 @@ public class ScopeBindReleaseAction implements ScopeAction {
 			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
 			else newRelease.addScope(selectedScope, scopePriority);
 
-			final Effort effort = new Effort();
-			effort.setDeclared(1.0F);
-
 			if (!selectedScope.getEffort().hasInfered()) selectedScope.getEffort().setDeclared(1);
+			if (!selectedScope.getValue().hasInfered()) selectedScope.getValue().setDeclared(1);
 
 			if (rollbackSubActionsContainsKanbanColumnCreateAction()) assureKanbanColumnExistence(selectedScope, newRelease, context);
 		}
