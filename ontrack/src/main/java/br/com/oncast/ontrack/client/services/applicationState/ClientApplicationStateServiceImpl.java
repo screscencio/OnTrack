@@ -2,8 +2,8 @@ package br.com.oncast.ontrack.client.services.applicationState;
 
 import br.com.oncast.ontrack.client.i18n.ClientMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
+import br.com.oncast.ontrack.client.services.context.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEventHandler;

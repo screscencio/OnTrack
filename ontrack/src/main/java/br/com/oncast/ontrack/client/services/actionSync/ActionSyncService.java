@@ -7,8 +7,8 @@ import br.com.oncast.ontrack.client.services.actionSync.QueuedActionsDispatcher.
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.AlertRegistration;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
+import br.com.oncast.ontrack.client.services.context.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.internet.ConnectionListener;
 import br.com.oncast.ontrack.client.services.internet.NetworkMonitoringService;
 import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;

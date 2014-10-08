@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.services.estimator;
 
+import br.com.oncast.ontrack.client.services.context.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
 import br.com.oncast.ontrack.shared.model.scope.ScopeEstimator;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 

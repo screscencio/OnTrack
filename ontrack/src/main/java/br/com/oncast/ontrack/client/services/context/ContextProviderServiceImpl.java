@@ -137,10 +137,6 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 		return getCurrent().getProjectRepresentation().getId();
 	}
 
-	public interface ContextChangeListener {
-		void onProjectChanged(UUID projectId, Long loadedProjectRevision);
-	}
-
 	@Override
 	public void unloadProjectContext() {
 		loadProjectRevision = null;
