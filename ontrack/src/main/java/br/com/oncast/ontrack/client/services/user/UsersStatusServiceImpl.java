@@ -208,7 +208,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 
 	@Override
 	public SortedSet<UserRepresentation> getOnlineUsers() {
-		if (!hasLoadedOnlineUsers()) throw new RuntimeException("There is no loaded active users");
+		if (!hasLoadedOnlineUsers()) throw new RuntimeException("There is no loaded online users");
 		return activeUsers;
 	}
 
@@ -265,15 +265,9 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 		};
 	}
 
-	public interface UserSpecificStatusChangeListener {
-
-		void onUserStatusChange(UserStatus status);
-
-	}
-
 	private void notifyUserSpecificStatusChangeListeners(final UserRepresentation user, final UserStatus status) {
-		for (final UserSpecificStatusChangeListener l : userSpecificListeners.get(user)) {
-			l.onUserStatusChange(status);
+		for (final UserSpecificStatusChangeListener listener : userSpecificListeners.get(user)) {
+			listener.onUserStatusChange(status);
 		}
 	}
 }

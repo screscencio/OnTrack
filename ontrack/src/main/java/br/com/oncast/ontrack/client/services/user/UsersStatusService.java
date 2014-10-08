@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UserSpecificStatusChangeListener;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
