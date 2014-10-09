@@ -96,6 +96,25 @@ public class ReleaseTestUtils {
 		return r1;
 	}
 
+	public static Release getReleaseWithScopesWithEffort() {
+		final Release projectRelease = getRelease();
+		final Release r1 = projectRelease.getChild(0);
+
+		final Scope scope = ScopeTestUtils.getScopeWithEffort();
+		r1.addScope(scope.getChild(0));
+		r1.addScope(scope.getChild(1));
+		r1.addScope(scope.getChild(2));
+
+		for (final Release r : r1.getChildren()) {
+			final Scope s = ScopeTestUtils.getScopeWithEffort();
+			r.addScope(s.getChild(0));
+			r.addScope(s.getChild(1));
+			r.addScope(s.getChild(2));
+		}
+
+		return r1;
+	}
+
 	public static Release createRelease(final String description) {
 		return new Release(description, new UUID());
 	}

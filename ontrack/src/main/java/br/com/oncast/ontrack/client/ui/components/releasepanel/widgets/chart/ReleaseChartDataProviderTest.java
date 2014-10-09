@@ -1,7 +1,6 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
+package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
@@ -137,6 +136,24 @@ public class ReleaseChartDataProviderTest {
 			releaseEffortSum = (float) i;
 			assertEquals(releaseEffortSum, getProvider().getEffortSum(), 0.009);
 		}
+	}
+
+	@Test
+	public void getInferedEstimatedEndDayShouldReturnCorrectValue() throws Exception {
+		final Release release = ReleaseTestUtils.getReleaseWithScopesWithEffort();
+		final Calendar startDate = Calendar.getInstance();
+		release.declareStartDay(WorkingDayFactory.create(startDate.getTime()));
+		final ReleaseEstimator estimator = new ReleaseEstimator(release);
+		final ReleaseChartDataProvider provider = new ReleaseChartDataProvider(release, estimator, actionExecutionServiceMock);
+
+		final WorkingDay startWorkingDate = WorkingDayFactory.create(startDate.getTime());
+
+		startWorkingDate.add(ceilling(release.getEffortSum() / 1) - 1);
+		assertEquals(startWorkingDate, provider.getInferedEstimatedEndDay());
+	}
+
+	private int ceilling(final float number) {
+		return (int) (number + 0.999999);
 	}
 
 	@Test
