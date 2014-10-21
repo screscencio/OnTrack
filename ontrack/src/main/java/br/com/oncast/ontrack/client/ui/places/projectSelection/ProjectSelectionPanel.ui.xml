@@ -48,7 +48,7 @@
 	   <layout:ApplicationWidgetContainer ui:field="container">
             <g:HTMLPanel styleName="{style.projectSelectionPanel}">
             	<g:Label styleName="{style.chooseLabel}">
-            		<ui:msg description="project selection label">Choose a project or type a name to start one</ui:msg>
+            		<ui:msg description="project selection label">Type your project's name</ui:msg>
             	</g:Label>
                 <misc:ProjectSelectionWidget ui:field="selectionProject" closeOnEscape="false"/>
                 <g:Label ui:field="logoutLabel" styleName="{style.logoutLabel}">
