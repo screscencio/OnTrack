@@ -109,4 +109,6 @@ public interface PersistenceService {
 
 	UserAction retrieveAction(UUID projectId, UUID id) throws PersistenceException;
 
+	void remove(User user) throws PersistenceException;;
+
 }

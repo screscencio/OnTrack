@@ -280,4 +280,12 @@ public class AuthenticationManager {
 	public boolean hasPassword(final UUID userId) throws PersistenceException {
 		return !persistenceService.retrievePasswordsForUser(userId).isEmpty();
 	}
+
+	public void removeUser(final User user) {
+		try {
+			persistenceService.remove(user);
+		} catch (final PersistenceException e) {
+			LOGGER.error(e);
+		}
+	}
 }

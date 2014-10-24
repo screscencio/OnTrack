@@ -859,4 +859,25 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@Override
+	public void remove(final User user) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final UserEntity entity = (UserEntity) TYPE_CONVERTER.convert(user);
+			em.getTransaction().begin();
+			em.remove(em.getReference(entity.getClass(), entity.getId()));
+			em.getTransaction().commit();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			try {
+				em.getTransaction().rollback();
+			} catch (final Exception f) {
+				throw new PersistenceException("It was not possible to remove the " + user.getClass().getSimpleName() + " nor to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to remove the " + user.getClass().getSimpleName() + ".", e);
+		} finally {
+			em.close();
+		}
+	}
+
 }

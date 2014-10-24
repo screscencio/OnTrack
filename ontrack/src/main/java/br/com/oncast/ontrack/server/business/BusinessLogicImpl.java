@@ -465,9 +465,15 @@ class BusinessLogicImpl implements BusinessLogic {
 		if (user != null) { throw new RuntimeException("The user " + userEmail + " already exists"); }
 
 		user = authenticationManager.createNewUser(userEmail, null, profile);
-		LOGGER.debug("Created New User '" + userEmail + "'.");
-		sendActivationMail(userEmail, user.getId().toString());
-		return user.getId();
+		try {
+			integrationService.onOnboarding(userEmail);
+			LOGGER.debug("Created New User '" + userEmail + "'.");
+			sendActivationMail(userEmail, user.getId().toString());
+			return user.getId();
+		} catch (final RuntimeException e) {
+			authenticationManager.removeUser(user);
+			throw e;
+		}
 	}
 
 	private void updateGlobalProfile(final User user, final Profile profile) {

@@ -7,6 +7,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface IntegrationService {
 
+	void onOnboarding(String userEmail);
+
 	void onUserInvited(UUID projectId, User invitor, User invitedUser, Profile profile);
 
 	void onProjectCreated(ProjectRepresentation project, User creator);
