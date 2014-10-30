@@ -86,8 +86,15 @@ public class ScopeBindReleaseAction implements ScopeAction {
 			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
 			else newRelease.addScope(selectedScope, scopePriority);
 
-			if (!selectedScope.getEffort().hasInfered()) selectedScope.getEffort().setDeclared(1);
-			if (!selectedScope.getValue().hasInfered()) selectedScope.getValue().setDeclared(1);
+			if (!selectedScope.getEffort().hasInfered()) {
+				final ScopeDeclareEffortAction scopeDeclareEffortAction = new ScopeDeclareEffortAction(selectedScope.getId(), true, 1);
+				scopeDeclareEffortAction.execute(context, actionContext);
+			}
+
+			if (!selectedScope.getValue().hasInfered()) {
+				final ScopeDeclareValueAction scopeDeclareValueAction = new ScopeDeclareValueAction(selectedScope.getId(), true, 1);
+				scopeDeclareValueAction.execute(context, actionContext);
+			}
 
 			if (rollbackSubActionsContainsKanbanColumnCreateAction()) assureKanbanColumnExistence(selectedScope, newRelease, context);
 		}
@@ -157,7 +164,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 
 	@Override
 	public boolean changesEffortInference() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -167,7 +174,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 
 	@Override
 	public boolean changesValueInference() {
-		return false;
+		return true;
 	}
 
 	public boolean isUnbinding() {
