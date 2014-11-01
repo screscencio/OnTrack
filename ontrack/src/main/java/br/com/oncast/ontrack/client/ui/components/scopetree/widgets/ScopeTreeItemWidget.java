@@ -487,6 +487,11 @@ public class ScopeTreeItemWidget extends Composite {
 		return ClientDecimalFormat.roundFloat(scope.getEffort().getAccomplishedPercentual(), 1) + "%";
 	}
 
+	/**
+	 * Cria o popup onde é digitado o nome da release
+	 * 
+	 * @param releaseList
+	 */
 	public void showReleaseMenu(final List<Release> releaseList) {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
 

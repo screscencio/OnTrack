@@ -6,6 +6,9 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
+/**
+ * Uma ação interna roda no só cliente e não no servidor. Esta classe não modifica o modelo. Converte uma ação interna em uma ação verdadeira se a ação completar.
+ */
 public class BindReleaseInternalAction implements OneStepInternalAction {
 
 	private final ProjectContext context;

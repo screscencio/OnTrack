@@ -29,6 +29,10 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+/**
+ * Escuta os eventos internos e executa as ações
+ * 
+ */
 public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInteractionHandler {
 
 	private class InternalActionHandler implements InternalActionExecutionRequestHandler {

@@ -20,3 +20,7 @@ mvn clean package -Dmaven.test.skip=true
 In one of it steps, maven get the environment.prod file and copy it to
 the configurantion folder. So you keep your production configuration
 even if you build and run inside eclipse.
+
+** IMPORTANT **
+
+Log4J doesn't work at shared package

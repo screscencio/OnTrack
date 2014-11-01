@@ -24,6 +24,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
 
+/**
+ * Responsible for action execution on client. This actions will be synchronized when the Internet is back
+ * 
+ * 
+ */
 public class ActionExecutionServiceImpl implements ActionExecutionService {
 
 	private static final UndoWarningMessages MESSAGES = GWT.create(UndoWarningMessages.class);

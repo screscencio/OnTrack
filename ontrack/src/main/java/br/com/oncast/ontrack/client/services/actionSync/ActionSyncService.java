@@ -31,6 +31,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.event.shared.EventBus;
 
+/**
+ * Responsible for synchronization between client and server
+ */
 public class ActionSyncService implements ActionExecutionListener, ConnectionListener, ContextChangeListener, ServerActionSyncEventHandler, ActionDispatcherListener {
 
 	private static final int NOT_SYNCED = 0;

@@ -86,14 +86,15 @@ public class ScopeBindReleaseAction implements ScopeAction {
 			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
 			else newRelease.addScope(selectedScope, scopePriority);
 
-			if (!selectedScope.getEffort().hasInfered()) {
+			final boolean notUndoing = newRollbackSubActions.size() == 1;
+			if (!selectedScope.getEffort().hasInfered() && notUndoing) {
 				final ScopeDeclareEffortAction scopeDeclareEffortAction = new ScopeDeclareEffortAction(selectedScope.getId(), true, 1);
-				scopeDeclareEffortAction.execute(context, actionContext);
+				newRollbackSubActions.add(scopeDeclareEffortAction.execute(context, actionContext));
 			}
 
-			if (!selectedScope.getValue().hasInfered()) {
+			if (!selectedScope.getValue().hasInfered() && notUndoing) {
 				final ScopeDeclareValueAction scopeDeclareValueAction = new ScopeDeclareValueAction(selectedScope.getId(), true, 1);
-				scopeDeclareValueAction.execute(context, actionContext);
+				newRollbackSubActions.add(scopeDeclareValueAction.execute(context, actionContext));
 			}
 
 			if (rollbackSubActionsContainsKanbanColumnCreateAction()) assureKanbanColumnExistence(selectedScope, newRelease, context);
