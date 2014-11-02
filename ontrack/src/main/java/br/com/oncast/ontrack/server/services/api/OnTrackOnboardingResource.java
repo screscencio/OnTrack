@@ -18,16 +18,12 @@ public class OnTrackOnboardingResource {
 	@Path("/user")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public String onboarding(final OnboardingApiRequest request, @Context final HttpServletRequest req) {
-		try {
-			final StringBuffer url = req.getRequestURL();
-			final String baseURL = url.substring(0, url.length() - req.getRequestURI().length()) + req.getContextPath() + "/";
+		final StringBuffer url = req.getRequestURL();
+		final String baseURL = url.substring(0, url.length() - req.getRequestURI().length()) + req.getContextPath() + "/";
 
-			final String accessToken = ServerServiceProvider.getInstance().getBusinessLogic().createTrialUser(request.getEmail(), Profile.ACCOUNT_MANAGER).toString();
+		final String accessToken = ServerServiceProvider.getInstance().getBusinessLogic().createTrialUser(request.getEmail(), Profile.ACCOUNT_MANAGER).toString();
 
-			final String onboard = baseURL + "onboarding/access/" + accessToken;
-			return onboard;
-		} catch (final RuntimeException e) {
-			return "error";
-		}
+		final String onboard = baseURL + "onboarding/access/" + accessToken;
+		return onboard;
 	}
 }
