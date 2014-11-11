@@ -464,13 +464,14 @@ class BusinessLogicImpl implements BusinessLogic {
 		User user = retrieveExistingUser(userEmail);
 		if (user == null) {
 			user = authenticationManager.createNewUser(userEmail, null, profile);
+			LOGGER.info("Created New User '" + userEmail + "'.");
 			// throw new RuntimeException("The user " + userEmail + " already exists");
 		}
 
 		try {
 			integrationService.onOnboarding(userEmail);
-			LOGGER.debug("Created New User '" + userEmail + "'.");
 			sendActivationMail(userEmail, user.getId().toString());
+			LOGGER.info("A new email was sended for the user " + userEmail);
 			return user.getId();
 		} catch (final RuntimeException e) {
 			authenticationManager.removeUser(user);
