@@ -1,8 +1,10 @@
 package br.com.oncast.ontrack.server.services.api;
 
+import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.api.bean.OnboardingApiRequest;
 import br.com.oncast.ontrack.shared.model.user.Profile;
+import br.com.oncast.ontrack.shared.model.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -21,7 +23,11 @@ public class OnTrackOnboardingResource {
 		final StringBuffer url = req.getRequestURL();
 		final String baseURL = url.substring(0, url.length() - req.getRequestURI().length()) + req.getContextPath() + "/";
 
-		final String accessToken = ServerServiceProvider.getInstance().getBusinessLogic().createTrialUser(request.getEmail(), Profile.ACCOUNT_MANAGER).toString();
+		final BusinessLogic businessLogic = ServerServiceProvider.getInstance().getBusinessLogic();
+		final User user = businessLogic.createTrialUser(request.getEmail(), Profile.ACCOUNT_MANAGER);
+		businessLogic.sendOnboardingMail(user.getEmail(), user);
+
+		final String accessToken = user.getId().toString();
 
 		final String onboard = baseURL + "onboarding/access/" + accessToken;
 		return onboard;

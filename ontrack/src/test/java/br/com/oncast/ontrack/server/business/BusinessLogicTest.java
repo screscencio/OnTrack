@@ -777,10 +777,24 @@ public class BusinessLogicTest {
 	}
 
 	@Test
-	public void shouldNotCreateAnotherUserWhenFindOne() throws NoResultFoundException, PersistenceException {
+	public void shouldCreateUserWhenNoUserFoundOnCreateTrial() throws NoResultFoundException, PersistenceException {
+		when(persistence.retrieveUserByEmail(Mockito.anyString())).thenReturn(null);
+
+		business = Mockito.spy(BusinessLogicTestFactory.create(businessLogic().with(authorizationManager).with(authenticationManager).with(persistence)));
+		final String userEmail = "example@example.com";
+		business.createTrialUser(userEmail, Profile.ACCOUNT_MANAGER);
+		verify(authenticationManager, Mockito.only()).createNewUser(userEmail, null, Profile.ACCOUNT_MANAGER);
+	}
+
+	@Test
+	public void shouldNotCreateAnotherUserWhenFindOneOnCreateTrial() throws NoResultFoundException, PersistenceException {
 		final User user = UserTestUtils.createUser();
 		when(persistence.retrieveUserByEmail(Mockito.anyString())).thenReturn(user);
-		verify(authenticationManager, Mockito.never()).createNewUser(Mockito.anyString(), Mockito.anyString(), Mockito.any(Profile.class));
+
+		business = Mockito.spy(BusinessLogicTestFactory.create(businessLogic().with(authorizationManager).with(authenticationManager).with(persistence)));
+		final String userEmail = "example@example.com";
+		business.createTrialUser(userEmail, Profile.ACCOUNT_MANAGER);
+		verify(authenticationManager, Mockito.never()).createNewUser(userEmail, null, Profile.ACCOUNT_MANAGER);
 	}
 
 	private ModelActionSyncEvent captureMulticastedModelActionSyncEvent(final UUID projectId) {

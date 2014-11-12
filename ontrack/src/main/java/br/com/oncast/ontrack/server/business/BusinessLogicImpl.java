@@ -460,19 +460,21 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public UUID createTrialUser(final String userEmail, final Profile profile) {
+	public User createTrialUser(final String userEmail, final Profile profile) {
 		User user = retrieveExistingUser(userEmail);
 		if (user == null) {
 			user = authenticationManager.createNewUser(userEmail, null, profile);
 			LOGGER.info("Created New User '" + userEmail + "'.");
-			// throw new RuntimeException("The user " + userEmail + " already exists");
 		}
+		return user;
+	}
 
+	@Override
+	public void sendOnboardingMail(final String userEmail, final User user) {
 		try {
 			integrationService.onOnboarding(userEmail);
 			sendActivationMail(userEmail, user.getId().toString());
 			LOGGER.info("A new email was sended for the user " + userEmail);
-			return user.getId();
 		} catch (final RuntimeException e) {
 			authenticationManager.removeUser(user);
 			throw e;
