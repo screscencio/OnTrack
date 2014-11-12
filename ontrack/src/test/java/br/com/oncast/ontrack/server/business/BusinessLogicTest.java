@@ -776,6 +776,13 @@ public class BusinessLogicTest {
 		}
 	}
 
+	@Test
+	public void shouldNotCreateAnotherUserWhenFindOne() throws NoResultFoundException, PersistenceException {
+		final User user = UserTestUtils.createUser();
+		when(persistence.retrieveUserByEmail(Mockito.anyString())).thenReturn(user);
+		verify(authenticationManager, Mockito.never()).createNewUser(Mockito.anyString(), Mockito.anyString(), Mockito.any(Profile.class));
+	}
+
 	private ModelActionSyncEvent captureMulticastedModelActionSyncEvent(final UUID projectId) {
 		final ArgumentCaptor<ModelActionSyncEvent> eventCaptor = ArgumentCaptor.forClass(ModelActionSyncEvent.class);
 		verify(multicast).multicastToAllUsersButCurrentUserClientInSpecificProject(eventCaptor.capture(), eq(projectId));
