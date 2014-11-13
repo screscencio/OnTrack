@@ -55,7 +55,7 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 		this.description = description;
 		this.effort = new Effort();
 		this.value = new Value();
-		this.progress = new Progress(author, timestamp);
+		this.progress = new Progress(author, timestamp, new Date());
 
 		childrenList = new ArrayList<Scope>();
 	}

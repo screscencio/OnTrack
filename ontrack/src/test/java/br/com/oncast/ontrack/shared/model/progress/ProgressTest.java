@@ -5,6 +5,8 @@ import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.junit.Before;
@@ -137,12 +139,13 @@ public class ProgressTest {
 
 	@Test
 	// TODO Verificar estes calculos.
-	public void getCycleTime_shouldUseTodayAsDoneDateIfIsNotDone() {
-		final Progress newProgress = ProgressTestUtils.create();
-		final Date dateWork = new Date();
+	public void getCycleTime_shouldUseTodayAsDoneDateIfIsNotDoneAtNotStarted() throws ParseException {
+		final Date dateWork = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");
+		final Date today = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");
 		CalendarUtil.addDaysToDate(dateWork, -2);
+		final Progress newProgress = ProgressTestUtils.create(dateWork, today);
 		newProgress.setState(ProgressState.UNDER_WORK, UserRepresentationTestUtils.getAdmin(), dateWork);
-		assertEquals(1L, (newProgress.getCycleTime().longValue() / DateUnit.DAY));
+		assertEquals(2L, (newProgress.getCycleTime().longValue() / DateUnit.DAY));
 	}
 
 	@Test

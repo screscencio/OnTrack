@@ -15,6 +15,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Iterator;
 
+/**
+ * We do not consider weekends, so the "today" date need to be injected to the class
+ * 
+ * 
+ */
 public class Progress implements Serializable, Iterable<ModelState<ProgressState>> {
 
 	private static final long serialVersionUID = 1L;
@@ -30,8 +35,8 @@ public class Progress implements Serializable, Iterable<ModelState<ProgressState
 	// IMPORTANT used by serialization
 	protected Progress() {}
 
-	public Progress(final UserRepresentation author, final Date timestamp) {
-		stateManager = new ModelStateManager<ProgressState>(ProgressState.NOT_STARTED, author, timestamp);
+	public Progress(final UserRepresentation author, final Date timestamp, final Date today) {
+		stateManager = new ModelStateManager<ProgressState>(ProgressState.NOT_STARTED, author, timestamp, today);
 		stateManager.getInitialState().getAuthor();
 		description = "";
 	}

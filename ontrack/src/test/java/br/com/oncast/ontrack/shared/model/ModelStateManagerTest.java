@@ -23,7 +23,7 @@ public class ModelStateManagerTest {
 		initialStateValue = "initialState";
 		initialTimestamp = new Date(1000);
 		initialAuthor = UserRepresentationTestUtils.createUser();
-		manager = new ModelStateManager<String>(initialStateValue, initialAuthor, initialTimestamp);
+		manager = new ModelStateManager<String>(initialStateValue, initialAuthor, initialTimestamp, new Date());
 	}
 
 	@Test
@@ -44,7 +44,8 @@ public class ModelStateManagerTest {
 	@Test
 	public void itsPossibleToSetAsInitialStateAStateThatIsAlreadCreated() throws Exception {
 		final ModelState<Boolean> state = ModelState.create(false, initialAuthor, initialTimestamp);
-		final ModelStateManager<Boolean> manager = new ModelStateManager<Boolean>(state);
+		final Date today = new Date();
+		final ModelStateManager<Boolean> manager = new ModelStateManager<Boolean>(state, today);
 		assertEquals(state, manager.getCurrentState());
 	}
 

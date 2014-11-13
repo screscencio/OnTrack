@@ -9,19 +9,26 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * We do not consider weekends, so the "today" date need to be injected to the class
+ * 
+ * 
+ * @param <T>
+ */
 public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T>> {
 
 	private static final long serialVersionUID = 1L;
-
 	private List<ModelState<T>> statesList;
+	private Date today;
 
 	protected ModelStateManager() {}
 
-	public ModelStateManager(final T initialStateValue, final UserRepresentation author, final Date initialStateTimestamp) {
-		this(ModelState.create(initialStateValue, author, initialStateTimestamp));
+	public ModelStateManager(final T initialStateValue, final UserRepresentation author, final Date initialStateTimestamp, final Date today) {
+		this(ModelState.create(initialStateValue, author, initialStateTimestamp), today);
 	}
 
-	public ModelStateManager(final ModelState<T> initialState) {
+	public ModelStateManager(final ModelState<T> initialState, final Date today) {
+		this.today = today;
 		this.statesList = new ArrayList<ModelState<T>>();
 		statesList.add(initialState);
 	}
@@ -67,21 +74,22 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 	}
 
 	public long getCurrentStateDuration() {
-		return new Date().getTime() - getCurrentState().getTimestamp().getTime();
+		return today.getTime() - getCurrentState().getTimestamp().getTime();
 	}
 
 	public long getDurationOfState(final T stateValue) {
 		long duration = 0;
-
 		for (int i = 0; i < statesList.size() - 1; i++) {
 			final ModelState<T> nextState = statesList.get(i + 1);
 			final ModelState<T> state = statesList.get(i);
+
 			if (hasValue(state, stateValue)) {
 				duration += getDurationBetween(state, nextState);
 			}
 		}
-
-		if (hasValue(getCurrentState(), stateValue)) duration += getCurrentStateDuration();
+		if (hasValue(getCurrentState(), stateValue)) {
+			duration += getCurrentStateDuration();
+		}
 
 		return duration;
 	}
@@ -91,7 +99,7 @@ public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T
 	}
 
 	private long getDurationBetween(final ModelState<T> previousState, final ModelState<T> nextState) {
-		final Date nextDate = new Date();
+		final Date nextDate = new Date(today.getTime());
 		if (nextState.getTimestamp() != null) nextDate.setTime(nextState.getTimestamp().getTime());
 
 		return nextDate.getTime() - previousState.getTimestamp().getTime();

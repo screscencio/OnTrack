@@ -12,6 +12,10 @@ public class ProgressTestUtils {
 	}
 
 	public static Progress create() {
-		return new Progress(UserRepresentationTestUtils.getAdmin(), new Date());
+		return new Progress(UserRepresentationTestUtils.getAdmin(), new Date(), new Date());
+	}
+
+	public static Progress create(final Date stateDate, final Date today) {
+		return new Progress(UserRepresentationTestUtils.getAdmin(), stateDate, today);
 	}
 }

@@ -34,8 +34,9 @@ public class Annotation implements Serializable, HasUUID {
 	public Annotation(final UUID id, final UserRepresentation author, final Date date, final String message, final AnnotationType type) {
 		this.id = id;
 		this.message = message;
-		this.stateManager = new ModelStateManager<AnnotationType>(type, author, date);
-		this.deprecationManager = new ModelStateManager<DeprecationState>(DeprecationState.VALID, author, date);
+		final Date today = new Date();
+		this.stateManager = new ModelStateManager<AnnotationType>(type, author, date, today);
+		this.deprecationManager = new ModelStateManager<DeprecationState>(DeprecationState.VALID, author, date, today);
 		voters = new HashSet<UserRepresentation>();
 	}
 
