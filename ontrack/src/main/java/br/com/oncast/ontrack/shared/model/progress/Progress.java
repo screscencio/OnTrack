@@ -36,7 +36,9 @@ public class Progress implements Serializable, Iterable<ModelState<ProgressState
 	protected Progress() {}
 
 	public Progress(final UserRepresentation author, final Date timestamp, final Date today) {
-		stateManager = new ModelStateManager<ProgressState>(ProgressState.NOT_STARTED, author, timestamp, today);
+		final WorkingDay workingDayToday = WorkingDayFactory.create(today);
+		final WorkingDay workingDayStage = WorkingDayFactory.create(timestamp);
+		stateManager = new ModelStateManager<ProgressState>(ProgressState.NOT_STARTED, author, workingDayStage.getJavaDate(), workingDayToday.getJavaDate());
 		stateManager.getInitialState().getAuthor();
 		description = "";
 	}

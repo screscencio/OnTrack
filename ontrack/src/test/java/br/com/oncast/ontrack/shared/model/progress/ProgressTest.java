@@ -142,11 +142,11 @@ public class ProgressTest {
 	public void getLeadTime_shouldReturnTheCorrectLeadTimeIfIsDone() throws ParseException {
 		final Date dateWork = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");
 		final Date today = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");
-		CalendarUtil.addDaysToDate(dateWork, 4);
+		CalendarUtil.addDaysToDate(dateWork, 2);
 		final Progress newProgress = ProgressTestUtils.create(dateWork, today);
 		newProgress.setState(ProgressState.NOT_STARTED, UserRepresentationTestUtils.getAdmin(), today);
 		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), dateWork);
-		assertEquals(4L, (newProgress.getLeadTime().longValue() / DateUnit.DAY));
+		assertEquals(2L, (newProgress.getLeadTime().longValue() / DateUnit.DAY));
 	}
 
 	@Test
@@ -175,6 +175,14 @@ public class ProgressTest {
 		newProgress.setState(ProgressState.UNDER_WORK, UserRepresentationTestUtils.getAdmin(), dateWork);
 		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), dateDone);
 		assertEquals(2l, (newProgress.getCycleTime().longValue() / DateUnit.DAY));
+	}
+
+	@Test
+	public void shouldNotUseWeekendsAsToday() throws ParseException {
+		final Date saturday = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse("15/11/2014 18:00");
+		final Date nextMonday = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse("17/11/2014 18:00");
+		final Progress newProgress = ProgressTestUtils.create(saturday, saturday);
+		assertEquals(nextMonday.getTime(), newProgress.getCreationDate().getTime());
 	}
 
 	@Test
