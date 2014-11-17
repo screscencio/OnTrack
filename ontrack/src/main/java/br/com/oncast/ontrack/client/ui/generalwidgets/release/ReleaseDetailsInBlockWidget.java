@@ -49,9 +49,6 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 	InformationBlockWidget duration;
 
 	@UiField
-	InformationBlockWidget cycletime;
-
-	@UiField
 	InformationBlockWidget leadtime;
 
 	private Release release;
@@ -75,7 +72,6 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 		startDay.setValue(getEstimator().getEstimatedStartDayFor(release));
 		endDay.setValue(getEstimator().getEstimatedEndDayFor(release));
 
-		formatTimeDifference(cycletime, release.getAverageCycleTime());
 		formatTimeDifference(leadtime, release.getAverageLeadTime());
 		updateDuration();
 

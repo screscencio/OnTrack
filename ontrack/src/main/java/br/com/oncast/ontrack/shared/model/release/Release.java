@@ -554,7 +554,6 @@ public class Release implements Serializable, HasUUID {
 		Long average = 0L;
 		int scopeCount = 0;
 		for (final Scope scope : getAllScopesIncludingDescendantReleases()) {
-			if (!scope.getProgress().isDone()) continue;
 			scopeCount++;
 			average += extractor.getValue(scope.getProgress());
 		}
@@ -566,5 +565,4 @@ public class Release implements Serializable, HasUUID {
 	private interface Extractor {
 		Long getValue(Progress progress);
 	}
-
 }

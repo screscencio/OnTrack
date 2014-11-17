@@ -32,9 +32,6 @@
 			<w:ProgressBlockWidget ui:field="effort" addStyleNames="{style.informationBlock}" posfix="ep">
 				<ui:msg description="effort">Effort</ui:msg>
 			</w:ProgressBlockWidget>
-			<w:InformationBlockWidget ui:field="cycletime" addStyleNames="{style.informationBlock}">
-				<ui:msg description="cycletime">Cycletime</ui:msg>
-			</w:InformationBlockWidget>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel styleName="{style.centralized}">
 			<w:ProgressBlockWidget ui:field="value" addStyleNames="{style.informationBlock}" posfix="vp">

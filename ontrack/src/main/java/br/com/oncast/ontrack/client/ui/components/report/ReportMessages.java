@@ -37,7 +37,7 @@ public interface ReportMessages extends BaseMessages {
 	String endDate();
 
 	@Description("message shown in the report table as header for cycle time column")
-	@DefaultMessage("Cycle Time")
+	@DefaultMessage("Cycle time")
 	String cycleTime();
 
 	@Description("message shown in the report table as header for scope description column")

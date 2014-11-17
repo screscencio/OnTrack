@@ -117,9 +117,19 @@ public class ProgressTest {
 	}
 
 	@Test
-	public void getLeadTime_shouldReturnNullIfIsNotDone() {
+	public void getLeadTime_shouldNotReturnNullIfIsNotDone() {
 		setState(ProgressState.UNDER_WORK);
-		assertNull(progress.getLeadTime());
+		assertNotNull(progress.getLeadTime());
+	}
+
+	@Test
+	public void getLeadTime_shouldUseTodayAsDoneDateIfIsNotDoneAtNotStarted() throws ParseException {
+		final Date dateWork = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");
+		final Date today = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");
+		CalendarUtil.addDaysToDate(dateWork, -2);
+		final Progress newProgress = ProgressTestUtils.create(dateWork, today);
+		newProgress.setState(ProgressState.NOT_STARTED, UserRepresentationTestUtils.getAdmin(), dateWork);
+		assertEquals(2L, (newProgress.getLeadTime().longValue() / DateUnit.DAY));
 	}
 
 	@Test
@@ -129,16 +139,17 @@ public class ProgressTest {
 	}
 
 	@Test
-	public void getLeadTime_shouldReturnTheCorrectLeadTimeIfIsDone() {
-		final Progress newProgress = ProgressTestUtils.create();
-		final Date date = new Date();
-		CalendarUtil.addDaysToDate(date, 3);
-		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), date);
-		assertEquals(3l, (newProgress.getLeadTime().longValue() / DateUnit.DAY));
+	public void getLeadTime_shouldReturnTheCorrectLeadTimeIfIsDone() throws ParseException {
+		final Date dateWork = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");
+		final Date today = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");
+		CalendarUtil.addDaysToDate(dateWork, 4);
+		final Progress newProgress = ProgressTestUtils.create(dateWork, today);
+		newProgress.setState(ProgressState.NOT_STARTED, UserRepresentationTestUtils.getAdmin(), today);
+		newProgress.setState(ProgressState.DONE, UserRepresentationTestUtils.getAdmin(), dateWork);
+		assertEquals(4L, (newProgress.getLeadTime().longValue() / DateUnit.DAY));
 	}
 
 	@Test
-	// TODO Verificar estes calculos.
 	public void getCycleTime_shouldUseTodayAsDoneDateIfIsNotDoneAtNotStarted() throws ParseException {
 		final Date dateWork = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");
 		final Date today = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2014");

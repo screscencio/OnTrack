@@ -107,8 +107,8 @@ public class Progress implements Serializable, Iterable<ModelState<ProgressState
 	}
 
 	public Long getLeadTime() {
-		if (!isDone()) return null;
-		return stateManager.getLastOccurenceOf(ProgressState.DONE).getTimestamp().getTime() - getCreationDate().getTime();
+		return stateManager.getDurationBetween(stateManager.getLastOccurenceOf(ProgressState.NOT_STARTED), stateManager.getLastOccurenceOf(ProgressState.DONE));
+
 	}
 
 	public Long getCycleTime() {
