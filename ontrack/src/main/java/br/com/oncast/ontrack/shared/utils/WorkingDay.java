@@ -22,11 +22,11 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		date.setYear(year - INITIAL_YEAR);
 		date.setMonth(month);
 		date.setDate(day);
-		javaDate = getNearestWorkingDayFrom(date);
+		javaDate = CalendarUtil.copyDate(date);
 	}
 
 	WorkingDay(final Date date) {
-		javaDate = getNearestWorkingDayFrom(CalendarUtil.copyDate(date));
+		javaDate = CalendarUtil.copyDate(date);
 	}
 
 	public WorkingDay add(final int nWorkingDays) {
@@ -82,20 +82,12 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		return new WorkingDay(javaDate);
 	}
 
-	private Date getNearestWorkingDayFrom(final Date date) {
-		while (isWeekend(date))
-			CalendarUtil.addDaysToDate(date, 1);
-		return date;
-	}
-
 	private boolean isWeekend(final Date date) {
 		return false;
 	}
 
 	private void addOneWorkingDay(final boolean forward) {
-		do {
-			CalendarUtil.addDaysToDate(javaDate, forward ? 1 : -1);
-		} while (isWeekend(javaDate));
+		CalendarUtil.addDaysToDate(javaDate, forward ? 1 : -1);
 	}
 
 	private int getDaysBetween(final WorkingDay day) {
