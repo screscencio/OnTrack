@@ -87,30 +87,6 @@ public class WorkingDayTest {
 	}
 
 	@Test
-	public void theCountingOfTwoDatesShouldNotConsiderWeekends() throws Exception {
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-		final WorkingDay friday = WorkingDayFactory.create(calendar.getTime());
-
-		calendar.add(Calendar.DAY_OF_MONTH, 3);
-
-		final WorkingDay nextMonday = WorkingDayFactory.create(calendar.getTime());
-		assertEquals(2, friday.countTo(nextMonday));
-		assertEquals(-2, nextMonday.countTo(friday));
-	}
-
-	@Test
-	public void twoWorkingDaysAfterFridayIsTuesday() throws Exception {
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-
-		final Date finalDate = WorkingDayFactory.create(calendar.getTime()).add(2).getJavaDate();
-		calendar.setTime(finalDate);
-
-		assertEquals(Calendar.TUESDAY, calendar.get(Calendar.DAY_OF_WEEK));
-	}
-
-	@Test
 	public void oneWorkingDaysAfterTuesdayIsWednesday() throws Exception {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
@@ -119,28 +95,6 @@ public class WorkingDayTest {
 		calendar.setTime(finalDate);
 
 		assertEquals(Calendar.WEDNESDAY, calendar.get(Calendar.DAY_OF_WEEK));
-	}
-
-	@Test
-	public void shouldReturnNextMondayWhenNewWorkingDayIsCreatedOnSundayOrSaturday() throws Exception {
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(2001, Calendar.MAY, 1);
-
-		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-		final int sunday = calendar.get(Calendar.DAY_OF_MONTH);
-
-		calendar.setTime(WorkingDayFactory.create(calendar.getTime()).getJavaDate());
-
-		assertEquals(Calendar.MONDAY, calendar.get(Calendar.DAY_OF_WEEK));
-		assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH) - sunday);
-
-		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-		final int saturday = calendar.get(Calendar.DAY_OF_MONTH);
-
-		calendar.setTime(WorkingDayFactory.create(calendar.getTime()).getJavaDate());
-
-		assertEquals(Calendar.MONDAY, calendar.get(Calendar.DAY_OF_WEEK));
-		assertEquals(2, calendar.get(Calendar.DAY_OF_MONTH) - saturday);
 	}
 
 	@Test

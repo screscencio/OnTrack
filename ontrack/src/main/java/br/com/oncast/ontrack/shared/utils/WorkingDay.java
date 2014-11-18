@@ -11,8 +11,6 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 	private static final long serialVersionUID = 6260976764571783140L;
 
 	private static final int INITIAL_YEAR = 1900;
-	private static final int SATURDAY = 6;
-	private static final int SUNDAY = 0;
 
 	private Date javaDate;
 
@@ -57,9 +55,9 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 	}
 
 	/**
-	 * Counts the number of working days until the given day
-	 * If the given day is same day it will return 1
-	 * It's safe to give previous days, it will return the negative number of days representing x days ago
+	 * Counts the number of working days until the given day If the given day is same day it will return 1 It's safe to give previous days, it will return the negative number of days representing x
+	 * days ago
+	 * 
 	 * @param day
 	 * @return the number of days until the given day (the given day is included)
 	 */
@@ -91,8 +89,7 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 	}
 
 	private boolean isWeekend(final Date date) {
-		final int dayOfWeek = date.getDay();
-		return (dayOfWeek == SATURDAY || dayOfWeek == SUNDAY);
+		return false;
 	}
 
 	private void addOneWorkingDay(final boolean forward) {
@@ -122,8 +119,7 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		if (!(obj instanceof WorkingDay)) return false;
 		final WorkingDay other = (WorkingDay) obj;
 
-		return javaDate.getYear() == other.javaDate.getYear() && javaDate.getMonth() == other.javaDate.getMonth()
-				&& javaDate.getDate() == other.javaDate.getDate();
+		return javaDate.getYear() == other.javaDate.getYear() && javaDate.getMonth() == other.javaDate.getMonth() && javaDate.getDate() == other.javaDate.getDate();
 	}
 
 	@Override
@@ -171,5 +167,4 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		}
 		return earliest;
 	}
-
 }

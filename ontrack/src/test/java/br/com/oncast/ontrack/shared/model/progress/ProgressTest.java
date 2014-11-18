@@ -178,14 +178,6 @@ public class ProgressTest {
 	}
 
 	@Test
-	public void shouldNotUseWeekendsAsToday() throws ParseException {
-		final Date saturday = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse("15/11/2014 18:00");
-		final Date nextMonday = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse("17/11/2014 18:00");
-		final Progress newProgress = ProgressTestUtils.create(saturday, saturday);
-		assertEquals(nextMonday.getTime(), newProgress.getCreationDate().getTime());
-	}
-
-	@Test
 	public void shouldInformTheAuthorOfInitializedState() {
 		assertEquals(UserRepresentationTestUtils.getAdmin(), progress.getInitialStateAuthor());
 	}

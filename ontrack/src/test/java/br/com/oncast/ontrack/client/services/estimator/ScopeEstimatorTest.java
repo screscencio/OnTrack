@@ -121,14 +121,6 @@ public class ScopeEstimatorTest {
 		assertRemainingTimeWithSecondsOfPrecision(-timeDifference);
 	}
 
-	@Test
-	public void theScopeRemainingTimeShouldSkipNotWorkingDaysEvenWhenDueDateHasAlreadyPassed() throws Exception {
-		final Date dueDate = WorkingDayFactory.create().add(-10).getJavaDate();
-		scope.setDueDate(dueDate);
-		final long timeDifference = -10 * DateUnit.DAY;
-		assertRemainingTimeWithSecondsOfPrecision(timeDifference);
-	}
-
 	private Date addToNow(final int hours, final int minutes, final int seconds) {
 		final Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.HOUR, hours);
