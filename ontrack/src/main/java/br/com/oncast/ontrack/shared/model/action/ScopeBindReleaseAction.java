@@ -86,13 +86,14 @@ public class ScopeBindReleaseAction implements ScopeAction {
 			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
 			else newRelease.addScope(selectedScope, scopePriority);
 
-			final boolean notUndoing = newRollbackSubActions.size() == 1;
-			if (!selectedScope.getEffort().hasInfered() && notUndoing) {
+			final boolean notUndoing = newRollbackSubActions.size() <= 1;
+		
+			if (!selectedScope.getEffort().hasDeclared() && notUndoing) {
 				final ScopeDeclareEffortAction scopeDeclareEffortAction = new ScopeDeclareEffortAction(selectedScope.getId(), true, 1);
 				newRollbackSubActions.add(scopeDeclareEffortAction.execute(context, actionContext));
 			}
 
-			if (!selectedScope.getValue().hasInfered() && notUndoing) {
+			if (!selectedScope.getValue().hasDeclared() && notUndoing) {
 				final ScopeDeclareValueAction scopeDeclareValueAction = new ScopeDeclareValueAction(selectedScope.getId(), true, 1);
 				newRollbackSubActions.add(scopeDeclareValueAction.execute(context, actionContext));
 			}
